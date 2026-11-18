@@ -21,3 +21,46 @@
 
 **Data decyzji:** 18.11.2026
 **Decyzję podjęła:** Ania
+
+## Ustawienia repozytorium na GitHubie (stan 18.11.2026)
+
+### Widoczność
+- Repo publiczne od 18.11.2026 (decyzja Ani i Rafaela).
+- Wcześniej przegląd całej historii pod kątem sekretów, e-maili i danych prywatnych: czysto.
+- Zasada: żadnych poufnych materiałów ani danych klientów w repo.
+
+### Ochrona przed wyciekiem sekretów
+- Secret Protection: włączone.
+- Push protection: włączone.
+
+### Zależności
+- Dependency graph: włączone.
+- Dependabot alerts: włączone.
+- Malware alerts: włączone.
+- Dependabot security updates: na razie wyłączone (włączymy razem z `dependabot.yml`).
+
+### Ruleset „ochrona-main” (Active, gałąź domyślna)
+- Wymagany pull request (0 zatwierdzeń do czasu dołączenia Rafaela).
+- Zakaz usuwania gałęzi.
+- Zakaz force push.
+- Bypass: Repository admin, tylko dla pull requestów.
+- `require_extra_approval_for_unattributed_changes: true` – według dokumentacji REST API GitHuba: gdy Copilot otworzy PR bez człowieka, wymagane jest jedno dodatkowe zatwierdzenie (działa, gdy liczba wymaganych zatwierdzeń > 0); zostawiamy włączone.
+
+**Crash test 18.11.2026:** `git push origin feat/szkielet-mapy:main` odrzucony z błędem GH013 „Changes must be made through a pull request”. Ochrona działa.
+
+### GitHub Actions
+- Domyślne uprawnienia: tylko do odczytu.
+- Actions nie mogą tworzyć ani zatwierdzać pull requestów.
+- Zgoda wymagana dla wszystkich zewnętrznych osób.
+- Dozwolone tylko akcje GitHuba.
+- Wymagane przypięcie akcji do pełnego SHA.
+
+**Weryfikacja 18.11.2026:** ustawienia odczytane przez `gh api` (tylko GET) – zgodne z opisem (poziom 2). Malware alerts, Dependency graph i nazwa roli w bypass (Repository admin, tylko dla PR) – API nie podaje ich wprost; potwierdzone przez Anię na ekranie ustawień GitHuba (poziom 3).
+
+### Do zrobienia
+- [ ] Robot Playwright jako wymagany test.
+- [ ] `dependabot.yml`.
+- [ ] Private vulnerability reporting.
+- [ ] Po dołączeniu Rafaela: 1 zatwierdzenie i CODEOWNERS.
+- [ ] Bramka Jev przed agentem.
+- [ ] Sprawdzić secret scanning non-provider patterns i validity checks (czy darmowe dla repo publicznego).
