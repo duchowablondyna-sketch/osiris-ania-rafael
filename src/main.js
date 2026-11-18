@@ -35,3 +35,21 @@ const map = new maplibregl.Map({
 });
 
 map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
+
+// Produkcja z wiatru: plik wiatr.json powstaje przy budowaniu (scripts/pobierz-pse.mjs).
+const formatCzasu = (iso) =>
+  new Date(iso).toLocaleString('pl-PL', { timeZone: 'Europe/Warsaw', dateStyle: 'short', timeStyle: 'short' });
+const formatDoby = (rrrrMmDd) => rrrrMmDd.split('-').reverse().join('.');
+
+fetch(`${import.meta.env.BASE_URL}data/wiatr.json`, { cache: 'no-store' })
+  .then((odp) => (odp.ok ? odp.json() : null))
+  .then((d) => {
+    if (!d) return;
+    if (d.czas_pobrania) document.getElementById('wiatr-pobrano').textContent = formatCzasu(d.czas_pobrania);
+    if (typeof d.wartosc !== 'number') return;
+    document.getElementById('wiatr-teraz').textContent = `${Math.round(d.wartosc).toLocaleString('pl-PL')} ${d.jednostka}`;
+    document.getElementById('wiatr-stan').textContent = `stan na: ${formatDoby(d.doba)}, ${d.okres}`;
+  })
+  .catch(() => {
+    /* zostaje „brak danych” */
+  });

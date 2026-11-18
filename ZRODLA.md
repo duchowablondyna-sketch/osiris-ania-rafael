@@ -19,3 +19,15 @@ Poziomy weryfikacji:
 - **Licencja:** public domain (domena publiczna), https://www.naturalearthdata.com/about/terms-of-use/
 - **Data sprawdzenia:** 18.11.2026
 - **Poziom weryfikacji:** 1
+
+## PSE: produkcja z wiatru
+
+- **Co:** produkcja z wiatru, raport „Wielkości podstawowe” (`his-wlk-cal`), pole `wi`, okresy 15-minutowe.
+- **Używamy w:** `public/data/wiatr.json`, generowany przy budowaniu przez `scripts/pobierz-pse.mjs` (okienko na mapie).
+- **Link:** https://api.raporty.pse.pl/api/his-wlk-cal (API), https://raporty.pse.pl/ (raporty)
+- **Jednostka:** MW – niepotwierdzona w źródle (API nie podaje jednostki).
+- **Aktualność:** dane z bieżącej doby, opóźnienie ok. 1 godz. (sprawdzone 18.11.2026 14:23); czy wartości są wstępne – niepotwierdzone.
+- **Przetworzenie:** wybieramy ostatni rekord z wartością `wi`, zaokrąglamy do pełnych MW.
+- **Licencja:** Warunki ponownego wykorzystywania informacji z www.pse.pl: podanie źródła i daty pobrania, informacja o przetworzeniu, bez logo PSE (przeczytane w całości przez Claude w czacie, poziom 1). Czy obejmują API raporty.pse.pl – niepotwierdzone; na etapie prototypu stosujemy te warunki.
+- **Data sprawdzenia:** 18.11.2026
+- **Poziom weryfikacji:** 1
