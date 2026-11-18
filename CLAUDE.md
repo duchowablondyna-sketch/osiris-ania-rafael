@@ -1,10 +1,11 @@
 # OSIRIS: zasady projektu
 
 ## Etap: TRACER BULLET (obowiązuje, dopóki nie zostanie odwołany)
-Cel: najcieńsza działająca nitka od źródła do strony w internecie: jedna liczba z PSE (produkcja z wiatru) → skrypt pobiera ją przy budowaniu → okienko na mapie → publikacja na Cloudflare Pages.
-Robimy tylko to, bez czego ta liczba nie pojawi się na stronie.
-Nie robimy teraz: kontaktów i zgód od instytucji, nowych narzędzi i testów, kolejnych warstw mapy, wyglądu, historii danych, optymalizacji, rozbudowanej dokumentacji.
-Zanim zaproponujesz cokolwiek, sprawdź: czy bez tego liczba pojawi się na stronie? Jeśli tak — nie proponuj, dopisz najwyżej jedną linię do listy „Do zrobienia” w BEZPIECZENSTWO.md.
+Tracer bullet nr 1 (liczba z PSE na stronie) – zakończony 18.11.2026.
+Cel: Tracer bullet nr 2: warstwa morskich farm wiatrowych na polskim Bałtyku z EMODnet (CC BY 4.0) na mapie, z podpisem w stopce, opublikowana na Cloudflare Pages.
+Robimy tylko to, bez czego cel nie zostanie osiągnięty.
+Nie robimy teraz: kontaktów i zgód od instytucji, nowych narzędzi i testów, innych warstw niż farmy na Bałtyku, wyglądu, historii danych, optymalizacji, rozbudowanej dokumentacji.
+Zanim zaproponujesz cokolwiek, sprawdź: czy bez tego cel zostanie osiągnięty? Jeśli tak — nie proponuj, dopisz najwyżej jedną linię do listy „Do zrobienia” w BEZPIECZENSTWO.md.
 
 ## Cel
 Strona z mapą pokazującą, jak i gdzie Polska może uzyskać więcej prądu. Repo: osiris-ania-rafael (Ania i Rafael).
