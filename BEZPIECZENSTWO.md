@@ -64,3 +64,4 @@
 - [ ] Po dołączeniu Rafaela: 1 zatwierdzenie i CODEOWNERS.
 - [ ] Bramka Jev przed agentem.
 - [ ] Sprawdzić secret scanning non-provider patterns i validity checks (czy darmowe dla repo publicznego).
+- [ ] Potwierdzić w źródle jednostkę pola `wi` (MW) i czy warunki PSE obejmują API raporty.pse.pl.

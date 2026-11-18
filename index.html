@@ -10,8 +10,9 @@
       <div id="mapa" aria-label="Mapa Polski"></div>
 
       <section class="wskaznik" aria-live="polite">
-        <span class="wskaznik__etykieta">Produkcja z wiatru teraz:</span>
+        <span class="wskaznik__etykieta">Produkcja z wiatru (ostatni dostępny pomiar):</span>
         <span class="wskaznik__wartosc" id="wiatr-teraz">brak danych</span>
+        <span class="wskaznik__etykieta" id="wiatr-stan"></span>
       </section>
     </main>
 
@@ -19,6 +20,9 @@
       <strong>Źródła:</strong>
       kontur Polski: <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a>
       (domena publiczna), dane uproszczone do konturu jednego kraju.
+      <br />
+      Produkcja z wiatru: PSE S.A., <a href="https://raporty.pse.pl/" target="_blank" rel="noopener">raporty.pse.pl</a>,
+      dane pobrane <span id="wiatr-pobrano">brak</span>, przetworzone.
     </footer>
 
     <script type="module" src="/src/main.js"></script>
