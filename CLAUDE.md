@@ -1,5 +1,11 @@
 # OSIRIS: zasady projektu
 
+## Etap: TRACER BULLET (obowiązuje, dopóki nie zostanie odwołany)
+Cel: najcieńsza działająca nitka od źródła do strony w internecie: jedna liczba z PSE (produkcja z wiatru) → skrypt pobiera ją przy budowaniu → okienko na mapie → publikacja na Cloudflare Pages.
+Robimy tylko to, bez czego ta liczba nie pojawi się na stronie.
+Nie robimy teraz: kontaktów i zgód od instytucji, nowych narzędzi i testów, kolejnych warstw mapy, wyglądu, historii danych, optymalizacji, rozbudowanej dokumentacji.
+Zanim zaproponujesz cokolwiek, sprawdź: czy bez tego liczba pojawi się na stronie? Jeśli tak — nie proponuj, dopisz najwyżej jedną linię do listy „Do zrobienia” w BEZPIECZENSTWO.md.
+
 ## Cel
 Strona z mapą pokazującą, jak i gdzie Polska może uzyskać więcej prądu. Repo: osiris-ania-rafael (Ania i Rafael).
 
@@ -27,4 +33,4 @@ Strona z mapą pokazującą, jak i gdzie Polska może uzyskać więcej prądu. R
 
 ## Technologia
 - Vite + MapLibre GL JS, strona statyczna na Cloudflare Pages.
-- Dane pobiera GitHub Actions i zapisuje jako pliki JSON w repo. Przeglądarka nie łączy się z API bezpośrednio.
+- Dane z PSE pobieramy przy budowaniu strony na Cloudflare Pages i zapisujemy jako plik JSON w gotowej stronie. Przeglądarka nie łączy się z API bezpośrednio.
