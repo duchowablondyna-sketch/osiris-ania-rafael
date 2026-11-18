@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OSIRIS: więcej prądu dla Polski</title>
+  </head>
+  <body>
+    <main>
+      <div id="mapa" aria-label="Mapa Polski"></div>
+
+      <section class="wskaznik" aria-live="polite">
+        <span class="wskaznik__etykieta">Produkcja z wiatru teraz:</span>
+        <span class="wskaznik__wartosc" id="wiatr-teraz">brak danych</span>
+      </section>
+    </main>
+
+    <footer class="stopka">
+      <strong>Źródła:</strong>
+      kontur Polski: <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a>
+      (domena publiczna), dane uproszczone do konturu jednego kraju.
+    </footer>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
