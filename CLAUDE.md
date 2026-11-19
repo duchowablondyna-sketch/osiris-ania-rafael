@@ -7,14 +7,23 @@ Tracer bullet nr 3 (linie 220/400 kV z OpenStreetMap) – zakończony 19.11.2026
 Tracer bullet nr 4 (ograniczenia wiatru przez PSE w okienku) – zakończony 19.11.2026.
 Tracer bullet nr 5 (wykres produkcji wiatru z bieżącej doby) – zakończony 19.11.2026.
 Tracer bullet nr 6 (cena prądu RCE teraz i wykres bieżącej doby) – zakończony 19.11.2026.
-Cel: automatyczne odświeżanie strony co 2 godziny przez Cloudflare Deploy Hook wywoływany z GitHub Actions.
-Następny etap (teraz go nie robimy): wygląd strony (globus, ciemny motyw).
+Automatyczne odświeżanie strony (Cloudflare Deploy Hook z GitHub Actions, co 4 godziny) – zakończone 19.11.2026.
+Cel: Wygląd 1: globus + ciemny kosmiczny motyw + tło satelitarne NASA GIBS.
 Robimy tylko to, bez czego cel nie zostanie osiągnięty.
-Nie robimy teraz: kontaktów i zgód od instytucji, nowych narzędzi i testów, nowych warstw na mapie ani zmian wyglądu (to po TB6), historii danych, optymalizacji, rozbudowanej dokumentacji.
+Nie robimy teraz: innych animacji, nowych warstw danych i wersji na telefon (to później).
 Zanim zaproponujesz cokolwiek, sprawdź: czy bez tego cel zostanie osiągnięty? Jeśli tak — nie proponuj, dopisz najwyżej jedną linię do listy „Do zrobienia” w BEZPIECZENSTWO.md.
 
 ## Cel
 Strona z mapą pokazującą, jak i gdzie Polska może uzyskać więcej prądu. Repo: osiris-ania-rafael (Ania i Rafael).
+
+## Zasady wyglądu (decyzje Ani, stałe)
+- Bohater ekranu: prąd.
+- Ciemne, kosmiczne tło (inspiracja: God's Eye View, Bilawal Sidhu).
+- Linie najwyższych napięć w kolorze złotym (energia).
+- Wiatr (farmy, wykres wiatru) na jasnoniebiesko, dobrze widoczny na ciemnym tle.
+- Globus od razu przybliżony do Polski.
+- Priorytet: komputer (telefon później).
+- Ruch: jeden lot wprowadzający przy otwarciu (bez lotu przy prefers-reduced-motion); inne animacje – decyzja później.
 
 ## Jak ze mną pracować
 - Odpowiadaj po polsku, prostymi słowami.

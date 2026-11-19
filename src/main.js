@@ -8,8 +8,24 @@ import './style.css';
 maplibregl.setWorkerUrl(workerUrl);
 
 // Kontur Polski leży w public/data/ i jest serwowany razem ze stroną.
-// Nie używamy zewnętrznych kafelków ani kluczy API.
 const KONTUR_URL = `${import.meta.env.BASE_URL}data/polska-kontur.geojson`;
+
+// Tło satelitarne: NASA GIBS, warstwa Blue Marble (August 2004), WMTS REST w EPSG:3857, bez klucza API.
+// Kafelki pobiera przeglądarka widza z serwera NASA (patrz BEZPIECZENSTWO.md). Poziomy 0–8.
+const GIBS_BLUE_MARBLE =
+  'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/BlueMarble_NextGeneration/default/GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpeg';
+
+// Kolory zgodne z zasadami wyglądu w CLAUDE.md (kontrast sprawdzony wg WCAG).
+const KOLORY = {
+  kosmos: '#05070D',
+  linie: '#F2C14E', // złoto: linie najwyższych napięć
+  wiatr: '#5CC8FF', // jasnoniebieski: farmy i wykres wiatru
+  kontur: '#E8EEF7',
+  tekst: '#E8EEF7',
+  tekstPomocniczy: '#A9B7CC',
+  os: '#2A3550',
+  teraz: '#FF8A5B',
+};
 
 // Przybliżony prostokąt obejmujący Polskę i farmy na Bałtyku (do 55,56°N): [zachód, południe], [wschód, północ].
 const GRANICE_POLSKI = [
@@ -25,8 +41,50 @@ function odstepKadru() {
   const okno = document.querySelector('.wskaznik');
   const szerokoscMapy = document.getElementById('mapa').clientWidth;
   const lewy = okno ? okno.offsetLeft + okno.offsetWidth + MARGINES : MARGINES;
-  if (lewy + MARGINES + 200 > szerokoscMapy) return MARGINES;
-  return { top: MARGINES, right: MARGINES, bottom: MARGINES, left: lewy };
+  const lewyOdstep = lewy + MARGINES + 200 > szerokoscMapy ? MARGINES : lewy;
+  return { top: MARGINES, right: MARGINES, bottom: MARGINES, left: lewyOdstep };
+}
+
+// Kadr Polski: Polska w środku wolnej części ekranu (obok okienka), o jeden poziom dalej niż
+// „dopasuj do Polski”. Odstęp zostaje zapamiętany w mapie, więc środek widoku to środek wolnej części ekranu.
+const ODDALENIE = 1;
+const SRODEK_POLSKI = new maplibregl.LngLatBounds(GRANICE_POLSKI).getCenter();
+function kameraPolski() {
+  const padding = odstepKadru();
+  // Odstęp zapamiętany z poprzedniego wywołania doliczyłby się drugi raz – najpierw go zerujemy.
+  map.setPadding({ top: 0, right: 0, bottom: 0, left: 0 });
+  // cameraForBounds daje przybliżenie dopasowane do wolnej części ekranu. Jego środek jest już przesunięty
+  // o odstęp, więc bierzemy środek prostokąta Polski – a odstęp ustawia go w środku wolnej części ekranu.
+  const kamera = map.cameraForBounds(GRANICE_POLSKI, { padding });
+  if (!kamera) return null;
+  return { center: SRODEK_POLSKI, zoom: kamera.zoom - ODDALENIE, padding };
+}
+function ustawKadr() {
+  const k = kameraPolski();
+  if (k) map.jumpTo(k);
+}
+
+// Widok startowy lotu: cała kula Ziemi z Europą (Polska w środku), kula mieści się w wolnej części ekranu.
+// Promień kuli w pikselach przy przybliżeniu z to ok. 512 · 2^z / (2π).
+function kameraKuli() {
+  const padding = odstepKadru();
+  const wysokosc = document.getElementById('mapa').clientHeight - padding.top - padding.bottom;
+  const zoom = Math.log2(((wysokosc * 0.9) / 2) / (512 / (2 * Math.PI)));
+  return { center: SRODEK_POLSKI, zoom, padding };
+}
+
+// Lot wprowadzający: raz przy otwarciu, ok. 1 s po starcie i dopiero, gdy okienko ma dane (znamy jego szerokość).
+// Dotknięcie mapy przed lotem albo w trakcie – lot się nie zaczyna albo przerywa (MapLibre sam przerywa
+// flyTo przy przeciąganiu, przewijaniu i przybliżaniu). Przy prefers-reduced-motion – od razu kadr Polski.
+const BEZ_RUCHU = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let uzytkownikRuszylMape = false;
+for (const zdarzenie of ['mousedown', 'touchstart', 'wheel', 'keydown']) {
+  document.getElementById('mapa').addEventListener(zdarzenie, () => (uzytkownikRuszylMape = true), { once: true, passive: true });
+}
+function lotDoPolski() {
+  if (uzytkownikRuszylMape) return;
+  const k = kameraPolski();
+  if (k) map.flyTo({ ...k, duration: 3500, essential: false });
 }
 
 const map = new maplibregl.Map({
@@ -35,17 +93,29 @@ const map = new maplibregl.Map({
   fitBoundsOptions: { padding: odstepKadru() },
   style: {
     version: 8,
+    // Globus od pierwszej klatki; przy dużym przybliżeniu (11–12) MapLibre sam przechodzi w płaską mapę.
+    projection: { type: 'globe' },
+    // Poświata atmosfery wokół kuli (1 = najsilniejsza).
+    sky: { 'atmosphere-blend': 1 },
     sources: {
+      'tlo-satelitarne': { type: 'raster', tiles: [GIBS_BLUE_MARBLE], tileSize: 256, maxzoom: 8 },
       polska: { type: 'geojson', data: KONTUR_URL },
     },
     layers: [
-      { id: 'tlo', type: 'background', paint: { 'background-color': '#eef2f5' } },
-      { id: 'polska-wypelnienie', type: 'fill', source: 'polska', paint: { 'fill-color': '#ffffff' } },
-      { id: 'polska-kontur', type: 'line', source: 'polska', paint: { 'line-color': '#1f3a5f', 'line-width': 1.5 } },
+      { id: 'tlo', type: 'background', paint: { 'background-color': KOLORY.kosmos } },
+      { id: 'tlo-satelitarne', type: 'raster', source: 'tlo-satelitarne' },
+      { id: 'polska-kontur', type: 'line', source: 'polska', paint: { 'line-color': KOLORY.kontur, 'line-opacity': 0.6, 'line-width': 1.2 } },
     ],
   },
 });
 
+if (BEZ_RUCHU) ustawKadr();
+else map.jumpTo(kameraKuli());
+
+// Lot rusza dopiero, gdy kafelki tła dla widoku kuli są wczytane (pierwsze „idle” mapy),
+// ale najpóźniej po 5 s od otwarcia – żeby przy wolnym internecie nie czekać w nieskończoność.
+const czekaj = (ms) => new Promise((r) => setTimeout(r, ms));
+const tloGotowe = Promise.race([new Promise((r) => map.once('idle', r)), czekaj(5000)]);
 map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
 
 map.on('load', () => {
@@ -57,26 +127,42 @@ map.on('load', () => {
     type: 'line',
     source: 'linie-nn',
     layout: { 'line-cap': 'round', 'line-join': 'round' },
-    paint: { 'line-color': '#c2410c', 'line-width': ['match', ['get', 'napiecie'], 400, 2.5, 1.2] },
+    paint: { 'line-color': KOLORY.linie, 'line-width': ['match', ['get', 'napiecie'], 400, 2.5, 1.2] },
   });
 
   // Morskie farmy wiatrowe na polskim Bałtyku (EMODnet, CC BY 4.0)
+  // Dwie warstwy: pełne kropki (farmy z listy MKiŚ) pod spodem, puste (prawdopodobne duplikaty i farmy
+  // spoza listy) na wierzchu z grubszą obwódką – żeby duplikat był widoczny obok swojej pary.
+  const NA_LISCIE = ['==', ['get', 'weryfikacja'], 'na liście MKiŚ'];
+  // Promień zależny od przybliżenia: małe z daleka, ok. 6 px przy kadrze Polski (przybliżenie ok. 5), większe bliżej.
+  const PROMIEN_FARMY = ['interpolate', ['linear'], ['zoom'], 2, 2, 5, 6, 9, 12];
   map.addSource('farmy', { type: 'geojson', data: `${import.meta.env.BASE_URL}data/farmy-baltyk.geojson` });
   map.addLayer({
-    id: 'farmy',
+    id: 'farmy-pelne',
     type: 'circle',
     source: 'farmy',
-    // Farmy z listy MKiŚ: pełna kropka. Prawdopodobne duplikaty i farmy spoza listy: pusta w środku.
+    filter: NA_LISCIE,
     paint: {
-      'circle-color': '#0f7b6c',
-      'circle-radius': 6,
-      'circle-opacity': ['case', ['==', ['get', 'weryfikacja'], 'na liście MKiŚ'], 1, 0],
-      'circle-stroke-color': ['case', ['==', ['get', 'weryfikacja'], 'na liście MKiŚ'], '#ffffff', '#0f7b6c'],
-      'circle-stroke-width': ['case', ['==', ['get', 'weryfikacja'], 'na liście MKiŚ'], 1.5, 2],
+      'circle-color': KOLORY.wiatr,
+      'circle-radius': PROMIEN_FARMY,
+      'circle-stroke-color': KOLORY.kosmos,
+      'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 2, 0.5, 5, 1.5, 9, 2.5],
+    },
+  });
+  map.addLayer({
+    id: 'farmy-puste',
+    type: 'circle',
+    source: 'farmy',
+    filter: ['!', NA_LISCIE],
+    paint: {
+      'circle-opacity': 0,
+      'circle-radius': PROMIEN_FARMY,
+      'circle-stroke-color': KOLORY.wiatr,
+      'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 2, 1, 5, 2.5, 9, 4],
     },
   });
 
-  map.on('click', 'farmy', (e) => {
+  map.on('click', ['farmy-pelne', 'farmy-puste'], (e) => {
     const { nazwa, status, moc_mw, weryfikacja, weryfikacja_opis } = e.features[0].properties;
     const el = document.createElement('div');
     const tytul = document.createElement('strong');
@@ -106,7 +192,7 @@ const el = (nazwa, atrybuty) => {
   return e;
 };
 const podpis = (tekst, atrybuty) => {
-  const t = el('text', { 'font-size': 10, fill: '#555', ...atrybuty });
+  const t = el('text', { 'font-size': 10, fill: KOLORY.tekstPomocniczy, ...atrybuty });
   t.textContent = tekst;
   return t;
 };
@@ -128,11 +214,11 @@ function rysujWykres(kontener, seria) {
   opis.textContent = 'Produkcja z wiatru w bieżącej dobie, co 15 minut, w MW';
   svg.append(
     opis,
-    el('line', { x1: 0, y1: DOL, x2: W, y2: DOL, stroke: '#d5dbe1', 'stroke-width': 1 }),
+    el('line', { x1: 0, y1: DOL, x2: W, y2: DOL, stroke: KOLORY.os, 'stroke-width': 1 }),
     el('polyline', {
       points: punkty.map((p, i) => `${x(i).toFixed(1)},${y(p.mw).toFixed(1)}`).join(' '),
       fill: 'none',
-      stroke: '#1f3a5f',
+      stroke: KOLORY.wiatr,
       'stroke-width': 1.5,
       'stroke-linejoin': 'round',
     }),
@@ -164,22 +250,22 @@ function rysujWykresCeny(kontener, seria, teraz) {
   const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
   const opis = el('title', {});
   opis.textContent = 'Cena prądu RCE w bieżącej dobie, co 15 minut, w zł/MWh';
-  svg.append(opis, el('line', { x1: 0, y1: DOL, x2: W, y2: DOL, stroke: '#d5dbe1', 'stroke-width': 1 }));
+  svg.append(opis, el('line', { x1: 0, y1: DOL, x2: W, y2: DOL, stroke: KOLORY.os, 'stroke-width': 1 }));
   if (min < 0) {
-    svg.append(el('line', { x1: 0, y1: y(0), x2: W, y2: y(0), stroke: '#999', 'stroke-width': 1, 'stroke-dasharray': '3 3' }));
+    svg.append(el('line', { x1: 0, y1: y(0), x2: W, y2: y(0), stroke: KOLORY.tekstPomocniczy, 'stroke-width': 1, 'stroke-dasharray': '3 3' }));
   }
   svg.append(
     el('polyline', {
       points: seria.map((p) => `${x(Date.parse(p.koniec_utc) - MS_KWADRANS / 2).toFixed(1)},${y(p.cena).toFixed(1)}`).join(' '),
       fill: 'none',
-      stroke: '#1f3a5f',
+      stroke: KOLORY.tekst,
       'stroke-width': 1.5,
       'stroke-linejoin': 'round',
     }),
-    el('line', { x1: x(teraz), y1: GORA - 4, x2: x(teraz), y2: DOL, stroke: '#c2410c', 'stroke-width': 1.5 }),
+    el('line', { x1: x(teraz), y1: GORA - 4, x2: x(teraz), y2: DOL, stroke: KOLORY.teraz, 'stroke-width': 1.5 }),
     podpis(`maks. ${formatCeny(maks)} zł/MWh`, { x: 0, y: 10 }),
     podpis(`min. ${formatCeny(min)} zł/MWh`, { x: 0, y: 21 }),
-    podpis('teraz', { x: W, y: 21, 'text-anchor': 'end', fill: '#c2410c' }),
+    podpis('teraz', { x: W, y: 21, 'text-anchor': 'end', fill: KOLORY.teraz }),
     podpis(seria[0].okres.split(' - ')[0], { x: 0, y: H - 2 }),
     podpis(seria.at(-1).okres.split(' - ')[1] ?? '', { x: W, y: H - 2, 'text-anchor': 'end' }),
   );
@@ -235,6 +321,12 @@ const wiatrGotowy = fetch(`${import.meta.env.BASE_URL}data/wiatr.json`, { cache:
   });
 
 // Okienko mogło się poszerzyć (teksty, wykresy) – po wczytaniu obu plików dopasuj kadr jeszcze raz, bez animacji.
-Promise.allSettled([wiatrGotowy, cenaGotowa]).then(() =>
-  map.fitBounds(GRANICE_POLSKI, { padding: odstepKadru(), animate: false }),
-);
+const daneGotowe = Promise.allSettled([wiatrGotowy, cenaGotowa]);
+if (BEZ_RUCHU) {
+  daneGotowe.then(() => {
+    if (!uzytkownikRuszylMape) ustawKadr(); // okienko mogło urosnąć – poprawiamy kadr Polski
+  });
+} else {
+  // Lot: co najmniej 1 s po otwarciu, gdy okienko ma dane (znamy jego szerokość) i gdy tło jest wczytane (max 5 s).
+  Promise.all([daneGotowe, czekaj(1000), tloGotowe]).then(lotDoPolski);
+}

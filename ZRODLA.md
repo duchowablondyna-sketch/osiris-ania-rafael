@@ -68,6 +68,19 @@ Poziomy weryfikacji:
 - **Data sprawdzenia:** 19.11.2026
 - **Poziom weryfikacji:** 1
 
+## NASA GIBS: tło satelitarne Blue Marble
+
+- **Co:** warstwa `BlueMarble_NextGeneration` – „Blue Marble (August 2004)”, „MODIS / NASA Earth Observatory” (metadane: https://gibs.earthdata.nasa.gov/layer-metadata/v1.0/BlueMarble_NextGeneration.json). Warstwa bez wymiaru czasu.
+- **Używamy w:** tło mapy (warstwa rastrowa w `src/main.js`). Kafelki pobiera **przeglądarka widza** bezpośrednio z serwera NASA – nie zapisujemy ich u nas (patrz BEZPIECZENSTWO.md).
+- **Adres kafelków (WMTS REST, EPSG:3857):** `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/BlueMarble_NextGeneration/default/GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpeg` – szablon z GetCapabilities (https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/wmts.cgi?SERVICE=WMTS&REQUEST=GetCapabilities), punkt dostępu i wzór REST z https://nasa-gibs.github.io/gibs-api-docs/access-basics/. JPEG, 256 px, poziomy 0–8; serwer wysyła `access-control-allow-origin: *`; bez klucza API.
+- **Podziękowanie (wymagane przez GIBS, https://nasa-gibs.github.io/gibs-api-docs/, „Data Use Guidance and Acknowledgements”):** „We acknowledge the use of imagery provided by services from NASA's Global Imagery Browse Services (GIBS), part of NASA's Earth Science Data and Information System (ESDIS).” – w stopce, dosłownie.
+- **Warunki użycia:**
+  - NASA Images and Media Usage Guidelines (https://www.nasa.gov/nasa-brand-center/images-and-media/): materiały NASA co do zasady nie są chronione prawem autorskim w USA; użycie rzeczowe, które nie sugeruje poparcia NASA, bez potrzeby zgody; NASA należy podać jako źródło; logo NASA („Meatball”, „Worm”, pieczęć) chronione prawem – **nie używamy logo i nie sugerujemy poparcia NASA**.
+  - Earthdata Open Data Policy (https://www.earthdata.nasa.gov/engage/open-data-services-software-policies): „ESDS encourages citation and acknowledgment of NASA data and services”.
+- **Przetworzenie:** brak – kafelki wyświetlane bez zmian.
+- **Data sprawdzenia:** 19.11.2026
+- **Poziom weryfikacji:** 1 (dokumentacja GIBS i wytyczne NASA – przeczytane fragmenty dotyczące dostępu, podziękowania i warunków; kafelek nad Polską pobrany i obejrzany)
+
 ## EMODnet: morskie farmy wiatrowe
 
 - **Co:** EMODnet Human Activities, Energy, Wind Farms – punkty morskich farm wiatrowych (warstwa WFS `emodnet:windfarms`).
