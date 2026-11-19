@@ -3,9 +3,11 @@
 ## Etap: TRACER BULLET (obowiązuje, dopóki nie zostanie odwołany)
 Tracer bullet nr 1 (liczba z PSE na stronie) – zakończony 18.11.2026.
 Tracer bullet nr 2 (farmy na Bałtyku) – zakończony 18.11.2026.
-Cel: Tracer bullet nr 3: linie najwyższych napięć 220 kV i 400 kV z OpenStreetMap (ODbL) na mapie, z podpisem w stopce, ze sprawdzianem prawdy (porównanie z danymi PSE: długość linii i schemat sieci) i opublikowane na Cloudflare Pages.
+Tracer bullet nr 3 (linie 220/400 kV z OpenStreetMap) – zakończony 19.11.2026.
+Cel: Tracer bullet nr 4: w okienku obok produkcji wiatru pokazać, ile produkcji z wiatru PSE ograniczyło (redysponowanie) w ostatniej dostępnej dobie.
+Następne cele (teraz ich nie robimy): Tracer bullet nr 5 – wykres produkcji wiatru z całej doby w okienku; Tracer bullet nr 6 – cena prądu RCE godzina po godzinie.
 Robimy tylko to, bez czego cel nie zostanie osiągnięty.
-Nie robimy teraz: kontaktów i zgód od instytucji, nowych narzędzi i testów, innych warstw niż linie 220/400 kV, wyglądu, historii danych, optymalizacji, rozbudowanej dokumentacji.
+Nie robimy teraz: kontaktów i zgód od instytucji, nowych narzędzi i testów, nowych warstw na mapie ani zmian wyglądu (to po TB6), historii danych, optymalizacji, rozbudowanej dokumentacji.
 Zanim zaproponujesz cokolwiek, sprawdź: czy bez tego cel zostanie osiągnięty? Jeśli tak — nie proponuj, dopisz najwyżej jedną linię do listy „Do zrobienia” w BEZPIECZENSTWO.md.
 
 ## Cel

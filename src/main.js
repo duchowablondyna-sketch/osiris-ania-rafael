@@ -91,6 +91,11 @@ fetch(`${import.meta.env.BASE_URL}data/wiatr.json`, { cache: 'no-store' })
   .then((d) => {
     if (!d) return;
     if (d.czas_pobrania) document.getElementById('wiatr-pobrano').textContent = formatCzasu(d.czas_pobrania);
+    const ogr = d.ograniczenie;
+    if (ogr && typeof ogr.mwh === 'number' && ogr.doba) {
+      document.getElementById('wiatr-ograniczenie').textContent =
+        `Ostatnie polecenie PSE ograniczenia wiatru: ${formatDoby(ogr.doba)} – ok. ${ogr.mwh.toLocaleString('pl-PL')} MWh`;
+    }
     if (typeof d.wartosc !== 'number') return;
     document.getElementById('wiatr-teraz').textContent = `${Math.round(d.wartosc).toLocaleString('pl-PL')} ${d.jednostka}`;
     document.getElementById('wiatr-stan').textContent = `stan na: ${formatDoby(d.doba)}, ${d.okres}`;
