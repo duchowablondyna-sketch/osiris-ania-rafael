@@ -14,9 +14,9 @@ const pierwszyUrl = `${API}?%24filter=business_date%20ge%20%27${od}%27`;
 const czasPobrania = new Date().toISOString();
 const zrodlo = 'PSE S.A., raporty.pse.pl (raport his-wlk-cal, pole wi)';
 
-async function pobierzWszystko() {
+async function pobierzWszystko(start = pierwszyUrl) {
   const rekordy = [];
-  let url = pierwszyUrl;
+  let url = start;
   for (let i = 0; url && i < MAKS_STRON; i++) {
     const odp = await fetch(url, { signal: AbortSignal.timeout(20_000) });
     if (!odp.ok) throw new Error(`HTTP ${odp.status}`);
@@ -49,5 +49,44 @@ try {
   wynik = { wartosc: null, czas_pobrania: czasPobrania, zrodlo, blad: String(e.message ?? e) };
   console.warn(`PSE: nie udało się pobrać danych (${wynik.blad}), zapisuję brak danych`);
 }
+
+// Ograniczenia wiatru: raport poze-redoze („Nierynkowe redysponowanie źródeł OZE”).
+// Bierzemy najnowszą dobę, w której wi_red_balance lub wi_red_network ma wartość (puste pola to nie zero).
+// Suma obu pól ze wszystkich kwadransów ÷ 4 = MWh, przy założeniu, że wartości są w MW (niepotwierdzone przez PSE).
+const API_RED = 'https://api.raporty.pse.pl/api/poze-redoze';
+const POLA_WIATR = ['wi_red_balance', 'wi_red_network'];
+const odRed = new Date(Date.now() - 120 * 86400_000).toLocaleDateString('sv-SE', { timeZone: 'Europe/Warsaw' });
+
+let ograniczenie;
+try {
+  const filtr = `business_date ge '${odRed}' and (wi_red_balance ne null or wi_red_network ne null)`;
+  const najnowszyUrl = `${API_RED}?$filter=${encodeURIComponent(filtr)}&$orderby=${encodeURIComponent('business_date desc,dtime desc')}&$first=1`;
+  const odp = await fetch(najnowszyUrl, { signal: AbortSignal.timeout(20_000) });
+  if (!odp.ok) throw new Error(`HTTP ${odp.status}`);
+  const doba = (await odp.json()).value?.[0]?.business_date;
+  if (!doba) throw new Error('brak doby z ograniczeniem wiatru');
+
+  const rekordy = await pobierzWszystko(`${API_RED}?$filter=${encodeURIComponent(`business_date eq '${doba}'`)}`);
+  let suma = 0;
+  let kwadranse = 0;
+  for (const r of rekordy) {
+    const wartosci = POLA_WIATR.map((p) => r[p]).filter((v) => typeof v === 'number');
+    if (wartosci.length) kwadranse++;
+    for (const v of wartosci) suma += v;
+  }
+  if (kwadranse === 0) throw new Error(`brak wartości w dobie ${doba}`);
+  ograniczenie = {
+    doba,
+    mwh: Math.round(Math.abs(suma) / 4),
+    kwadranse,
+    publikacja: rekordy[0]?.publication_ts ?? null,
+    zrodlo: 'PSE S.A., raporty.pse.pl (raport poze-redoze, pola wi_red_balance i wi_red_network)',
+  };
+  console.log(`PSE: ograniczenie wiatru ${ograniczenie.mwh} MWh (doba ${doba}, ${kwadranse} kwadransów, suma ${suma.toFixed(1)})`);
+} catch (e) {
+  ograniczenie = { mwh: null, blad: String(e.message ?? e) };
+  console.warn(`PSE: nie udało się pobrać ograniczeń wiatru (${ograniczenie.blad}), zapisuję brak danych`);
+}
+wynik.ograniczenie = ograniczenie;
 
 await writeFile(PLIK, JSON.stringify(wynik, null, 2));

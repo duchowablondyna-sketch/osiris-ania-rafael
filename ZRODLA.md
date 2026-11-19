@@ -32,6 +32,23 @@ Poziomy weryfikacji:
 - **Data sprawdzenia:** 18.11.2026
 - **Poziom weryfikacji:** 1
 
+### PSE: ograniczenia wiatru (raport poze-redoze)
+
+- **Co:** raport „Nierynkowe redysponowanie źródeł OZE” (`poze-redoze`), okresy 15-minutowe (96 na dobę).
+- **Używamy w:** `public/data/wiatr.json`, pole `ograniczenie`, generowany przy budowaniu przez `scripts/pobierz-pse.mjs` (tekst w okienku pod produkcją wiatru).
+- **Link:** https://api.raporty.pse.pl/api/poze-redoze (API), https://raporty.pse.pl/ (raport)
+- **Opis pól:** „Mapowanie endpointów API” (przewodnik migracji API V1 → V2), https://api.raporty.pse.pl/EndpointsMap.pdf – przeczytany tylko fragment o tym raporcie (tekst wyciągnięty z PDF Pythonem, bez programu do PDF), poziom 1:
+  - `wi_red_balance` – „Źródło Wiatrowe – Bilansowanie KSE” (ograniczenie z powodu bilansu całego systemu),
+  - `wi_red_network` – „Źródło Wiatrowe – Zarządzanie ograniczeniami systemowymi” (ograniczenie z powodu ograniczeń sieci).
+  - Dokument nie podaje jednostki ani definicji. Wyjaśnienia w nawiasach to opis Claude, nie PSE.
+- **Wartości:** ujemne (ograniczenie); brak ograniczenia = pole puste (`null`), zer w danych nie widzieliśmy. Rekordy na dobę D pojawiają się z pustymi polami już ok. 00:10 doby D−1.
+- **Jednostka:** zakładamy MW – **niepotwierdzone przez PSE**, poziom 1. Sprawdzenie: suma `wi_red_balance` + `wi_red_network` za październik 2025 ÷ 4 = 110,5 GWh (zapytanie 19.11.2026); Gramwzielone.pl za Forum Energii podaje dla października 2025 105,2 GWh ograniczeń wiatru na polecenie PSE (https://www.gramwzielone.pl/energia-wiatrowa/20341453/rekord-produkcji-energii-wiatrowej-w-polsce-i-rekordowe-wylaczenia, 18.11.2025, przeczytany w całości 19.11.2026, źródło wtórne). Przy jednostce MWh na kwadrans wyszłoby 442 GWh, więc MW pasuje; przyczyna różnicy ok. 5% – nieznana.
+- **Przetworzenie:** najnowsza doba z ostatnich 120 dni, w której `wi_red_balance` lub `wi_red_network` ma wartość; suma obu pól ze wszystkich kwadransów tej doby ÷ 4, wartość dodatnia, zaokrąglona do pełnych MWh.
+- **Uwagi:** dane mogą być **poleceniami** PSE, a nie zmierzonym wykonaniem (np. doba 26.10.2026 opublikowana 25.10.2026 o 23:37) – niepotwierdzone. PSE publikuje **poprawki**: cała doba bywa publikowana ponownie po tygodniach lub miesiącach (np. 10.05.2026 – ponownie 9.06.2026; 11.05.2025 – ponownie 6.11.2025).
+- **Licencja:** jak wyżej (warunki PSE: źródło, data pobrania, informacja o przetworzeniu, bez logo).
+- **Data sprawdzenia:** 19.11.2026
+- **Poziom weryfikacji:** 1
+
 ## EMODnet: morskie farmy wiatrowe
 
 - **Co:** EMODnet Human Activities, Energy, Wind Farms – punkty morskich farm wiatrowych (warstwa WFS `emodnet:windfarms`).
