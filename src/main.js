@@ -17,10 +17,22 @@ const GRANICE_POLSKI = [
   [24.2, 55.8],
 ];
 
+// Odstęp kadru od krawędzi. Z lewej: szerokość okienka (.wskaznik) plus margines,
+// żeby żadna farma ani linia nie była pod okienkiem. Na wąskim ekranie, gdzie to się
+// nie mieści, zostaje zwykły odstęp.
+const MARGINES = 24;
+function odstepKadru() {
+  const okno = document.querySelector('.wskaznik');
+  const szerokoscMapy = document.getElementById('mapa').clientWidth;
+  const lewy = okno ? okno.offsetLeft + okno.offsetWidth + MARGINES : MARGINES;
+  if (lewy + MARGINES + 200 > szerokoscMapy) return MARGINES;
+  return { top: MARGINES, right: MARGINES, bottom: MARGINES, left: lewy };
+}
+
 const map = new maplibregl.Map({
   container: 'mapa',
   bounds: GRANICE_POLSKI,
-  fitBoundsOptions: { padding: 24 },
+  fitBoundsOptions: { padding: odstepKadru() },
   style: {
     version: 8,
     sources: {
@@ -86,6 +98,50 @@ const formatCzasu = (iso) =>
   new Date(iso).toLocaleString('pl-PL', { timeZone: 'Europe/Warsaw', dateStyle: 'short', timeStyle: 'short' });
 const formatDoby = (rrrrMmDd) => rrrrMmDd.split('-').reverse().join('.');
 
+// Mały wykres liniowy produkcji z wiatru z bieżącej doby (własne SVG, bez bibliotek).
+// seria: [{ okres: 'HH:MM - HH:MM', mw }], kolejne kwadranse od 00:00.
+const SVG_NS = 'http://www.w3.org/2000/svg';
+function rysujWykres(kontener, seria) {
+  const punkty = (seria ?? []).filter((p) => typeof p.mw === 'number' && typeof p.okres === 'string');
+  if (punkty.length < 2) return;
+
+  const W = 240, H = 72, GORA = 14, DOL = 58; // obszar linii: od GORA do DOL
+  const maks = Math.max(...punkty.map((p) => p.mw));
+  const min = Math.min(0, ...punkty.map((p) => p.mw));
+  const x = (i) => (i / (punkty.length - 1)) * W;
+  const y = (mw) => DOL - ((mw - min) / (maks - min || 1)) * (DOL - GORA);
+
+  const el = (nazwa, atrybuty) => {
+    const e = document.createElementNS(SVG_NS, nazwa);
+    for (const [k, v] of Object.entries(atrybuty)) e.setAttribute(k, String(v));
+    return e;
+  };
+  const podpis = (tekst, atrybuty) => {
+    const t = el('text', { 'font-size': 10, fill: '#555', ...atrybuty });
+    t.textContent = tekst;
+    return t;
+  };
+
+  const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
+  const opis = el('title', {});
+  opis.textContent = 'Produkcja z wiatru w bieżącej dobie, co 15 minut, w MW';
+  svg.append(
+    opis,
+    el('line', { x1: 0, y1: DOL, x2: W, y2: DOL, stroke: '#d5dbe1', 'stroke-width': 1 }),
+    el('polyline', {
+      points: punkty.map((p, i) => `${x(i).toFixed(1)},${y(p.mw).toFixed(1)}`).join(' '),
+      fill: 'none',
+      stroke: '#1f3a5f',
+      'stroke-width': 1.5,
+      'stroke-linejoin': 'round',
+    }),
+    podpis(`maks. ${Math.round(maks).toLocaleString('pl-PL')} MW`, { x: 0, y: 10 }),
+    podpis(punkty[0].okres.split(' - ')[0], { x: 0, y: H - 2 }),
+    podpis(punkty.at(-1).okres.split(' - ')[1] ?? '', { x: W, y: H - 2, 'text-anchor': 'end' }),
+  );
+  kontener.append(svg);
+}
+
 fetch(`${import.meta.env.BASE_URL}data/wiatr.json`, { cache: 'no-store' })
   .then((odp) => (odp.ok ? odp.json() : null))
   .then((d) => {
@@ -99,7 +155,10 @@ fetch(`${import.meta.env.BASE_URL}data/wiatr.json`, { cache: 'no-store' })
     if (typeof d.wartosc !== 'number') return;
     document.getElementById('wiatr-teraz').textContent = `${Math.round(d.wartosc).toLocaleString('pl-PL')} ${d.jednostka}`;
     document.getElementById('wiatr-stan').textContent = `stan na: ${formatDoby(d.doba)}, ${d.okres}`;
+    rysujWykres(document.getElementById('wiatr-wykres'), d.seria);
   })
   .catch(() => {
     /* zostaje „brak danych” */
-  });
+  })
+  // Okienko mogło się poszerzyć (tekst, wykres) – dopasuj kadr jeszcze raz, bez animacji.
+  .finally(() => map.fitBounds(GRANICE_POLSKI, { padding: odstepKadru(), animate: false }));
