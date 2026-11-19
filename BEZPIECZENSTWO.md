@@ -57,6 +57,10 @@
 
 **Weryfikacja 18.11.2026:** ustawienia odczytane przez `gh api` (tylko GET) – zgodne z opisem (poziom 2). Malware alerts, Dependency graph i nazwa roli w bypass (Repository admin, tylko dla PR) – API nie podaje ich wprost; potwierdzone przez Anię na ekranie ustawień GitHuba (poziom 3).
 
+## Połączenia przeglądarki widza z zewnętrznymi serwerami
+
+- Od etapu „Wygląd 1” (19.11.2026) przeglądarka widza pobiera kafelki tła satelitarnego z serwera NASA GIBS (`gibs.earthdata.nasa.gov`), więc NASA widzi adres IP odwiedzającego. Dane PSE nadal są pobierane tylko przy budowaniu strony.
+
 ### Do zrobienia
 - [ ] Robot Playwright jako wymagany test.
 - [ ] `dependabot.yml`.
@@ -67,3 +71,6 @@
 - [ ] Potwierdzić w źródle jednostkę pola `wi` (MW) i czy warunki PSE obejmują API raporty.pse.pl.
 - [ ] Porównanie długości linii OSM z danymi PSE.
 - [ ] Harmonogram w publicznym repo wyłącza się po 60 dniach bez aktywności ([dokumentacja GitHub](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/disable-and-enable-workflows)); po przerwie sprawdzić workflow „Odśwież stronę” i włączyć ponownie.
+- [ ] W niedalekiej przyszłości profesjonalne tło satelitarne (rozważyć płatne źródło), gdy będzie potrzeba.
+- [ ] Rozważyć kafelki tła dla Polski zapisane u nas (żeby przeglądarka widza nie łączyła się z NASA GIBS).
+- [ ] Warstwa VIIRS_Black_Marble (nocne światła miast, NASA GIBS) jako kandydat pasujący do zasady „bohater: prąd”.
