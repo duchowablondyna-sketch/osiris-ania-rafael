@@ -44,6 +44,24 @@ Poziomy weryfikacji:
 - **Data sprawdzenia:** 18.11.2026
 - **Poziom weryfikacji:** 1
 
+### Porównanie z listą MKiŚ
+
+- **Źródło porównania:** Ministerstwo Klimatu i Środowiska, „Obecnie realizowane projekty w Polsce”, https://www.gov.pl/web/morska-energetyka-wiatrowa/obecnie-realizowane-projekty-w-polsce – tabela 19 projektów (7 w I fazie, 12 w II fazie systemu wsparcia), stan: styczeń 2024. Przeczytane w całości 19.11.2026, poziom 1.
+- **Wynik:** pole `weryfikacja` w `public/data/farmy-baltyk.geojson`, przypisane według tabeli w `scripts/weryfikacja-farm.mjs` (przyporządkowanie: Ania, 19.11.2026; zgodność nazw z listą sprawdzona przez Claude).
+  - **„na liście MKiŚ” (20 rekordów, 18 projektów):** Baltic Power; Baltyk I Phase 1 i Phase 2 (razem 1560 MW = MFW Bałtyk I); Baltica 1, 2, 2+, 3; Baltyk II, III; FEW Baltic II; BC Wind B i C (= BC-Wind, 2 × 250 MW); Baltica IV Offshore wind farm 1 (= Baltica 7, PGE Baltica 4, 990 MW); Baltica V (= Baltica 5, 555 MW); Baltica 9; Energa MFW 1 i 2; Orlen Neptun III i IV (= 14.E.3, 14.E.4); Baltic East (= Orlen Neptun 46.E.1, spółka Orlen Neptun VIII).
+  - **„prawdopodobny duplikat”** (oznaczony tylko jeden rekord z pary; punkty 9–11 km od siebie):
+    - „Orlen Neptun VIII Offshore wind farm 1” → Baltic East. Powód: Baltic East ma w EMODnet 966 MW, tyle samo co Orlen Neptun 46.E.1 (spółka Orlen Neptun VIII) w PSZW na liście MKiŚ; rekord Orlen Neptun VIII ma w EMODnet 1000 MW. Według Atlasu Morskiego Baltic East „należący do Orlen Neptun” uzyskał wsparcie w aukcji w grudniu 2025 (https://am.gdynia.pl/farmy-wiatrowe-na-baltyku/, stan sierpień 2026, przeczytane w całości 19.11.2026, poziom 1, źródło wtórne). Artykuł nie podaje, że to spółka Orlen Neptun VIII – to wniosek ze zgodności mocy.
+    - „B-Wind” → BC Wind Offshore wind farm B; „C-Wind” → BC Wind Offshore wind farm C. Powód: MKiŚ podaje BC-Wind jako 2 × 250 MW (spółka C-Wind Polska sp. z o.o.).
+  - **„brak na liście MKiŚ”:** Sharco Duo, Freeboard I, Licence Application No. 76.
+  - Baltica 2 i Baltica 2+ (punkty ok. 4 km od siebie) to na liście MKiŚ osobne projekty – bez zmian.
+- **Baltica 1+ (1185 MW)** jest na liście MKiŚ, ale nie ma jej w EMODnet (nie ma jej na mapie).
+- **Różnice mocy EMODnet vs lista MKiŚ** (w okienku zostaje moc z EMODnet):
+  - Baltic Power: EMODnet 1140 MW; MKiŚ: PSZW 1200 MW, decyzja URE 1197 MW.
+  - Energa MFW 1: EMODnet 900 MW; MKiŚ 812 MW. Energa MFW 2: EMODnet 800 MW; MKiŚ 896 MW. Wartości wyglądają na zamienione – niepotwierdzone, czy to błąd w EMODnet.
+  - Orlen Neptun III i IV: EMODnet po 1200 MW; MKiŚ po 1204 MW.
+  - Orlen Neptun VIII: EMODnet 1000 MW; MKiŚ (46.E.1) 966 MW.
+- **Wygląd na mapie:** farmy „na liście MKiŚ” – pełna kropka; „prawdopodobny duplikat” i „brak na liście MKiŚ” – kropka pusta w środku; w okienku linia „weryfikacja: …”.
+
 ## OpenStreetMap: linie najwyższych napięć 220/400 kV
 
 - **Co:** linie elektroenergetyczne `power=line` z napięciem 220 kV lub 400 kV (tag `voltage` zawiera `220000` lub `400000`) w granicach Polski.

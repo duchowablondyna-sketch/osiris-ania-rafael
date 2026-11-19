@@ -54,11 +54,18 @@ map.on('load', () => {
     id: 'farmy',
     type: 'circle',
     source: 'farmy',
-    paint: { 'circle-color': '#0f7b6c', 'circle-radius': 6, 'circle-stroke-color': '#ffffff', 'circle-stroke-width': 1.5 },
+    // Farmy z listy MKiŚ: pełna kropka. Prawdopodobne duplikaty i farmy spoza listy: pusta w środku.
+    paint: {
+      'circle-color': '#0f7b6c',
+      'circle-radius': 6,
+      'circle-opacity': ['case', ['==', ['get', 'weryfikacja'], 'na liście MKiŚ'], 1, 0],
+      'circle-stroke-color': ['case', ['==', ['get', 'weryfikacja'], 'na liście MKiŚ'], '#ffffff', '#0f7b6c'],
+      'circle-stroke-width': ['case', ['==', ['get', 'weryfikacja'], 'na liście MKiŚ'], 1.5, 2],
+    },
   });
 
   map.on('click', 'farmy', (e) => {
-    const { nazwa, status, moc_mw } = e.features[0].properties;
+    const { nazwa, status, moc_mw, weryfikacja, weryfikacja_opis } = e.features[0].properties;
     const el = document.createElement('div');
     const tytul = document.createElement('strong');
     tytul.textContent = nazwa;
@@ -69,6 +76,7 @@ map.on('load', () => {
     };
     const moc = typeof moc_mw === 'number' ? `${moc_mw.toLocaleString('pl-PL')} MW` : 'brak danych';
     el.append(tytul, document.createElement('br'), linia(`status: ${status}`), document.createElement('br'), linia(`moc: ${moc}`));
+    if (weryfikacja) el.append(document.createElement('br'), linia(`weryfikacja: ${weryfikacja_opis ?? weryfikacja}`));
     new maplibregl.Popup().setLngLat(e.features[0].geometry.coordinates).setDOMContent(el).addTo(map);
   });
 });
