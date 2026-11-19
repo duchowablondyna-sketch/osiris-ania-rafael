@@ -43,8 +43,12 @@ try {
     doba: ost.business_date,
     czas_pobrania: czasPobrania,
     zrodlo,
+    // Wszystkie kwadranse doby ostatniego pomiaru (od 00:00) – do wykresu w okienku.
+    seria: rekordy
+      .filter((r) => r.business_date === ost.business_date)
+      .map((r) => ({ okres: r.period, mw: Math.round(r.wi * 10) / 10 })),
   };
-  console.log(`PSE: wi = ${ost.wi} (doba ${ost.business_date}, ${ost.period})`);
+  console.log(`PSE: wi = ${ost.wi} (doba ${ost.business_date}, ${ost.period}), wykres: ${wynik.seria.length} kwadransów`);
 } catch (e) {
   wynik = { wartosc: null, czas_pobrania: czasPobrania, zrodlo, blad: String(e.message ?? e) };
   console.warn(`PSE: nie udało się pobrać danych (${wynik.blad}), zapisuję brak danych`);
