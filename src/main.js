@@ -98,9 +98,21 @@ const formatCzasu = (iso) =>
   new Date(iso).toLocaleString('pl-PL', { timeZone: 'Europe/Warsaw', dateStyle: 'short', timeStyle: 'short' });
 const formatDoby = (rrrrMmDd) => rrrrMmDd.split('-').reverse().join('.');
 
-// Mały wykres liniowy produkcji z wiatru z bieżącej doby (własne SVG, bez bibliotek).
-// seria: [{ okres: 'HH:MM - HH:MM', mw }], kolejne kwadranse od 00:00.
+// Pomocnicze do wykresów SVG (bez bibliotek): elementy przez createElementNS, tekst przez textContent.
 const SVG_NS = 'http://www.w3.org/2000/svg';
+const el = (nazwa, atrybuty) => {
+  const e = document.createElementNS(SVG_NS, nazwa);
+  for (const [k, v] of Object.entries(atrybuty)) e.setAttribute(k, String(v));
+  return e;
+};
+const podpis = (tekst, atrybuty) => {
+  const t = el('text', { 'font-size': 10, fill: '#555', ...atrybuty });
+  t.textContent = tekst;
+  return t;
+};
+
+// Mały wykres liniowy produkcji z wiatru z bieżącej doby.
+// seria: [{ okres: 'HH:MM - HH:MM', mw }], kolejne kwadranse od 00:00.
 function rysujWykres(kontener, seria) {
   const punkty = (seria ?? []).filter((p) => typeof p.mw === 'number' && typeof p.okres === 'string');
   if (punkty.length < 2) return;
@@ -110,17 +122,6 @@ function rysujWykres(kontener, seria) {
   const min = Math.min(0, ...punkty.map((p) => p.mw));
   const x = (i) => (i / (punkty.length - 1)) * W;
   const y = (mw) => DOL - ((mw - min) / (maks - min || 1)) * (DOL - GORA);
-
-  const el = (nazwa, atrybuty) => {
-    const e = document.createElementNS(SVG_NS, nazwa);
-    for (const [k, v] of Object.entries(atrybuty)) e.setAttribute(k, String(v));
-    return e;
-  };
-  const podpis = (tekst, atrybuty) => {
-    const t = el('text', { 'font-size': 10, fill: '#555', ...atrybuty });
-    t.textContent = tekst;
-    return t;
-  };
 
   const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
   const opis = el('title', {});
@@ -142,7 +143,79 @@ function rysujWykres(kontener, seria) {
   kontener.append(svg);
 }
 
-fetch(`${import.meta.env.BASE_URL}data/wiatr.json`, { cache: 'no-store' })
+// Cena prądu RCE: plik rce.json powstaje przy budowaniu (scripts/pobierz-pse.mjs), zawiera doby wg czasu polskiego.
+// Bieżącą dobę i kwadrans wybieramy wg czasu Europe/Warsaw (koniec_utc to chwila absolutna, więc strefa
+// komputera nie ma znaczenia). Nigdy nie pokazujemy ceny z innej doby jako aktualnej.
+const MS_KWADRANS = 15 * 60_000;
+const formatCeny = (c) => c.toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const dzisPL = () => new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Warsaw' });
+
+function rysujWykresCeny(kontener, seria, teraz) {
+  const W = 240, H = 84, GORA = 26, DOL = 70; // obszar linii: od GORA do DOL
+  const ceny = seria.map((p) => p.cena);
+  const maks = Math.max(...ceny);
+  const min = Math.min(...ceny);
+  const y = (c) => DOL - ((c - min) / (maks - min || 1)) * (DOL - GORA);
+  // Oś X to czas: od początku pierwszego do końca ostatniego kwadransu doby (działa też przy zmianie czasu).
+  const start = Date.parse(seria[0].koniec_utc) - MS_KWADRANS;
+  const koniec = Date.parse(seria.at(-1).koniec_utc);
+  const x = (t) => ((t - start) / (koniec - start)) * W;
+
+  const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
+  const opis = el('title', {});
+  opis.textContent = 'Cena prądu RCE w bieżącej dobie, co 15 minut, w zł/MWh';
+  svg.append(opis, el('line', { x1: 0, y1: DOL, x2: W, y2: DOL, stroke: '#d5dbe1', 'stroke-width': 1 }));
+  if (min < 0) {
+    svg.append(el('line', { x1: 0, y1: y(0), x2: W, y2: y(0), stroke: '#999', 'stroke-width': 1, 'stroke-dasharray': '3 3' }));
+  }
+  svg.append(
+    el('polyline', {
+      points: seria.map((p) => `${x(Date.parse(p.koniec_utc) - MS_KWADRANS / 2).toFixed(1)},${y(p.cena).toFixed(1)}`).join(' '),
+      fill: 'none',
+      stroke: '#1f3a5f',
+      'stroke-width': 1.5,
+      'stroke-linejoin': 'round',
+    }),
+    el('line', { x1: x(teraz), y1: GORA - 4, x2: x(teraz), y2: DOL, stroke: '#c2410c', 'stroke-width': 1.5 }),
+    podpis(`maks. ${formatCeny(maks)} zł/MWh`, { x: 0, y: 10 }),
+    podpis(`min. ${formatCeny(min)} zł/MWh`, { x: 0, y: 21 }),
+    podpis('teraz', { x: W, y: 21, 'text-anchor': 'end', fill: '#c2410c' }),
+    podpis(seria[0].okres.split(' - ')[0], { x: 0, y: H - 2 }),
+    podpis(seria.at(-1).okres.split(' - ')[1] ?? '', { x: W, y: H - 2, 'text-anchor': 'end' }),
+  );
+  kontener.replaceChildren(svg);
+}
+
+function pokazCene(rce) {
+  const tekst = document.getElementById('rce-teraz');
+  const wykres = document.getElementById('rce-wykres');
+  const seria = (rce?.doby?.[dzisPL()] ?? []).filter((p) => typeof p.cena === 'number' && p.koniec_utc);
+  const teraz = Date.now();
+  const biezacy = seria.find((p) => {
+    const k = Date.parse(p.koniec_utc);
+    return teraz >= k - MS_KWADRANS && teraz < k;
+  });
+  if (!biezacy) {
+    tekst.textContent = 'Cena prądu (RCE): brak danych na dziś';
+    wykres.replaceChildren();
+    return;
+  }
+  tekst.textContent = `Cena prądu (RCE) teraz: ${formatCeny(biezacy.cena)} zł/MWh, ${biezacy.okres}`;
+  if (seria.length >= 2) rysujWykresCeny(wykres, seria, teraz);
+}
+
+const cenaGotowa = fetch(`${import.meta.env.BASE_URL}data/rce.json`, { cache: 'no-store' })
+  .then((odp) => (odp.ok ? odp.json() : null))
+  .then((rce) => {
+    if (rce?.czas_pobrania) document.getElementById('rce-pobrano').textContent = formatCzasu(rce.czas_pobrania);
+    pokazCene(rce);
+    setInterval(() => pokazCene(rce), 60_000); // co minutę: nowy kwadrans, a po północy – nowa doba
+  })
+  .catch(() => {
+    /* zostaje „brak danych na dziś” */
+  });
+
+const wiatrGotowy = fetch(`${import.meta.env.BASE_URL}data/wiatr.json`, { cache: 'no-store' })
   .then((odp) => (odp.ok ? odp.json() : null))
   .then((d) => {
     if (!d) return;
@@ -159,6 +232,9 @@ fetch(`${import.meta.env.BASE_URL}data/wiatr.json`, { cache: 'no-store' })
   })
   .catch(() => {
     /* zostaje „brak danych” */
-  })
-  // Okienko mogło się poszerzyć (tekst, wykres) – dopasuj kadr jeszcze raz, bez animacji.
-  .finally(() => map.fitBounds(GRANICE_POLSKI, { padding: odstepKadru(), animate: false }));
+  });
+
+// Okienko mogło się poszerzyć (teksty, wykresy) – po wczytaniu obu plików dopasuj kadr jeszcze raz, bez animacji.
+Promise.allSettled([wiatrGotowy, cenaGotowa]).then(() =>
+  map.fitBounds(GRANICE_POLSKI, { padding: odstepKadru(), animate: false }),
+);

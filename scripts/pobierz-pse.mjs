@@ -94,3 +94,31 @@ try {
 wynik.ograniczenie = ograniczenie;
 
 await writeFile(PLIK, JSON.stringify(wynik, null, 2));
+
+// Cena prądu RCE: raport rce-pln („Rynkowa cena energii elektrycznej”), dziś i jutro (doby wg czasu polskiego).
+// Jutro pojawia się zwykle ok. 13:30–14:15 dnia poprzedniego – jeśli go nie ma, zapisujemy tylko dziś.
+// Bierzemy tyle kwadransów, ile przyjdzie (w dniu zmiany czasu jest ich inna liczba niż 96).
+// koniec_utc pozwala przeglądarce wybrać bieżący kwadrans bez względu na strefę czasową komputera.
+const PLIK_RCE = 'public/data/rce.json';
+const API_RCE = 'https://api.raporty.pse.pl/api/rce-pln';
+const dobaPL = (przesuniecieDni) =>
+  new Date(Date.now() + przesuniecieDni * 86400_000).toLocaleDateString('sv-SE', { timeZone: 'Europe/Warsaw' });
+
+const rce = { czas_pobrania: czasPobrania, zrodlo: 'PSE S.A., raporty.pse.pl (raport rce-pln, pole rce_pln)', jednostka: 'zł/MWh', doby: {} };
+for (const doba of [dobaPL(0), dobaPL(1)]) {
+  try {
+    const rekordy = (await pobierzWszystko(`${API_RCE}?$filter=${encodeURIComponent(`business_date eq '${doba}'`)}`))
+      .filter((r) => r.business_date === doba && typeof r.rce_pln === 'number' && r.dtime_utc)
+      .sort((a, b) => a.dtime_utc.localeCompare(b.dtime_utc));
+    if (rekordy.length === 0) throw new Error('brak rekordów');
+    rce.doby[doba] = rekordy.map((r) => ({
+      okres: r.period,
+      koniec_utc: `${r.dtime_utc.slice(0, 19).replace(' ', 'T')}Z`,
+      cena: r.rce_pln,
+    }));
+    console.log(`PSE: RCE doba ${doba}: ${rekordy.length} kwadransów (publikacja ${rekordy[0].publication_ts})`);
+  } catch (e) {
+    console.warn(`PSE: RCE doba ${doba}: brak danych (${e.message ?? e})`);
+  }
+}
+await writeFile(PLIK_RCE, JSON.stringify(rce));
