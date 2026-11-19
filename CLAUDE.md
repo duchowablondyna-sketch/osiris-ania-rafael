@@ -2,9 +2,10 @@
 
 ## Etap: TRACER BULLET (obowiązuje, dopóki nie zostanie odwołany)
 Tracer bullet nr 1 (liczba z PSE na stronie) – zakończony 18.11.2026.
-Cel: Tracer bullet nr 2: warstwa morskich farm wiatrowych na polskim Bałtyku z EMODnet (CC BY 4.0) na mapie, z podpisem w stopce, opublikowana na Cloudflare Pages.
+Tracer bullet nr 2 (farmy na Bałtyku) – zakończony 18.11.2026.
+Cel: Tracer bullet nr 3: linie najwyższych napięć 220 kV i 400 kV z OpenStreetMap (ODbL) na mapie, z podpisem w stopce, ze sprawdzianem prawdy (porównanie z danymi PSE: długość linii i schemat sieci) i opublikowane na Cloudflare Pages.
 Robimy tylko to, bez czego cel nie zostanie osiągnięty.
-Nie robimy teraz: kontaktów i zgód od instytucji, nowych narzędzi i testów, innych warstw niż farmy na Bałtyku, wyglądu, historii danych, optymalizacji, rozbudowanej dokumentacji.
+Nie robimy teraz: kontaktów i zgód od instytucji, nowych narzędzi i testów, innych warstw niż linie 220/400 kV, wyglądu, historii danych, optymalizacji, rozbudowanej dokumentacji.
 Zanim zaproponujesz cokolwiek, sprawdź: czy bez tego cel zostanie osiągnięty? Jeśli tak — nie proponuj, dopisz najwyżej jedną linię do listy „Do zrobienia” w BEZPIECZENSTWO.md.
 
 ## Cel
