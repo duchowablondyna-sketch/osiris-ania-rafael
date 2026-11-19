@@ -158,3 +158,4 @@ vite.config.ts.timestamp-*
 
 # Dane z PSE: generowane przy budowaniu (scripts/pobierz-pse.mjs), nie trzymamy w repo
 public/data/wiatr.json
+public/data/rce.json

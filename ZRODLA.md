@@ -49,6 +49,25 @@ Poziomy weryfikacji:
 - **Data sprawdzenia:** 19.11.2026
 - **Poziom weryfikacji:** 1
 
+### PSE: cena prądu RCE (raport rce-pln)
+
+- **Co:** raport „Rynkowa cena energii elektrycznej (RCE)” (`rce-pln`); na stronie PSE pełna nazwa „Rynkowa cena energii elektrycznej dla okresu rozliczenia niezbilansowania”.
+- **Używamy w:** `public/data/rce.json` (doba dzisiejsza i – jeśli już jest – jutrzejsza), generowany przy budowaniu przez `scripts/pobierz-pse.mjs`. Przeglądarka wybiera bieżący kwadrans wg czasu Europe/Warsaw, bez łączenia się z API; cena z innej doby nie jest pokazywana jako aktualna.
+- **Linki:**
+  - API: https://api.raporty.pse.pl/api/rce-pln
+  - raport: https://raporty.pse.pl/report/rce-pln
+  - opis u PSE: https://www.pse.pl/oire/rce-rynkowa-cena-energii-elektrycznej (przeczytany w całości 19.11.2026 – zawiera tylko tytuł i linki do cen do 13.06.2024 i od 14.06.2024; bez definicji, jednostki i godzin publikacji)
+  - ceny do 13.06.2024: https://www.pse.pl/dane-systemowe/funkcjonowanie-rb/raporty-dobowe-z-funkcjonowania-rb/podstawowe-wskazniki-cenowe-i-kosztowe/rynkowa-cena-energii-elektrycznej-rce
+  - opis pól: https://api.raporty.pse.pl/EndpointsMap.pdf (fragment o RCE): `rce_pln` (RCE), `dtime`, `dtime_utc`, `period` (OREB), `period_utc`, `business_date`, `publication_ts`, `publication_ts_utc`.
+- **Jednostka:** zł/MWh – **z podpisów na stronie raporty.pse.pl** (oś wykresu „PLN/MWh”, kolumna „Rynkowa cena energii [PLN]”), nie z opisu pola (PDF nie podaje jednostki przy `rce_pln`). Poziom 1.
+- **Okres:** OREB – „okres rozliczenia energii bilansującej” (strona PSE; długości nie podaje). Obserwacja: kwadranse 15-minutowe, 96 na zwykłą dobę; ceny różnią się w obrębie godziny (19.11.2026: 24 z 24 godzin).
+- **Publikacja (obserwacje, nie dokumentacja):** cena na dobę D pojawia się w dobie D−1 między ok. 13:34 a 14:14, jednorazowo (32 doby 20.10–20.11.2026, bez poprawek). Przed tą godziną jutrzejszej doby jeszcze nie ma.
+- **Ceny ujemne:** występują – w 2026 r. 1339 kwadransów w 80 dobach, najniższa −1457,59 zł/MWh (1.05.2026, 14:15–14:30); stan 19.11.2026.
+- **Przetworzenie:** bez zmiany wartości; zapisujemy okres, koniec kwadransu w UTC i cenę; w okienku cena z dwoma miejscami po przecinku; wykres bieżącej doby z min., maks., kreską „teraz” i linią zera, gdy są ceny ujemne.
+- **Licencja:** jak wyżej (warunki PSE).
+- **Data sprawdzenia:** 19.11.2026
+- **Poziom weryfikacji:** 1
+
 ## EMODnet: morskie farmy wiatrowe
 
 - **Co:** EMODnet Human Activities, Energy, Wind Farms – punkty morskich farm wiatrowych (warstwa WFS `emodnet:windfarms`).
