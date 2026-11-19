@@ -3,6 +3,7 @@
 // i zapisuje public/data/farmy-baltyk.geojson.
 // Użycie: node scripts/pobierz-farmy.mjs
 import { writeFile } from 'node:fs/promises';
+import { dodajWeryfikacje } from './weryfikacja-farm.mjs';
 
 const URL_WFS =
   'https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=1.0.0&request=GetFeature' +
@@ -20,7 +21,7 @@ const wynik = {
   type: 'FeatureCollection',
   features: polskie.map((f) => ({
     type: 'Feature',
-    properties: { nazwa: f.properties.name, status: f.properties.status, moc_mw: f.properties.power_mw },
+    properties: dodajWeryfikacje({ nazwa: f.properties.name, status: f.properties.status, moc_mw: f.properties.power_mw }),
     geometry: f.geometry,
   })),
 };
