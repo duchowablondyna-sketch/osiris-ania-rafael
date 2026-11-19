@@ -6,8 +6,9 @@ Tracer bullet nr 2 (farmy na Bałtyku) – zakończony 18.11.2026.
 Tracer bullet nr 3 (linie 220/400 kV z OpenStreetMap) – zakończony 19.11.2026.
 Tracer bullet nr 4 (ograniczenia wiatru przez PSE w okienku) – zakończony 19.11.2026.
 Tracer bullet nr 5 (wykres produkcji wiatru z bieżącej doby) – zakończony 19.11.2026.
-Cel: Tracer bullet nr 6: w okienku pokazać cenę prądu RCE (Rynkowa Cena Energii) – aktualną i wykres z bieżącej doby.
-Następny etap po TB6 (teraz go nie robimy): wygląd strony (globus, ciemny motyw).
+Tracer bullet nr 6 (cena prądu RCE teraz i wykres bieżącej doby) – zakończony 19.11.2026.
+Cel: automatyczne odświeżanie strony co 2 godziny przez Cloudflare Deploy Hook wywoływany z GitHub Actions.
+Następny etap (teraz go nie robimy): wygląd strony (globus, ciemny motyw).
 Robimy tylko to, bez czego cel nie zostanie osiągnięty.
 Nie robimy teraz: kontaktów i zgód od instytucji, nowych narzędzi i testów, nowych warstw na mapie ani zmian wyglądu (to po TB6), historii danych, optymalizacji, rozbudowanej dokumentacji.
 Zanim zaproponujesz cokolwiek, sprawdź: czy bez tego cel zostanie osiągnięty? Jeśli tak — nie proponuj, dopisz najwyżej jedną linię do listy „Do zrobienia” w BEZPIECZENSTWO.md.
