@@ -36,8 +36,19 @@ const map = new maplibregl.Map({
 
 map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
 
-// Morskie farmy wiatrowe na polskim Bałtyku (EMODnet, CC BY 4.0)
 map.on('load', () => {
+  // Linie najwyższych napięć 220/400 kV (© OpenStreetMap contributors, ODbL), plik z scripts/pobierz-linie.mjs.
+  // Dodane przed farmami, żeby punkty farm były na wierzchu.
+  map.addSource('linie-nn', { type: 'geojson', data: `${import.meta.env.BASE_URL}data/linie-nn.geojson` });
+  map.addLayer({
+    id: 'linie-nn',
+    type: 'line',
+    source: 'linie-nn',
+    layout: { 'line-cap': 'round', 'line-join': 'round' },
+    paint: { 'line-color': '#c2410c', 'line-width': ['match', ['get', 'napiecie'], 400, 2.5, 1.2] },
+  });
+
+  // Morskie farmy wiatrowe na polskim Bałtyku (EMODnet, CC BY 4.0)
   map.addSource('farmy', { type: 'geojson', data: `${import.meta.env.BASE_URL}data/farmy-baltyk.geojson` });
   map.addLayer({
     id: 'farmy',
