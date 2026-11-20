@@ -1,6 +1,7 @@
 import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url';
+import { odmiana, formatMocy, zbierzElektrownie, podsumujLadowe, podsumujElektrownie, podsumujMorskie } from './liczniki.js';
 import './czcionki.css';
 import './style.css';
 
@@ -41,12 +42,6 @@ function linijkaZrodla(nazwa, rodzajDaty, data) {
   return p;
 }
 
-// Odmiana liczebników: 1 elektrownia, 2–4 elektrownie (także 22–24…), 5+ i 12–14 elektrowni.
-function odmiana(n, [jeden, kilka, wiele]) {
-  if (n === 1) return `1 ${jeden}`;
-  const liczba = n.toLocaleString('pl-PL');
-  return [2, 3, 4].includes(n % 10) && ![12, 13, 14].includes(n % 100) ? `${liczba} ${kilka}` : `${liczba} ${wiele}`;
-}
 // Licznik pod nazwą warstwy w legendzie; brak = true pokazuje napis ostrzegawczy zamiast liczby.
 function ustawLicznik(warstwa, tekst, brak = false) {
   const el = document.querySelector(`.legenda__licznik[data-licznik="${warstwa}"]`);
@@ -55,11 +50,6 @@ function ustawLicznik(warstwa, tekst, brak = false) {
   el.classList.toggle('brak-danych', brak);
 }
 
-// Moc: od 1000 MW w GW z jednym miejscem po przecinku, poniżej w MW.
-const formatMocy = (mw) =>
-  mw >= 1000
-    ? `${(mw / 1000).toLocaleString('pl-PL', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} GW`
-    : `${Math.round(mw).toLocaleString('pl-PL')} MW`;
 
 // Kolory zgodne z zasadami wyglądu w CLAUDE.md (kontrast sprawdzony wg WCAG).
 const KOLORY = {
@@ -297,54 +287,6 @@ function znaczekSdf(ksztalt) {
   return { width: N, height: N, data: dane };
 }
 
-// Bloki z wyciągu GEM zsumowane do jednej lokalizacji i rodzaju (jeden znaczek = jedna elektrownia).
-// Tylko status „operating”. Szczytowo-pompowe: technologia GEM zawierająca „pumped storage”.
-function zbierzElektrownie(geo) {
-  const lokalizacje = new Map();
-  for (const f of geo.features) {
-    const p = f.properties;
-    if (p.status !== 'operating') continue;
-    let rodzaj;
-    if (p.typ === 'coal') rodzaj = 'wegiel';
-    else if (p.typ === 'oil/gas') rodzaj = 'gaz';
-    else if (p.typ === 'hydropower') rodzaj = /pumped storage/i.test(p.technologia ?? '') ? 'pompowa' : 'woda';
-    else continue;
-    const klucz = `${p.gem_location_id}|${rodzaj}`;
-    if (!lokalizacje.has(klucz)) {
-      lokalizacje.set(klucz, {
-        wspolrzedne: f.geometry.coordinates,
-        nazwa: p.nazwa,
-        rodzaj,
-        moc: 0,
-        bloki: 0,
-        paliwa: new Set(),
-        technologie: new Set(),
-        dokladnosc: p.dokladnosc_lokalizacji,
-      });
-    }
-    const e = lokalizacje.get(klucz);
-    e.moc += p.moc_mw ?? 0;
-    e.bloki += 1;
-    if (p.paliwo) for (const paliwo of p.paliwo.split(', ')) e.paliwa.add(paliwo);
-    if (p.technologia) e.technologie.add(p.technologia);
-  }
-  return {
-    type: 'FeatureCollection',
-    features: [...lokalizacje.values()].map((e) => ({
-      type: 'Feature',
-      geometry: { type: 'Point', coordinates: e.wspolrzedne },
-      properties: {
-        nazwa: e.nazwa,
-        rodzaj: e.rodzaj,
-        moc: Math.round(e.moc * 10) / 10,
-        bloki: e.bloki,
-        paliwa: [...e.paliwa].join(';'),
-        technologie: [...e.technologie].join(';'),
-        dokladnosc: e.dokladnosc,
-      },
-    })),
-  };
-}
 
 const RODZAJ_ELEKTROWNI_PL = {
   wegiel: 'elektrownia węglowa',
@@ -451,22 +393,15 @@ map.on('load', () => {
       if (!geo?.features) throw new Error('brak pliku');
       const elektrownie = zbierzElektrownie(geo);
       map.getSource('elektrownie').setData(elektrownie);
-      // Liczniki elektrowni: z tych samych danych, które są na mapie.
-      const SLOWA = { wegiel: ['elektrownia', 'elektrownie', 'elektrowni'] };
+      // Liczniki – wspólne funkcje z src/liczniki.js (te same co liczby na stronie tytułowej).
       for (const rodzaj of ['wegiel', 'gaz', 'woda', 'pompowa']) {
-        const e = elektrownie.features.filter((f) => f.properties.rodzaj === rodzaj).map((f) => f.properties);
-        const moc = e.reduce((suma, p) => suma + p.moc, 0);
-        ustawLicznik(rodzaj, `${odmiana(e.length, SLOWA.wegiel)} · ${formatMocy(moc)}`);
+        const { liczba, mocMw } = podsumujElektrownie(elektrownie, rodzaj);
+        ustawLicznik(rodzaj, `${odmiana(liczba, ['elektrownia', 'elektrownie', 'elektrowni'])} · ${formatMocy(mocMw)}`);
       }
-      // Lądowe farmy wiatrowe: farma = lokalizacja GEM; moc działających sumowana z faz.
-      const lad = geo.features.map((f) => f.properties).filter((p) => p.typ === 'wind' && p.technologia === 'Onshore');
-      const dzialajace = lad.filter((p) => p.status === 'operating');
-      const lokalizacje = (lista) => new Set(lista.map((p) => p.gem_location_id)).size;
-      const mocLad = dzialajace.reduce((suma, p) => suma + (p.moc_mw ?? 0), 0);
-      const wBudowie = lokalizacje(lad.filter((p) => p.status === 'construction'));
+      const lad = podsumujLadowe(geo);
       ustawLicznik(
         'ladowe',
-        `${odmiana(lokalizacje(dzialajace), ['farma działa', 'farmy działają', 'farm działa'])} · ${formatMocy(mocLad)} · ${wBudowie} w budowie`,
+        `${odmiana(lad.farmy, ['farma działa', 'farmy działają', 'farm działa'])} · ${formatMocy(lad.mocMw)} · ${lad.wBudowie} w budowie`,
       );
     })
     .catch(() => {
@@ -484,10 +419,10 @@ map.on('load', () => {
     .then((odp) => (odp.ok ? odp.json() : null))
     .then((geo) => {
       if (!geo?.features) throw new Error('brak pliku');
-      const ile = (status) => geo.features.filter((f) => f.properties.status === status).length;
+      const m = podsumujMorskie(geo);
       ustawLicznik(
         'morskie',
-        `${odmiana(geo.features.length, ['farma', 'farmy', 'farm'])} · ${ile('Construction')} w budowie, ${odmiana(ile('Planned'), ['planowana', 'planowane', 'planowanych'])}`,
+        `${odmiana(m.rekordy, ['farma', 'farmy', 'farm'])} · ${m.wBudowie} w budowie, ${odmiana(m.planowane, ['planowana', 'planowane', 'planowanych'])}`,
       );
     })
     .catch(() => ustawLicznik('morskie', 'brak danych', true));

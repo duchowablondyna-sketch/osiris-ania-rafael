@@ -3,129 +3,110 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>OSIRIS: więcej prądu dla Polski</title>
+    <title>OSIRIS – mapa prądu Polski</title>
+    <meta name="description" content="Zobacz w jednym miejscu, skąd Polska bierze prąd i ile on kosztuje. Elektrownie, farmy wiatrowe, linie najwyższych napięć, produkcja z wiatru i cena energii – z oficjalnych, publicznych źródeł." />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="OSIRIS – serce danych o polskim prądzie" />
+    <meta property="og:description" content="Skąd Polska bierze prąd i ile on kosztuje – elektrownie, farmy wiatrowe, sieć najwyższych napięć, wiatr i cena energii. Z oficjalnych, publicznych źródeł, z datą przy każdej liczbie." />
+    <meta property="og:url" content="https://osiris-ania-rafael.pages.dev/" />
+    <meta property="og:image" content="https://osiris-ania-rafael.pages.dev/og-obraz.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="OSIRIS – mapa prądu Polski: tytuł i nocny globus z zaznaczoną Polską" />
+    <meta property="og:locale" content="pl_PL" />
+    <meta name="twitter:card" content="summary_large_image" />
   </head>
-  <body>
-    <main>
-      <div id="mapa" aria-label="Mapa Polski"></div>
+  <body class="tytulowa">
+    <section class="bohater">
+      <!-- Globus „zawieszony w kosmosie”: tło całej pierwszej odsłony; nie łapie kliknięć ani przewijania. -->
+      <div id="globus" role="img" aria-label="Obracający się globus z nocnym zdjęciem Ziemi (NASA), Polska zaznaczona złotym punktem"></div>
+      <div class="bohater__przyciemnienie" aria-hidden="true"></div>
 
-      <section class="wskaznik" aria-live="polite">
-        <div id="odtw-naglowek" hidden>
-          <span class="odtw-data" id="odtw-data"></span>
-          <span class="odtw-zegar" id="odtw-zegar"></span>
+      <header class="gora">
+        <div class="rog rog--lewy">
+          <a class="rog__link" href="#zrodla" id="przycisk-zrodla">ŹRÓDŁA I LICENCJE</a>
+          <button class="rog__link rog__opis" type="button" id="opis-przycisk" aria-expanded="false" aria-controls="opis-panel">OPIS <span aria-hidden="true">▾</span></button>
+          <div class="opis-panel" id="opis-panel" hidden>
+            <p>
+              Zobacz w jednym miejscu, skąd Polska bierze prąd i ile on kosztuje. Elektrownie, farmy wiatrowe na lądzie
+              i na Bałtyku, linie najwyższych napięć, produkcja z wiatru i cena energii godzina po godzinie. Wszystko
+              z oficjalnych, publicznych źródeł, z datą przy każdej liczbie. Dla zarządów i inwestorów, którzy pytają:
+              gdzie i jak zdobyć więcej prądu?
+            </p>
+          </div>
         </div>
-        <span class="wskaznik__etykieta etykieta-mala" id="wiatr-etykieta">Produkcja z wiatru (ostatni dostępny pomiar):</span>
-        <span class="wskaznik__wartosc" id="wiatr-teraz">brak danych</span>
-        <div id="wiatr-wykres"></div>
-        <span class="wskaznik__etykieta" id="wiatr-stan"></span>
-        <span class="wskaznik__etykieta" id="wiatr-ograniczenie">Ostatnie polecenie PSE ograniczenia wiatru: brak danych</span>
-        <span class="wskaznik__etykieta" id="rce-teraz">Cena prądu (RCE): brak danych na dziś</span>
-        <div id="rce-wykres"></div>
-        <div class="odtw-przyciski">
-          <button type="button" id="odtw-start" hidden>▶ Odtwórz dobę</button>
-          <button type="button" id="odtw-teraz" hidden>Wróć do teraz</button>
-        </div>
-        <span class="wskaznik__etykieta" id="odtw-stan"></span>
-        <p class="zrodlo" id="pse-zrodlo"><span class="zrodlo__etykieta">Źródło</span> <span id="pse-zrodlo-tekst">PSE · wczytywanie…</span></p>
-      </section>
-      <!-- Ogłoszenia odtwarzania dla czytnika ekranu (start, pauza, koniec) – okienko na ten czas milknie. -->
-      <span id="odtw-ogloszenie" class="tylko-czytnik" aria-live="polite"></span>
+        <span class="zegar" role="timer" aria-live="off"><span class="zegar__kropka" aria-hidden="true">●</span> CZAS WARSZAWA <span id="zegar">--:--:--</span></span>
+      </header>
 
-      <div class="przelacznik" role="group" aria-label="Tło mapy">
-        <button type="button" data-tryb="dzien" aria-pressed="false">Dzień</button>
-        <button type="button" data-tryb="noc" aria-pressed="true" aria-describedby="noc-opis"
-          title="Światła nocne (zdjęcie z 2016 r.) to przybliżenie aktywności i oświetlenia – głównie oświetlenia ulic i zabudowy – a nie pomiar zużycia prądu.">Noc</button>
-        <span id="noc-opis" class="tylko-czytnik">Światła nocne (zdjęcie z 2016 r.) to przybliżenie aktywności i oświetlenia – głównie oświetlenia ulic i zabudowy – a nie pomiar zużycia prądu.</span>
+      <div class="tytul">
+        <p class="etykieta">MAPA PRĄDU POLSKI // KAŻDA LICZBA MA ŹRÓDŁO</p>
+        <h1 class="tytul__nazwa">OSIRIS</h1>
+        <p class="tytul__podtytul">SERCE DANYCH O POLSKIM PRĄDZIE.</p>
+        <a class="przycisk-flaga" href="/mapa/"><span class="przycisk-flaga__bialy">OTWÓRZ</span><span class="przycisk-flaga__czerwony">MAPĘ →</span></a>
       </div>
 
-      <details class="legenda" open>
-        <summary>Co oznaczają znaczki</summary>
-        <ul>
-          <li><label><input type="checkbox" data-warstwa="linie" checked />
-            <svg class="znak" viewBox="0 0 24 16" aria-hidden="true"><line x1="1" y1="8" x2="23" y2="8" stroke="#05070d" stroke-width="5" /><line x1="1" y1="8" x2="23" y2="8" stroke="#f2c14e" stroke-width="3" /></svg>
-            <span><strong>Linie najwyższych napięć</strong> <span class="legenda__licznik" data-licznik="linie">wczytywanie…</span> – 220 i 400 kV (grubsza linia: 400 kV)</span></label></li>
-          <li><label><input type="checkbox" data-warstwa="morskie" checked />
-            <svg class="znak" viewBox="0 0 24 16" aria-hidden="true"><circle cx="7" cy="8" r="5" fill="#5cc8ff" stroke="#05070d" stroke-width="1.5" /><circle cx="18" cy="8" r="4.5" fill="none" stroke="#5cc8ff" stroke-width="2" /></svg>
-            <span><strong>Morskie farmy wiatrowe</strong> <span class="legenda__licznik" data-licznik="morskie">wczytywanie…</span> – puste kółko: prawdopodobny duplikat lub brak na liście MKiŚ</span></label></li>
-          <li><label><input type="checkbox" data-warstwa="ladowe" checked />
-            <svg class="znak" viewBox="0 0 24 16" aria-hidden="true"><circle cx="7" cy="8" r="4" fill="#4ade80" stroke="#05070d" stroke-width="1.5" /><circle cx="18" cy="8" r="4.5" fill="#05070d" stroke="#4ade80" stroke-width="2" /><circle cx="18" cy="8" r="1.5" fill="#4ade80" /></svg>
-            <span><strong>Lądowe farmy wiatrowe od 10 MW</strong> <span class="legenda__licznik" data-licznik="ladowe">wczytywanie…</span> – pełne kółko: działa; pierścień z kropką: w budowie</span></label></li>
-          <li><label><input type="checkbox" data-warstwa="wegiel" checked />
-            <svg class="znak" viewBox="0 0 24 16" aria-hidden="true"><rect x="6" y="2" width="12" height="12" style="fill: var(--kolor-wegiel)" stroke="#05070d" stroke-width="1.5" /></svg>
-            <span><strong>Elektrownie węglowe</strong> <span class="legenda__licznik" data-licznik="wegiel">wczytywanie…</span> – kwadrat: elektrownia spalająca paliwo</span></label></li>
-          <li><label><input type="checkbox" data-warstwa="gaz" checked />
-            <svg class="znak" viewBox="0 0 24 16" aria-hidden="true"><rect x="6" y="2" width="12" height="12" style="fill: var(--kolor-gaz)" stroke="#05070d" stroke-width="1.5" /></svg>
-            <span><strong>Elektrownie gazowe i olejowe</strong> <span class="legenda__licznik" data-licznik="gaz">wczytywanie…</span> – kwadrat: elektrownia spalająca paliwo</span></label></li>
-          <li><label><input type="checkbox" data-warstwa="woda" checked />
-            <svg class="znak" viewBox="0 0 24 16" aria-hidden="true"><circle cx="12" cy="8" r="6" style="fill: var(--kolor-woda)" stroke="#05070d" stroke-width="1.5" /></svg>
-            <span><strong>Elektrownie wodne</strong> <span class="legenda__licznik" data-licznik="woda">wczytywanie…</span></span></label></li>
-          <li><label><input type="checkbox" data-warstwa="pompowa" checked />
-            <svg class="znak" viewBox="0 0 24 16" aria-hidden="true"><polygon points="12,1 19,8 12,15 5,8" style="fill: var(--kolor-woda)" stroke="#05070d" stroke-width="1.5" /></svg>
-            <span><strong>Elektrownie szczytowo-pompowe</strong> <span class="legenda__licznik" data-licznik="pompowa">wczytywanie…</span> – magazyn energii: pompują wodę w górę, gdy prądu jest dużo, i oddają go, gdy brakuje</span></label></li>
+      <div class="bohater__dol">
+        <!-- Liczby liczone z danych przy budowaniu (scripts/podsumowanie.mjs → /data/podsumowanie.json). -->
+        <ul class="liczby">
+          <li class="liczba">
+            <span class="liczba__wartosc" id="liczba-wegiel">…</span>
+            <span class="liczba__nazwa">ELEKTROWNIE WĘGLOWE</span>
+            <span class="liczba__zrodlo">GEM · dane: lipiec 2026 · działające</span>
+          </li>
+          <li class="liczba">
+            <span class="liczba__wartosc" id="liczba-ladowe">…</span>
+            <span class="liczba__nazwa">LĄDOWE FARMY WIATROWE</span>
+            <span class="liczba__zrodlo">GEM · dane: luty 2026 · od 10 MW, działające</span>
+          </li>
+          <li class="liczba">
+            <span class="liczba__wartosc" id="liczba-baltyk">…</span>
+            <span class="liczba__nazwa">PROJEKTY NA BAŁTYKU</span>
+            <span class="liczba__zrodlo">EMODnet · bez prawdopodobnych duplikatów</span>
+          </li>
+          <li class="liczba">
+            <span class="liczba__wartosc liczba__wartosc--tekst">DANE PSE · ODŚWIEŻANE ZWYKLE CO 4 H</span>
+            <span class="liczba__zrodlo" id="liczba-pse">ostatnie pobranie: …</span>
+          </li>
         </ul>
-        <p class="legenda__uwaga">Elektrownie: tylko działające i tylko duże (progi w „Źródła i licencje”)</p>
-        <p class="legenda__uwaga"><strong>Rozmiar znaczka elektrowni = moc zainstalowana, nie bieżąca produkcja</strong></p>
-        <div class="legenda__skala" aria-hidden="true">
-          <!-- Wzorce w tej samej skali co na mapie przy widoku całej Polski: bok = 0,35 px · √MW. -->
-          <svg viewBox="0 0 28 28" width="28" height="28"><rect x="12.25" y="12.25" width="3.5" height="3.5" fill="#a9b7cc" stroke="#05070d" stroke-width="1" /></svg><span>100 MW</span>
-          <svg viewBox="0 0 28 28" width="28" height="28"><rect x="8.45" y="8.45" width="11.1" height="11.1" fill="#a9b7cc" stroke="#05070d" stroke-width="1" /></svg><span>1 000 MW</span>
-          <svg viewBox="0 0 28 28" width="28" height="28"><rect x="1.65" y="1.65" width="24.7" height="24.7" fill="#a9b7cc" stroke="#05070d" stroke-width="1" /></svg><span>5 000 MW</span>
+
+        <ul class="chipy" aria-label="Kolory warstw na mapie">
+          <li class="chip chip--siec">SIEĆ</li>
+          <li class="chip chip--wiatr">WIATR</li>
+          <li class="chip chip--wegiel">WĘGIEL</li>
+          <li class="chip chip--gaz">GAZ</li>
+          <li class="chip chip--woda">WODA</li>
+        </ul>
+        <p class="bohater__nasa">Tło: NASA Black Marble 2016 (GIBS)</p>
+      </div>
+    </section>
+
+    <main class="tytul-dalej">
+      <section class="karty" aria-labelledby="karty-tytul">
+        <h2 class="etykieta" id="karty-tytul">CO ZNAJDZIESZ</h2>
+        <div class="karty__siatka">
+          <article class="karta">
+            <h3 class="karta__tytul">Mapa źródeł prądu</h3>
+            <p>Elektrownie i farmy wiatrowe na tle sieci najwyższych napięć.</p>
+          </article>
+          <article class="karta">
+            <h3 class="karta__tytul">Wiatr na żywo</h3>
+            <p>Ile prądu dają teraz polskie wiatraki i kiedy PSE ostatnio kazało ograniczyć ich pracę.</p>
+          </article>
+          <article class="karta">
+            <h3 class="karta__tytul">Cena prądu</h3>
+            <p>Godzina po godzinie, z odtwarzaniem całej doby.</p>
+          </article>
+          <article class="karta karta--wkrotce">
+            <span class="karta__znaczek">ZAPOWIEDŹ</span>
+            <h3 class="karta__tytul">Wkrótce: gdzie jeszcze da się podłączyć</h3>
+            <p>Wolne moce przyłączeniowe w całej Polsce.</p>
+          </article>
         </div>
-        <p class="tylko-czytnik">Wzorce rozmiaru: 100 MW – mały kwadrat, 1 000 MW – średni, 5 000 MW – duży.</p>      </details>
+      </section>
     </main>
 
-    <!-- Stopka zwinięta do jednej linijki (więcej miejsca na mapę); <details> działa z klawiatury (Tab, Enter, Spacja). -->
-    <footer class="stopka">
-      <details class="stopka__zrodla">
-      <summary>Źródła i licencje</summary>
-      <div class="stopka__tresc">
-      Kontur Polski: <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a>
-      (domena publiczna), dane uproszczone do konturu jednego kraju.
-      <br />
-      Produkcja z wiatru: PSE S.A., <a href="https://raporty.pse.pl/" target="_blank" rel="noopener">raporty.pse.pl</a>,
-      dane pobrane <span id="wiatr-pobrano">brak</span>, przetworzone.
-      Ograniczenia wiatru: PSE S.A., raport „Nierynkowe redysponowanie źródeł OZE”, ten sam czas pobrania,
-      przetworzone (suma kwadransów ÷ 4, przy założeniu, że wartości są w MW).
-      <br />
-      Cena prądu (RCE): PSE S.A., <a href="https://raporty.pse.pl/report/rce-pln" target="_blank" rel="noopener">raport „Rynkowa cena energii elektrycznej”</a>,
-      dane pobrane <span id="rce-pobrano">brak</span>, przetworzone.
-      Odtworzenie doby: PSE S.A., raporty his-wlk-cal i rce-pln, doba <span id="odtw-zrodlo-doba">brak</span>, przetworzone.
-      <br />
-      Morskie farmy wiatrowe: <a href="https://emodnet.ec.europa.eu/en/" target="_blank" rel="noopener">EMODnet</a>
-      Human Activities, Wind Farms (twórca danych: CETMAR, stan 10.07.2026),
-      <a href="https://creativecommons.org/licenses/by/4.0/deed.pl" target="_blank" rel="noopener">CC BY 4.0</a>;
-      wybrano tylko farmy w polskich obszarach morskich; porównane z
-      <a href="https://www.gov.pl/web/morska-energetyka-wiatrowa/obecnie-realizowane-projekty-w-polsce" target="_blank" rel="noopener">listą projektów MKiŚ</a>
-      (stan: styczeń 2024) – puste kropki: prawdopodobny duplikat albo brak na liście.
-      Status Baltic Power uzupełniony według <a href="https://balticpower.pl/" target="_blank" rel="noopener">balticpower.pl</a> (rozruch od 10.07.2026).
-      <br />
-      Lądowe farmy wiatrowe (zielone): Global Energy Monitor, <a href="https://globalenergymonitor.org/projects/global-integrated-power-tracker/" target="_blank" rel="noopener">Global Integrated Power Tracker</a>,
-      September 2026 release (dane wiatrowe z Global Wind Power Tracker, luty 2026),
-      <a href="https://creativecommons.org/licenses/by/4.0/deed.pl" target="_blank" rel="noopener">CC BY 4.0</a>, zmodyfikowane (wyciąg).
-      <strong>Tylko lądowe farmy wiatrowe od 10 MW – mniejsze farmy i pojedyncze turbiny nie są pokazane.</strong>
-      Pełna kropka: działa; pierścień z kropką: w budowie; planowanych nie pokazujemy. Około połowy lokalizacji jest przybliżonych.
-      <br />
-      Elektrownie (kwadraty, kółka, romby): ten sam wyciąg GEM, CC BY 4.0, zmodyfikowane (bloki zsumowane do elektrowni); tylko działające.
-      Progi GEM: węgiel – bloki od 30 MW; gaz i olej – od 20 MW w UE; woda (także szczytowo-pompowe) – od 30 MW, dla niektórych krajów od 10 MW.
-      Dane: węgiel – lipiec 2026, gaz i olej – sierpień 2026, woda – marzec 2026. Rozmiar znaczka = moc zainstalowana, nie bieżąca produkcja.
-      <br />
-      Tło dzienne: Blue Marble (August 2004), MODIS / NASA Earth Observatory. We acknowledge the use of imagery provided by
-      services from NASA's Global Imagery Browse Services (GIBS), part of NASA's Earth Science Data and Information
-      System (ESDIS).
-      Tło nocne: Black Marble (2016), Suomi NPP / VIIRS, NASA Earth Observatory.
-      Tła przetworzone, żeby dane były lepiej widoczne: dzienne przyciemnione i mniej nasycone, nocne mniej nasycone (bez przyciemniania).
-      <br />
-      Linie najwyższych napięć: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>,
-      <a href="https://opendatacommons.org/licenses/odbl/" target="_blank" rel="noopener">ODbL</a>
-      (podpis widoczny też stale na mapie, w prawym dolnym rogu).
-      <br />
-      Czcionki: Inter i JetBrains Mono, SIL Open Font License 1.1
-      (<a href="licencje/OFL-Inter.txt" target="_blank" rel="noopener">licencja Inter</a>,
-      <a href="licencje/OFL-JetBrains-Mono.txt" target="_blank" rel="noopener">licencja JetBrains Mono</a>); pliki czcionek są na naszym serwerze.
-      </div>
-      </details>
-    </footer>
+    <!-- STOPKA -->
 
-    <script type="module" src="/src/main.js"></script>
+    <script type="module" src="/src/tytulowa.js"></script>
   </body>
 </html>

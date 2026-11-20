@@ -1,0 +1,51 @@
+<!-- Wspólna stopka „Źródła i licencje” – wstawiana przy budowaniu do obu stron (vite.config.js, znacznik STOPKA). -->
+<footer class="stopka">
+  <details class="stopka__zrodla" id="zrodla">
+  <summary>Źródła i licencje</summary>
+  <div class="stopka__tresc">
+  Kontur Polski: <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a>
+  (domena publiczna), dane uproszczone do konturu jednego kraju.
+  <br />
+  Produkcja z wiatru: PSE S.A., <a href="https://raporty.pse.pl/" target="_blank" rel="noopener">raporty.pse.pl</a>,
+  dane pobrane <span id="wiatr-pobrano">brak</span>, przetworzone.
+  Ograniczenia wiatru: PSE S.A., raport „Nierynkowe redysponowanie źródeł OZE”, ten sam czas pobrania,
+  przetworzone (suma kwadransów ÷ 4, przy założeniu, że wartości są w MW).
+  <br />
+  Cena prądu (RCE): PSE S.A., <a href="https://raporty.pse.pl/report/rce-pln" target="_blank" rel="noopener">raport „Rynkowa cena energii elektrycznej”</a>,
+  dane pobrane <span id="rce-pobrano">brak</span>, przetworzone.
+  Odtworzenie doby: PSE S.A., raporty his-wlk-cal i rce-pln, doba <span id="odtw-zrodlo-doba">brak</span>, przetworzone.
+  <br />
+  Morskie farmy wiatrowe: <a href="https://emodnet.ec.europa.eu/en/" target="_blank" rel="noopener">EMODnet</a>
+  Human Activities, Wind Farms (twórca danych: CETMAR, stan 10.07.2026),
+  <a href="https://creativecommons.org/licenses/by/4.0/deed.pl" target="_blank" rel="noopener">CC BY 4.0</a>;
+  wybrano tylko farmy w polskich obszarach morskich; porównane z
+  <a href="https://www.gov.pl/web/morska-energetyka-wiatrowa/obecnie-realizowane-projekty-w-polsce" target="_blank" rel="noopener">listą projektów MKiŚ</a>
+  (stan: styczeń 2024) – puste kropki: prawdopodobny duplikat albo brak na liście.
+  Status Baltic Power uzupełniony według <a href="https://balticpower.pl/" target="_blank" rel="noopener">balticpower.pl</a> (rozruch od 10.07.2026).
+  <br />
+  Lądowe farmy wiatrowe (zielone): Global Energy Monitor, <a href="https://globalenergymonitor.org/projects/global-integrated-power-tracker/" target="_blank" rel="noopener">Global Integrated Power Tracker</a>,
+  September 2026 release (dane wiatrowe z Global Wind Power Tracker, luty 2026),
+  <a href="https://creativecommons.org/licenses/by/4.0/deed.pl" target="_blank" rel="noopener">CC BY 4.0</a>, zmodyfikowane (wyciąg).
+  <strong>Tylko lądowe farmy wiatrowe od 10 MW – mniejsze farmy i pojedyncze turbiny nie są pokazane.</strong>
+  Pełna kropka: działa; pierścień z kropką: w budowie; planowanych nie pokazujemy. Około połowy lokalizacji jest przybliżonych.
+  <br />
+  Elektrownie (kwadraty, kółka, romby): ten sam wyciąg GEM, CC BY 4.0, zmodyfikowane (bloki zsumowane do elektrowni); tylko działające.
+  Progi GEM: węgiel – bloki od 30 MW; gaz i olej – od 20 MW w UE; woda (także szczytowo-pompowe) – od 30 MW, dla niektórych krajów od 10 MW.
+  Dane: węgiel – lipiec 2026, gaz i olej – sierpień 2026, woda – marzec 2026. Rozmiar znaczka = moc zainstalowana, nie bieżąca produkcja.
+  <br />
+  Tło dzienne: Blue Marble (August 2004), MODIS / NASA Earth Observatory. We acknowledge the use of imagery provided by
+  services from NASA's Global Imagery Browse Services (GIBS), part of NASA's Earth Science Data and Information
+  System (ESDIS).
+  Tło nocne: Black Marble (2016), Suomi NPP / VIIRS, NASA Earth Observatory.
+  Tła przetworzone, żeby dane były lepiej widoczne: dzienne przyciemnione i mniej nasycone, nocne mniej nasycone (bez przyciemniania).
+  <br />
+  Linie najwyższych napięć: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>,
+  <a href="https://opendatacommons.org/licenses/odbl/" target="_blank" rel="noopener">ODbL</a>
+  (podpis widoczny też stale na mapie, w prawym dolnym rogu).
+  <br />
+  Czcionki: Inter i JetBrains Mono, SIL Open Font License 1.1
+  (<a href="/licencje/OFL-Inter.txt" target="_blank" rel="noopener">licencja Inter</a>,
+  <a href="/licencje/OFL-JetBrains-Mono.txt" target="_blank" rel="noopener">licencja JetBrains Mono</a>); pliki czcionek są na naszym serwerze.
+  </div>
+  </details>
+</footer>

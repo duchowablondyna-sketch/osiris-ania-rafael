@@ -165,3 +165,4 @@ public/data/doba.json
 # Do repo trafia tylko wyciąg public/data/zrodla-gem.geojson (scripts/wyciag-gem.py).
 *.xlsx
 Global Integrated Power*
+public/data/podsumowanie.json
