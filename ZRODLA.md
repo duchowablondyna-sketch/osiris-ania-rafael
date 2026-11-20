@@ -149,6 +149,30 @@ Poziomy weryfikacji:
 - **Data sprawdzenia:** 20.11.2026
 - **Poziom weryfikacji:** 1 (arkusz About przeczytany w całości; wyciąg sprawdzony liczbowo: 8 962,5 MW działających farm lądowych zgodne z analizą pliku źródłowego)
 
+### Elektrownie działające: węgiel, gaz i olej, woda (od 20.11.2026)
+
+- **Co na mapie:** z tego samego wyciągu (`public/data/zrodla-gem.geojson`, od 20.11.2026 z polem `paliwo` = kolumna „Fuel (combustion only)”) – tylko status „operating”, typy `coal`, `oil/gas`, `hydropower`. Bloki zsumowane w przeglądarce do jednej lokalizacji (`gem_location_id`) i rodzaju. Szczytowo-pompowe: technologia GEM „pumped storage”. Nie pokazujemy: bloków w budowie (np. gaz: 11 bloków, 4951 MW), biomasy, planowanych, wycofanych.
+- **Liczby na mapie:** węgiel 40 elektrowni / 129 bloków / 27 262 MW; gaz i olej 23 / 30 / 5 326 MW; woda 2 / 2 / 226 MW; szczytowo-pompowe 6 / 6 / 1 875 MW.
+- **Rodzaj węgla (pole Fuel):** „coal: bituminous” → węgiel kamienny (95 bloków, 18 115,5 MW), „coal: lignite” → węgiel brunatny (21 bloków, 8 527 MW), „coal: unknown” → rodzaj nieznany (13 bloków, 619,5 MW).
+- **Progi GEM – dosłownie z arkusza About (tabela „Power Trackers | Latest release | Summary Tables include capacity above specified thresholds”):**
+  - „Coal | 46204 | ≥30 megawatts (MW) or larger within the following parameters: all operating/mothballed units; all units retired since 2000; and all units proposed since 2010.”
+  - „Oil and gas | 46235 | ≥50MW; ≥20MW in the European Union and the United Kingdom”
+  - „Hydropower | 46082 | ≥30MW (≥10MW data are provided for some countries when the data were readily available.)”
+  - Liczby 46204, 46235, 46082 to daty w formacie Excela (liczone od 46023 = styczeń 2026 w changelogu About): 46204 = lipiec 2026 (węgiel), 46235 = sierpień 2026 (gaz i olej), 46082 = marzec 2026 (woda).
+  - Uwaga: w danych jest elektrownia gazowa o łącznej mocy 8,5 MW – poniżej progu 20 MW (GEM czasem podaje mniejsze obiekty).
+- **Sprawdzian prawdy – porównanie z oficjalnymi danymi PSE:** „Raport 2025 KSE”, Tabela 1.1 „Struktura mocy zainstalowanej w KSE [MW]”, stan 31.12.2025, „Dane operatywne – wielkości brutto”, https://www.pse.pl/dane-systemowe/funkcjonowanie-kse/raporty-roczne-z-funkcjonowania-kse-za-rok/raporty-za-rok-2025 (tabela przeczytana w surowej treści strony 20.11.2026):
+
+  | Rodzaj | GEM (działające) | PSE 31.12.2025 | GEM / PSE |
+  |---|---|---|---|
+  | węgiel kamienny | 18 115,5 MW (+ 619,5 MW „nieznany”) | 23 097 MW | 78% (81% z „nieznanym”) |
+  | węgiel brunatny | 8 527 MW | 8 351 MW | 102% |
+  | węgiel razem | 27 262 MW | 31 448 MW | 87% |
+  | gaz (GEM: gaz i olej) | 5 326 MW | 6 346 MW („gazowe”) | 84% |
+  | woda (GEM: wodne + szczytowo-pompowe) | 2 101 MW | 2 431 MW („Elektrownie zawodowe wodne”) | 86% |
+
+  Możliwe przyczyny różnic (niezmierzone): progi GEM (węgiel od 30 MW, gaz od 20 MW w UE, woda od 30 MW – mniejsze bloki poza danymi); różne daty (PSE: 31.12.2025, GEM: marzec–sierpień 2026 – bloki wyłączone lub oddane w tym czasie); różne definicje (PSE dzieli na elektrownie zawodowe i „wiatrowe i inne odnawialne”, GEM ma też elektrownie przemysłowe; GEM „oil/gas” obejmuje gaz koksowniczy i olej); bloki przestawione na biomasę są w GEM jako bioenergia; PSE podaje wartości brutto. Węgiel brunatny w GEM o 2% więcej niż w PSE – niewyjaśnione.
+  - Liczby porównania są tylko tutaj – na stronie ich nie ma (na stronie tylko moc poszczególnych elektrowni z GEM).
+
 ## OpenStreetMap: linie najwyższych napięć 220/400 kV
 
 - **Co:** linie elektroenergetyczne `power=line` z napięciem 220 kV lub 400 kV (tag `voltage` zawiera `220000` lub `400000`) w granicach Polski.

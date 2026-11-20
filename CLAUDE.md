@@ -11,7 +11,8 @@ Automatyczne odświeżanie strony (Cloudflare Deploy Hook z GitHub Actions, co 4
 Wygląd 1 (globus + ciemny kosmiczny motyw + tło satelitarne NASA GIBS) – zakończony 20.11.2026.
 „Prąd nocą” (przełącznik Dzień/Noc, tło nocne NASA Black Marble 2016) – zakończony 20.11.2026.
 „Odtwarzanie doby” (wiatr i cena RCE co 15 min, przycisk) – zakończony 20.11.2026.
-Cel: mapa źródeł prądu, część 1 – lądowe farmy wiatrowe ≥10 MW z Global Energy Monitor (zielone kropki; morskie zostają z EMODnet).
+Mapa źródeł prądu, część 1 (lądowe farmy wiatrowe ≥10 MW z GEM) – zakończona 20.11.2026.
+Cel: mapa źródeł prądu, część 2 – działające elektrownie węglowe, gazowe/olejowe i wodne (w tym szczytowo-pompowe) z GEM oraz legenda „Co oznaczają znaczki” z włączaniem warstw.
 Robimy tylko to, bez czego cel nie zostanie osiągnięty.
 Nie robimy teraz: innych animacji, nowych warstw danych i wersji na telefon (to później).
 Zanim zaproponujesz cokolwiek, sprawdź: czy bez tego cel zostanie osiągnięty? Jeśli tak — nie proponuj, dopisz najwyżej jedną linię do listy „Do zrobienia” w BEZPIECZENSTWO.md.

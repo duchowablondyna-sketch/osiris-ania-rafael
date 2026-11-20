@@ -56,12 +56,19 @@ const GRANICE_POLSKI = [
 // żeby żadna farma ani linia nie była pod okienkiem. Na wąskim ekranie, gdzie to się
 // nie mieści, zostaje zwykły odstęp.
 const MARGINES = 24;
+// Z prawej: legenda (.legenda) – kadr Polski nie wchodzi pod nią.
 function odstepKadru() {
   const okno = document.querySelector('.wskaznik');
+  const legenda = document.querySelector('.legenda');
   const szerokoscMapy = document.getElementById('mapa').clientWidth;
   const lewy = okno ? okno.offsetLeft + okno.offsetWidth + MARGINES : MARGINES;
-  const lewyOdstep = lewy + MARGINES + 200 > szerokoscMapy ? MARGINES : lewy;
-  return { top: MARGINES, right: MARGINES, bottom: MARGINES, left: lewyOdstep };
+  const prawy = legenda ? szerokoscMapy - legenda.offsetLeft + MARGINES : MARGINES;
+  if (lewy + prawy + 200 > szerokoscMapy) {
+    // Za wąsko na oba odstępy: najpierw rezygnujemy z odstępu na legendę, potem na okienko.
+    if (lewy + MARGINES + 200 <= szerokoscMapy) return { top: MARGINES, right: MARGINES, bottom: MARGINES, left: lewy };
+    return { top: MARGINES, right: MARGINES, bottom: MARGINES, left: MARGINES };
+  }
+  return { top: MARGINES, right: prawy, bottom: MARGINES, left: lewy };
 }
 
 // Kadr Polski: Polska w środku wolnej części ekranu (obok okienka), dokładnie „dopasuj do Polski”
@@ -108,6 +115,9 @@ function lotDoPolski() {
 
 const map = new maplibregl.Map({
   container: 'mapa',
+  // Własny przycisk atrybucji (niżej): rozwinięty od razu, żeby „© OpenStreetMap contributors” był stale widoczny
+  // także przy zwiniętej stopce „Źródła i licencje” (wymóg licencji ODbL dla linii z OSM).
+  attributionControl: false,
   bounds: GRANICE_POLSKI,
   fitBoundsOptions: { padding: odstepKadru() },
   style: {
@@ -131,6 +141,8 @@ const map = new maplibregl.Map({
   },
 });
 
+map.addControl(new maplibregl.AttributionControl({ compact: false }), 'bottom-right');
+
 if (BEZ_RUCHU) ustawKadr();
 else map.jumpTo(kameraKuli());
 
@@ -142,11 +154,149 @@ map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-ri
 
 // Przełącznik Dzień/Noc: zwykłe przyciski (Tab, Enter, Spacja), stan w aria-pressed. Wybór nie jest zapamiętywany.
 function ustawTryb(tryb) {
+  trybMapy = tryb;
   map.setLayoutProperty('tlo-noc', 'visibility', tryb === 'noc' ? 'visible' : 'none');
   map.setLayoutProperty('tlo-dzien', 'visibility', tryb === 'dzien' ? 'visible' : 'none');
   for (const przycisk of document.querySelectorAll('.przelacznik button')) {
     przycisk.setAttribute('aria-pressed', String(przycisk.dataset.tryb === tryb));
   }
+  odswiezKoloryElektrowni();
+}
+
+// Elektrownie (GEM, tylko działające): kolory zależne od trybu. W trybie Dzień jaśniejsze odcienie tej samej barwy,
+// bo na jasnym lądzie Blue Marble ciemniejsze mają kontrast poniżej 3:1. Woda w obu trybach ta sama.
+// Węgiel: czerwony (decyzja Ani po porównaniu z ciemnym pomarańczem).
+const KOLORY_ELEKTROWNI = {
+  noc: { wegiel: '#EF4444', gaz: '#8B5CF6', woda: '#3B82F6' },
+  dzien: { wegiel: '#F87171', gaz: '#A78BFA', woda: '#3B82F6' },
+};
+let trybMapy = 'noc';
+function koloryElektrowni() {
+  return KOLORY_ELEKTROWNI[trybMapy];
+}
+function odswiezKoloryElektrowni() {
+  const k = koloryElektrowni();
+  // Znaczki w legendzie korzystają z tych samych kolorów (zmienne CSS).
+  const styl = document.documentElement.style;
+  styl.setProperty('--kolor-wegiel', k.wegiel);
+  styl.setProperty('--kolor-gaz', k.gaz);
+  styl.setProperty('--kolor-woda', k.woda);
+  if (map.getLayer('elektrownie')) {
+    map.setPaintProperty('elektrownie', 'icon-color', ['match', ['get', 'rodzaj'], 'wegiel', k.wegiel, 'gaz', k.gaz, k.woda]);
+  }
+}
+odswiezKoloryElektrowni();
+
+// Znaczki elektrowni rysowane w kodzie (bez obrazków z zewnątrz) jako SDF – MapLibre nadaje im kolor (icon-color)
+// i ciemną obwódkę (icon-halo) o stałej grubości niezależnie od rozmiaru znaczka.
+// Wartość kanału alfa: 0,75 na krawędzi kształtu, spada o 1/8 na każdy piksel na zewnątrz (jak w czcionkach MapLibre).
+const BOK_ZNACZKA = 32; // bok kwadratu (średnica kółka) w pikselach obrazka przy icon-size = 1
+function znaczekSdf(ksztalt) {
+  const ZAPAS = 8;
+  const N = BOK_ZNACZKA + 2 * ZAPAS;
+  const h = BOK_ZNACZKA / 2;
+  const dane = new Uint8ClampedArray(N * N * 4);
+  for (let y = 0; y < N; y++) {
+    for (let x = 0; x < N; x++) {
+      const px = x + 0.5 - N / 2;
+      const py = y + 0.5 - N / 2;
+      let d; // odległość od krawędzi kształtu: dodatnia na zewnątrz
+      if (ksztalt === 'kolo') {
+        d = Math.hypot(px, py) - h;
+      } else {
+        // romb = kwadrat obrócony o 45°, o przekątnej ok. 1,25 boku kwadratu
+        const [u, v] = ksztalt === 'romb' ? [(px + py) / Math.SQRT2, (py - px) / Math.SQRT2] : [px, py];
+        const pol = ksztalt === 'romb' ? (BOK_ZNACZKA * 1.25) / (2 * Math.SQRT2) : h;
+        const dx = Math.abs(u) - pol;
+        const dy = Math.abs(v) - pol;
+        d = Math.hypot(Math.max(dx, 0), Math.max(dy, 0)) + Math.min(Math.max(dx, dy), 0);
+      }
+      dane[(y * N + x) * 4 + 3] = 255 * (1 - (d / 8 + 0.25));
+    }
+  }
+  return { width: N, height: N, data: dane };
+}
+
+// Bloki z wyciągu GEM zsumowane do jednej lokalizacji i rodzaju (jeden znaczek = jedna elektrownia).
+// Tylko status „operating”. Szczytowo-pompowe: technologia GEM zawierająca „pumped storage”.
+function zbierzElektrownie(geo) {
+  const lokalizacje = new Map();
+  for (const f of geo.features) {
+    const p = f.properties;
+    if (p.status !== 'operating') continue;
+    let rodzaj;
+    if (p.typ === 'coal') rodzaj = 'wegiel';
+    else if (p.typ === 'oil/gas') rodzaj = 'gaz';
+    else if (p.typ === 'hydropower') rodzaj = /pumped storage/i.test(p.technologia ?? '') ? 'pompowa' : 'woda';
+    else continue;
+    const klucz = `${p.gem_location_id}|${rodzaj}`;
+    if (!lokalizacje.has(klucz)) {
+      lokalizacje.set(klucz, {
+        wspolrzedne: f.geometry.coordinates,
+        nazwa: p.nazwa,
+        rodzaj,
+        moc: 0,
+        bloki: 0,
+        paliwa: new Set(),
+        technologie: new Set(),
+        dokladnosc: p.dokladnosc_lokalizacji,
+      });
+    }
+    const e = lokalizacje.get(klucz);
+    e.moc += p.moc_mw ?? 0;
+    e.bloki += 1;
+    if (p.paliwo) for (const paliwo of p.paliwo.split(', ')) e.paliwa.add(paliwo);
+    if (p.technologia) e.technologie.add(p.technologia);
+  }
+  return {
+    type: 'FeatureCollection',
+    features: [...lokalizacje.values()].map((e) => ({
+      type: 'Feature',
+      geometry: { type: 'Point', coordinates: e.wspolrzedne },
+      properties: {
+        nazwa: e.nazwa,
+        rodzaj: e.rodzaj,
+        moc: Math.round(e.moc * 10) / 10,
+        bloki: e.bloki,
+        paliwa: [...e.paliwa].join(';'),
+        technologie: [...e.technologie].join(';'),
+        dokladnosc: e.dokladnosc,
+      },
+    })),
+  };
+}
+
+const RODZAJ_ELEKTROWNI_PL = {
+  wegiel: 'elektrownia węglowa',
+  gaz: 'elektrownia gazowa lub olejowa',
+  woda: 'elektrownia wodna',
+  pompowa: 'elektrownia szczytowo-pompowa (magazyn energii)',
+};
+const PALIWO_PL = {
+  'coal: bituminous': 'węgiel kamienny',
+  'coal: lignite': 'węgiel brunatny',
+  'coal: unknown': 'węgiel (rodzaj nieznany)',
+  'fossil gas: natural gas': 'gaz ziemny',
+  'industrial by-product: coke oven gas': 'gaz koksowniczy',
+  'fossil liquids: heavy fuel oil': 'ciężki olej opałowy',
+  'fossil liquids: fuel oil': 'olej opałowy',
+};
+const TECHNOLOGIA_WODNA_PL = {
+  'run-of-river': 'przepływowa',
+  'conventional storage': 'zbiornikowa',
+  'pumped storage': 'szczytowo-pompowa',
+};
+// Daty danych poszczególnych trackerów GEM wg arkusza About (kolumna „Latest release”).
+const ZRODLO_ELEKTROWNI = {
+  wegiel: 'Global Coal Plant Tracker, lipiec 2026',
+  gaz: 'Global Oil and Gas Plant Tracker, sierpień 2026',
+  woda: 'Global Hydropower Tracker, marzec 2026',
+  pompowa: 'Global Hydropower Tracker, marzec 2026',
+};
+// Rodzaje elektrowni widoczne na mapie (pola w legendzie).
+const widoczneElektrownie = new Set(['wegiel', 'gaz', 'woda', 'pompowa']);
+function filtrElektrowni() {
+  return ['in', ['get', 'rodzaj'], ['literal', [...widoczneElektrownie]]];
 }
 
 map.on('load', () => {
@@ -156,7 +306,11 @@ map.on('load', () => {
 
   // Linie najwyższych napięć 220/400 kV (© OpenStreetMap contributors, ODbL), plik z scripts/pobierz-linie.mjs.
   // Dodane przed farmami, żeby punkty farm były na wierzchu.
-  map.addSource('linie-nn', { type: 'geojson', data: `${import.meta.env.BASE_URL}data/linie-nn.geojson` });
+  map.addSource('linie-nn', {
+    type: 'geojson',
+    data: `${import.meta.env.BASE_URL}data/linie-nn.geojson`,
+    attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>',
+  });
   // Ciemna obwódka pod złotymi liniami (o 2 px szersza): światła miast na nocnym tle są bursztynowe,
   // prawie w kolorze złota – ciemna krawędź oddziela linię od świateł. Działa w obu trybach.
   map.addLayer({
@@ -173,6 +327,92 @@ map.on('load', () => {
     layout: { 'line-cap': 'round', 'line-join': 'round' },
     paint: { 'line-color': KOLORY.linie, 'line-width': ['match', ['get', 'napiecie'], 400, 2.5, 1.2] },
   });
+
+  // Elektrownie działające (GEM): nad liniami, pod farmami wiatrowymi (duże kwadraty nie zasłaniają kropek farm).
+  // Kwadrat: spalające paliwo (węgiel, gaz/olej); kółko: wodna; romb: szczytowo-pompowa.
+  // Pole znaczka ~ moc zainstalowana (wspólna skala): bok = 0,35 px · √MW do przybliżenia 6, czyli przy widoku całej Polski
+  // (100 MW = 3,5 px, 1000 MW = 11,1 px, 5000 MW = 24,7 px – tak jak wzorce w legendzie); najmniej 3 px;
+  // od przybliżenia 6 do 9 znaczki rosną dwukrotnie. Mniejsze rysowane na wierzchu większych.
+  map.addImage('znaczek-kwadrat', znaczekSdf('kwadrat'), { sdf: true });
+  map.addImage('znaczek-kolo', znaczekSdf('kolo'), { sdf: true });
+  map.addImage('znaczek-romb', znaczekSdf('romb'), { sdf: true });
+  const rozmiar = (pxNaPierwiastekMW) => ['max', 3 / BOK_ZNACZKA, ['*', ['sqrt', ['get', 'moc']], pxNaPierwiastekMW / BOK_ZNACZKA]];
+  map.addSource('elektrownie', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
+  map.addLayer({
+    id: 'elektrownie',
+    type: 'symbol',
+    source: 'elektrownie',
+    filter: filtrElektrowni(),
+    layout: {
+      'icon-image': ['match', ['get', 'rodzaj'], 'woda', 'znaczek-kolo', 'pompowa', 'znaczek-romb', 'znaczek-kwadrat'],
+      'icon-size': ['interpolate', ['linear'], ['zoom'], 6, rozmiar(0.35), 9, rozmiar(0.7)],
+      'icon-allow-overlap': true,
+      'icon-ignore-placement': true,
+      'symbol-sort-key': ['-', 0, ['get', 'moc']],
+    },
+    paint: { 'icon-halo-color': KOLORY.kosmos, 'icon-halo-width': 1 },
+  });
+  odswiezKoloryElektrowni();
+  fetch(`${import.meta.env.BASE_URL}data/zrodla-gem.geojson`)
+    .then((odp) => (odp.ok ? odp.json() : null))
+    .then((geo) => {
+      if (geo) map.getSource('elektrownie').setData(zbierzElektrownie(geo));
+    })
+    .catch(() => {
+      /* bez elektrowni na mapie */
+    });
+
+  map.on('click', 'elektrownie', (e) => {
+    const p = e.features[0].properties;
+    const el = document.createElement('div');
+    const tytul = document.createElement('strong');
+    tytul.textContent = p.nazwa;
+    el.append(tytul);
+    const linia = (tekst) => {
+      el.append(document.createElement('br'));
+      const span = document.createElement('span');
+      span.textContent = tekst;
+      el.append(span);
+    };
+    linia(RODZAJ_ELEKTROWNI_PL[p.rodzaj]);
+    if (p.rodzaj === 'pompowa') {
+      linia('pompuje wodę w górę, gdy prądu jest dużo, i oddaje go, gdy brakuje – to magazyn, a nie źródło energii');
+    }
+    const paliwa = (p.paliwa ?? '').split(';').filter(Boolean).map((x) => PALIWO_PL[x] ?? x);
+    if (p.rodzaj === 'wegiel' && paliwa.length) linia(`rodzaj: ${paliwa.join(', ')}`);
+    if (p.rodzaj === 'gaz' && paliwa.length) linia(`paliwo: ${paliwa.join(', ')}`);
+    if (p.rodzaj === 'woda' || p.rodzaj === 'pompowa') {
+      const t = (p.technologie ?? '').split(';').filter(Boolean).map((x) => TECHNOLOGIA_WODNA_PL[x] ?? x);
+      if (t.length) linia(`typ: ${t.join(', ')}`);
+    }
+    // Odmiana: 1 blok; 2–4, 22–24… bloki (ale 12–14 bloków); pozostałe bloków.
+    const n = p.bloki;
+    const bloki = n === 1 ? '1 blok' : [2, 3, 4].includes(n % 10) && ![12, 13, 14].includes(n % 100) ? `${n} bloki` : `${n} bloków`;
+    linia(`moc: ${p.moc.toLocaleString('pl-PL')} MW (${bloki} w danych)`);
+    linia('moc zainstalowana – nie bieżąca produkcja');
+    linia(p.dokladnosc === 'exact' ? 'lokalizacja: dokładna' : 'lokalizacja: przybliżona (np. najbliższa miejscowość)');
+    linia(`źródło: Global Energy Monitor (${ZRODLO_ELEKTROWNI[p.rodzaj]}), CC BY 4.0`);
+    new maplibregl.Popup().setLngLat(e.features[0].geometry.coordinates).setDOMContent(el).addTo(map);
+  });
+
+  // Legenda: pola włączające i wyłączające warstwy (zwykłe pola wyboru – Tab, Spacja).
+  const WARSTWY_LEGENDY = {
+    linie: ['linie-nn-obwodka', 'linie-nn'],
+    morskie: ['farmy-pelne', 'farmy-puste'],
+    ladowe: ['farmy-lad-dziala', 'farmy-lad-budowa', 'farmy-lad-budowa-srodek'],
+  };
+  for (const pole of document.querySelectorAll('.legenda input[type="checkbox"]')) {
+    pole.addEventListener('change', () => {
+      const w = pole.dataset.warstwa;
+      if (WARSTWY_LEGENDY[w]) {
+        for (const id of WARSTWY_LEGENDY[w]) map.setLayoutProperty(id, 'visibility', pole.checked ? 'visible' : 'none');
+      } else {
+        if (pole.checked) widoczneElektrownie.add(w);
+        else widoczneElektrownie.delete(w);
+        map.setFilter('elektrownie', filtrElektrowni());
+      }
+    });
+  }
 
   // Lądowe farmy wiatrowe ≥10 MW: wyciąg z Global Energy Monitor, Global Integrated Power Tracker, September 2026
   // release (CC BY 4.0), plik z scripts/wyciag-gem.py. Tylko „działa” i „w budowie” – planowanych, wstrzymanych

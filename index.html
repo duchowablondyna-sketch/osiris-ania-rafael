@@ -36,11 +36,49 @@
           title="Światła nocne (zdjęcie z 2016 r.) to przybliżenie aktywności i oświetlenia – głównie oświetlenia ulic i zabudowy – a nie pomiar zużycia prądu.">Noc</button>
         <span id="noc-opis" class="tylko-czytnik">Światła nocne (zdjęcie z 2016 r.) to przybliżenie aktywności i oświetlenia – głównie oświetlenia ulic i zabudowy – a nie pomiar zużycia prądu.</span>
       </div>
+
+      <details class="legenda" open>
+        <summary>Co oznaczają znaczki</summary>
+        <ul>
+          <li><label><input type="checkbox" data-warstwa="linie" checked />
+            <svg class="znak" viewBox="0 0 24 16" aria-hidden="true"><line x1="1" y1="8" x2="23" y2="8" stroke="#05070d" stroke-width="5" /><line x1="1" y1="8" x2="23" y2="8" stroke="#f2c14e" stroke-width="3" /></svg>
+            <span><strong>Linie najwyższych napięć</strong> – 220 i 400 kV (grubsza linia: 400 kV)</span></label></li>
+          <li><label><input type="checkbox" data-warstwa="morskie" checked />
+            <svg class="znak" viewBox="0 0 24 16" aria-hidden="true"><circle cx="7" cy="8" r="5" fill="#5cc8ff" stroke="#05070d" stroke-width="1.5" /><circle cx="18" cy="8" r="4.5" fill="none" stroke="#5cc8ff" stroke-width="2" /></svg>
+            <span><strong>Morskie farmy wiatrowe</strong> – puste kółko: prawdopodobny duplikat lub brak na liście MKiŚ</span></label></li>
+          <li><label><input type="checkbox" data-warstwa="ladowe" checked />
+            <svg class="znak" viewBox="0 0 24 16" aria-hidden="true"><circle cx="7" cy="8" r="4" fill="#4ade80" stroke="#05070d" stroke-width="1.5" /><circle cx="18" cy="8" r="4.5" fill="#05070d" stroke="#4ade80" stroke-width="2" /><circle cx="18" cy="8" r="1.5" fill="#4ade80" /></svg>
+            <span><strong>Lądowe farmy wiatrowe od 10 MW</strong> – pełne kółko: działa; pierścień z kropką: w budowie</span></label></li>
+          <li><label><input type="checkbox" data-warstwa="wegiel" checked />
+            <svg class="znak" viewBox="0 0 24 16" aria-hidden="true"><rect x="6" y="2" width="12" height="12" style="fill: var(--kolor-wegiel)" stroke="#05070d" stroke-width="1.5" /></svg>
+            <span><strong>Elektrownie węglowe</strong> – kwadrat: elektrownia spalająca paliwo</span></label></li>
+          <li><label><input type="checkbox" data-warstwa="gaz" checked />
+            <svg class="znak" viewBox="0 0 24 16" aria-hidden="true"><rect x="6" y="2" width="12" height="12" style="fill: var(--kolor-gaz)" stroke="#05070d" stroke-width="1.5" /></svg>
+            <span><strong>Elektrownie gazowe i olejowe</strong> – kwadrat: elektrownia spalająca paliwo</span></label></li>
+          <li><label><input type="checkbox" data-warstwa="woda" checked />
+            <svg class="znak" viewBox="0 0 24 16" aria-hidden="true"><circle cx="12" cy="8" r="6" style="fill: var(--kolor-woda)" stroke="#05070d" stroke-width="1.5" /></svg>
+            <span><strong>Elektrownie wodne</strong></span></label></li>
+          <li><label><input type="checkbox" data-warstwa="pompowa" checked />
+            <svg class="znak" viewBox="0 0 24 16" aria-hidden="true"><polygon points="12,1 19,8 12,15 5,8" style="fill: var(--kolor-woda)" stroke="#05070d" stroke-width="1.5" /></svg>
+            <span><strong>Elektrownie szczytowo-pompowe</strong> – magazyn energii: pompują wodę w górę, gdy prądu jest dużo, i oddają go, gdy brakuje</span></label></li>
+        </ul>
+        <p class="legenda__uwaga">Elektrownie: tylko działające i tylko duże (progi w „Źródła i licencje”)</p>
+        <p class="legenda__uwaga"><strong>Rozmiar znaczka elektrowni = moc zainstalowana, nie bieżąca produkcja</strong></p>
+        <div class="legenda__skala" aria-hidden="true">
+          <!-- Wzorce w tej samej skali co na mapie przy widoku całej Polski: bok = 0,35 px · √MW. -->
+          <svg viewBox="0 0 28 28" width="28" height="28"><rect x="12.25" y="12.25" width="3.5" height="3.5" fill="#a9b7cc" stroke="#05070d" stroke-width="1" /></svg><span>100 MW</span>
+          <svg viewBox="0 0 28 28" width="28" height="28"><rect x="8.45" y="8.45" width="11.1" height="11.1" fill="#a9b7cc" stroke="#05070d" stroke-width="1" /></svg><span>1 000 MW</span>
+          <svg viewBox="0 0 28 28" width="28" height="28"><rect x="1.65" y="1.65" width="24.7" height="24.7" fill="#a9b7cc" stroke="#05070d" stroke-width="1" /></svg><span>5 000 MW</span>
+        </div>
+        <p class="tylko-czytnik">Wzorce rozmiaru: 100 MW – mały kwadrat, 1 000 MW – średni, 5 000 MW – duży.</p>      </details>
     </main>
 
+    <!-- Stopka zwinięta do jednej linijki (więcej miejsca na mapę); <details> działa z klawiatury (Tab, Enter, Spacja). -->
     <footer class="stopka">
-      <strong>Źródła:</strong>
-      kontur Polski: <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a>
+      <details class="stopka__zrodla">
+      <summary>Źródła i licencje</summary>
+      <div class="stopka__tresc">
+      Kontur Polski: <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a>
       (domena publiczna), dane uproszczone do konturu jednego kraju.
       <br />
       Produkcja z wiatru: PSE S.A., <a href="https://raporty.pse.pl/" target="_blank" rel="noopener">raporty.pse.pl</a>,
@@ -66,13 +104,20 @@
       <strong>Tylko lądowe farmy wiatrowe od 10 MW – mniejsze farmy i pojedyncze turbiny nie są pokazane.</strong>
       Pełna kropka: działa; pierścień z kropką: w budowie; planowanych nie pokazujemy. Około połowy lokalizacji jest przybliżonych.
       <br />
+      Elektrownie (kwadraty, kółka, romby): ten sam wyciąg GEM, CC BY 4.0, zmodyfikowane (bloki zsumowane do elektrowni); tylko działające.
+      Progi GEM: węgiel – bloki od 30 MW; gaz i olej – od 20 MW w UE; woda (także szczytowo-pompowe) – od 30 MW, dla niektórych krajów od 10 MW.
+      Dane: węgiel – lipiec 2026, gaz i olej – sierpień 2026, woda – marzec 2026. Rozmiar znaczka = moc zainstalowana, nie bieżąca produkcja.
+      <br />
       Tło dzienne: Blue Marble (August 2004), MODIS / NASA Earth Observatory. We acknowledge the use of imagery provided by
       services from NASA's Global Imagery Browse Services (GIBS), part of NASA's Earth Science Data and Information
       System (ESDIS).
       Tło nocne: Black Marble (2016), Suomi NPP / VIIRS, NASA Earth Observatory.
       <br />
       Linie najwyższych napięć: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>,
-      <a href="https://opendatacommons.org/licenses/odbl/" target="_blank" rel="noopener">ODbL</a>.
+      <a href="https://opendatacommons.org/licenses/odbl/" target="_blank" rel="noopener">ODbL</a>
+      (podpis widoczny też stale na mapie, w prawym dolnym rogu).
+      </div>
+      </details>
     </footer>
 
     <script type="module" src="/src/main.js"></script>
