@@ -28,8 +28,11 @@ async function pobierzWszystko(start = pierwszyUrl) {
 }
 
 let wynik;
+// Wszystkie rekordy wiatru z ostatnich dni (także puste) – potrzebne też do odtworzenia doby niżej.
+let wszystkieWiatr = [];
 try {
-  const rekordy = (await pobierzWszystko())
+  wszystkieWiatr = await pobierzWszystko();
+  const rekordy = wszystkieWiatr
     .filter((r) => typeof r.wi === 'number')
     .sort((a, b) => a.dtime_utc.localeCompare(b.dtime_utc));
   const ost = rekordy.at(-1);
@@ -122,3 +125,44 @@ for (const doba of [dobaPL(0), dobaPL(1)]) {
   }
 }
 await writeFile(PLIK_RCE, JSON.stringify(rce));
+
+// Odtworzenie doby: wczorajsza pełna doba (wiatr his-wlk-cal + cena rce-pln, co 15 min).
+// Wiatr za wczoraj bywa kompletny dopiero ok. 3:00 następnego dnia – jeśli wczoraj jest niepełne,
+// bierzemy przedwczoraj (jeśli pełne). Doba jest pełna tylko wtedy, gdy wiatr i cena mają tę samą liczbę
+// kwadransów (96, w dniu zmiany czasu 92 albo 100), każdy z liczbą, o tych samych czasach końca. Bez uzupełniania luk.
+const PLIK_DOBA = 'public/data/doba.json';
+const koniecUtc = (r) => (r.dtime_utc ? `${r.dtime_utc.slice(0, 19).replace(' ', 'T')}Z` : null);
+const odtworzenie = {
+  czas_pobrania: czasPobrania,
+  zrodlo: 'PSE S.A., raporty.pse.pl (raporty his-wlk-cal, pole wi, i rce-pln, pole rce_pln)',
+  doba: null,
+  kwadranse: [],
+};
+for (const doba of [dobaPL(-1), dobaPL(-2)]) {
+  try {
+    const wiatrDoby = wszystkieWiatr
+      .filter((r) => r.business_date === doba)
+      .sort((a, b) => a.dtime_utc.localeCompare(b.dtime_utc));
+    const cenyDoby = (await pobierzWszystko(`${API_RCE}?$filter=${encodeURIComponent(`business_date eq '${doba}'`)}`))
+      .filter((r) => r.business_date === doba)
+      .sort((a, b) => a.dtime_utc.localeCompare(b.dtime_utc));
+    const n = wiatrDoby.length;
+    const pelna =
+      [92, 96, 100].includes(n) &&
+      cenyDoby.length === n &&
+      wiatrDoby.every((w, i) => typeof w.wi === 'number' && typeof cenyDoby[i].rce_pln === 'number' && koniecUtc(w) === koniecUtc(cenyDoby[i]));
+    if (!pelna) throw new Error(`niepełna (wiatr ${n}, cena ${cenyDoby.length} kwadransów)`);
+    odtworzenie.doba = doba;
+    odtworzenie.kwadranse = wiatrDoby.map((w, i) => ({
+      okres: w.period,
+      koniec_utc: koniecUtc(w),
+      mw: Math.round(w.wi * 10) / 10,
+      cena: cenyDoby[i].rce_pln,
+    }));
+    console.log(`PSE: odtworzenie doby ${doba}: ${n} kwadransów`);
+    break;
+  } catch (e) {
+    console.warn(`PSE: odtworzenie doby ${doba}: ${e.message ?? e}`);
+  }
+}
+await writeFile(PLIK_DOBA, JSON.stringify(odtworzenie));

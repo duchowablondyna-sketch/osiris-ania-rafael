@@ -10,14 +10,25 @@
       <div id="mapa" aria-label="Mapa Polski"></div>
 
       <section class="wskaznik" aria-live="polite">
-        <span class="wskaznik__etykieta">Produkcja z wiatru (ostatni dostępny pomiar):</span>
+        <div id="odtw-naglowek" hidden>
+          <span class="odtw-data" id="odtw-data"></span>
+          <span class="odtw-zegar" id="odtw-zegar"></span>
+        </div>
+        <span class="wskaznik__etykieta" id="wiatr-etykieta">Produkcja z wiatru (ostatni dostępny pomiar):</span>
         <span class="wskaznik__wartosc" id="wiatr-teraz">brak danych</span>
         <div id="wiatr-wykres"></div>
         <span class="wskaznik__etykieta" id="wiatr-stan"></span>
         <span class="wskaznik__etykieta" id="wiatr-ograniczenie">Ostatnie polecenie PSE ograniczenia wiatru: brak danych</span>
         <span class="wskaznik__etykieta" id="rce-teraz">Cena prądu (RCE): brak danych na dziś</span>
         <div id="rce-wykres"></div>
+        <div class="odtw-przyciski">
+          <button type="button" id="odtw-start" hidden>▶ Odtwórz dobę</button>
+          <button type="button" id="odtw-teraz" hidden>Wróć do teraz</button>
+        </div>
+        <span class="wskaznik__etykieta" id="odtw-stan"></span>
       </section>
+      <!-- Ogłoszenia odtwarzania dla czytnika ekranu (start, pauza, koniec) – okienko na ten czas milknie. -->
+      <span id="odtw-ogloszenie" class="tylko-czytnik" aria-live="polite"></span>
 
       <div class="przelacznik" role="group" aria-label="Tło mapy">
         <button type="button" data-tryb="dzien" aria-pressed="false">Dzień</button>
@@ -39,6 +50,7 @@
       <br />
       Cena prądu (RCE): PSE S.A., <a href="https://raporty.pse.pl/report/rce-pln" target="_blank" rel="noopener">raport „Rynkowa cena energii elektrycznej”</a>,
       dane pobrane <span id="rce-pobrano">brak</span>, przetworzone.
+      Odtworzenie doby: PSE S.A., raporty his-wlk-cal i rce-pln, doba <span id="odtw-zrodlo-doba">brak</span>, przetworzone.
       <br />
       Morskie farmy wiatrowe: <a href="https://emodnet.ec.europa.eu/en/" target="_blank" rel="noopener">EMODnet</a>
       Human Activities, Wind Farms (twórca danych: CETMAR, stan 10.07.2026),

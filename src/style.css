@@ -42,6 +42,11 @@ main {
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
 }
 
+/* Atrybut hidden ma wygrać z display: block (np. ograniczenie wiatru ukryte w trakcie odtwarzania doby). */
+.wskaznik [hidden] {
+  display: none;
+}
+
 .wskaznik__etykieta {
   display: block;
   font-size: 0.875rem;
@@ -102,6 +107,48 @@ main {
 }
 
 .przelacznik button:focus-visible {
+  outline: 2px solid #8ccbff;
+  outline-offset: 2px;
+}
+
+/* Odtwarzanie doby: podpis daty, duży zegar, przyciski w okienku (nic nie leży na mapie). */
+.odtw-data {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #ff8a5b;
+}
+
+.odtw-zegar {
+  display: block;
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.odtw-przyciski {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.odtw-przyciski button {
+  padding: 5px 12px;
+  font: inherit;
+  font-size: 0.875rem;
+  color: #e8eef7;
+  background: transparent;
+  border: 1px solid #2a3550;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.odtw-przyciski button:hover {
+  border-color: #a9b7cc;
+}
+
+.odtw-przyciski button:focus-visible {
   outline: 2px solid #8ccbff;
   outline-offset: 2px;
 }
