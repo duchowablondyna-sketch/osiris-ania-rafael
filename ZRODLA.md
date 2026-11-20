@@ -81,6 +81,17 @@ Poziomy weryfikacji:
 - **Data sprawdzenia:** 19.11.2026
 - **Poziom weryfikacji:** 1 (dokumentacja GIBS i wytyczne NASA – przeczytane fragmenty dotyczące dostępu, podziękowania i warunków; kafelek nad Polską pobrany i obejrzany)
 
+## NASA GIBS: tło nocne Black Marble (światła miast)
+
+- **Co:** warstwa `VIIRS_Black_Marble` – „Black Marble (Annual, 2012 & 2016)”, „Suomi NPP / VIIRS via NASA Earth Observatory”, warstwa nieaktualizowana (metadane: https://gibs.earthdata.nasa.gov/layer-metadata/v1.0/VIIRS_Black_Marble.json). Używamy zdjęcia z **2016 r.** (wpisane na stałe w adresie).
+- **Co pokazują światła:** to przybliżenie aktywności i oświetlenia (głównie oświetlenia ulic i zabudowy), **a nie pomiar zużycia prądu**. Zdjęcie jest z 2016 r., więc nie pokazuje obecnego stanu.
+- **Używamy w:** tło mapy w trybie Noc (domyślny), warstwa rastrowa w `src/main.js`. Kafelki pobiera **przeglądarka widza** bezpośrednio z serwera NASA (patrz BEZPIECZENSTWO.md).
+- **Adres kafelków (WMTS REST, EPSG:3857):** `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_Black_Marble/default/2016-01-01/GoogleMapsCompatible_Level8/{z}/{y}/{x}.png` – szablon z GetCapabilities (https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/1.0.0/WMTSCapabilities.xml; wymiar czasu: 2012-01-01 i 2016-01-01, domyślnie 2016-01-01). PNG, 256 px, poziomy 0–8 (poziom 9 zwraca błąd 400 – sprawdzone 20.11.2026); `access-control-allow-origin: *`; bez klucza API.
+- **Podpis w stopce:** „Tło nocne: Black Marble (2016), Suomi NPP / VIIRS, NASA Earth Observatory.” Podziękowanie dla GIBS i warunki użycia – jak przy Blue Marble (wpis wyżej).
+- **Przetworzenie:** brak – kafelki wyświetlane bez zmian. Pod złotymi liniami dodana ciemna obwódka (zmiana naszej warstwy, nie obrazu NASA).
+- **Data sprawdzenia:** 20.11.2026
+- **Poziom weryfikacji:** 1 (GetCapabilities i metadane GIBS; kafelek nad Polską pobrany i obejrzany; strony produktu Black Marble w NASA Earth Observatory nie czytałam)
+
 ## EMODnet: morskie farmy wiatrowe
 
 - **Co:** EMODnet Human Activities, Energy, Wind Farms – punkty morskich farm wiatrowych (warstwa WFS `emodnet:windfarms`).

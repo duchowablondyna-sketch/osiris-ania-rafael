@@ -8,7 +8,8 @@ Tracer bullet nr 4 (ograniczenia wiatru przez PSE w okienku) – zakończony 19.
 Tracer bullet nr 5 (wykres produkcji wiatru z bieżącej doby) – zakończony 19.11.2026.
 Tracer bullet nr 6 (cena prądu RCE teraz i wykres bieżącej doby) – zakończony 19.11.2026.
 Automatyczne odświeżanie strony (Cloudflare Deploy Hook z GitHub Actions, co 4 godziny) – zakończone 19.11.2026.
-Cel: Wygląd 1: globus + ciemny kosmiczny motyw + tło satelitarne NASA GIBS.
+Wygląd 1 (globus + ciemny kosmiczny motyw + tło satelitarne NASA GIBS) – zakończony 20.11.2026.
+Cel: „Prąd nocą”: przełącznik Dzień/Noc – w trybie Noc tło NASA GIBS VIIRS_Black_Marble (światła miast), w trybie Dzień obecny Blue Marble; złota sieć i farmy widoczne w obu trybach.
 Robimy tylko to, bez czego cel nie zostanie osiągnięty.
 Nie robimy teraz: innych animacji, nowych warstw danych i wersji na telefon (to później).
 Zanim zaproponujesz cokolwiek, sprawdź: czy bez tego cel zostanie osiągnięty? Jeśli tak — nie proponuj, dopisz najwyżej jedną linię do listy „Do zrobienia” w BEZPIECZENSTWO.md.

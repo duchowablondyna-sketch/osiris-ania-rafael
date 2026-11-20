@@ -59,7 +59,7 @@
 
 ## Połączenia przeglądarki widza z zewnętrznymi serwerami
 
-- Od etapu „Wygląd 1” (19.11.2026) przeglądarka widza pobiera kafelki tła satelitarnego z serwera NASA GIBS (`gibs.earthdata.nasa.gov`), więc NASA widzi adres IP odwiedzającego. Dane PSE nadal są pobierane tylko przy budowaniu strony.
+- Od etapu „Wygląd 1” (19.11.2026) przeglądarka widza pobiera kafelki tła satelitarnego z serwera NASA GIBS (`gibs.earthdata.nasa.gov`), więc NASA widzi adres IP odwiedzającego. Od etapu „Prąd nocą” (20.11.2026) dotyczy to obu teł: Blue Marble (Dzień) i VIIRS_Black_Marble (Noc). Dane PSE nadal są pobierane tylko przy budowaniu strony.
 
 ### Do zrobienia
 - [ ] Robot Playwright jako wymagany test.
@@ -73,4 +73,4 @@
 - [ ] Harmonogram w publicznym repo wyłącza się po 60 dniach bez aktywności ([dokumentacja GitHub](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/disable-and-enable-workflows)); po przerwie sprawdzić workflow „Odśwież stronę” i włączyć ponownie.
 - [ ] W niedalekiej przyszłości profesjonalne tło satelitarne (rozważyć płatne źródło), gdy będzie potrzeba.
 - [ ] Rozważyć kafelki tła dla Polski zapisane u nas (żeby przeglądarka widza nie łączyła się z NASA GIBS).
-- [ ] Warstwa VIIRS_Black_Marble (nocne światła miast, NASA GIBS) jako kandydat pasujący do zasady „bohater: prąd”.
+- [x] Warstwa VIIRS_Black_Marble (nocne światła miast, NASA GIBS) – zrobione w etapie „Prąd nocą” (20.11.2026).

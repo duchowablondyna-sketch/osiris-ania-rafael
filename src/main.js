@@ -14,6 +14,10 @@ const KONTUR_URL = `${import.meta.env.BASE_URL}data/polska-kontur.geojson`;
 // Kafelki pobiera przeglądarka widza z serwera NASA (patrz BEZPIECZENSTWO.md). Poziomy 0–8.
 const GIBS_BLUE_MARBLE =
   'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/BlueMarble_NextGeneration/default/GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpeg';
+// Tło nocne: NASA GIBS, warstwa Black Marble (Suomi NPP / VIIRS), zdjęcie z 2016 r. wpisane na stałe
+// (żeby obraz nie zmienił się bez naszej wiedzy). PNG, poziomy 0–8, bez klucza API.
+const GIBS_BLACK_MARBLE =
+  'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_Black_Marble/default/2016-01-01/GoogleMapsCompatible_Level8/{z}/{y}/{x}.png';
 
 // Kolory zgodne z zasadami wyglądu w CLAUDE.md (kontrast sprawdzony wg WCAG).
 const KOLORY = {
@@ -45,9 +49,9 @@ function odstepKadru() {
   return { top: MARGINES, right: MARGINES, bottom: MARGINES, left: lewyOdstep };
 }
 
-// Kadr Polski: Polska w środku wolnej części ekranu (obok okienka), o jeden poziom dalej niż
-// „dopasuj do Polski”. Odstęp zostaje zapamiętany w mapie, więc środek widoku to środek wolnej części ekranu.
-const ODDALENIE = 1;
+// Kadr Polski: Polska w środku wolnej części ekranu (obok okienka), dokładnie „dopasuj do Polski”
+// (kulę pokazuje już lot na starcie). Odstęp zostaje zapamiętany w mapie, więc środek widoku to środek wolnej części ekranu.
+const ODDALENIE = 0;
 const SRODEK_POLSKI = new maplibregl.LngLatBounds(GRANICE_POLSKI).getCenter();
 function kameraPolski() {
   const padding = odstepKadru();
@@ -98,12 +102,15 @@ const map = new maplibregl.Map({
     // Poświata atmosfery wokół kuli (1 = najsilniejsza).
     sky: { 'atmosphere-blend': 1 },
     sources: {
-      'tlo-satelitarne': { type: 'raster', tiles: [GIBS_BLUE_MARBLE], tileSize: 256, maxzoom: 8 },
+      'tlo-dzien': { type: 'raster', tiles: [GIBS_BLUE_MARBLE], tileSize: 256, maxzoom: 8 },
+      'tlo-noc': { type: 'raster', tiles: [GIBS_BLACK_MARBLE], tileSize: 256, maxzoom: 8 },
       polska: { type: 'geojson', data: KONTUR_URL },
     },
+    // Domyślnie tryb Noc; przełącznik Dzień/Noc tylko pokazuje jedną warstwę tła i chowa drugą (bez animacji).
     layers: [
       { id: 'tlo', type: 'background', paint: { 'background-color': KOLORY.kosmos } },
-      { id: 'tlo-satelitarne', type: 'raster', source: 'tlo-satelitarne' },
+      { id: 'tlo-dzien', type: 'raster', source: 'tlo-dzien', layout: { visibility: 'none' } },
+      { id: 'tlo-noc', type: 'raster', source: 'tlo-noc', layout: { visibility: 'visible' } },
       { id: 'polska-kontur', type: 'line', source: 'polska', paint: { 'line-color': KOLORY.kontur, 'line-opacity': 0.6, 'line-width': 1.2 } },
     ],
   },
@@ -118,10 +125,32 @@ const czekaj = (ms) => new Promise((r) => setTimeout(r, ms));
 const tloGotowe = Promise.race([new Promise((r) => map.once('idle', r)), czekaj(5000)]);
 map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
 
+// Przełącznik Dzień/Noc: zwykłe przyciski (Tab, Enter, Spacja), stan w aria-pressed. Wybór nie jest zapamiętywany.
+function ustawTryb(tryb) {
+  map.setLayoutProperty('tlo-noc', 'visibility', tryb === 'noc' ? 'visible' : 'none');
+  map.setLayoutProperty('tlo-dzien', 'visibility', tryb === 'dzien' ? 'visible' : 'none');
+  for (const przycisk of document.querySelectorAll('.przelacznik button')) {
+    przycisk.setAttribute('aria-pressed', String(przycisk.dataset.tryb === tryb));
+  }
+}
+
 map.on('load', () => {
+  for (const przycisk of document.querySelectorAll('.przelacznik button')) {
+    przycisk.addEventListener('click', () => ustawTryb(przycisk.dataset.tryb));
+  }
+
   // Linie najwyższych napięć 220/400 kV (© OpenStreetMap contributors, ODbL), plik z scripts/pobierz-linie.mjs.
   // Dodane przed farmami, żeby punkty farm były na wierzchu.
   map.addSource('linie-nn', { type: 'geojson', data: `${import.meta.env.BASE_URL}data/linie-nn.geojson` });
+  // Ciemna obwódka pod złotymi liniami (o 2 px szersza): światła miast na nocnym tle są bursztynowe,
+  // prawie w kolorze złota – ciemna krawędź oddziela linię od świateł. Działa w obu trybach.
+  map.addLayer({
+    id: 'linie-nn-obwodka',
+    type: 'line',
+    source: 'linie-nn',
+    layout: { 'line-cap': 'round', 'line-join': 'round' },
+    paint: { 'line-color': KOLORY.kosmos, 'line-width': ['match', ['get', 'napiecie'], 400, 4.5, 3.2] },
+  });
   map.addLayer({
     id: 'linie-nn',
     type: 'line',

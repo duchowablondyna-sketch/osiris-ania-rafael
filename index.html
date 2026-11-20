@@ -18,6 +18,13 @@
         <span class="wskaznik__etykieta" id="rce-teraz">Cena prądu (RCE): brak danych na dziś</span>
         <div id="rce-wykres"></div>
       </section>
+
+      <div class="przelacznik" role="group" aria-label="Tło mapy">
+        <button type="button" data-tryb="dzien" aria-pressed="false">Dzień</button>
+        <button type="button" data-tryb="noc" aria-pressed="true" aria-describedby="noc-opis"
+          title="Światła nocne (zdjęcie z 2016 r.) to przybliżenie aktywności i oświetlenia – głównie oświetlenia ulic i zabudowy – a nie pomiar zużycia prądu.">Noc</button>
+        <span id="noc-opis" class="tylko-czytnik">Światła nocne (zdjęcie z 2016 r.) to przybliżenie aktywności i oświetlenia – głównie oświetlenia ulic i zabudowy – a nie pomiar zużycia prądu.</span>
+      </div>
     </main>
 
     <footer class="stopka">
@@ -40,9 +47,10 @@
       <a href="https://www.gov.pl/web/morska-energetyka-wiatrowa/obecnie-realizowane-projekty-w-polsce" target="_blank" rel="noopener">listą projektów MKiŚ</a>
       (stan: styczeń 2024) – puste kropki: prawdopodobny duplikat albo brak na liście.
       <br />
-      Tło: Blue Marble (August 2004), MODIS / NASA Earth Observatory. We acknowledge the use of imagery provided by
+      Tło dzienne: Blue Marble (August 2004), MODIS / NASA Earth Observatory. We acknowledge the use of imagery provided by
       services from NASA's Global Imagery Browse Services (GIBS), part of NASA's Earth Science Data and Information
       System (ESDIS).
+      Tło nocne: Black Marble (2016), Suomi NPP / VIIRS, NASA Earth Observatory.
       <br />
       Linie najwyższych napięć: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>,
       <a href="https://opendatacommons.org/licenses/odbl/" target="_blank" rel="noopener">ODbL</a>.
