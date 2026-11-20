@@ -1,5 +1,5 @@
 /* Strona tytułowa OSIRIS – styl inspirowany God's Eye View (ciemne tło, cienki tytuł, etykiety o stałej szerokości,
-   cienkie ramki, chipy, zegar), ale nasz: złoty akcent, kolory warstw z mapy, nasze teksty i układ.
+   cienkie ramki, zegar), ale nasz: złoty akcent, kolory warstw z mapy, nasze teksty i układ.
    Wspólne zmienne (--tlo, --zloto, czcionki) i stopka pochodzą z style.css. */
 
 body.tytulowa {
@@ -193,36 +193,6 @@ body.tytulowa {
 .liczba .brak-danych {
   color: var(--ostrzezenie);
 }
-
-/* ── Chipy w kolorach warstw mapy (same etykiety, nie przyciski) ── */
-.chipy {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 20px 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.chip {
-  padding: 4px 10px;
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  border: 1px solid currentColor;
-  border-radius: 999px;
-}
-
-.chip::before {
-  content: '● ';
-}
-
-.chip--siec { color: #f2c14e; }
-.chip--wiatr { color: #4ade80; }
-.chip--wegiel { color: #ef4444; }
-.chip--gaz { color: #a78bfa; }
-.chip--woda { color: #60a5fa; }
 
 /* ── Karty „Co znajdziesz” ── */
 .karty {
@@ -506,10 +476,6 @@ body.tytulowa {
   font-weight: 300;
 }
 
-.bohater .chipy {
-  justify-content: center;
-}
-
 .bohater .bohater__nasa {
   text-align: center;
   font-weight: 300;
@@ -555,49 +521,4 @@ body.tytulowa {
 .rog--lewy .opis-panel {
   right: auto;
   left: 0;
-}
-
-/* Przycisk „OTWÓRZ MAPĘ →” w barwach flagi Polski: lewa połowa biała, prawa czerwona (#DC143C).
-   Kontrast: ciemny tekst na bieli 19,6:1; biały tekst na #DC143C 5,1:1 (pomiar 20.11.2026). */
-.przycisk-flaga {
-  display: inline-flex;
-  margin-top: 30px;
-  font-family: var(--font-mono);
-  font-size: 0.8125rem;
-  font-weight: 400;
-  letter-spacing: 0.2em;
-  text-decoration: none;
-  border-radius: 4px;
-  overflow: hidden;
-  box-shadow: 0 0 0 1px rgba(232, 238, 247, 0.25);
-  transition: box-shadow 150ms ease, transform 150ms ease;
-}
-
-.przycisk-flaga span {
-  padding: 11px 16px 11px 18px;
-}
-
-.przycisk-flaga__bialy {
-  color: #05070d;
-  background: #ffffff;
-}
-
-.przycisk-flaga__czerwony {
-  color: #ffffff;
-  background: #dc143c;
-}
-
-.przycisk-flaga:hover {
-  box-shadow: 0 0 0 2px var(--zloto);
-}
-
-.przycisk-flaga:focus-visible {
-  outline: 2px solid var(--fokus);
-  outline-offset: 4px;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .przycisk-flaga:hover {
-    transform: translateY(-1px);
-  }
 }
