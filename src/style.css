@@ -71,6 +71,51 @@ main {
   color: #e8eef7;
 }
 
+/* Przełącznik Dzień/Noc: prawy górny róg, obok przycisków przybliżania MapLibre. */
+.przelacznik {
+  position: absolute;
+  top: 10px;
+  right: 52px;
+  display: flex;
+  padding: 3px;
+  gap: 3px;
+  background: rgba(11, 18, 32, 0.92);
+  border: 1px solid #2a3550;
+  border-radius: 8px;
+}
+
+.przelacznik button {
+  padding: 5px 12px;
+  font: inherit;
+  font-size: 0.875rem;
+  color: #e8eef7;
+  background: transparent;
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.przelacznik button[aria-pressed='true'] {
+  color: #05070d;
+  background: #e8eef7;
+  font-weight: 600;
+}
+
+.przelacznik button:focus-visible {
+  outline: 2px solid #8ccbff;
+  outline-offset: 2px;
+}
+
+/* Tekst tylko dla czytnika ekranu (niewidoczny na ekranie). */
+.tylko-czytnik {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
 /* Okienko farmy (MapLibre) ma białe tło – ciemny tekst, bo jasny tekst ciemnego motywu byłby tu niewidoczny. */
 .maplibregl-popup-content {
   color: #1a1a1a;
