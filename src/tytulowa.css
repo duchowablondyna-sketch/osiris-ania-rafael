@@ -1,0 +1,524 @@
+/* Strona tytułowa OSIRIS – styl inspirowany God's Eye View (ciemne tło, cienki tytuł, etykiety o stałej szerokości,
+   cienkie ramki, zegar), ale nasz: złoty akcent, kolory warstw z mapy, nasze teksty i układ.
+   Wspólne zmienne (--tlo, --zloto, czcionki) i stopka pochodzą z style.css. */
+
+body.tytulowa {
+  display: block;
+  height: auto;
+  min-height: 100%;
+}
+
+.ramka-cienka {
+  border: 1px solid rgba(232, 238, 247, 0.12);
+}
+
+/* ── Górny pasek: znak i zegar ── */
+.gora {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 20px 24px 0;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  color: var(--tekst-pomocniczy);
+}
+
+.gora__znak {
+  font-weight: 600;
+  color: var(--tekst);
+  letter-spacing: 0.3em;
+}
+
+.zegar {
+  font-variant-numeric: tabular-nums;
+}
+
+.zegar__kropka {
+  color: var(--zloto);
+}
+
+/* ── Część główna ── */
+.tytul {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 40px 24px 0;
+}
+
+.tytul__opis,
+.tytul__podtytul,
+.etykieta,
+.tytul__nazwa {
+  max-width: 640px;
+}
+
+.etykieta {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  color: var(--zloto);
+}
+
+.tytul__nazwa {
+  margin: 12px 0 0;
+  font-family: var(--font-sans);
+  font-size: clamp(3.5rem, 11vw, 8.5rem);
+  font-weight: 200;
+  line-height: 1;
+  letter-spacing: 0.32em;
+  /* Rozstrzelenie dodaje odstęp także po ostatniej literze – wyrównujemy optycznie. */
+  margin-right: -0.32em;
+  color: var(--tekst);
+}
+
+.tytul__podtytul {
+  margin: 16px 0 0;
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: var(--tekst);
+}
+
+.tytul__opis {
+  max-width: 720px;
+  margin: 20px 0 0;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--tekst-pomocniczy);
+}
+
+/* ── Przyciski ── */
+.przyciski {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.przycisk {
+  display: inline-block;
+  padding: 10px 16px;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--tekst);
+  text-decoration: none;
+  border: 1px solid rgba(232, 238, 247, 0.28);
+  border-radius: 4px;
+}
+
+.przycisk:hover {
+  border-color: var(--tekst);
+}
+
+.przycisk--glowny {
+  color: var(--tlo);
+  background: var(--zloto);
+  border-color: var(--zloto);
+}
+
+.przycisk--glowny:hover {
+  background: #f6d27a;
+  border-color: #f6d27a;
+}
+
+.przycisk:focus-visible {
+  outline: 2px solid var(--fokus);
+  outline-offset: 3px;
+}
+
+/* ── Rząd liczb ── */
+.liczby {
+  display: grid;
+  background: rgba(5, 7, 13, 0.55);
+  grid-template-columns: repeat(4, 1fr);
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid rgba(232, 238, 247, 0.12);
+  border-bottom: 1px solid rgba(232, 238, 247, 0.12);
+}
+
+.liczba {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 16px 16px 0;
+}
+
+.liczba + .liczba {
+  padding-left: 16px;
+  border-left: 1px solid rgba(232, 238, 247, 0.12);
+}
+
+.liczba__wartosc {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--tekst);
+}
+
+.liczba__wartosc--tekst {
+  font-size: 0.875rem;
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+}
+
+.liczba__nazwa {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  color: var(--tekst);
+}
+
+.liczba__zrodlo {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--tekst-pomocniczy);
+}
+
+.liczba .brak-danych {
+  color: var(--ostrzezenie);
+}
+
+/* ── Karty „Co znajdziesz” ── */
+.karty {
+  margin-top: 48px;
+}
+
+.karty__siatka {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.karta {
+  position: relative;
+  padding: 16px;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--tekst-pomocniczy);
+  border: 1px solid rgba(232, 238, 247, 0.12);
+  border-radius: 8px;
+}
+
+.karta p {
+  margin: 8px 0 0;
+}
+
+.karta__tytul {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--tekst);
+}
+
+/* Zapowiedź: przerywana ramka i znaczek – wyraźnie „jeszcze tego nie ma”. */
+.karta--wkrotce {
+  border-style: dashed;
+  border-color: rgba(255, 138, 91, 0.6);
+}
+
+.karta__znaczek {
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 2px 8px;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--ostrzezenie);
+  border: 1px solid currentColor;
+  border-radius: 999px;
+}
+
+/* Węższe ekrany: liczby i karty w dwóch kolumnach (pełna wersja na telefon – później). */
+@media (max-width: 900px) {
+  .liczby,
+  .karty__siatka {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ── Pierwsza odsłona: globus „zawieszony w kosmosie” na całym oknie, napisy na nim ── */
+.bohater {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  /* Miękka turkusowo-niebieska poświata wokół kuli (środek kuli: 70% szerokości, 50% wysokości).
+     „closest-side” = połowa wysokości okna; kula ma 80% tej połowy (tytulowa.js). Bez krawędzi – zanika do czerni. */
+  background:
+    /* Miękka, ciągła poświata od środka kuli na zewnątrz (bez pierścienia) – przy krawędzi kuli zawsze jest blask,
+       niezależnie od jej dokładnego promienia; dalej łagodnie zanika do czerni. */
+    radial-gradient(
+      circle closest-side at 70% 50%,
+      rgba(0, 212, 255, 0.42) 0,
+      rgba(0, 200, 250, 0.3) 60%,
+      rgba(0, 160, 230, 0.13) 92%,
+      rgba(0, 120, 200, 0.04) 112%,
+      rgba(5, 7, 13, 0) 135%
+    ),
+    var(--tlo);
+}
+
+/* Globus: płótno MapLibre poza kulą jest przezroczyste, więc nie widać żadnego prostokąta.
+   Przesunięty w prawo – tekst leży nad ciemnym kosmosem i krawędzią kuli, a nie na światłach Europy. */
+#globus {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 30%;
+  right: -10%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Przyciemnienie pod tekstem: z lewej (tytuł, opis) i od dołu (liczby); dół zanika do koloru tła strony,
+   żeby poświata nie urywała się na granicy sekcji. */
+.bohater__przyciemnienie {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    /* Pod kolumną tekstu (do ok. 58% szerokości) co najmniej ~70% przyciemnienia – tekst ≥ 4,5:1 nawet na brzegu
+       atmosfery i światłach miast (pomiar 20.11.2026); dalej łagodnie do zera. */
+    linear-gradient(90deg, rgba(5, 7, 13, 0.9) 0%, rgba(5, 7, 13, 0.86) 46%, rgba(5, 7, 13, 0.7) 58%, rgba(5, 7, 13, 0) 74%),
+    linear-gradient(0deg, var(--tlo) 0%, rgba(5, 7, 13, 0.82) 18%, rgba(5, 7, 13, 0) 40%);
+}
+
+.bohater__dol {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1120px;
+  margin: auto auto 0;
+  padding: 24px 24px 20px;
+}
+
+.bohater__nasa {
+  margin: 10px 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  color: var(--tekst-pomocniczy);
+  text-align: right;
+}
+
+.tytul-dalej {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 8px 24px 48px;
+}
+
+/* Opis węższy (nie sięga nad środek kuli) i delikatny cień pod napisami na globusie – dodatkowy zapas czytelności. */
+.bohater .tytul__opis {
+  max-width: 600px;
+}
+
+.bohater .tytul__nazwa,
+.bohater .tytul__podtytul,
+.bohater .tytul__opis,
+.bohater .etykieta {
+  text-shadow: 0 0 12px rgba(5, 7, 13, 0.9), 0 0 2px rgba(5, 7, 13, 0.9);
+}
+
+/* ════ Układ symetryczny (20.11.2026): wszystko na osi środka, lżejsze czcionki ════ */
+.gora {
+  align-items: flex-start;
+  font-weight: 300;
+}
+
+.rog {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.rog__link {
+  padding: 0;
+  font: inherit;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 300;
+  letter-spacing: 0.14em;
+  color: var(--tekst-pomocniczy);
+  text-decoration: none;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.rog__link:hover {
+  color: var(--tekst);
+}
+
+.rog__link:focus-visible {
+  outline: 2px solid var(--fokus);
+  outline-offset: 3px;
+}
+
+/* Panel z pełnym opisem pod „OPIS ▾”. */
+.opis-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 380px;
+  padding: 14px 16px;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 300;
+  line-height: 1.6;
+  letter-spacing: 0;
+  text-align: left;
+  color: var(--tekst);
+  background: rgba(11, 18, 32, 0.9);
+  border: 1px solid var(--szklo-ramka);
+  border-radius: 8px;
+  -webkit-backdrop-filter: var(--szklo-rozmycie);
+  backdrop-filter: var(--szklo-rozmycie);
+}
+
+.opis-panel p {
+  margin: 0;
+}
+
+.opis-panel[hidden] {
+  display: none;
+}
+
+.tytul {
+  text-align: center;
+}
+
+.bohater .etykieta,
+.bohater .tytul__nazwa,
+.bohater .tytul__podtytul {
+  max-width: none;
+}
+
+.bohater .etykieta {
+  font-weight: 300;
+  letter-spacing: 0.22em;
+}
+
+/* Rozstrzelenie dodaje odstęp po ostatniej literze – równoważymy z lewej, żeby napis był na osi środka. */
+.bohater .tytul__nazwa {
+  margin: 18px 0 0;
+  padding-left: 0.4em;
+  font-size: clamp(3.5rem, 10vw, 8rem);
+  font-weight: 100;
+  letter-spacing: 0.4em;
+}
+
+.bohater .tytul__podtytul {
+  margin-top: 18px;
+  padding-left: 0.32em;
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  font-weight: 300;
+  letter-spacing: 0.32em;
+}
+
+.bohater .przycisk--glowny {
+  margin-top: 30px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+}
+
+/* Rząd liczb – mniejszy i delikatniejszy, wyśrodkowany. */
+.bohater .liczby {
+  max-width: 920px;
+  margin: 0 auto;
+  background: rgba(5, 7, 13, 0.5);
+}
+
+.bohater .liczba {
+  align-items: center;
+  padding: 12px;
+  text-align: center;
+}
+
+.bohater .liczba__wartosc {
+  font-size: 1.125rem;
+  font-weight: 300;
+}
+
+.bohater .liczba__wartosc--tekst {
+  font-size: 0.75rem;
+}
+
+.bohater .liczba__nazwa {
+  font-size: 0.625rem;
+  font-weight: 300;
+  letter-spacing: 0.14em;
+}
+
+.bohater .liczba__zrodlo {
+  font-size: 0.625rem;
+  font-weight: 300;
+}
+
+.bohater .bohater__nasa {
+  text-align: center;
+  font-weight: 300;
+}
+
+/* ── Kula wyśrodkowana, nisko – tytuł nad jej górną krawędzią jak nad horyzontem (wybór Ani, 20.11.2026) ── */
+#globus {
+  top: 42%;
+  bottom: -58%;
+  left: 0;
+  right: 0;
+}
+
+.bohater {
+  background:
+    radial-gradient(
+      circle farthest-side at 50% 100%,
+      rgba(0, 212, 255, 0.42) 0,
+      rgba(0, 200, 250, 0.3) 40%,
+      rgba(0, 160, 230, 0.12) 56%,
+      rgba(0, 120, 200, 0.03) 70%,
+      rgba(5, 7, 13, 0) 86%
+    ),
+    var(--tlo);
+}
+
+.bohater__przyciemnienie {
+  background:
+    radial-gradient(ellipse 44% 30% at 50% 34%, rgba(5, 7, 13, 0.7) 0%, rgba(5, 7, 13, 0.5) 60%, rgba(5, 7, 13, 0) 100%),
+    /* Dolne przyciemnienie kończy się tuż nad liczbami – złoty punkt Polski przy krawędzi kuli zostaje jasny. */
+    linear-gradient(0deg, var(--tlo) 0%, rgba(5, 7, 13, 0.85) 20%, rgba(5, 7, 13, 0) 31%);
+}
+
+.tytul {
+  padding-top: 9vh;
+}
+
+/* Lewy górny róg: „ŹRÓDŁA I LICENCJE” i „OPIS ▾”; panel opisu rozwija się w prawo od lewej krawędzi. */
+.rog--lewy {
+  align-items: flex-start;
+}
+
+.rog--lewy .opis-panel {
+  right: auto;
+  left: 0;
+}

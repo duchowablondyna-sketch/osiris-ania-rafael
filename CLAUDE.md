@@ -13,7 +13,8 @@ Wygląd 1 (globus + ciemny kosmiczny motyw + tło satelitarne NASA GIBS) – zak
 „Odtwarzanie doby” (wiatr i cena RCE co 15 min, przycisk) – zakończony 20.11.2026.
 Mapa źródeł prądu, część 1 (lądowe farmy wiatrowe ≥10 MW z GEM) – zakończona 20.11.2026.
 Mapa źródeł prądu, część 2 (działające elektrownie z GEM, legenda z przełącznikami, zwijana stopka) – zakończona 20.11.2026.
-Cel: „Wygląd i zaufanie” – linijka źródła w każdym okienku, liczniki i stan danych w legendzie, czcionki u nas (Inter, JetBrains Mono), przygaszone tło satelitarne, panele „szkło” ze złotymi narożnikami (inspiracja God's Eye View, bez kopiowania kodu, bez efektów NVG/FLIR/CRT).
+„Wygląd i zaufanie” (źródło w okienkach, liczniki, czcionki u nas, szkło, lot po przełączeniu) – zakończony 20.11.2026.
+Cel: strona tytułowa na / (tytuł, opis, liczby z danych, chipy, zegar, obracający się globus z nocnym tłem NASA, karty „Co znajdziesz”, meta Open Graph), mapa przeniesiona na /mapa/, wspólna stopka „Źródła i licencje”.
 Robimy tylko to, bez czego cel nie zostanie osiągnięty.
 Nie robimy teraz: innych animacji, nowych warstw danych i wersji na telefon (to później).
 Zanim zaproponujesz cokolwiek, sprawdź: czy bez tego cel zostanie osiągnięty? Jeśli tak — nie proponuj, dopisz najwyżej jedną linię do listy „Do zrobienia” w BEZPIECZENSTWO.md.

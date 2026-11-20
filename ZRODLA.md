@@ -197,6 +197,7 @@ Poziomy weryfikacji:
 
 - **God's Eye View**, Bilawal Sidhu, https://github.com/bilawalsidhu/gods-eye-view, licencja MIT (kod). Inspiracja dla wyglądu i zaufania do danych: linijka „źródło i data” w okienkach, liczniki i stan danych przy warstwach, typografia o stałej szerokości z małymi etykietami wielkimi literami, panele „szkło”, narożniki ramek. Kod OSIRIS jest napisany od nowa – żaden fragment nie jest skopiowany. Nie przejmujemy efektów NVG/FLIR/CRT: FLIR w God's Eye View pokazuje „temperaturę” wyliczoną z jasności obrazu, a NVG znacznik „REC” – sugerują pomiar i nagrywanie, których nie ma.
 - Przeczytane 20.11.2026 (lokalny klon do odczytu, bez uruchamiania).
+- **Strona tytułowa OSIRIS (od 20.11.2026)** – inspiracja stylem God's Eye View: ciemne tło, cienki wielki tytuł z rozstrzelonymi literami, małe etykiety czcionką o stałej szerokości, cienkie ramki, kolorowe chipy, rząd liczb, zegar w rogu, obracający się globus z turkusowo-niebieską poświatą atmosfery. Nie kopiujemy kodu, logo, tekstów ani układu 1:1 – teksty, układ, kolory danych (złoto, zieleń, czerwień węgla…) i liczby są nasze; czcionki: nasze Inter i JetBrains Mono.
 
 ## Czcionki (nie są źródłem danych – dla porządku licencji)
 

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OSIRIS – mapa</title>
+    <meta name="description" content="Mapa źródeł prądu w Polsce: elektrownie, farmy wiatrowe na lądzie i na Bałtyku, linie najwyższych napięć, produkcja z wiatru i cena energii – z oficjalnych, publicznych źródeł." />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="OSIRIS – mapa prądu Polski" />
+    <meta property="og:description" content="Skąd Polska bierze prąd i ile on kosztuje – z oficjalnych, publicznych źródeł, z datą przy każdej liczbie." />
+    <meta property="og:url" content="https://osiris-ania-rafael.pages.dev/mapa/" />
+    <meta property="og:image" content="https://osiris-ania-rafael.pages.dev/og-obraz.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="pl_PL" />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+  <body>
+    <main>
+      <div id="mapa" aria-label="Mapa Polski"></div>
+
+      <section class="wskaznik" aria-live="polite">
+        <div id="odtw-naglowek" hidden>
+          <span class="odtw-data" id="odtw-data"></span>
+          <span class="odtw-zegar" id="odtw-zegar"></span>
+        </div>
+        <span class="wskaznik__etykieta etykieta-mala" id="wiatr-etykieta">Produkcja z wiatru (ostatni dostępny pomiar):</span>
+        <span class="wskaznik__wartosc" id="wiatr-teraz">brak danych</span>
+        <div id="wiatr-wykres"></div>
+        <span class="wskaznik__etykieta" id="wiatr-stan"></span>
+        <span class="wskaznik__etykieta" id="wiatr-ograniczenie">Ostatnie polecenie PSE ograniczenia wiatru: brak danych</span>
+        <span class="wskaznik__etykieta" id="rce-teraz">Cena prądu (RCE): brak danych na dziś</span>
+        <div id="rce-wykres"></div>
+        <div class="odtw-przyciski">
+          <button type="button" id="odtw-start" hidden>▶ Odtwórz dobę</button>
+          <button type="button" id="odtw-teraz" hidden>Wróć do teraz</button>
+        </div>
+        <span class="wskaznik__etykieta" id="odtw-stan"></span>
+        <p class="zrodlo" id="pse-zrodlo"><span class="zrodlo__etykieta">Źródło</span> <span id="pse-zrodlo-tekst">PSE · wczytywanie…</span></p>
+      </section>
+      <!-- Ogłoszenia odtwarzania dla czytnika ekranu (start, pauza, koniec) – okienko na ten czas milknie. -->
+      <span id="odtw-ogloszenie" class="tylko-czytnik" aria-live="polite"></span>
+
+      <div class="przelacznik" role="group" aria-label="Tło mapy">
+        <button type="button" data-tryb="dzien" aria-pressed="false">Dzień</button>
+        <button type="button" data-tryb="noc" aria-pressed="true" aria-describedby="noc-opis"
+          title="Światła nocne (zdjęcie z 2016 r.) to przybliżenie aktywności i oświetlenia – głównie oświetlenia ulic i zabudowy – a nie pomiar zużycia prądu.">Noc</button>
+        <span id="noc-opis" class="tylko-czytnik">Światła nocne (zdjęcie z 2016 r.) to przybliżenie aktywności i oświetlenia – głównie oświetlenia ulic i zabudowy – a nie pomiar zużycia prądu.</span>
+      </div>
+
+      <details class="legenda" open>
+        <summary>Co oznaczają znaczki</summary>
+        <ul>
+          <li><label><input type="checkbox" data-warstwa="linie" checked />
+            <svg class="znak" viewBox="0 0 24 16" aria-hidden="true"><line x1="1" y1="8" x2="23" y2="8" stroke="#05070d" stroke-width="5" /><line x1="1" y1="8" x2="23" y2="8" stroke="#f2c14e" stroke-width="3" /></svg>
+            <span><strong>Linie najwyższych napięć</strong> <span class="legenda__licznik" data-licznik="linie">wczytywanie…</span> – 220 i 400 kV (grubsza linia: 400 kV)</span></label></li>
+          <li><label><input type="checkbox" data-warstwa="morskie" checked />
+            <svg class="znak" viewBox="0 0 24 16" aria-hidden="true"><circle cx="7" cy="8" r="5" fill="#5cc8ff" stroke="#05070d" stroke-width="1.5" /><circle cx="18" cy="8" r="4.5" fill="none" stroke="#5cc8ff" stroke-width="2" /></svg>
+            <span><strong>Morskie farmy wiatrowe</strong> <span class="legenda__licznik" data-licznik="morskie">wczytywanie…</span> – puste kółko: prawdopodobny duplikat lub brak na liście MKiŚ</span></label></li>
+          <li><label><input type="checkbox" data-warstwa="ladowe" checked />
+            <svg class="znak" viewBox="0 0 24 16" aria-hidden="true"><circle cx="7" cy="8" r="4" fill="#4ade80" stroke="#05070d" stroke-width="1.5" /><circle cx="18" cy="8" r="4.5" fill="#05070d" stroke="#4ade80" stroke-width="2" /><circle cx="18" cy="8" r="1.5" fill="#4ade80" /></svg>
+            <span><strong>Lądowe farmy wiatrowe od 10 MW</strong> <span class="legenda__licznik" data-licznik="ladowe">wczytywanie…</span> – pełne kółko: działa; pierścień z kropką: w budowie</span></label></li>
+          <li><label><input type="checkbox" data-warstwa="wegiel" checked />
+            <svg class="znak" viewBox="0 0 24 16" aria-hidden="true"><rect x="6" y="2" width="12" height="12" style="fill: var(--kolor-wegiel)" stroke="#05070d" stroke-width="1.5" /></svg>
+            <span><strong>Elektrownie węglowe</strong> <span class="legenda__licznik" data-licznik="wegiel">wczytywanie…</span> – kwadrat: elektrownia spalająca paliwo</span></label></li>
+          <li><label><input type="checkbox" data-warstwa="gaz" checked />
+            <svg class="znak" viewBox="0 0 24 16" aria-hidden="true"><rect x="6" y="2" width="12" height="12" style="fill: var(--kolor-gaz)" stroke="#05070d" stroke-width="1.5" /></svg>
+            <span><strong>Elektrownie gazowe i olejowe</strong> <span class="legenda__licznik" data-licznik="gaz">wczytywanie…</span> – kwadrat: elektrownia spalająca paliwo</span></label></li>
+          <li><label><input type="checkbox" data-warstwa="woda" checked />
+            <svg class="znak" viewBox="0 0 24 16" aria-hidden="true"><circle cx="12" cy="8" r="6" style="fill: var(--kolor-woda)" stroke="#05070d" stroke-width="1.5" /></svg>
+            <span><strong>Elektrownie wodne</strong> <span class="legenda__licznik" data-licznik="woda">wczytywanie…</span></span></label></li>
+          <li><label><input type="checkbox" data-warstwa="pompowa" checked />
+            <svg class="znak" viewBox="0 0 24 16" aria-hidden="true"><polygon points="12,1 19,8 12,15 5,8" style="fill: var(--kolor-woda)" stroke="#05070d" stroke-width="1.5" /></svg>
+            <span><strong>Elektrownie szczytowo-pompowe</strong> <span class="legenda__licznik" data-licznik="pompowa">wczytywanie…</span> – magazyn energii: pompują wodę w górę, gdy prądu jest dużo, i oddają go, gdy brakuje</span></label></li>
+        </ul>
+        <p class="legenda__uwaga">Elektrownie: tylko działające i tylko duże (progi w „Źródła i licencje”)</p>
+        <p class="legenda__uwaga"><strong>Rozmiar znaczka elektrowni = moc zainstalowana, nie bieżąca produkcja</strong></p>
+        <div class="legenda__skala" aria-hidden="true">
+          <!-- Wzorce w tej samej skali co na mapie przy widoku całej Polski: bok = 0,35 px · √MW. -->
+          <svg viewBox="0 0 28 28" width="28" height="28"><rect x="12.25" y="12.25" width="3.5" height="3.5" fill="#a9b7cc" stroke="#05070d" stroke-width="1" /></svg><span>100 MW</span>
+          <svg viewBox="0 0 28 28" width="28" height="28"><rect x="8.45" y="8.45" width="11.1" height="11.1" fill="#a9b7cc" stroke="#05070d" stroke-width="1" /></svg><span>1 000 MW</span>
+          <svg viewBox="0 0 28 28" width="28" height="28"><rect x="1.65" y="1.65" width="24.7" height="24.7" fill="#a9b7cc" stroke="#05070d" stroke-width="1" /></svg><span>5 000 MW</span>
+        </div>
+        <p class="tylko-czytnik">Wzorce rozmiaru: 100 MW – mały kwadrat, 1 000 MW – średni, 5 000 MW – duży.</p>      </details>
+
+      <!-- Powrót na stronę tytułową: zwykły link (działa z klawiatury i z przyciskiem „Wstecz” przeglądarki). -->
+      <a class="powrot" href="/" aria-label="Strona główna OSIRIS">← OSIRIS</a>
+    </main>
+
+    <!-- Stopka zwinięta do jednej linijki (więcej miejsca na mapę); <details> działa z klawiatury (Tab, Enter, Spacja). -->
+    <!-- STOPKA -->
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
