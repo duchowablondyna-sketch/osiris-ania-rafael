@@ -1,6 +1,7 @@
 import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url';
+import './czcionki.css';
 import './style.css';
 
 // Vite przepakowuje bibliotekę i gubi jej plik workera, więc podajemy adres wprost.
@@ -18,6 +19,47 @@ const GIBS_BLUE_MARBLE =
 // (żeby obraz nie zmienił się bez naszej wiedzy). PNG, poziomy 0–8, bez klucza API.
 const GIBS_BLACK_MARBLE =
   'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_Black_Marble/default/2016-01-01/GoogleMapsCompatible_Level8/{z}/{y}/{x}.png';
+
+// Tło satelitarne przetworzone, żeby dane mocniej się wyróżniały – opis w ZRODLA.md. Zmienia tylko obraz NASA,
+// nie kolory danych. Noc: tylko odbarwienie, bez przyciemniania – pomiar 20.11.2026: przyciemnione środki miast
+// stawały się szare i zbliżone jasnością do znaczków danych (niższy kontrast). Dzień: przyciemnione i odbarwione.
+const TLO_PRZETWORZENIE = {
+  noc: { 'raster-saturation': -0.3, 'raster-brightness-max': 1, 'raster-contrast': 0 },
+  dzien: { 'raster-saturation': -0.5, 'raster-brightness-max': 0.7, 'raster-contrast': -0.1 },
+};
+
+// Jednolita ostatnia linijka okienek: „ŹRÓDŁO {nazwa} · {pobrano|dane|stan}: {data}”.
+// pobrano – kiedy my ściągnęliśmy dane; dane – wersja zbioru u dostawcy; stan – kiedy dane sprawdzono lub opublikowano.
+function linijkaZrodla(nazwa, rodzajDaty, data) {
+  const p = document.createElement('p');
+  p.className = 'zrodlo';
+  const etykieta = document.createElement('span');
+  etykieta.className = 'zrodlo__etykieta';
+  etykieta.textContent = 'Źródło';
+  // Spacja po etykiecie – żeby czytnik ekranu nie czytał „ŹródłoGEM” jako jednego słowa.
+  p.append(etykieta, document.createTextNode(` ${nazwa} · ${rodzajDaty}: ${data}`));
+  return p;
+}
+
+// Odmiana liczebników: 1 elektrownia, 2–4 elektrownie (także 22–24…), 5+ i 12–14 elektrowni.
+function odmiana(n, [jeden, kilka, wiele]) {
+  if (n === 1) return `1 ${jeden}`;
+  const liczba = n.toLocaleString('pl-PL');
+  return [2, 3, 4].includes(n % 10) && ![12, 13, 14].includes(n % 100) ? `${liczba} ${kilka}` : `${liczba} ${wiele}`;
+}
+// Licznik pod nazwą warstwy w legendzie; brak = true pokazuje napis ostrzegawczy zamiast liczby.
+function ustawLicznik(warstwa, tekst, brak = false) {
+  const el = document.querySelector(`.legenda__licznik[data-licznik="${warstwa}"]`);
+  if (!el) return;
+  el.textContent = tekst;
+  el.classList.toggle('brak-danych', brak);
+}
+
+// Moc: od 1000 MW w GW z jednym miejscem po przecinku, poniżej w MW.
+const formatMocy = (mw) =>
+  mw >= 1000
+    ? `${(mw / 1000).toLocaleString('pl-PL', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} GW`
+    : `${Math.round(mw).toLocaleString('pl-PL')} MW`;
 
 // Kolory zgodne z zasadami wyglądu w CLAUDE.md (kontrast sprawdzony wg WCAG).
 const KOLORY = {
@@ -39,11 +81,15 @@ const STATUS_MORSKIE_PL = { Planned: 'planowana', Construction: 'w budowie', Pro
 
 // Uzupełnienie statusu farm morskich z nowszego źródła (dane EMODnet zostają bez zmian; opis w ZRODLA.md).
 const KOREKTY_STATUSU = {
-  'Baltic Power':
-    'stan wg balticpower.pl: w rozruchu – pierwsza energia do sieci 10.07.2026 (odbiór potwierdziły PSE), ' +
-    'wszystkie 76 turbin zainstalowane (7.10.2026), każda po podłączeniu przechodzi 240-godzinną próbę; ' +
-    'jeszcze bez koncesji na wytwarzanie, etap przed eksploatacją komercyjną (daty nie podano). ' +
-    'W danych EMODnet (10.07.2026) i GEM (dane wiatrowe z lutego 2026): w budowie.',
+  'Baltic Power': {
+    tekst:
+      'stan wg balticpower.pl: w rozruchu – pierwsza energia do sieci 10.07.2026 (odbiór potwierdziły PSE), ' +
+      'wszystkie 76 turbin zainstalowane (7.10.2026), każda po podłączeniu przechodzi 240-godzinną próbę; ' +
+      'jeszcze bez koncesji na wytwarzanie, etap przed eksploatacją komercyjną (daty nie podano). ' +
+      'W danych EMODnet (10.07.2026) i GEM (dane wiatrowe z lutego 2026): w budowie.',
+    zrodlo: 'balticpower.pl',
+    stan: '7.10.2026',
+  },
 };
 
 // Przybliżony prostokąt obejmujący Polskę i farmy na Bałtyku (do 55,56°N): [zachód, południe], [wschód, północ].
@@ -107,6 +153,33 @@ let uzytkownikRuszylMape = false;
 for (const zdarzenie of ['mousedown', 'touchstart', 'wheel', 'keydown']) {
   document.getElementById('mapa').addEventListener(zdarzenie, () => (uzytkownikRuszylMape = true), { once: true, passive: true });
 }
+// Chwila ostatniego dotknięcia mapy (każdego, nie tylko pierwszego) – dla lotu po przełączeniu Dzień/Noc.
+let ostatnieDotkniecie = -Infinity;
+for (const zdarzenie of ['mousedown', 'touchstart', 'wheel', 'keydown']) {
+  document.getElementById('mapa').addEventListener(zdarzenie, () => (ostatnieDotkniecie = performance.now()), { passive: true });
+}
+
+// Lot po kliknięciu „Dzień” albo „Noc”: ten sam co przy starcie – od całej kuli do kadru Polski.
+// Każde kliknięcie ma swój numer: zatrzymuje trwający lot i zaczyna od nowa (szybkie podwójne kliknięcie
+// nie zacina się – czekające wcześniejsze loty po prostu nie ruszają). Lot rusza, gdy kafelki nowego tła są
+// wczytane (najpóźniej po 5 s), i tylko jeśli od kliknięcia nikt nie dotknął mapy. Dotknięcie w trakcie lotu
+// przerywa go (MapLibre sam przerywa flyTo przy przeciąganiu i przewijaniu). Przy prefers-reduced-motion – od razu kadr Polski.
+let numerLotu = 0;
+function lotPoPrzelaczeniu() {
+  const numer = ++numerLotu;
+  map.stop();
+  if (BEZ_RUCHU) {
+    ustawKadr();
+    return;
+  }
+  const start = performance.now();
+  map.jumpTo(kameraKuli());
+  Promise.race([new Promise((r) => map.once('idle', r)), czekaj(5000)]).then(() => {
+    if (numer !== numerLotu || ostatnieDotkniecie > start) return;
+    const k = kameraPolski();
+    if (k) map.flyTo({ ...k, duration: 3500, essential: false });
+  });
+}
 function lotDoPolski() {
   if (uzytkownikRuszylMape) return;
   const k = kameraPolski();
@@ -118,6 +191,13 @@ const map = new maplibregl.Map({
   // Własny przycisk atrybucji (niżej): rozwinięty od razu, żeby „© OpenStreetMap contributors” był stale widoczny
   // także przy zwiniętej stopce „Źródła i licencje” (wymóg licencji ODbL dla linii z OSM).
   attributionControl: false,
+  // Polskie podpisy przycisków MapLibre (czytnik ekranu, podpowiedzi).
+  locale: {
+    'Popup.Close': 'Zamknij okienko',
+    'NavigationControl.ZoomIn': 'Przybliż',
+    'NavigationControl.ZoomOut': 'Oddal',
+    'AttributionControl.ToggleAttribution': 'Pokaż lub ukryj podpis źródeł',
+  },
   bounds: GRANICE_POLSKI,
   fitBoundsOptions: { padding: odstepKadru() },
   style: {
@@ -134,8 +214,8 @@ const map = new maplibregl.Map({
     // Domyślnie tryb Noc; przełącznik Dzień/Noc tylko pokazuje jedną warstwę tła i chowa drugą (bez animacji).
     layers: [
       { id: 'tlo', type: 'background', paint: { 'background-color': KOLORY.kosmos } },
-      { id: 'tlo-dzien', type: 'raster', source: 'tlo-dzien', layout: { visibility: 'none' } },
-      { id: 'tlo-noc', type: 'raster', source: 'tlo-noc', layout: { visibility: 'visible' } },
+      { id: 'tlo-dzien', type: 'raster', source: 'tlo-dzien', layout: { visibility: 'none' }, paint: TLO_PRZETWORZENIE.dzien },
+      { id: 'tlo-noc', type: 'raster', source: 'tlo-noc', layout: { visibility: 'visible' }, paint: TLO_PRZETWORZENIE.noc },
       { id: 'polska-kontur', type: 'line', source: 'polska', paint: { 'line-color': KOLORY.kontur, 'line-opacity': 0.6, 'line-width': 1.2 } },
     ],
   },
@@ -287,11 +367,12 @@ const TECHNOLOGIA_WODNA_PL = {
   'pumped storage': 'szczytowo-pompowa',
 };
 // Daty danych poszczególnych trackerów GEM wg arkusza About (kolumna „Latest release”).
-const ZRODLO_ELEKTROWNI = {
-  wegiel: 'Global Coal Plant Tracker, lipiec 2026',
-  gaz: 'Global Oil and Gas Plant Tracker, sierpień 2026',
-  woda: 'Global Hydropower Tracker, marzec 2026',
-  pompowa: 'Global Hydropower Tracker, marzec 2026',
+// (węgiel: Global Coal Plant Tracker; gaz i olej: Global Oil and Gas Plant Tracker; woda: Global Hydropower Tracker)
+const DANE_ELEKTROWNI = {
+  wegiel: 'lipiec 2026',
+  gaz: 'sierpień 2026',
+  woda: 'marzec 2026',
+  pompowa: 'marzec 2026',
 };
 // Rodzaje elektrowni widoczne na mapie (pola w legendzie).
 const widoczneElektrownie = new Set(['wegiel', 'gaz', 'woda', 'pompowa']);
@@ -301,7 +382,10 @@ function filtrElektrowni() {
 
 map.on('load', () => {
   for (const przycisk of document.querySelectorAll('.przelacznik button')) {
-    przycisk.addEventListener('click', () => ustawTryb(przycisk.dataset.tryb));
+    przycisk.addEventListener('click', () => {
+      ustawTryb(przycisk.dataset.tryb);
+      lotPoPrzelaczeniu();
+    });
   }
 
   // Linie najwyższych napięć 220/400 kV (© OpenStreetMap contributors, ODbL), plik z scripts/pobierz-linie.mjs.
@@ -326,6 +410,14 @@ map.on('load', () => {
     source: 'linie-nn',
     layout: { 'line-cap': 'round', 'line-join': 'round' },
     paint: { 'line-color': KOLORY.linie, 'line-width': ['match', ['get', 'napiecie'], 400, 2.5, 1.2] },
+  });
+  // Niewidoczny, szeroki pas wzdłuż linii – tylko po to, żeby cienką linię dało się wygodnie kliknąć.
+  map.addLayer({
+    id: 'linie-nn-klik',
+    type: 'line',
+    source: 'linie-nn',
+    layout: { 'line-cap': 'round', 'line-join': 'round' },
+    paint: { 'line-color': KOLORY.kosmos, 'line-width': 12, 'line-opacity': 0.01 },
   });
 
   // Elektrownie działające (GEM): nad liniami, pod farmami wiatrowymi (duże kwadraty nie zasłaniają kropek farm).
@@ -356,11 +448,49 @@ map.on('load', () => {
   fetch(`${import.meta.env.BASE_URL}data/zrodla-gem.geojson`)
     .then((odp) => (odp.ok ? odp.json() : null))
     .then((geo) => {
-      if (geo) map.getSource('elektrownie').setData(zbierzElektrownie(geo));
+      if (!geo?.features) throw new Error('brak pliku');
+      const elektrownie = zbierzElektrownie(geo);
+      map.getSource('elektrownie').setData(elektrownie);
+      // Liczniki elektrowni: z tych samych danych, które są na mapie.
+      const SLOWA = { wegiel: ['elektrownia', 'elektrownie', 'elektrowni'] };
+      for (const rodzaj of ['wegiel', 'gaz', 'woda', 'pompowa']) {
+        const e = elektrownie.features.filter((f) => f.properties.rodzaj === rodzaj).map((f) => f.properties);
+        const moc = e.reduce((suma, p) => suma + p.moc, 0);
+        ustawLicznik(rodzaj, `${odmiana(e.length, SLOWA.wegiel)} · ${formatMocy(moc)}`);
+      }
+      // Lądowe farmy wiatrowe: farma = lokalizacja GEM; moc działających sumowana z faz.
+      const lad = geo.features.map((f) => f.properties).filter((p) => p.typ === 'wind' && p.technologia === 'Onshore');
+      const dzialajace = lad.filter((p) => p.status === 'operating');
+      const lokalizacje = (lista) => new Set(lista.map((p) => p.gem_location_id)).size;
+      const mocLad = dzialajace.reduce((suma, p) => suma + (p.moc_mw ?? 0), 0);
+      const wBudowie = lokalizacje(lad.filter((p) => p.status === 'construction'));
+      ustawLicznik(
+        'ladowe',
+        `${odmiana(lokalizacje(dzialajace), ['farma działa', 'farmy działają', 'farm działa'])} · ${formatMocy(mocLad)} · ${wBudowie} w budowie`,
+      );
     })
     .catch(() => {
-      /* bez elektrowni na mapie */
+      for (const w of ['ladowe', 'wegiel', 'gaz', 'woda', 'pompowa']) ustawLicznik(w, 'brak danych', true);
     });
+  // Liczniki linii i farm morskich – z tych samych plików, które wczytuje mapa.
+  fetch(`${import.meta.env.BASE_URL}data/linie-nn.geojson`)
+    .then((odp) => (odp.ok ? odp.json() : null))
+    .then((geo) => {
+      if (!geo?.features) throw new Error('brak pliku');
+      ustawLicznik('linie', `${odmiana(geo.features.length, ['odcinek', 'odcinki', 'odcinków'])} · OSM 19.11.2026`);
+    })
+    .catch(() => ustawLicznik('linie', 'brak danych', true));
+  fetch(`${import.meta.env.BASE_URL}data/farmy-baltyk.geojson`)
+    .then((odp) => (odp.ok ? odp.json() : null))
+    .then((geo) => {
+      if (!geo?.features) throw new Error('brak pliku');
+      const ile = (status) => geo.features.filter((f) => f.properties.status === status).length;
+      ustawLicznik(
+        'morskie',
+        `${odmiana(geo.features.length, ['farma', 'farmy', 'farm'])} · ${ile('Construction')} w budowie, ${odmiana(ile('Planned'), ['planowana', 'planowane', 'planowanych'])}`,
+      );
+    })
+    .catch(() => ustawLicznik('morskie', 'brak danych', true));
 
   map.on('click', 'elektrownie', (e) => {
     const p = e.features[0].properties;
@@ -391,13 +521,13 @@ map.on('load', () => {
     linia(`moc: ${p.moc.toLocaleString('pl-PL')} MW (${bloki} w danych)`);
     linia('moc zainstalowana – nie bieżąca produkcja');
     linia(p.dokladnosc === 'exact' ? 'lokalizacja: dokładna' : 'lokalizacja: przybliżona (np. najbliższa miejscowość)');
-    linia(`źródło: Global Energy Monitor (${ZRODLO_ELEKTROWNI[p.rodzaj]}), CC BY 4.0`);
+    el.append(linijkaZrodla('GEM', 'dane', DANE_ELEKTROWNI[p.rodzaj]));
     new maplibregl.Popup().setLngLat(e.features[0].geometry.coordinates).setDOMContent(el).addTo(map);
   });
 
   // Legenda: pola włączające i wyłączające warstwy (zwykłe pola wyboru – Tab, Spacja).
   const WARSTWY_LEGENDY = {
-    linie: ['linie-nn-obwodka', 'linie-nn'],
+    linie: ['linie-nn-obwodka', 'linie-nn', 'linie-nn-klik'],
     morskie: ['farmy-pelne', 'farmy-puste'],
     ladowe: ['farmy-lad-dziala', 'farmy-lad-budowa', 'farmy-lad-budowa-srodek'],
   };
@@ -489,7 +619,7 @@ map.on('load', () => {
         ? 'lokalizacja: dokładna'
         : 'lokalizacja: przybliżona (np. najbliższa miejscowość)',
     );
-    linia('źródło: Global Energy Monitor (dane wiatrowe: Global Wind Power Tracker, luty 2026), CC BY 4.0');
+    el.append(linijkaZrodla('GEM', 'dane', 'luty 2026')); // dane wiatrowe: Global Wind Power Tracker
     new maplibregl.Popup().setLngLat(e.features[0].geometry.coordinates).setDOMContent(el).addTo(map);
   });
 
@@ -539,9 +669,32 @@ map.on('load', () => {
     el.append(tytul, document.createElement('br'), linia(`status: ${STATUS_MORSKIE_PL[status] ?? status}`), document.createElement('br'), linia(`moc: ${moc}`));
     if (weryfikacja) el.append(document.createElement('br'), linia(`weryfikacja: ${weryfikacja_opis ?? weryfikacja}`));
     const korekta = KOREKTY_STATUSU[nazwa];
-    if (korekta) el.append(document.createElement('br'), linia(korekta));
+    if (korekta) el.append(document.createElement('br'), linia(korekta.tekst));
+    el.append(linijkaZrodla('EMODnet', 'dane', '10.07.2026'));
+    if (korekta) el.append(linijkaZrodla(korekta.zrodlo, 'stan', korekta.stan));
     new maplibregl.Popup().setLngLat(e.features[0].geometry.coordinates).setDOMContent(el).addTo(map);
   });
+
+  // Okienko linii 220/400 kV: nazwa z OSM, napięcie, źródło. Linie są cienkie – klikamy w szerszy, niewidoczny pas
+  // (warstwa „linie-nn-klik”). Gdy w tym samym miejscu jest farma albo elektrownia, wygrywa jej okienko.
+  const KROPKI_I_ZNACZKI = ['elektrownie', 'farmy-lad-dziala', 'farmy-lad-budowa', 'farmy-pelne', 'farmy-puste'];
+  map.on('click', 'linie-nn-klik', (e) => {
+    if (map.queryRenderedFeatures(e.point, { layers: KROPKI_I_ZNACZKI.filter((id) => map.getLayer(id)) }).length) return;
+    const p = e.features[0].properties;
+    const el = document.createElement('div');
+    const tytul = document.createElement('strong');
+    tytul.textContent = p.nazwa && p.nazwa !== 'null' ? p.nazwa : 'Linia bez nazwy w OpenStreetMap';
+    const napiecie = document.createElement('span');
+    napiecie.textContent = `linia najwyższego napięcia: ${p.napiecie} kV`;
+    el.append(tytul, document.createElement('br'), napiecie, linijkaZrodla('OpenStreetMap', 'stan', '19.11.2026'));
+    new maplibregl.Popup().setLngLat(e.lngLat).setDOMContent(el).addTo(map);
+  });
+
+  // Kursor „rączka” nad wszystkim, co da się kliknąć.
+  for (const id of ['linie-nn-klik', ...KROPKI_I_ZNACZKI]) {
+    map.on('mouseenter', id, () => (map.getCanvas().style.cursor = 'pointer'));
+    map.on('mouseleave', id, () => (map.getCanvas().style.cursor = ''));
+  }
 });
 
 // Produkcja z wiatru: plik wiatr.json powstaje przy budowaniu (scripts/pobierz-pse.mjs).
@@ -658,10 +811,12 @@ function pokazCene(rce) {
     return teraz >= k - MS_KWADRANS && teraz < k;
   });
   if (!biezacy) {
-    tekst.textContent = 'Cena prądu (RCE): brak danych na dziś';
+    tekst.textContent = rce ? 'Cena prądu (RCE): brak danych na dziś' : 'Cena prądu (RCE): brak danych PSE';
+    tekst.classList.add('brak-danych');
     wykres.replaceChildren();
     return;
   }
+  tekst.classList.remove('brak-danych');
   tekst.textContent = `Cena prądu (RCE) teraz: ${formatCeny(biezacy.cena)} zł/MWh, ${biezacy.okres}`;
   if (seria.length >= 2) rysujWykresCeny(wykres, seria, teraz);
 }
@@ -676,7 +831,8 @@ const cenaGotowa = fetch(`${import.meta.env.BASE_URL}data/rce.json`, { cache: 'n
     setInterval(() => pokazCene(rce), 60_000); // co minutę: nowy kwadrans, a po północy – nowa doba
   })
   .catch(() => {
-    /* zostaje „brak danych na dziś” */
+    daneRce = null;
+    pokazCene(null); // plik się nie wczytał – „brak danych PSE”
   });
 
 // Widok „teraz” wiatru w okienku (wywoływany po wczytaniu i po zakończeniu odtwarzania doby).
@@ -689,8 +845,10 @@ function pokazWiatr(d) {
   if (ogr && typeof ogr.mwh === 'number' && ogr.doba) {
     ograniczenie.textContent = `Ostatnie polecenie PSE ograniczenia wiatru: ${formatDoby(ogr.doba)} – ok. ${ogr.mwh.toLocaleString('pl-PL')} MWh`;
   }
+  const wartosc = document.getElementById('wiatr-teraz');
+  wartosc.classList.toggle('brak-danych', typeof d?.wartosc !== 'number');
   if (typeof d?.wartosc !== 'number') {
-    document.getElementById('wiatr-teraz').textContent = 'brak danych';
+    wartosc.textContent = 'brak danych PSE';
     document.getElementById('wiatr-stan').textContent = '';
     document.getElementById('wiatr-wykres').replaceChildren();
     return;
@@ -703,14 +861,29 @@ function pokazWiatr(d) {
 const wiatrGotowy = fetch(`${import.meta.env.BASE_URL}data/wiatr.json`, { cache: 'no-store' })
   .then((odp) => (odp.ok ? odp.json() : null))
   .then((d) => {
-    if (!d) return;
+    if (!d) {
+      pokazWiatr(null);
+      return;
+    }
     daneWiatr = d;
     if (d.czas_pobrania) document.getElementById('wiatr-pobrano').textContent = formatCzasu(d.czas_pobrania);
     pokazWiatr(d);
   })
-  .catch(() => {
-    /* zostaje „brak danych” */
-  });
+  .catch(() => pokazWiatr(null)); // plik się nie wczytał – „brak danych PSE”
+
+// Linijka „ŹRÓDŁO PSE · pobrano: …” na dole okienka – po wczytaniu (albo nie) obu plików PSE.
+Promise.allSettled([wiatrGotowy, cenaGotowa]).then(() => {
+  const tekst = document.getElementById('pse-zrodlo-tekst');
+  const pobrano = daneWiatr?.czas_pobrania ?? daneRce?.czas_pobrania;
+  const braki = [!daneWiatr && 'wiatr', !daneRce && 'cena'].filter(Boolean);
+  if (!pobrano) {
+    tekst.textContent = 'brak danych PSE';
+    tekst.classList.add('brak-danych');
+    return;
+  }
+  tekst.textContent = `PSE · pobrano: ${formatCzasu(pobrano)}${braki.length ? ` · brak danych: ${braki.join(', ')}` : ''}`;
+  tekst.classList.toggle('brak-danych', braki.length > 0);
+});
 
 // Odtwarzanie doby: plik doba.json powstaje przy budowaniu (wczoraj albo – gdy wczoraj niepełne – przedwczoraj).
 // Tempo: 1 s = 1 godzina (250 ms na kwadrans). Startuje tylko po kliknięciu przycisku. Przy prefers-reduced-motion

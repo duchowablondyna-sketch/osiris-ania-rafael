@@ -4,13 +4,39 @@
   box-sizing: border-box;
 }
 
+/* Wspólne wartości wyglądu. Akcent: złoto (jak linie najwyższych napięć). Kolory danych na mapie są w main.js
+   i się nie zmieniają. */
+:root {
+  --tlo: #05070d;
+  --tekst: #e8eef7;
+  --tekst-pomocniczy: #a9b7cc;
+  --zloto: #f2c14e;
+  --ostrzezenie: #ff8a5b;
+  --fokus: #8ccbff;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  /* Panele „szkło”: półprzezroczyste ciemne tło, rozmycie tego, co pod spodem, cienka jasna ramka. */
+  /* Krycie 0,82: nawet gdy pod panelem jest biel, każdy kolor tekstu ma ≥ 4,5:1 (pomiar 20.11.2026). */
+  --szklo-tlo: rgba(11, 18, 32, 0.82);
+  --szklo-tlo-okienka: rgba(11, 18, 32, 0.86);
+  --szklo-ramka: rgba(232, 238, 247, 0.12);
+  --szklo-rozmycie: blur(14px) saturate(1.2);
+}
+
 html,
 body {
   margin: 0;
   height: 100%;
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  color: #e8eef7;
-  background: #05070d;
+  font-family: var(--font-sans);
+  color: var(--tekst);
+  background: var(--tlo);
+}
+
+/* Mamy grubości 400 i 600 – pogrubienia na 600, żeby przeglądarka nie udawała grubszej czcionki. */
+strong,
+b,
+summary {
+  font-weight: 600;
 }
 
 body {
@@ -27,19 +53,72 @@ main {
 #mapa {
   position: absolute;
   inset: 0;
-  background: #05070d;
+  background: var(--tlo);
 }
 
+/* ── Panele „szkło” ─────────────────────────────────────────── */
+.wskaznik,
+.legenda,
+.przelacznik,
+.maplibregl-popup-content {
+  background: var(--szklo-tlo);
+  border: 1px solid var(--szklo-ramka);
+  -webkit-backdrop-filter: var(--szklo-rozmycie);
+  backdrop-filter: var(--szklo-rozmycie);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+/* Przeglądarka bez rozmycia albo widz, który prosi o mniej przezroczystości: pełne ciemne tło. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .wskaznik,
+  .legenda,
+  .przelacznik,
+  .maplibregl-popup-content {
+    background: rgba(11, 18, 32, 0.94);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .wskaznik,
+  .legenda,
+  .przelacznik,
+  .maplibregl-popup-content {
+    background: rgb(11, 18, 32);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/* ── Typografia „centrum dowodzenia” ───────────────────────── */
+/* Małe etykiety: wielkie litery z odstępem. */
+.etykieta-mala {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--tekst-pomocniczy);
+}
+
+/* Liczby: czcionka o stałej szerokości, cyfry równej szerokości (równe kolumny). */
+.liczby {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Podpisy wykresów (SVG) – też cyfry o stałej szerokości. */
+#wiatr-wykres text,
+#rce-wykres text {
+  font-family: var(--font-mono);
+}
+
+/* ── Okienko PSE ───────────────────────────────────────────── */
 .wskaznik {
   position: absolute;
   top: 16px;
   left: 16px;
   max-width: calc(100% - 80px);
   padding: 12px 16px;
-  background: rgba(11, 18, 32, 0.92);
-  border: 1px solid #2a3550;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
 }
 
 /* Atrybut hidden ma wygrać z display: block (np. ograniczenie wiatru ukryte w trakcie odtwarzania doby). */
@@ -50,29 +129,70 @@ main {
 .wskaznik__etykieta {
   display: block;
   font-size: 0.875rem;
-  color: #a9b7cc;
+  color: var(--tekst-pomocniczy);
+}
+
+.wskaznik__etykieta.etykieta-mala {
+  font-size: 0.6875rem;
 }
 
 .wskaznik__wartosc {
   display: block;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
   font-size: 1.5rem;
   font-weight: 600;
 }
 
+/* Brak danych – widoczny napis zamiast pustej wartości. */
+.brak-danych {
+  color: var(--ostrzezenie);
+}
+
+/* ── Linijka „ŹRÓDŁO … · pobrano/dane/stan: …” (okienko PSE i okienka po kliknięciu) ── */
+.zrodlo {
+  display: block;
+  margin: 8px 0 0;
+  padding-top: 6px;
+  border-top: 1px solid var(--szklo-ramka);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 1.4;
+  color: var(--tekst-pomocniczy);
+}
+
+.zrodlo__etykieta {
+  margin-right: 0.5em;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--zloto);
+}
+
+.zrodlo + .zrodlo {
+  margin-top: 2px;
+  padding-top: 0;
+  border-top: 0;
+}
+
+/* ── Stopka ────────────────────────────────────────────────── */
 .stopka {
   padding: 8px 16px;
   font-size: 0.8125rem;
   line-height: 1.4;
-  color: #a9b7cc;
-  background: #05070d;
+  color: var(--tekst-pomocniczy);
+  background: var(--tlo);
   border-top: 1px solid #2a3550;
 }
 
 /* Zwinięta: jedna linijka „Źródła i licencje ▸”; rozwinięta: pełna treść (strzałka ▾). */
 .stopka__zrodla summary {
   display: inline-block;
-  color: #e8eef7;
-  font-weight: 600;
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--tekst);
   cursor: pointer;
   list-style: none;
 }
@@ -90,7 +210,7 @@ main {
 }
 
 .stopka__zrodla summary:focus-visible {
-  outline: 2px solid #8ccbff;
+  outline: 2px solid var(--fokus);
   outline-offset: 2px;
 }
 
@@ -102,14 +222,14 @@ main {
 }
 
 .stopka a {
-  color: #8ccbff;
+  color: var(--fokus);
 }
 
 .stopka strong {
-  color: #e8eef7;
+  color: var(--tekst);
 }
 
-/* Przełącznik Dzień/Noc: prawy górny róg, obok przycisków przybliżania MapLibre. */
+/* ── Przełącznik Dzień/Noc: prawy górny róg, obok przycisków przybliżania MapLibre ── */
 .przelacznik {
   position: absolute;
   top: 10px;
@@ -117,16 +237,17 @@ main {
   display: flex;
   padding: 3px;
   gap: 3px;
-  background: rgba(11, 18, 32, 0.92);
-  border: 1px solid #2a3550;
   border-radius: 8px;
 }
 
 .przelacznik button {
   padding: 5px 12px;
   font: inherit;
-  font-size: 0.875rem;
-  color: #e8eef7;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--tekst);
   background: transparent;
   border: 0;
   border-radius: 5px;
@@ -134,28 +255,30 @@ main {
 }
 
 .przelacznik button[aria-pressed='true'] {
-  color: #05070d;
-  background: #e8eef7;
-  font-weight: 600;
+  color: var(--tlo);
+  background: var(--tekst);
 }
 
 .przelacznik button:focus-visible {
-  outline: 2px solid #8ccbff;
+  outline: 2px solid var(--fokus);
   outline-offset: 2px;
 }
 
-/* Odtwarzanie doby: podpis daty, duży zegar, przyciski w okienku (nic nie leży na mapie). */
+/* ── Odtwarzanie doby: podpis daty, duży zegar, przyciski w okienku (nic nie leży na mapie) ── */
 .odtw-data {
   display: block;
-  font-size: 0.875rem;
+  font-size: 0.6875rem;
   font-weight: 600;
-  color: #ff8a5b;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ostrzezenie);
 }
 
 .odtw-zegar {
   display: block;
+  font-family: var(--font-mono);
   font-size: 2.5rem;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.1;
   font-variant-numeric: tabular-nums;
 }
@@ -170,7 +293,7 @@ main {
   padding: 5px 12px;
   font: inherit;
   font-size: 0.875rem;
-  color: #e8eef7;
+  color: var(--tekst);
   background: transparent;
   border: 1px solid #2a3550;
   border-radius: 5px;
@@ -178,40 +301,40 @@ main {
 }
 
 .odtw-przyciski button:hover {
-  border-color: #a9b7cc;
+  border-color: var(--tekst-pomocniczy);
 }
 
 .odtw-przyciski button:focus-visible {
-  outline: 2px solid #8ccbff;
+  outline: 2px solid var(--fokus);
   outline-offset: 2px;
 }
 
-/* Legenda „Co oznaczają znaczki”: prawa kolumna pod przełącznikiem Dzień/Noc i przyciskami +/−, zwijana.
-   Kadr Polski jest od niej odsunięty (odstepKadru w main.js). */
+/* ── Legenda „Co oznaczają znaczki”: prawa kolumna pod przełącznikiem i +/−, zwijana.
+   Kadr Polski jest od niej odsunięty (odstepKadru w main.js). ── */
 .legenda {
   position: absolute;
   top: 80px;
   right: 10px;
-  width: 260px;
-  /* Od góry 80 px (przełącznik, +/−), od dołu miejsce na przycisk atrybucji MapLibre. */
+  width: 300px;
+  /* Od góry 80 px (przełącznik, +/−), od dołu miejsce na podpis atrybucji MapLibre. */
   max-height: calc(100% - 80px - 48px);
   overflow: auto;
   padding: 8px 12px;
   font-size: 0.8125rem;
   line-height: 1.35;
-  background: rgba(11, 18, 32, 0.92);
-  border: 1px solid #2a3550;
-  border-radius: 8px;
+  border-radius: 10px;
 }
 
 .legenda summary {
-  font-weight: 600;
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   cursor: pointer;
 }
 
 .legenda summary:focus-visible,
 .legenda input:focus-visible {
-  outline: 2px solid #8ccbff;
+  outline: 2px solid var(--fokus);
   outline-offset: 2px;
 }
 
@@ -233,15 +356,37 @@ main {
   cursor: pointer;
 }
 
+/* Opisy warstw mniejsze (0,75 rem), nazwy warstw w dotychczasowym rozmiarze. */
+.legenda li label > span {
+  font-size: 0.75rem;
+}
+
+.legenda li label > span strong {
+  font-size: 0.8125rem;
+}
+
 .legenda .znak {
   width: 24px;
   height: 16px;
   margin-top: 1px;
 }
 
+/* Licznik w tej samej linijce co nazwa warstwy, liczony z wczytanych danych (main.js). */
+.legenda__licznik {
+  display: inline;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.6875rem;
+  color: var(--tekst-pomocniczy);
+}
+
+.legenda__licznik.brak-danych {
+  color: var(--ostrzezenie);
+}
+
 .legenda__uwaga {
   margin: 8px 0 0;
-  color: #a9b7cc;
+  color: var(--tekst-pomocniczy);
 }
 
 .legenda__skala {
@@ -249,7 +394,9 @@ main {
   align-items: center;
   gap: 4px;
   margin-top: 4px;
-  color: #a9b7cc;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--tekst-pomocniczy);
 }
 
 /* Tekst tylko dla czytnika ekranu (niewidoczny na ekranie). */
@@ -263,7 +410,78 @@ main {
   white-space: nowrap;
 }
 
-/* Okienko farmy (MapLibre) ma białe tło – ciemny tekst, bo jasny tekst ciemnego motywu byłby tu niewidoczny. */
+/* ── Okienka po kliknięciu (MapLibre): ciemne szkło, jasny tekst, złote narożniki ── */
 .maplibregl-popup-content {
-  color: #1a1a1a;
+  position: relative;
+  padding: 12px 34px 10px 14px;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--tekst);
+  background: var(--szklo-tlo-okienka);
+  border-radius: 8px;
+}
+
+/* Złote narożniki wokół okienka wybranego obiektu: cztery kąty z krótkich kresek (bez animacji, bez poświaty). */
+.maplibregl-popup-content::before {
+  position: absolute;
+  inset: -3px;
+  content: '';
+  pointer-events: none;
+  background:
+    linear-gradient(var(--zloto) 0 0) top left / 10px 2px,
+    linear-gradient(var(--zloto) 0 0) top left / 2px 10px,
+    linear-gradient(var(--zloto) 0 0) top right / 10px 2px,
+    linear-gradient(var(--zloto) 0 0) top right / 2px 10px,
+    linear-gradient(var(--zloto) 0 0) bottom left / 10px 2px,
+    linear-gradient(var(--zloto) 0 0) bottom left / 2px 10px,
+    linear-gradient(var(--zloto) 0 0) bottom right / 10px 2px,
+    linear-gradient(var(--zloto) 0 0) bottom right / 2px 10px;
+  background-repeat: no-repeat;
+}
+
+/* „Dzióbek” okienka w kolorze tła okienka (z każdej strony, z której MapLibre go rysuje). */
+.maplibregl-popup-anchor-bottom .maplibregl-popup-tip,
+.maplibregl-popup-anchor-bottom-left .maplibregl-popup-tip,
+.maplibregl-popup-anchor-bottom-right .maplibregl-popup-tip {
+  border-top-color: var(--szklo-tlo-okienka);
+}
+
+.maplibregl-popup-anchor-top .maplibregl-popup-tip,
+.maplibregl-popup-anchor-top-left .maplibregl-popup-tip,
+.maplibregl-popup-anchor-top-right .maplibregl-popup-tip {
+  border-bottom-color: var(--szklo-tlo-okienka);
+}
+
+.maplibregl-popup-anchor-left .maplibregl-popup-tip {
+  border-right-color: var(--szklo-tlo-okienka);
+}
+
+.maplibregl-popup-anchor-right .maplibregl-popup-tip {
+  border-left-color: var(--szklo-tlo-okienka);
+}
+
+/* Przycisk zamknięcia ×: widoczny na ciemnym tle, wygodny do kliknięcia, z obwódką fokusu z klawiatury. */
+.maplibregl-popup-close-button {
+  top: 4px;
+  right: 4px;
+  width: 26px;
+  height: 26px;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: var(--tekst);
+  border-radius: 5px;
+}
+
+.maplibregl-popup-close-button:hover {
+  background: rgba(232, 238, 247, 0.12);
+}
+
+.maplibregl-popup-close-button:focus-visible {
+  outline: 2px solid var(--fokus);
+  outline-offset: 1px;
+}
+
+.maplibregl-popup-content strong {
+  font-size: 0.875rem;
 }
