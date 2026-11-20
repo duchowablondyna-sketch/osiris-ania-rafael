@@ -16,7 +16,7 @@
 - Pakiet nie trafia do gotowej strony w folderze `dist/`.
 
 **Warunki akceptacji:**
-- `npm run dev` uruchamiamy tylko bez opcji `--host` (podgląd dostępny wyłącznie na tym komputerze).
+- Podgląd (`npm run dev`, `npm run preview`) uruchamiamy z `--host 127.0.0.1` – dostępny wyłącznie na tym komputerze. Nigdy `--host` bez adresu ani `--host 0.0.0.0` (to udostępnia podgląd w sieci). Zmiana 20.11.2026: bez `--host` serwer słuchał tylko na IPv6 (`[::1]`), a przeglądarka łączyła się przez IPv4 (`127.0.0.1`) i podgląd nie działał.
 - Sprawdzamy dostępność poprawki co tydzień, docelowo automatycznie przez Dependabota.
 
 **Data decyzji:** 18.11.2026
@@ -76,6 +76,8 @@
 - [ ] Harmonogram GitHub Actions bywa opóźniany lub pomijany (20.11.2026: zamiast 5 uruchomień były 2, z opóźnieniem 2–3 h) – jeśli się powtarza, rozważyć Cloudflare Cron Triggers.
 - [ ] Pulsowanie farm wiatrowych w rytm produkcji krajowej – dopiero po dodaniu farm lądowych; skala względem mocy zainstalowanej, nie maksimum doby.
 - [ ] Okienko farmy zasłania kropki, a kropki blisko siebie nachodzą na siebie (np. Baltic Power pod pustą kropką Orlen Neptun VIII, 2,5 km) – okienko powinno pokazywać wszystkie farmy w klikniętym miejscu, nie tylko tę z wierzchu.
+- [ ] Osobna podstrona „Źródła” przy rozbudowie strony (zamiast zwijanej stopki „Źródła i licencje”).
+- [ ] Polskie nazwy elektrowni zamiast nazw z GEM (np. „Belchatow power station” → „Elektrownia Bełchatów”).
 - [ ] Moc farm wiatrowych poniżej 10 MW z innego źródła (np. URE) – GEM ich nie obejmuje.
 - [ ] Potwierdzić w oficjalnym dokumencie PSE moc zainstalowaną farm wiatrowych (czerwiec 2026; podawane 11,16 GW / 11 191 MW) – do tego czasu liczba nie trafia na stronę.
 - [x] Warstwa VIIRS_Black_Marble (nocne światła miast, NASA GIBS) – zrobione w etapie „Prąd nocą” (20.11.2026).

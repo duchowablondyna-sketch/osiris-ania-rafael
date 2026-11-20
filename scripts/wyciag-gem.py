@@ -27,6 +27,7 @@ R = '{http://schemas.openxmlformats.org/officeDocument/2006/relationships}'
 POLA = {
     'Type': 'typ',
     'Technology': 'technologia',
+    'Fuel (combustion only)': 'paliwo',
     'Plant / Project name': 'nazwa',
     'Unit / Phase name': 'faza',
     'Capacity (MW)': 'moc_mw',

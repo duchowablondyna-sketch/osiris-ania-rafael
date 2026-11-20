@@ -68,6 +68,39 @@ main {
   border-top: 1px solid #2a3550;
 }
 
+/* Zwinięta: jedna linijka „Źródła i licencje ▸”; rozwinięta: pełna treść (strzałka ▾). */
+.stopka__zrodla summary {
+  display: inline-block;
+  color: #e8eef7;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.stopka__zrodla summary::-webkit-details-marker {
+  display: none;
+}
+
+.stopka__zrodla summary::after {
+  content: ' ▸';
+}
+
+.stopka__zrodla[open] summary::after {
+  content: ' ▾';
+}
+
+.stopka__zrodla summary:focus-visible {
+  outline: 2px solid #8ccbff;
+  outline-offset: 2px;
+}
+
+.stopka__tresc {
+  margin-top: 4px;
+  /* Rozwinięta treść nie zabiera całej strony – przewija się w stopce. */
+  max-height: 40vh;
+  overflow: auto;
+}
+
 .stopka a {
   color: #8ccbff;
 }
@@ -153,9 +186,76 @@ main {
   outline-offset: 2px;
 }
 
+/* Legenda „Co oznaczają znaczki”: prawa kolumna pod przełącznikiem Dzień/Noc i przyciskami +/−, zwijana.
+   Kadr Polski jest od niej odsunięty (odstepKadru w main.js). */
+.legenda {
+  position: absolute;
+  top: 80px;
+  right: 10px;
+  width: 260px;
+  /* Od góry 80 px (przełącznik, +/−), od dołu miejsce na przycisk atrybucji MapLibre. */
+  max-height: calc(100% - 80px - 48px);
+  overflow: auto;
+  padding: 8px 12px;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  background: rgba(11, 18, 32, 0.92);
+  border: 1px solid #2a3550;
+  border-radius: 8px;
+}
+
+.legenda summary {
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.legenda summary:focus-visible,
+.legenda input:focus-visible {
+  outline: 2px solid #8ccbff;
+  outline-offset: 2px;
+}
+
+.legenda ul {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.legenda li + li {
+  margin-top: 4px;
+}
+
+.legenda li label {
+  display: grid;
+  grid-template-columns: auto 24px 1fr;
+  gap: 6px;
+  align-items: start;
+  cursor: pointer;
+}
+
+.legenda .znak {
+  width: 24px;
+  height: 16px;
+  margin-top: 1px;
+}
+
+.legenda__uwaga {
+  margin: 8px 0 0;
+  color: #a9b7cc;
+}
+
+.legenda__skala {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  color: #a9b7cc;
+}
+
 /* Tekst tylko dla czytnika ekranu (niewidoczny na ekranie). */
 .tylko-czytnik {
   position: absolute;
+  margin: 0;
   width: 1px;
   height: 1px;
   overflow: hidden;
