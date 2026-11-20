@@ -122,6 +122,33 @@ Poziomy weryfikacji:
   - Orlen Neptun VIII: EMODnet 1000 MW; MKiŚ (46.E.1) 966 MW.
 - **Wygląd na mapie:** farmy „na liście MKiŚ” – pełna kropka; „prawdopodobny duplikat” i „brak na liście MKiŚ” – kropka pusta w środku; w okienku linia „weryfikacja: …”.
 
+### Uzupełnienie statusu: Baltic Power
+
+- **Dane EMODnet zostają bez zmian** (status „Construction”, 1140 MW). Uzupełnienie jest osobnym tekstem w okienku farmy (`KOREKTY_STATUSU` w `src/main.js`) i jednym zdaniem w stopce.
+- **Źródła (przeczytane w całości 20.11.2026, poziom 1 – źródło inwestora):**
+  - Komunikat z 10.07.2026, https://balticpower.pl/aktualnosci/morska-farma-wiatrowa-baltic-power-po-raz-pierwszy-wyprodukowa%C5%82a-i-dostarczy%C5%82a-energi%C4%99-z-morza-dla-polskiej-sieci-energetycznej/ – „Odbiór energii na stacji w gminie Choczewo potwierdziły Polskie Sieci Energetyczne”; wtedy „ponad 50 z 76 turbin”, kolejne dołączane „aż do osiągnięcia pełnej mocy wytwórczej”; koncesja URE zapowiedziana na II połowę 2026.
+  - Komunikat z 7.10.2026, https://balticpower.pl/news/baltic-power-project-completes-installation-of-all-76-turbines-the-first-polish-offshore-wind-farm-in-poland-enters-the-final-stage-before-commercial-operations/ – „installation of the last, 76th turbine”; po podłączeniu turbina przechodzi „240-hour trial operation”; elektrownia „does not yet hold a generation license”; brak daty eksploatacji komercyjnej i brak informacji o pracy pełną mocą.
+- **Moc:** 76 × 15 MW = 1140 MW (= EMODnet); inwestor i GEM podają „ok. 1,2 GW” / 1200 MW.
+- **Opis w okienku:** rozruch od pierwszej energii do sieci 10.07.2026, wszystkie turbiny zainstalowane, bez koncesji, przed eksploatacją komercyjną; w EMODnet i GEM: „w budowie”.
+
+## Global Energy Monitor: lądowe farmy wiatrowe (i wyciąg innych źródeł prądu)
+
+- **Co:** Global Integrated Power Tracker, September 2026 release (plik „Global Integrated Power September 2026 V2.xlsx”, arkusz „Power facilities”), https://globalenergymonitor.org/projects/global-integrated-power-tracker
+- **Atrybucja (zalecana przez GEM, dosłownie):** „Global Energy Monitor, Global Integrated Power Tracker, September 2026 release.”
+- **Licencja:** CC BY 4.0, https://creativecommons.org/licenses/by/4.0/ (wg arkusza About). Zmodyfikowane: wyciąg.
+- **Dane wiatrowe są starsze niż wydanie:** według arkusza About wydanie z września 2026 zawiera dane wiatrowe z **Global Wind Power Tracker z lutego 2026** („The second update in February 2026 incorporated the latest release of the Global Solar Plant Tracker and Global Wind Plant Tracker”).
+- **Surowy plik nie jest w repo** (`.gitignore`: `*.xlsx`, `Global Integrated Power*`). Wyciąg robi jednorazowo `scripts/wyciag-gem.py` (Python bez dodatkowych pakietów), wynik: `public/data/zrodla-gem.geojson` – 699 punktów (jeden punkt = jedna faza/blok), pola: typ, technologia, nazwa, faza, moc, status, rok uruchomienia, dokładność lokalizacji, identyfikatory GEM, link GEM.wiki.
+- **Wykluczenia:**
+  - fotowoltaika (typ „utility-scale solar”, 4778 wierszy dla Polski) – cała;
+  - wiersze z oznaczeniem TransitionZero („TZ:” w kolumnie „Other IDs (unit/phase)”; arkusz About nazywa je „TZ ID”) – wg About pochodzą z TransitionZero Solar Asset Mapper na licencji **CC BY-NC 4.0**. Dla Polski: 2 wiersze, oba fotowoltaika. Skrypt wyklucza je dla każdego typu i wypisuje ich liczbę.
+- **Próg:** GEM obejmuje farmy wiatrowe **≥10 MW** („≥1MW data are provided for some countries when the data were readily available” – dla Polski najmniejsza działająca ma dokładnie 10 MW). **Kropki na mapie to tylko duże farmy** – mniejsze farmy i pojedyncze turbiny nie są pokazane.
+- **Na mapie:** tylko wiatr lądowy (`Onshore`) o statusie „operating” (pełna zielona kropka, 260 wierszy, 233 lokalizacje) i „construction” (pierścień z kropką, 7 wierszy, 313 MW). Nie pokazujemy: planowanych (pre-construction, announced), wstrzymanych ani anulowanych. Farmy morskie z GEM (28 wierszy) nie są pokazywane – morskie są z EMODnet.
+- **Dokładność lokalizacji:** wg About „approximate” = najbliższa miejscowość lub inne informacje, „exact” = widoczne na mapie lub podane w źródłach. Działające lądowe: 129 exact, 131 approximate – informacja w okienku farmy.
+- **Sprawdzian prawdy (moc działających farm lądowych):** wyciąg: **8 962,5 MW** (260 wierszy). Porównanie z mocą zainstalowaną wg PSE: liczba **11,16 GW (czerwiec 2026) – do potwierdzenia**: nie znaleziono oficjalnego dokumentu PSE z tą wartością (20.11.2026 sprawdzone: strony raportów miesięcznych KSE i „Informacje o zasobach wytwórczych KSE” na pse.pl nie pokazują plików za 2026). Źródło wtórne (gramwzielone.pl, wyniki wyszukiwania, nieprzeczytane w całości) cytuje PSE: 11 191 MW na 1.06.2026 – też do potwierdzenia. Liczba PSE **nie trafia na stronę**, dopóki nie będzie oficjalnego źródła.
+  - Możliwe przyczyny różnicy (ok. 2,2 GW, niezmierzone): próg 10 MW w GEM (mniejsze farmy i pojedyncze turbiny poza danymi); dane wiatrowe GEM z lutego 2026, a stan PSE z czerwca 2026 (farmy oddane w tym czasie mogą być w GEM jako „construction” albo nie być wcale).
+- **Data sprawdzenia:** 20.11.2026
+- **Poziom weryfikacji:** 1 (arkusz About przeczytany w całości; wyciąg sprawdzony liczbowo: 8 962,5 MW działających farm lądowych zgodne z analizą pliku źródłowego)
+
 ## OpenStreetMap: linie najwyższych napięć 220/400 kV
 
 - **Co:** linie elektroenergetyczne `power=line` z napięciem 220 kV lub 400 kV (tag `voltage` zawiera `220000` lub `400000`) w granicach Polski.

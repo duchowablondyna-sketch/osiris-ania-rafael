@@ -10,7 +10,8 @@ Tracer bullet nr 6 (cena prądu RCE teraz i wykres bieżącej doby) – zakończ
 Automatyczne odświeżanie strony (Cloudflare Deploy Hook z GitHub Actions, co 4 godziny) – zakończone 19.11.2026.
 Wygląd 1 (globus + ciemny kosmiczny motyw + tło satelitarne NASA GIBS) – zakończony 20.11.2026.
 „Prąd nocą” (przełącznik Dzień/Noc, tło nocne NASA Black Marble 2016) – zakończony 20.11.2026.
-Cel: „Odtwarzanie doby”: odtworzenie wczorajszej pełnej doby (wiatr i cena RCE co 15 min) uruchamiane przyciskiem przez widza.
+„Odtwarzanie doby” (wiatr i cena RCE co 15 min, przycisk) – zakończony 20.11.2026.
+Cel: mapa źródeł prądu, część 1 – lądowe farmy wiatrowe ≥10 MW z Global Energy Monitor (zielone kropki; morskie zostają z EMODnet).
 Robimy tylko to, bez czego cel nie zostanie osiągnięty.
 Nie robimy teraz: innych animacji, nowych warstw danych i wersji na telefon (to później).
 Zanim zaproponujesz cokolwiek, sprawdź: czy bez tego cel zostanie osiągnięty? Jeśli tak — nie proponuj, dopisz najwyżej jedną linię do listy „Do zrobienia” w BEZPIECZENSTWO.md.
