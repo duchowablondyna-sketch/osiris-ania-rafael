@@ -228,9 +228,13 @@ const podpis = (tekst, atrybuty) => {
 
 // Mały wykres liniowy produkcji z wiatru z bieżącej doby.
 // seria: [{ okres: 'HH:MM - HH:MM', mw }], kolejne kwadranse od 00:00.
-function rysujWykres(kontener, seria) {
+// znacznik (opcjonalnie): numer kwadransu, na którym stoi kreska (odtwarzanie doby), etykieta: podpis kreski.
+function rysujWykres(kontener, seria, { znacznik = null, etykieta = '', opisDoby = 'w bieżącej dobie' } = {}) {
   const punkty = (seria ?? []).filter((p) => typeof p.mw === 'number' && typeof p.okres === 'string');
-  if (punkty.length < 2) return;
+  if (punkty.length < 2) {
+    kontener.replaceChildren();
+    return;
+  }
 
   const W = 240, H = 72, GORA = 14, DOL = 58; // obszar linii: od GORA do DOL
   const maks = Math.max(...punkty.map((p) => p.mw));
@@ -240,7 +244,7 @@ function rysujWykres(kontener, seria) {
 
   const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
   const opis = el('title', {});
-  opis.textContent = 'Produkcja z wiatru w bieżącej dobie, co 15 minut, w MW';
+  opis.textContent = `Produkcja z wiatru ${opisDoby}, co 15 minut, w MW`;
   svg.append(
     opis,
     el('line', { x1: 0, y1: DOL, x2: W, y2: DOL, stroke: KOLORY.os, 'stroke-width': 1 }),
@@ -255,7 +259,13 @@ function rysujWykres(kontener, seria) {
     podpis(punkty[0].okres.split(' - ')[0], { x: 0, y: H - 2 }),
     podpis(punkty.at(-1).okres.split(' - ')[1] ?? '', { x: W, y: H - 2, 'text-anchor': 'end' }),
   );
-  kontener.append(svg);
+  if (znacznik !== null) {
+    svg.append(
+      el('line', { x1: x(znacznik), y1: GORA - 4, x2: x(znacznik), y2: DOL, stroke: KOLORY.teraz, 'stroke-width': 1.5 }),
+      podpis(etykieta, { x: W, y: 10, 'text-anchor': 'end', fill: KOLORY.teraz }),
+    );
+  }
+  kontener.replaceChildren(svg);
 }
 
 // Cena prądu RCE: plik rce.json powstaje przy budowaniu (scripts/pobierz-pse.mjs), zawiera doby wg czasu polskiego.
@@ -265,7 +275,7 @@ const MS_KWADRANS = 15 * 60_000;
 const formatCeny = (c) => c.toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const dzisPL = () => new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Warsaw' });
 
-function rysujWykresCeny(kontener, seria, teraz) {
+function rysujWykresCeny(kontener, seria, teraz, { etykieta = 'teraz', opisDoby = 'w bieżącej dobie' } = {}) {
   const W = 240, H = 84, GORA = 26, DOL = 70; // obszar linii: od GORA do DOL
   const ceny = seria.map((p) => p.cena);
   const maks = Math.max(...ceny);
@@ -278,7 +288,7 @@ function rysujWykresCeny(kontener, seria, teraz) {
 
   const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
   const opis = el('title', {});
-  opis.textContent = 'Cena prądu RCE w bieżącej dobie, co 15 minut, w zł/MWh';
+  opis.textContent = `Cena prądu RCE ${opisDoby}, co 15 minut, w zł/MWh`;
   svg.append(opis, el('line', { x1: 0, y1: DOL, x2: W, y2: DOL, stroke: KOLORY.os, 'stroke-width': 1 }));
   if (min < 0) {
     svg.append(el('line', { x1: 0, y1: y(0), x2: W, y2: y(0), stroke: KOLORY.tekstPomocniczy, 'stroke-width': 1, 'stroke-dasharray': '3 3' }));
@@ -294,7 +304,7 @@ function rysujWykresCeny(kontener, seria, teraz) {
     el('line', { x1: x(teraz), y1: GORA - 4, x2: x(teraz), y2: DOL, stroke: KOLORY.teraz, 'stroke-width': 1.5 }),
     podpis(`maks. ${formatCeny(maks)} zł/MWh`, { x: 0, y: 10 }),
     podpis(`min. ${formatCeny(min)} zł/MWh`, { x: 0, y: 21 }),
-    podpis('teraz', { x: W, y: 21, 'text-anchor': 'end', fill: KOLORY.teraz }),
+    podpis(etykieta, { x: W, y: 21, 'text-anchor': 'end', fill: KOLORY.teraz }),
     podpis(seria[0].okres.split(' - ')[0], { x: 0, y: H - 2 }),
     podpis(seria.at(-1).okres.split(' - ')[1] ?? '', { x: W, y: H - 2, 'text-anchor': 'end' }),
   );
@@ -302,6 +312,7 @@ function rysujWykresCeny(kontener, seria, teraz) {
 }
 
 function pokazCene(rce) {
+  if (odtwarzanie) return; // w trakcie odtwarzania doby okienko pokazuje odtwarzaną dobę – „teraz” wróci po nim
   const tekst = document.getElementById('rce-teraz');
   const wykres = document.getElementById('rce-wykres');
   const seria = (rce?.doby?.[dzisPL()] ?? []).filter((p) => typeof p.cena === 'number' && p.koniec_utc);
@@ -319,9 +330,11 @@ function pokazCene(rce) {
   if (seria.length >= 2) rysujWykresCeny(wykres, seria, teraz);
 }
 
+let daneRce = null;
 const cenaGotowa = fetch(`${import.meta.env.BASE_URL}data/rce.json`, { cache: 'no-store' })
   .then((odp) => (odp.ok ? odp.json() : null))
   .then((rce) => {
+    daneRce = rce;
     if (rce?.czas_pobrania) document.getElementById('rce-pobrano').textContent = formatCzasu(rce.czas_pobrania);
     pokazCene(rce);
     setInterval(() => pokazCene(rce), 60_000); // co minutę: nowy kwadrans, a po północy – nowa doba
@@ -330,27 +343,146 @@ const cenaGotowa = fetch(`${import.meta.env.BASE_URL}data/rce.json`, { cache: 'n
     /* zostaje „brak danych na dziś” */
   });
 
+// Widok „teraz” wiatru w okienku (wywoływany po wczytaniu i po zakończeniu odtwarzania doby).
+let daneWiatr = null;
+function pokazWiatr(d) {
+  document.getElementById('wiatr-etykieta').textContent = 'Produkcja z wiatru (ostatni dostępny pomiar):';
+  const ogr = d?.ograniczenie;
+  const ograniczenie = document.getElementById('wiatr-ograniczenie');
+  ograniczenie.hidden = false;
+  if (ogr && typeof ogr.mwh === 'number' && ogr.doba) {
+    ograniczenie.textContent = `Ostatnie polecenie PSE ograniczenia wiatru: ${formatDoby(ogr.doba)} – ok. ${ogr.mwh.toLocaleString('pl-PL')} MWh`;
+  }
+  if (typeof d?.wartosc !== 'number') {
+    document.getElementById('wiatr-teraz').textContent = 'brak danych';
+    document.getElementById('wiatr-stan').textContent = '';
+    document.getElementById('wiatr-wykres').replaceChildren();
+    return;
+  }
+  document.getElementById('wiatr-teraz').textContent = `${Math.round(d.wartosc).toLocaleString('pl-PL')} ${d.jednostka}`;
+  document.getElementById('wiatr-stan').textContent = `stan na: ${formatDoby(d.doba)}, ${d.okres}`;
+  rysujWykres(document.getElementById('wiatr-wykres'), d.seria);
+}
+
 const wiatrGotowy = fetch(`${import.meta.env.BASE_URL}data/wiatr.json`, { cache: 'no-store' })
   .then((odp) => (odp.ok ? odp.json() : null))
   .then((d) => {
     if (!d) return;
+    daneWiatr = d;
     if (d.czas_pobrania) document.getElementById('wiatr-pobrano').textContent = formatCzasu(d.czas_pobrania);
-    const ogr = d.ograniczenie;
-    if (ogr && typeof ogr.mwh === 'number' && ogr.doba) {
-      document.getElementById('wiatr-ograniczenie').textContent =
-        `Ostatnie polecenie PSE ograniczenia wiatru: ${formatDoby(ogr.doba)} – ok. ${ogr.mwh.toLocaleString('pl-PL')} MWh`;
-    }
-    if (typeof d.wartosc !== 'number') return;
-    document.getElementById('wiatr-teraz').textContent = `${Math.round(d.wartosc).toLocaleString('pl-PL')} ${d.jednostka}`;
-    document.getElementById('wiatr-stan').textContent = `stan na: ${formatDoby(d.doba)}, ${d.okres}`;
-    rysujWykres(document.getElementById('wiatr-wykres'), d.seria);
+    pokazWiatr(d);
   })
   .catch(() => {
     /* zostaje „brak danych” */
   });
 
+// Odtwarzanie doby: plik doba.json powstaje przy budowaniu (wczoraj albo – gdy wczoraj niepełne – przedwczoraj).
+// Tempo: 1 s = 1 godzina (250 ms na kwadrans). Startuje tylko po kliknięciu przycisku. Przy prefers-reduced-motion
+// zegar, wartości i kreski zmieniają się raz na godzinę zamiast co kwadrans. Na czas odtwarzania okienko przestaje
+// być „aria-live” (czytnik ogłaszałby 4 zmiany na sekundę) – ogłaszamy tylko start, pauzę i koniec.
+const MS_NA_KWADRANS = 250;
+let odtwarzanie = null; // { uplyw, start, raf, i } – null, gdy pokazujemy „teraz”
+let daneDoby = null;
+
+const okienko = document.querySelector('.wskaznik');
+const przyciskStart = document.getElementById('odtw-start');
+const przyciskTeraz = document.getElementById('odtw-teraz');
+const ogloszenie = (tekst) => (document.getElementById('odtw-ogloszenie').textContent = tekst);
+
+function pokazKwadrans(i) {
+  const k = daneDoby.kwadranse;
+  const p = k[i];
+  const godzina = p.okres.split(' - ')[0];
+  const opisDoby = `w dobie ${formatDoby(daneDoby.doba)}`;
+  document.getElementById('odtw-zegar').textContent = godzina;
+  document.getElementById('wiatr-teraz').textContent = `${Math.round(p.mw).toLocaleString('pl-PL')} MW`;
+  document.getElementById('wiatr-stan').textContent = `kwadrans ${p.okres}`;
+  rysujWykres(document.getElementById('wiatr-wykres'), k, { znacznik: i, etykieta: godzina, opisDoby });
+  document.getElementById('rce-teraz').textContent = `Cena prądu (RCE): ${formatCeny(p.cena)} zł/MWh, ${p.okres}`;
+  rysujWykresCeny(document.getElementById('rce-wykres'), k, Date.parse(p.koniec_utc) - MS_KWADRANS / 2, { etykieta: godzina, opisDoby });
+}
+
+function klatka(teraz) {
+  const uplyw = odtwarzanie.uplyw + (teraz - odtwarzanie.start);
+  let i = Math.floor(uplyw / MS_NA_KWADRANS);
+  if (BEZ_RUCHU) i -= i % 4; // raz na godzinę
+  if (i >= daneDoby.kwadranse.length) {
+    wrocDoTeraz('Koniec odtworzenia doby. Pokazuję dane bieżące.');
+    return;
+  }
+  if (i !== odtwarzanie.i) {
+    odtwarzanie.i = i;
+    pokazKwadrans(i);
+  }
+  odtwarzanie.raf = requestAnimationFrame(klatka);
+}
+
+function startLubPauza() {
+  if (!odtwarzanie) {
+    // Start od początku doby
+    odtwarzanie = { uplyw: 0, start: performance.now(), raf: 0, i: -1 };
+    okienko.setAttribute('aria-live', 'off');
+    document.getElementById('odtw-naglowek').hidden = false;
+    document.getElementById('odtw-data').textContent = `Odtworzenie doby: ${formatDoby(daneDoby.doba)}`;
+    document.getElementById('wiatr-etykieta').textContent = 'Produkcja z wiatru:';
+    document.getElementById('wiatr-ograniczenie').hidden = true;
+    przyciskTeraz.hidden = false;
+    przyciskStart.textContent = '❚❚ Pauza';
+    ogloszenie(`Odtwarzanie doby ${formatDoby(daneDoby.doba)}, 1 sekunda to 1 godzina.`);
+    odtwarzanie.raf = requestAnimationFrame(klatka);
+  } else if (odtwarzanie.raf) {
+    // Pauza
+    cancelAnimationFrame(odtwarzanie.raf);
+    odtwarzanie.uplyw += performance.now() - odtwarzanie.start;
+    odtwarzanie.raf = 0;
+    przyciskStart.textContent = '▶ Wznów';
+    ogloszenie(`Pauza, godzina ${document.getElementById('odtw-zegar').textContent}.`);
+  } else {
+    // Wznowienie
+    odtwarzanie.start = performance.now();
+    przyciskStart.textContent = '❚❚ Pauza';
+    ogloszenie('Wznowiono odtwarzanie.');
+    odtwarzanie.raf = requestAnimationFrame(klatka);
+  }
+}
+
+function wrocDoTeraz(komunikat = 'Pokazuję dane bieżące.') {
+  if (odtwarzanie?.raf) cancelAnimationFrame(odtwarzanie.raf);
+  odtwarzanie = null;
+  document.getElementById('odtw-naglowek').hidden = true;
+  przyciskTeraz.hidden = true;
+  przyciskStart.textContent = '▶ Odtwórz dobę';
+  // Fokus był na „Wróć do teraz”, który znika – przenosimy go na przycisk odtwarzania.
+  if (document.activeElement === przyciskTeraz || document.activeElement === document.body) przyciskStart.focus();
+  pokazWiatr(daneWiatr);
+  pokazCene(daneRce);
+  okienko.setAttribute('aria-live', 'polite');
+  ogloszenie(komunikat);
+}
+
+przyciskStart.addEventListener('click', startLubPauza);
+// Karta ukryta w trakcie odtwarzania – automatyczna pauza, żeby po powrocie nie było przeskoku w czasie.
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden && odtwarzanie?.raf) startLubPauza();
+});
+przyciskTeraz.addEventListener('click', () => wrocDoTeraz());
+
+const dobaGotowa = fetch(`${import.meta.env.BASE_URL}data/doba.json`, { cache: 'no-store' })
+  .then((odp) => (odp.ok ? odp.json() : null))
+  .catch(() => null)
+  .then((d) => {
+    const pelna = d?.doba && Array.isArray(d.kwadranse) && d.kwadranse.length >= 2;
+    if (!pelna) {
+      document.getElementById('odtw-stan').textContent = 'Odtworzenie doby: brak pełnych danych';
+      return;
+    }
+    daneDoby = d;
+    document.getElementById('odtw-zrodlo-doba').textContent = formatDoby(d.doba);
+    przyciskStart.hidden = false;
+  });
+
 // Okienko mogło się poszerzyć (teksty, wykresy) – po wczytaniu obu plików dopasuj kadr jeszcze raz, bez animacji.
-const daneGotowe = Promise.allSettled([wiatrGotowy, cenaGotowa]);
+const daneGotowe = Promise.allSettled([wiatrGotowy, cenaGotowa, dobaGotowa]);
 if (BEZ_RUCHU) {
   daneGotowe.then(() => {
     if (!uzytkownikRuszylMape) ustawKadr(); // okienko mogło urosnąć – poprawiamy kadr Polski

@@ -23,7 +23,7 @@ Poziomy weryfikacji:
 ## PSE: produkcja z wiatru
 
 - **Co:** produkcja z wiatru, raport „Wielkości podstawowe” (`his-wlk-cal`), pole `wi`, okresy 15-minutowe.
-- **Używamy w:** `public/data/wiatr.json`, generowany przy budowaniu przez `scripts/pobierz-pse.mjs` (okienko na mapie).
+- **Używamy w:** `public/data/wiatr.json`, generowany przy budowaniu przez `scripts/pobierz-pse.mjs` (okienko na mapie). Od 20.11.2026 także `public/data/doba.json` – odtworzenie doby: wczorajsza pełna doba (96 kwadransów; w dniu zmiany czasu 92/100), a gdy wczoraj niepełne – przedwczoraj; bez uzupełniania luk. Uwaga: wiatr za wczoraj bywa kompletny dopiero ok. 3:00 (doba 19.11.2026: publikacja 20.11.2026, 02:52).
 - **Link:** https://api.raporty.pse.pl/api/his-wlk-cal (API), https://raporty.pse.pl/ (raporty)
 - **Jednostka:** MW – niepotwierdzona w źródle (API nie podaje jednostki).
 - **Aktualność:** dane z bieżącej doby, opóźnienie ok. 1 godz. (sprawdzone 18.11.2026 14:23); czy wartości są wstępne – niepotwierdzone.
@@ -52,7 +52,7 @@ Poziomy weryfikacji:
 ### PSE: cena prądu RCE (raport rce-pln)
 
 - **Co:** raport „Rynkowa cena energii elektrycznej (RCE)” (`rce-pln`); na stronie PSE pełna nazwa „Rynkowa cena energii elektrycznej dla okresu rozliczenia niezbilansowania”.
-- **Używamy w:** `public/data/rce.json` (doba dzisiejsza i – jeśli już jest – jutrzejsza), generowany przy budowaniu przez `scripts/pobierz-pse.mjs`. Przeglądarka wybiera bieżący kwadrans wg czasu Europe/Warsaw, bez łączenia się z API; cena z innej doby nie jest pokazywana jako aktualna.
+- **Używamy w:** `public/data/rce.json` (doba dzisiejsza i – jeśli już jest – jutrzejsza), generowany przy budowaniu przez `scripts/pobierz-pse.mjs`. Przeglądarka wybiera bieżący kwadrans wg czasu Europe/Warsaw, bez łączenia się z API; cena z innej doby nie jest pokazywana jako aktualna. Od 20.11.2026 także `public/data/doba.json` – odtworzenie doby (ta sama doba co wiatr, kwadranse łączone po czasie końca `dtime_utc`; zapytanie `rce-pln?$filter=business_date eq 'RRRR-MM-DD'`), zawsze z podpisem daty odtwarzanej doby.
 - **Linki:**
   - API: https://api.raporty.pse.pl/api/rce-pln
   - raport: https://raporty.pse.pl/report/rce-pln

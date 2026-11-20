@@ -9,7 +9,8 @@ Tracer bullet nr 5 (wykres produkcji wiatru z bieżącej doby) – zakończony 1
 Tracer bullet nr 6 (cena prądu RCE teraz i wykres bieżącej doby) – zakończony 19.11.2026.
 Automatyczne odświeżanie strony (Cloudflare Deploy Hook z GitHub Actions, co 4 godziny) – zakończone 19.11.2026.
 Wygląd 1 (globus + ciemny kosmiczny motyw + tło satelitarne NASA GIBS) – zakończony 20.11.2026.
-Cel: „Prąd nocą”: przełącznik Dzień/Noc – w trybie Noc tło NASA GIBS VIIRS_Black_Marble (światła miast), w trybie Dzień obecny Blue Marble; złota sieć i farmy widoczne w obu trybach.
+„Prąd nocą” (przełącznik Dzień/Noc, tło nocne NASA Black Marble 2016) – zakończony 20.11.2026.
+Cel: „Odtwarzanie doby”: odtworzenie wczorajszej pełnej doby (wiatr i cena RCE co 15 min) uruchamiane przyciskiem przez widza.
 Robimy tylko to, bez czego cel nie zostanie osiągnięty.
 Nie robimy teraz: innych animacji, nowych warstw danych i wersji na telefon (to później).
 Zanim zaproponujesz cokolwiek, sprawdź: czy bez tego cel zostanie osiągnięty? Jeśli tak — nie proponuj, dopisz najwyżej jedną linię do listy „Do zrobienia” w BEZPIECZENSTWO.md.
@@ -24,7 +25,7 @@ Strona z mapą pokazującą, jak i gdzie Polska może uzyskać więcej prądu. R
 - Wiatr (farmy, wykres wiatru) na jasnoniebiesko, dobrze widoczny na ciemnym tle.
 - Globus od razu przybliżony do Polski.
 - Priorytet: komputer (telefon później).
-- Ruch: jeden lot wprowadzający przy otwarciu (bez lotu przy prefers-reduced-motion); inne animacje – decyzja później.
+- Ruch: jeden lot wprowadzający przy otwarciu (bez lotu przy prefers-reduced-motion); odtwarzanie doby uruchamiane przyciskiem przez widza; inne animacje – decyzja później.
 
 ## Jak ze mną pracować
 - Odpowiadaj po polsku, prostymi słowami.
