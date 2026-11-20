@@ -24,11 +24,26 @@ const KOLORY = {
   kosmos: '#05070D',
   linie: '#F2C14E', // złoto: linie najwyższych napięć
   wiatr: '#5CC8FF', // jasnoniebieski: farmy i wykres wiatru
+  wiatrLad: '#4ADE80', // zielony: lądowe farmy wiatrowe (GEM)
   kontur: '#E8EEF7',
   tekst: '#E8EEF7',
   tekstPomocniczy: '#A9B7CC',
   os: '#2A3550',
   teraz: '#FF8A5B',
+};
+
+// Statusy farm morskich z EMODnet – tłumaczenie tylko wyświetlanego tekstu (dane źródłowe bez zmian),
+// spójne z farmami lądowymi. W danych z 10.07.2026 występują tylko Planned i Construction; nieznana wartość
+// pokaże się w oryginale.
+const STATUS_MORSKIE_PL = { Planned: 'planowana', Construction: 'w budowie', Production: 'działa' };
+
+// Uzupełnienie statusu farm morskich z nowszego źródła (dane EMODnet zostają bez zmian; opis w ZRODLA.md).
+const KOREKTY_STATUSU = {
+  'Baltic Power':
+    'stan wg balticpower.pl: w rozruchu – pierwsza energia do sieci 10.07.2026 (odbiór potwierdziły PSE), ' +
+    'wszystkie 76 turbin zainstalowane (7.10.2026), każda po podłączeniu przechodzi 240-godzinną próbę; ' +
+    'jeszcze bez koncesji na wytwarzanie, etap przed eksploatacją komercyjną (daty nie podano). ' +
+    'W danych EMODnet (10.07.2026) i GEM (dane wiatrowe z lutego 2026): w budowie.',
 };
 
 // Przybliżony prostokąt obejmujący Polskę i farmy na Bałtyku (do 55,56°N): [zachód, południe], [wschód, północ].
@@ -159,6 +174,85 @@ map.on('load', () => {
     paint: { 'line-color': KOLORY.linie, 'line-width': ['match', ['get', 'napiecie'], 400, 2.5, 1.2] },
   });
 
+  // Lądowe farmy wiatrowe ≥10 MW: wyciąg z Global Energy Monitor, Global Integrated Power Tracker, September 2026
+  // release (CC BY 4.0), plik z scripts/wyciag-gem.py. Tylko „działa” i „w budowie” – planowanych, wstrzymanych
+  // i anulowanych nie pokazujemy. Farmy morskie zostają z EMODnet (bez dublowania).
+  // Ciemna obwódka: zieleń ma tę samą jasność co złoto linii, obwódka i kształt (kropka, nie linia) je rozdzielają.
+  const LAD = ['all', ['==', ['get', 'typ'], 'wind'], ['==', ['get', 'technologia'], 'Onshore']];
+  const PROMIEN_LAD = ['interpolate', ['linear'], ['zoom'], 2, 1.5, 5, 3.5, 9, 8];
+  map.addSource('zrodla-gem', { type: 'geojson', data: `${import.meta.env.BASE_URL}data/zrodla-gem.geojson` });
+  map.addLayer({
+    id: 'farmy-lad-dziala',
+    type: 'circle',
+    source: 'zrodla-gem',
+    filter: ['all', LAD, ['==', ['get', 'status'], 'operating']],
+    paint: {
+      'circle-color': KOLORY.wiatrLad,
+      'circle-radius': PROMIEN_LAD,
+      'circle-stroke-color': KOLORY.kosmos,
+      'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 2, 0.5, 5, 1, 9, 2],
+    },
+  });
+  // W budowie: zielony pierścień z ciemnym środkiem i małą zieloną kropką – nie wygląda jak „działa”.
+  const W_BUDOWIE = ['all', LAD, ['==', ['get', 'status'], 'construction']];
+  map.addLayer({
+    id: 'farmy-lad-budowa',
+    type: 'circle',
+    source: 'zrodla-gem',
+    filter: W_BUDOWIE,
+    paint: {
+      'circle-color': KOLORY.kosmos,
+      'circle-radius': ['interpolate', ['linear'], ['zoom'], 2, 2.5, 5, 5, 9, 10],
+      'circle-stroke-color': KOLORY.wiatrLad,
+      'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 2, 1, 5, 2, 9, 3],
+    },
+  });
+  map.addLayer({
+    id: 'farmy-lad-budowa-srodek',
+    type: 'circle',
+    source: 'zrodla-gem',
+    filter: W_BUDOWIE,
+    paint: { 'circle-color': KOLORY.wiatrLad, 'circle-radius': ['interpolate', ['linear'], ['zoom'], 2, 0.8, 5, 1.5, 9, 3] },
+  });
+
+  // Okienko lądowej farmy: wszystkie fazy w klikniętym miejscu (kilka faz może mieć te same współrzędne).
+  // Faza z GEM: numer (np. „2”, „2a”) → „faza 2: ”; nazwa → sama nazwa bez nawiasów („(Łódź)” → „Łódź: ”);
+  // brak fazy → nic.
+  const opisFazy = (faza) => {
+    if (!faza || faza === 'null') return '';
+    if (/^\d+[a-z]?$/i.test(faza)) return `faza ${faza}: `;
+    return `${faza.replace(/[()]/g, '').trim()}: `;
+  };
+  const STATUS_PL = { operating: 'działa', construction: 'w budowie – jeszcze nie produkuje albo produkuje częściowo' };
+  map.on('click', ['farmy-lad-dziala', 'farmy-lad-budowa'], (e) => {
+    const lokalizacja = e.features[0].properties.gem_location_id;
+    const fazy = e.features.filter((f) => f.properties.gem_location_id === lokalizacja);
+    const unikalne = [...new Map(fazy.map((f) => [f.properties.gem_unit_id, f.properties])).values()];
+    const p = unikalne[0];
+    const el = document.createElement('div');
+    const tytul = document.createElement('strong');
+    tytul.textContent = p.nazwa;
+    el.append(tytul);
+    const linia = (tekst) => {
+      el.append(document.createElement('br'));
+      const span = document.createElement('span');
+      span.textContent = tekst;
+      el.append(span);
+    };
+    for (const f of unikalne) {
+      const moc = typeof f.moc_mw === 'number' ? `${f.moc_mw.toLocaleString('pl-PL')} MW` : 'moc: brak danych';
+      const rok = f.rok_uruchomienia ? `, uruchomienie: ${f.rok_uruchomienia}` : '';
+      linia(`${opisFazy(f.faza)}${moc}, ${STATUS_PL[f.status] ?? f.status}${rok}`);
+    }
+    linia(
+      p.dokladnosc_lokalizacji === 'exact'
+        ? 'lokalizacja: dokładna'
+        : 'lokalizacja: przybliżona (np. najbliższa miejscowość)',
+    );
+    linia('źródło: Global Energy Monitor (dane wiatrowe: Global Wind Power Tracker, luty 2026), CC BY 4.0');
+    new maplibregl.Popup().setLngLat(e.features[0].geometry.coordinates).setDOMContent(el).addTo(map);
+  });
+
   // Morskie farmy wiatrowe na polskim Bałtyku (EMODnet, CC BY 4.0)
   // Dwie warstwy: pełne kropki (farmy z listy MKiŚ) pod spodem, puste (prawdopodobne duplikaty i farmy
   // spoza listy) na wierzchu z grubszą obwódką – żeby duplikat był widoczny obok swojej pary.
@@ -202,8 +296,10 @@ map.on('load', () => {
       return span;
     };
     const moc = typeof moc_mw === 'number' ? `${moc_mw.toLocaleString('pl-PL')} MW` : 'brak danych';
-    el.append(tytul, document.createElement('br'), linia(`status: ${status}`), document.createElement('br'), linia(`moc: ${moc}`));
+    el.append(tytul, document.createElement('br'), linia(`status: ${STATUS_MORSKIE_PL[status] ?? status}`), document.createElement('br'), linia(`moc: ${moc}`));
     if (weryfikacja) el.append(document.createElement('br'), linia(`weryfikacja: ${weryfikacja_opis ?? weryfikacja}`));
+    const korekta = KOREKTY_STATUSU[nazwa];
+    if (korekta) el.append(document.createElement('br'), linia(korekta));
     new maplibregl.Popup().setLngLat(e.features[0].geometry.coordinates).setDOMContent(el).addTo(map);
   });
 });

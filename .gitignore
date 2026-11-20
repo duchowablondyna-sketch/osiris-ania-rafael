@@ -160,3 +160,8 @@ vite.config.ts.timestamp-*
 public/data/wiatr.json
 public/data/rce.json
 public/data/doba.json
+
+# Surowe dane Global Energy Monitor (xlsx) zostają POZA repo – zawierają też wiersze na licencji CC BY-NC 4.0.
+# Do repo trafia tylko wyciąg public/data/zrodla-gem.geojson (scripts/wyciag-gem.py).
+*.xlsx
+Global Integrated Power*
