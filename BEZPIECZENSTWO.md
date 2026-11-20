@@ -1,8 +1,14 @@
 # Bezpieczeństwo projektu OSIRIS
 
+## Podgląd strony – zasada stała
+
+- Podgląd (`npm run dev`, `npm run preview`) uruchamiamy z `--host 127.0.0.1` – dostępny wyłącznie na tym komputerze. Nigdy `--host` bez adresu ani `--host 0.0.0.0` (to udostępnia podgląd w sieci). Zmiana 20.11.2026: bez `--host` serwer słuchał tylko na IPv6 (`[::1]`), a przeglądarka łączyła się przez IPv4 (`127.0.0.1`) i podgląd nie działał.
+
 ## Znane i zaakceptowane ryzyka
 
-### picomatch <= 4.0.7 (zależność Vite)
+### ✅ ROZWIĄZANE 20.11.2026: picomatch <= 4.0.7 (zależność Vite)
+
+**Dlaczego rozwiązane:** GitHub wycofał wpis 18.11.2026 (`withdrawn_at: 2026-11-18T15:38:56Z`) z uzasadnieniem: „This advisory has been withdrawn because it is not a security issue.” (odnośnik do dyskusji: https://github.com/micromatch/picomatch/pull/235#issuecomment-6315749381; sprawdzone 20.11.2026 przez `gh api /advisories/GHSA-fc5q-39xc-vjpf` – tylko odczyt). Wersja w `package-lock.json` się nie zmieniła (nadal 4.0.7, poprawionej wersji nie ma) – `npm audit` przestał zgłaszać problem, bo wpis wycofano, a nie dlatego, że zaktualizowaliśmy pakiet. Poniżej zapis pierwotnej decyzji (bez zmian, dla historii).
 
 - **Pakiet:** `picomatch` <= 4.0.7, zależność narzędzia `vite` 8.3.8 (łańcuch: `vite` → `tinyglobby` → `fdir` → `picomatch`).
 - **Podatność:** [GHSA-fc5q-39xc-vjpf](https://github.com/advisories/GHSA-fc5q-39xc-vjpf) / CVE-2026-112366 (ReDoS przez wzorce typu extglob).
@@ -16,8 +22,8 @@
 - Pakiet nie trafia do gotowej strony w folderze `dist/`.
 
 **Warunki akceptacji:**
-- Podgląd (`npm run dev`, `npm run preview`) uruchamiamy z `--host 127.0.0.1` – dostępny wyłącznie na tym komputerze. Nigdy `--host` bez adresu ani `--host 0.0.0.0` (to udostępnia podgląd w sieci). Zmiana 20.11.2026: bez `--host` serwer słuchał tylko na IPv6 (`[::1]`), a przeglądarka łączyła się przez IPv4 (`127.0.0.1`) i podgląd nie działał.
-- Sprawdzamy dostępność poprawki co tydzień, docelowo automatycznie przez Dependabota.
+- Podgląd uruchamiany tylko lokalnie (zasada przeniesiona 20.11.2026 do punktu „Podgląd strony – zasada stała” wyżej).
+- Sprawdzamy dostępność poprawki co tydzień, docelowo automatycznie przez Dependabota (nieaktualne po wycofaniu wpisu 18.11.2026).
 
 **Data decyzji:** 18.11.2026
 **Decyzję podjęła:** Ania
@@ -38,6 +44,13 @@
 - Dependabot alerts: włączone.
 - Malware alerts: włączone.
 - Dependabot security updates: na razie wyłączone (włączymy razem z `dependabot.yml`).
+
+### Pakiety pilnowane (przypięte wersje, `package.json`)
+- `maplibre-gl` 6.19.0 – mapa (kod w przeglądarce widza).
+- `vite` 8.3.8 – budowanie (tylko lokalnie i na Cloudflare, nie trafia do strony).
+- `@fontsource/inter` 5.3.0 i `@fontsource/jetbrains-mono` 5.3.0 – pliki czcionek (OFL-1.1), dodane 20.11.2026 (`npm install --save-exact`). Przed instalacją sprawdzone w rejestrze npm: brak skryptów instalacyjnych (preinstall/postinstall), brak zależności. Do strony trafiają tylko pliki `.woff2` zestawów „latin” i „latin-ext”.
+- `npm audit` po instalacji 20.11.2026: **0 podatności**. `picomatch` 4.0.7 nie jest już zgłaszany, bo GitHub wycofał wpis GHSA-fc5q-39xc-vjpf 18.11.2026 („not a security issue”) – szczegóły w punkcie „Znane i zaakceptowane ryzyka” (oznaczony jako rozwiązany).
+- npm ostrzega, że `fsevents` 2.3.3 (opcjonalna zależność `vite`, była już wcześniej) ma skrypt instalacyjny nieobjęty `allowScripts` – nie uruchamiany przez nas; do przejrzenia przy konfiguracji Dependabota.
 
 ### Ruleset „ochrona-main” (Active, gałąź domyślna)
 - Wymagany pull request (0 zatwierdzeń do czasu dołączenia Rafaela).

@@ -77,7 +77,7 @@ Poziomy weryfikacji:
 - **Warunki użycia:**
   - NASA Images and Media Usage Guidelines (https://www.nasa.gov/nasa-brand-center/images-and-media/): materiały NASA co do zasady nie są chronione prawem autorskim w USA; użycie rzeczowe, które nie sugeruje poparcia NASA, bez potrzeby zgody; NASA należy podać jako źródło; logo NASA („Meatball”, „Worm”, pieczęć) chronione prawem – **nie używamy logo i nie sugerujemy poparcia NASA**.
   - Earthdata Open Data Policy (https://www.earthdata.nasa.gov/engage/open-data-services-software-policies): „ESDS encourages citation and acknowledgment of NASA data and services”.
-- **Przetworzenie:** brak – kafelki wyświetlane bez zmian.
+- **Przetworzenie:** tło przetworzone (przyciemnione) – od 20.11.2026 w MapLibre: `raster-saturation: -0.5`, `raster-brightness-max: 0.7`, `raster-contrast: -0.1` (tryb Dzień), żeby dane mocniej się wyróżniały. Same kafelki NASA są pobierane bez zmian. Informacja także w stopce.
 - **Data sprawdzenia:** 19.11.2026
 - **Poziom weryfikacji:** 1 (dokumentacja GIBS i wytyczne NASA – przeczytane fragmenty dotyczące dostępu, podziękowania i warunków; kafelek nad Polską pobrany i obejrzany)
 
@@ -88,7 +88,7 @@ Poziomy weryfikacji:
 - **Używamy w:** tło mapy w trybie Noc (domyślny), warstwa rastrowa w `src/main.js`. Kafelki pobiera **przeglądarka widza** bezpośrednio z serwera NASA (patrz BEZPIECZENSTWO.md).
 - **Adres kafelków (WMTS REST, EPSG:3857):** `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_Black_Marble/default/2016-01-01/GoogleMapsCompatible_Level8/{z}/{y}/{x}.png` – szablon z GetCapabilities (https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/1.0.0/WMTSCapabilities.xml; wymiar czasu: 2012-01-01 i 2016-01-01, domyślnie 2016-01-01). PNG, 256 px, poziomy 0–8 (poziom 9 zwraca błąd 400 – sprawdzone 20.11.2026); `access-control-allow-origin: *`; bez klucza API.
 - **Podpis w stopce:** „Tło nocne: Black Marble (2016), Suomi NPP / VIIRS, NASA Earth Observatory.” Podziękowanie dla GIBS i warunki użycia – jak przy Blue Marble (wpis wyżej).
-- **Przetworzenie:** brak – kafelki wyświetlane bez zmian. Pod złotymi liniami dodana ciemna obwódka (zmiana naszej warstwy, nie obrazu NASA).
+- **Przetworzenie:** tło przetworzone (odbarwione) – od 20.11.2026 w MapLibre: `raster-saturation: -0.3`, `raster-brightness-max: 1` (bez przyciemniania), `raster-contrast: 0` (tryb Noc); światła miast są mniej żółte, łatwiej odróżnić je od złotych linii. Przyciemniania nocą nie stosujemy – pomiar 20.11.2026 (Warszawa, Śląsk): przy `brightness-max` 0,75 i 0,85 najjaśniejsze środki miast stawały się szare, zbliżone jasnością do znaczków, i kontrast danych z nimi spadał (np. węgiel na Śląsku 3,38 → 1,84 / 2,38). Same kafelki NASA są pobierane bez zmian. Pod złotymi liniami dodana ciemna obwódka (zmiana naszej warstwy, nie obrazu NASA).
 - **Data sprawdzenia:** 20.11.2026
 - **Poziom weryfikacji:** 1 (GetCapabilities i metadane GIBS; kafelek nad Polską pobrany i obejrzany; strony produktu Black Marble w NASA Earth Observatory nie czytałam)
 
@@ -192,3 +192,12 @@ Poziomy weryfikacji:
   - Zgodne główne korytarze: wybrzeże (Słupsk, Żarnowiec, Gdańsk, Dunowo), Litwa (Ełk–Alytus), Niemcy (Krajnik–Vierraden, Mikułowa–Hagenwerder), Słowacja (Krosno–Lemešany), połączenia na wschodzie, gęsta sieć na Śląsku.
   - SwePol (DC) celowo pominięty.
 - **Porównanie długości w km** – jeszcze nie zrobione (OSM daje długość tras, PSE prawdopodobnie długość torów; potrzebne źródło PSE).
+
+## Inspiracje (bez kopiowania kodu)
+
+- **God's Eye View**, Bilawal Sidhu, https://github.com/bilawalsidhu/gods-eye-view, licencja MIT (kod). Inspiracja dla wyglądu i zaufania do danych: linijka „źródło i data” w okienkach, liczniki i stan danych przy warstwach, typografia o stałej szerokości z małymi etykietami wielkimi literami, panele „szkło”, narożniki ramek. Kod OSIRIS jest napisany od nowa – żaden fragment nie jest skopiowany. Nie przejmujemy efektów NVG/FLIR/CRT: FLIR w God's Eye View pokazuje „temperaturę” wyliczoną z jasności obrazu, a NVG znacznik „REC” – sugerują pomiar i nagrywanie, których nie ma.
+- Przeczytane 20.11.2026 (lokalny klon do odczytu, bez uruchamiania).
+
+## Czcionki (nie są źródłem danych – dla porządku licencji)
+
+- **Inter** i **JetBrains Mono**, SIL Open Font License 1.1. Pliki z paczek npm `@fontsource/inter` 5.3.0 i `@fontsource/jetbrains-mono` 5.3.0 (przypięte wersje), tylko zestawy znaków „latin” i „latin-ext” (polskie litery), grubości 400 i 600 – deklaracje w `src/czcionki.css`. Teksty licencji: `public/licencje/OFL-Inter.txt`, `public/licencje/OFL-JetBrains-Mono.txt` (trafiają do gotowej strony razem z czcionkami; link w stopce). Czcionki są na naszym serwerze – przeglądarka widza nie łączy się z Google Fonts.
