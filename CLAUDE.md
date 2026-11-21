@@ -20,7 +20,7 @@ Robot OSIRIS etap B (co tydzień, środa 05:17 UTC, sprawdza dokument PSE o dost
 
 Cel: „Karta Polski”.
 - 5 kafelków: główne źródło (węgiel razem), cena RCE, ślad CO2 (szacunek OSIRIS), OZE %, wymiana z zagranicą.
-- Paski: produkcja na tle mocy zainstalowanej; wiatr i PV kreskowane, z „?”.
+- Paski: produkcja na tle mocy zainstalowanej; wiatr i PV kreskowane, z „?” – osobny, późniejszy PR (d). Panel B (PR b) ma jeden pasek miksu (kamienny / brunatny / gaz i inne / OZE).
 - Podpis „stan na HH:MM · PSE opublikowało HH:MM” zamiast „teraz”.
 - Źródło miksu: PSE API `his-gen-pal-sire`; przy każdym pobraniu sprawdzian zgodności z `his-wlk-cal` (wiatr i PV).
 
