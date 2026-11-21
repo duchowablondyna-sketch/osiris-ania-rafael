@@ -332,3 +332,30 @@ test('zgłoś na sucho (testy) nie pisze do podsumowania przebiegu, nawet gdy GI
   }
   assert.equal(readFileSync(plikPodsumowania, 'utf-8'), '');
 });
+
+// ── Issue robota zawsze do Ani: przypisanie (assignee) + wzmianka w treści, niezależnie od „Watch” ──
+test('issue: przypisanie do duchowablondyna-sketch i wzmianka @duchowablondyna-sketch na górze treści', () => {
+  const { repo, wynikDir } = repoTestowe('{"a":1}\n', '{"a":1}\n', 'problem');
+  const w = zglos({ wynikDir, repo, tryb: 'normalny', naSucho: true, log: () => {}, osoba: 'duchowablondyna-sketch' });
+  assert.equal(w.akcja, 'issue');
+  const i = w.polecenie.indexOf('--assignee');
+  assert.ok(i > 0 && w.polecenie[i + 1] === 'duchowablondyna-sketch', JSON.stringify(w.polecenie));
+  assert.match(readFileSync(w.trescPlik, 'utf-8'), /^@duchowablondyna-sketch – Robot OSIRIS zgłasza problem/);
+  assert.match(readFileSync(w.trescPlik, 'utf-8'), /opis$/); // reszta raportu bez zmian
+});
+test('issue: gdy GitHub po cichu pominie przypisanie – robot dopisuje je jeszcze raz (gh issue edit --add-assignee)', () => {
+  for (const [przypisaniWidok, oczekiwanaPoprawka] of [['', true], ['duchowablondyna-sketch', false]]) {
+    const { repo, wynikDir } = repoTestowe('{"a":1}\n', '{"a":1}\n', 'problem');
+    const wywolania = [];
+    const uruchom = (cmd, args) => {
+      wywolania.push([cmd, ...args].join(' '));
+      if (args[0] === 'pr' || (args[0] === 'issue' && args[1] === 'list')) return ''; // nic otwartego
+      if (args[1] === 'create') return 'https://github.com/x/y/issues/99\n';
+      if (args[1] === 'view') return `${przypisaniWidok}\n`;
+      return '';
+    };
+    zglos({ wynikDir, repo, tryb: 'normalny', log: () => {}, uruchom, osoba: 'duchowablondyna-sketch' });
+    assert.ok(wywolania.some((c) => c.startsWith('gh issue create') && c.includes('--assignee duchowablondyna-sketch')));
+    assert.equal(wywolania.some((c) => c.includes('--add-assignee duchowablondyna-sketch')), oczekiwanaPoprawka, wywolania.join('\n'));
+  }
+});

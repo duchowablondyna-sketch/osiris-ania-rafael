@@ -114,6 +114,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     # Tylko to, co potrzebne: gałąź (contents), PR z prośbą o przegląd (pull-requests), issue (issues).
+    # contents: write daje też prawo push – bez niego GitHub po cichu pomija przypisanie (assignee) nowego issue.
     permissions:
       contents: write
       pull-requests: write
