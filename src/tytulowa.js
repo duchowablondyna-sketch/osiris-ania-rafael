@@ -59,6 +59,7 @@ fetch('/data/podsumowanie.json', { cache: 'no-store' })
     // Stopka „Źródła i licencje” – te same pola co na mapie.
     if (d.pse?.wiatrPobrano) document.getElementById('wiatr-pobrano').textContent = formatCzasu(d.pse.wiatrPobrano);
     if (d.pse?.rcePobrano) document.getElementById('rce-pobrano').textContent = formatCzasu(d.pse.rcePobrano);
+    if (d.pse?.kartaPobrano) document.getElementById('karta-pobrano').textContent = formatCzasu(d.pse.kartaPobrano);
     if (d.pse?.dobaOdtworzenia) {
       document.getElementById('odtw-zrodlo-doba').textContent = d.pse.dobaOdtworzenia.split('-').reverse().join('.');
     }

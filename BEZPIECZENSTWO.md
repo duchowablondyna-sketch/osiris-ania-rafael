@@ -91,7 +91,8 @@
 
 ### Do zrobienia
 - [ ] Robot Playwright jako wymagany test.
-- [ ] Testy karty uruchamiane automatycznie na GitHubie (Actions): `node --test scripts/karta/testy.mjs` (dziś tylko ręcznie; budowanie na Cloudflare ich nie uruchamia – dane zatrzymuje sam sprawdzian w skrypcie).
+- [ ] Testy karty uruchamiane automatycznie na GitHubie (Actions): `node --test scripts/karta/testy.mjs scripts/karta/testy-panel.mjs` (dziś tylko ręcznie; budowanie na Cloudflare ich nie uruchamia – dane zatrzymuje sam sprawdzian w skrypcie).
+- [ ] Ślad CO2: policzyć wpływ założenia dla węgla brunatnego (957 g/kWh, ok. 17% produkcji) – zakres przy wartościach ze źródeł, do Metodologii i ZRODLA.md.
 - [ ] `dependabot.yml`.
 - [ ] Private vulnerability reporting.
 - [ ] Po dołączeniu Rafaela: 1 zatwierdzenie i CODEOWNERS. Wtedy wrócić do „1 wymaganego zatwierdzenia” w rulesecie „ochrona-main” – Rafael jako recenzent (decyzja Ani 21.11.2026: nie teraz; powód: robot ma prawo zapisu, a przy 0 zatwierdzeń scalanie pilnuje tylko brak takiego kroku w workflow).

@@ -21,6 +21,7 @@ Robot OSIRIS etap B (co tydzień, środa 05:17 UTC, sprawdza dokument PSE o dost
 Cel: „Karta Polski”.
 - 5 kafelków: główne źródło (węgiel razem), cena RCE, ślad CO2 (szacunek OSIRIS), OZE %, wymiana z zagranicą.
 - Paski: produkcja na tle mocy zainstalowanej; wiatr i PV kreskowane, z „?” – osobny, późniejszy PR (d). Panel B (PR b) ma jeden pasek miksu (kamienny / brunatny / gaz i inne / OZE).
+- Panel B – wariant B (decyzja Ani 21.11.2026): lewy dolny róg, zwijany, rozwinięty na starcie; 4 zakładki: SKĄD (te same pola warstw elektrowni i farm co legenda, bez lotu), GDZIE (panel wolnej mocy), ILE I JAK CZYSTO (otwarta na starcie: liczba-bohater – węgiel albo OZE, czego więcej – pasek z legendą do 0,1%, w rzędzie cena RCE / ślad CO2 / wymiana, źródło, Metodologia rozwijana w panelu, kłódka „Karta lokalizacji – wkrótce”), CO SIĘ ZMIENI („Wkrótce.”). Plakietka starych danych po 6 h. OZE zielony #4ade80; turkus tylko dla wolnej mocy; KOBiZE tylko w Metodologii.
 - Podpis „stan na HH:MM · PSE opublikowało HH:MM” zamiast „teraz”.
 - Źródło miksu: PSE API `his-gen-pal-sire`; przy każdym pobraniu sprawdzian zgodności z `his-wlk-cal` (wiatr i PV).
 

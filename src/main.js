@@ -3,6 +3,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url';
 import { odmiana, formatMocy, zbierzElektrownie, podsumujLadowe, podsumujElektrownie, podsumujMorskie } from './liczniki.js';
 import { dodajWarstweMocy } from './moce.js';
+import { uruchomKarte } from './karta.js';
 import './czcionki.css';
 import './style.css';
 
@@ -43,12 +44,12 @@ function linijkaZrodla(nazwa, rodzajDaty, data) {
   return p;
 }
 
-// Licznik pod nazwą warstwy w legendzie; brak = true pokazuje napis ostrzegawczy zamiast liczby.
+// Licznik pod nazwą warstwy (w legendzie i w zakładce „Skąd” Karty Polski); brak = true pokazuje napis ostrzegawczy.
 function ustawLicznik(warstwa, tekst, brak = false) {
-  const el = document.querySelector(`.legenda__licznik[data-licznik="${warstwa}"]`);
-  if (!el) return;
-  el.textContent = tekst;
-  el.classList.toggle('brak-danych', brak);
+  for (const el of document.querySelectorAll(`.legenda__licznik[data-licznik="${warstwa}"]`)) {
+    el.textContent = tekst;
+    el.classList.toggle('brak-danych', brak);
+  }
 }
 
 
@@ -94,11 +95,14 @@ const GRANICE_POLSKI = [
 // nie mieści, zostaje zwykły odstęp.
 const MARGINES = 24;
 // Z prawej: legenda (.legenda) – kadr Polski nie wchodzi pod nią.
+// Z lewej: szersze z dwóch – okienko PSE (góra) albo Karta Polski (dół); zwinięcie Karty nie rusza mapy.
 function odstepKadru() {
   const okno = document.querySelector('.wskaznik');
+  const karta = document.querySelector('.karta');
   const legenda = document.querySelector('.legenda');
   const szerokoscMapy = document.getElementById('mapa').clientWidth;
-  const lewy = okno ? okno.offsetLeft + okno.offsetWidth + MARGINES : MARGINES;
+  const prawaKrawedz = (e) => (e ? e.offsetLeft + e.offsetWidth : 0);
+  const lewy = Math.max(prawaKrawedz(okno), prawaKrawedz(karta)) + MARGINES;
   const prawy = legenda ? szerokoscMapy - legenda.offsetLeft + MARGINES : MARGINES;
   if (lewy + prawy + 200 > szerokoscMapy) {
     // Za wąsko na oba odstępy: najpierw rezygnujemy z odstępu na legendę, potem na okienko.
@@ -237,9 +241,11 @@ function ustawTryb(tryb) {
 // Elektrownie (GEM, tylko działające): kolory zależne od trybu. W trybie Dzień jaśniejsze odcienie tej samej barwy,
 // bo na jasnym lądzie Blue Marble ciemniejsze mają kontrast poniżej 3:1. Woda w obu trybach ta sama.
 // Węgiel: czerwony (decyzja Ani po porównaniu z ciemnym pomarańczem).
+// brunatny: tylko pasek miksu w Karcie Polski (na mapie GEM nie rozróżniamy węgla kamiennego i brunatnego) –
+// pomarańczowo-brązowy, żeby odróżniał się od czerwieni węgla kamiennego obok.
 const KOLORY_ELEKTROWNI = {
-  noc: { wegiel: '#EF4444', gaz: '#8B5CF6', woda: '#3B82F6' },
-  dzien: { wegiel: '#F87171', gaz: '#A78BFA', woda: '#3B82F6' },
+  noc: { wegiel: '#EF4444', brunatny: '#C2410C', gaz: '#8B5CF6', woda: '#3B82F6' },
+  dzien: { wegiel: '#F87171', brunatny: '#EA580C', gaz: '#A78BFA', woda: '#3B82F6' },
 };
 let trybMapy = 'noc';
 function koloryElektrowni() {
@@ -250,6 +256,7 @@ function odswiezKoloryElektrowni() {
   // Znaczki w legendzie korzystają z tych samych kolorów (zmienne CSS).
   const styl = document.documentElement.style;
   styl.setProperty('--kolor-wegiel', k.wegiel);
+  styl.setProperty('--kolor-brunatny', k.brunatny);
   styl.setProperty('--kolor-gaz', k.gaz);
   styl.setProperty('--kolor-woda', k.woda);
   if (map.getLayer('elektrownie')) {
@@ -472,9 +479,12 @@ map.on('load', () => {
     ladowe: ['farmy-lad-dziala', 'farmy-lad-budowa', 'farmy-lad-budowa-srodek'],
     moce: ['moce-kola', 'moce-kola-obwodka', 'moce-podpis', 'moce'],
   };
-  for (const pole of document.querySelectorAll('.legenda input[type="checkbox"]')) {
+  // Pola warstw: w legendzie i w zakładce „Skąd” Karty Polski. To samo data-warstwa = jeden stan
+  // (zaznaczenie w jednym miejscu zaznacza w drugim). Bez lotu – tak jak w legendzie.
+  for (const pole of document.querySelectorAll('input[type="checkbox"][data-warstwa]')) {
     pole.addEventListener('change', () => {
       const w = pole.dataset.warstwa;
+      for (const blizniak of document.querySelectorAll(`input[type="checkbox"][data-warstwa="${w}"]`)) blizniak.checked = pole.checked;
       if (WARSTWY_LEGENDY[w]) {
         // getLayer: podpis „lokalizacja przybliżona” dochodzi później (czeka na czcionkę) – i sam przejmuje widoczność.
         for (const id of WARSTWY_LEGENDY[w]) if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', pole.checked ? 'visible' : 'none');
@@ -764,7 +774,9 @@ function pokazCene(rce) {
     return;
   }
   tekst.classList.remove('brak-danych');
-  tekst.textContent = `Cena prądu (RCE) teraz: ${formatCeny(biezacy.cena)} zł/MWh, ${biezacy.okres}`;
+  // Cena „teraz” (liczba) jest w Karcie Polski – tu tylko podpis wykresu, żeby nie pokazywać jej dwa razy
+  // (decyzja Ani 21.11.2026). Odtwarzanie doby nadal wpisuje tu cenę odtwarzanego kwadransu.
+  tekst.textContent = 'Cena prądu (RCE) w bieżącej dobie:';
   if (seria.length >= 2) rysujWykresCeny(wykres, seria, teraz);
 }
 
@@ -781,6 +793,9 @@ const cenaGotowa = fetch(`${import.meta.env.BASE_URL}data/rce.json`, { cache: 'n
     daneRce = null;
     pokazCene(null); // plik się nie wczytał – „brak danych PSE”
   });
+
+// Karta Polski (panel w lewym dolnym rogu) – cena z tego samego rce.json, bez drugiego pobrania.
+uruchomKarte(cenaGotowa.then(() => daneRce));
 
 // Widok „teraz” wiatru w okienku (wywoływany po wczytaniu i po zakończeniu odtwarzania doby).
 let daneWiatr = null;

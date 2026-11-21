@@ -17,6 +17,7 @@ const morskie = await czytaj('public/data/farmy-baltyk.geojson');
 const wiatr = await czytaj('public/data/wiatr.json');
 const rce = await czytaj('public/data/rce.json');
 const doba = await czytaj('public/data/doba.json');
+const karta = await czytaj('public/data/karta.json');
 
 const elektrownie = gem?.features ? zbierzElektrownie(gem) : null;
 const wynik = {
@@ -30,6 +31,8 @@ const wynik = {
     wiatrPobrano: wiatr?.czas_pobrania ?? null,
     rcePobrano: rce?.czas_pobrania ?? null,
     dobaOdtworzenia: doba?.doba ?? null,
+    // Karta Polski: czas pobrania danych, które są w pliku (przy plakietce – czas poprzedniego, udanego pobrania).
+    kartaPobrano: karta?.kwadrans ? (karta.czas_pobrania ?? null) : null,
   },
 };
 await writeFile('public/data/podsumowanie.json', JSON.stringify(wynik));
