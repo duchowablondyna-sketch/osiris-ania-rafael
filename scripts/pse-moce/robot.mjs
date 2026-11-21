@@ -5,9 +5,13 @@
 // 4. Sprawdzian OK = nowy public/data/moce-pse.json; NIE OK = plik na stronie zostaje bez zmian.
 // Wynik dla kolejnego kroku: <wyjscie>/wynik.json i <wyjscie>/opis.md. Surowy PDF zostaje w katalogu tymczasowym (nie w repo).
 //
-// Użycie: node scripts/pse-moce/robot.mjs [--plik <pdf>] [--wymus] [--symuluj-problem] [--wyjscie <katalog>]
+// Użycie: node scripts/pse-moce/robot.mjs [--plik <pdf>] [--wymus] [--symuluj-problem] [--symulacja <tryb>] [--wyjscie <katalog>]
 //   --wymus            traktuj plik jako nowy, nawet gdy skrót się zgadza (test PR)
 //   --symuluj-problem  zepsuj wyciąg przed sprawdzianem (test issue); nic nie zapisuje w public/data
+//   --symulacja <tryb> nazwa trybu testowego (wymus-pr, wymus-problem) – raport dostaje na górze nagłówek SYMULACJA
+//
+// Stany w wynik.json: bez-zmian (ten sam SHA-256) · nowe-dane (inny wyciąg) · nowy-plik (inny SHA-256, ten sam wyciąg)
+// · problem (sprawdzian nie przeszedł).
 import { createHash } from 'node:crypto';
 import { execFile } from 'node:child_process';
 import { mkdtemp, mkdir, readFile, writeFile } from 'node:fs/promises';
@@ -69,6 +73,32 @@ const czytajJson = async (plik) => {
     return null;
   }
 };
+// Czy PSE zmieniło dane, czy tylko plik? Ten sam SHA-256 = bez-zmian; inny SHA-256, ale identyczny wyciąg = nowy-plik
+// (np. PSE zapisało PDF jeszcze raz); inny wyciąg = nowe-dane. W trybie wymus zawsze nowe-dane (test ścieżki PR).
+export function rodzajZmiany({ wyciag, poprzedni, sha256, wymus = false }) {
+  if (wymus || !poprzedni?.wyciag) return 'nowe-dane';
+  if (poprzedni.zrodlo?.sha256 === sha256) return 'bez-zmian';
+  return JSON.stringify(wyciag) === JSON.stringify(poprzedni.wyciag) ? 'nowy-plik' : 'nowe-dane';
+}
+
+// Nagłówek raportu w trybach testowych – żeby nikt nie wziął symulacji za prawdziwe dane albo prawdziwy problem.
+export function naglowekSymulacji(tryb, daneBezZmian) {
+  if (tryb === 'wymus-pr')
+    return daneBezZmian
+      ? '> **SYMULACJA – tryb wymus-pr, dane bez zmian, NIE SCALAĆ.**\n> Ten PR sprawdza tylko, czy Robot OSIRIS umie otworzyć PR i poprosić o przegląd. Zamknij go bez scalania.'
+      : '> **SYMULACJA – tryb wymus-pr, NIE SCALAĆ.**\n> Uwaga: wyciąg różni się od danych na stronie – PSE mogło opublikować nowy dokument. Zamknij ten PR i uruchom robota w trybie `normalny`.';
+  if (tryb === 'wymus-problem')
+    return '> **SYMULACJA – tryb wymus-problem: błąd jest celowo podrzucony, prawdziwego problemu z danymi nie ma.**\n> To issue sprawdza tylko, czy Robot OSIRIS umie zgłosić problem. Zamknij je.';
+  return '';
+}
+
+// Ostrzeżenie „Plik się zmienił…” w symulacji, gdy plik jest w rzeczywistości ten sam – z dopiskiem (SYMULACJA).
+export function oznaczSymulacje(ostrzezenia, tenSamPlik) {
+  return ostrzezenia.map((o) =>
+    tenSamPlik && o.startsWith('Plik się zmienił') ? `${o} (SYMULACJA – w rzeczywistości to ten sam plik, SHA-256 bez zmian)` : o,
+  );
+}
+
 const dzisPL = () => new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Warsaw' });
 
 async function main() {
@@ -117,17 +147,37 @@ async function main() {
     wyciag.nierozpoznane.push('TEST: celowo usunięty wiersz (tryb wymus-problem).');
   }
   const wynik = sprawdz(wyciag, poprzedni?.wyciag ?? null, dzisPL());
-  const tekst = opis(wynik, wyciag, poprzedni?.wyciag ?? null, zrodlo);
+  const symulacja = opcja('--symulacja') ?? '';
+  const tenSamPlik = poprzedni?.zrodlo?.sha256 === sha256;
+  if (symulacja) wynik.ostrzezenia = oznaczSymulacje(wynik.ostrzezenia, tenSamPlik);
+  const daneBezZmian = JSON.stringify(wyciag) === JSON.stringify(poprzedni?.wyciag);
+  const naglowek = symulacja ? `${naglowekSymulacji(symulacja, daneBezZmian)}\n\n` : '';
   if (!wynik.ok || flaga('--symuluj-problem')) {
-    await zapisz({ stan: 'problem', stan_na: wyciag.stan_na, sha256, bledy: wynik.bledy, ostrzezenia: wynik.ostrzezenia }, tekst);
+    const tekst = naglowek + opis(wynik, wyciag, poprzedni?.wyciag ?? null, zrodlo);
+    await zapisz({ stan: 'problem', stan_na: wyciag.stan_na, sha256, symulacja, bledy: wynik.bledy, ostrzezenia: wynik.ostrzezenia }, tekst);
     return;
   }
+  const stan = rodzajZmiany({ wyciag, poprzedni, sha256, wymus: flaga('--wymus') });
   const lokalizacje = JSON.parse(await readFile(PLIK_LOKALIZACJI, 'utf-8'));
   const dane = zbuduj(wyciag, zrodlo, lokalizacje, dzisPL());
-  const brakMiejsca = dane.odbiorcy.filter((s) => s.lokalizacja.rodzaj === 'brak' && !lokalizacje.stacje[s.kod]).map((s) => s.kod);
-  const dopisek = brakMiejsca.length ? `\n\n### Do uzupełnienia\n- nowe stacje bez wybranego miejsca na mapie (pokazane tylko na liście): ${brakMiejsca.join(', ')}` : '';
+  let tekst;
+  if (stan === 'nowy-plik') {
+    // Nowy plik, te same dane: zapisujemy tylko nową informację o pliku (SHA-256, Last-Modified, data pobrania),
+    // żeby w kolejnych tygodniach robot rozpoznawał ten plik jako znany i potwierdzał aktualność danych.
+    tekst =
+      `Robot OSIRIS: na pse.pl jest **nowy plik** dokumentu o dostępności mocy przyłączeniowej (inny SHA-256), ale **dane są te same** – stan na ${wyciag.stan_na.split('-').reverse().join('.')}.\n\n` +
+      'Sprawdzian prawdy przeszedł, wyciąg (wszystkie tabele) jest identyczny jak na stronie. W tym PR zmienia się tylko informacja o pliku: SHA-256, Last-Modified i data pobrania. ' +
+      'Bez tego PR robot co tydzień brałby ten plik za nowy i nie potwierdzałby aktualności danych („sprawdzono przez Robota OSIRIS”).\n\n' +
+      `### Plik\n- poprzednio: \`${poprzedni.zrodlo.sha256}\` (pobrano ${poprzedni.zrodlo.pobrano})\n- teraz: \`${sha256}\` (pobrano ${zrodlo.pobrano})\n- link: ${zrodlo.url_pdf}` +
+      (zrodlo.last_modified ? `\n- Last-Modified (serwer PSE): ${zrodlo.last_modified}` : '') +
+      (wynik.ostrzezenia.length ? `\n\n### Ostrzeżenia\n${wynik.ostrzezenia.map((o) => `- ${o}`).join('\n')}` : '');
+  } else {
+    const brakMiejsca = dane.odbiorcy.filter((s) => s.lokalizacja.rodzaj === 'brak' && !lokalizacje.stacje[s.kod]).map((s) => s.kod);
+    const dopisek = brakMiejsca.length ? `\n\n### Do uzupełnienia\n- nowe stacje bez wybranego miejsca na mapie (pokazane tylko na liście): ${brakMiejsca.join(', ')}` : '';
+    tekst = naglowek + opis(wynik, wyciag, poprzedni?.wyciag ?? null, zrodlo) + dopisek;
+  }
   await writeFile(PLIK_DANYCH, `${JSON.stringify(dane, null, 2)}\n`);
-  await zapisz({ stan: 'nowe-dane', stan_na: wyciag.stan_na, sha256, ostrzezenia: wynik.ostrzezenia }, tekst + dopisek);
+  await zapisz({ stan, stan_na: wyciag.stan_na, sha256, symulacja, ostrzezenia: wynik.ostrzezenia }, tekst);
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
