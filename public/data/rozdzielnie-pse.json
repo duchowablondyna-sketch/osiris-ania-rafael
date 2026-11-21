@@ -1,0 +1,796 @@
+{
+  "opis": "Wykaz rozdzielni PSE bez możliwości przyłączenia nowych obiektów – wyciąg OSIRIS (bez komentarzy z arkusza).",
+  "zrodlo": {
+    "nazwa": "PSE S.A., „Wykaz rozdzielni na stacjach bez możliwości przyłączenia nowych obiektów”",
+    "url_strony": "https://www.pse.pl/dane-systemowe/praca-kse/informacje-ogolne/wykaz-obiektow-planowanych-do-przylaczenia",
+    "url_pliku": "https://www.pse.pl/documents/20182/51490/20260204_Lista_rozdzielni-brak_mozliwosci_przylaczenia.xlsx",
+    "pobrano": "2026-11-21",
+    "sha256": "5fb56e497860b7584734386122910e5d10deae750b21d4b0557dc70a970e1348",
+    "last_modified": "Wed, 04 Feb 2026 09:26:46 GMT"
+  },
+  "stan_na": "2026-02-04",
+  "listy": [
+    {
+      "tytul": "Lista rozdzielni PSE S.A., dla których brak jest dostępnych miejsc przyłączenia",
+      "uwaga": "Wnioski będą rozpatrywane poprzez wydanie odmowy określenia warunków przyłączenia ze względu na brak warunków technicznych i ekonomicznych, bez weryfikacji złożonego wniosku.",
+      "naglowek": [
+        "ZKO PSE",
+        "Symbol stacji",
+        "Nazwa stacji",
+        "Rozdzielnia",
+        "Liczba dostępnych miejsc przyłączenia"
+      ],
+      "rozdzielnie": [
+        {
+          "wiersz": 6,
+          "zko": "Katowice",
+          "symbol": "ANI",
+          "kody": [
+            "ANI"
+          ],
+          "opis": "Aniołów",
+          "rozdzielnia": "Rozdzielnia 220 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 7,
+          "zko": "Poznań",
+          "symbol": "BCS",
+          "kody": [
+            "BCS"
+          ],
+          "opis": "Baczyna Systemowa",
+          "rozdzielnia": "Rozdzielnia 220 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 8,
+          "zko": "Katowice",
+          "symbol": "BIR",
+          "kody": [
+            "BIR"
+          ],
+          "opis": "Bieruń",
+          "rozdzielnia": "Rozdzielnia 220 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 9,
+          "zko": "Radom",
+          "symbol": "BGC",
+          "kody": [
+            "BGC"
+          ],
+          "opis": "Boguchwała",
+          "rozdzielnia": "Rozdzielnia 220 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 10,
+          "zko": "Radom",
+          "symbol": "CHS",
+          "kody": [
+            "CHS"
+          ],
+          "opis": "Chełm Systemowa",
+          "rozdzielnia": "Rozdzielnia 400 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 11,
+          "zko": "Poznań",
+          "symbol": "CZE",
+          "kody": [
+            "CZE"
+          ],
+          "opis": "Czerwonak",
+          "rozdzielnia": "Rozdzielnia 220 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 12,
+          "zko": "Bydgoszcz",
+          "symbol": "DUN",
+          "kody": [
+            "DUN"
+          ],
+          "opis": "Dunowo",
+          "rozdzielnia": "Rozdzielnia 220 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 13,
+          "zko": "Warszawa",
+          "symbol": "ELK",
+          "kody": [
+            "ELK"
+          ],
+          "opis": "Ełk",
+          "rozdzielnia": "Rozdzielnia 220 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 14,
+          "zko": "Bydgoszcz",
+          "symbol": "GDA",
+          "kody": [
+            "GDA"
+          ],
+          "opis": "Gdańsk I",
+          "rozdzielnia": "Rozdzielnia 110 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 15,
+          "zko": "Bydgoszcz",
+          "symbol": "GDA",
+          "kody": [
+            "GDA"
+          ],
+          "opis": "Gdańsk I",
+          "rozdzielnia": "Rozdzielnia 220 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 16,
+          "zko": "Bydgoszcz",
+          "symbol": "GDA",
+          "kody": [
+            "GDA"
+          ],
+          "opis": "Gdańsk I",
+          "rozdzielnia": "Rozdzielnia 400 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 17,
+          "zko": "Poznań",
+          "symbol": "GOR",
+          "kody": [
+            "GOR"
+          ],
+          "opis": "Gorzów",
+          "rozdzielnia": "Rozdzielnia 110 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 18,
+          "zko": "Poznań",
+          "symbol": "GOR",
+          "kody": [
+            "GOR"
+          ],
+          "opis": "Gorzów",
+          "rozdzielnia": "Rozdzielnia 220 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 19,
+          "zko": "Katowice",
+          "symbol": "HAL",
+          "kody": [
+            "HAL"
+          ],
+          "opis": "Halemba",
+          "rozdzielnia": "Rozdzielnia 220 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 20,
+          "zko": "Katowice",
+          "symbol": "JAM",
+          "kody": [
+            "JAM"
+          ],
+          "opis": "Jamki",
+          "rozdzielnia": "Rozdzielnia 220 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 21,
+          "zko": "Bydgoszcz",
+          "symbol": "JAS",
+          "kody": [
+            "JAS"
+          ],
+          "opis": "Jasiniec",
+          "rozdzielnia": "Rozdzielnia 220 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 22,
+          "zko": "Katowice",
+          "symbol": "KAT",
+          "kody": [
+            "KAT"
+          ],
+          "opis": "Katowice",
+          "rozdzielnia": "Rozdzielnia 220 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 23,
+          "zko": "Katowice",
+          "symbol": "KED",
+          "kody": [
+            "KED"
+          ],
+          "opis": "Kędzierzyn",
+          "rozdzielnia": "Rozdzielnia 220 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 24,
+          "zko": "Radom",
+          "symbol": "KPK",
+          "kody": [
+            "KPK"
+          ],
+          "opis": "Kielce Piaski",
+          "rozdzielnia": "Rozdzielnia 220 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 25,
+          "zko": "Katowice",
+          "symbol": "KHK",
+          "kody": [
+            "KHK"
+          ],
+          "opis": "Koksochemia",
+          "rozdzielnia": "Rozdzielnia 220 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 26,
+          "zko": "Warszawa",
+          "symbol": "MIL",
+          "kody": [
+            "MIL"
+          ],
+          "opis": "Miłosna",
+          "rozdzielnia": "Rozdzielnia 220 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 27,
+          "zko": "Warszawa",
+          "symbol": "MOR",
+          "kody": [
+            "MOR"
+          ],
+          "opis": "Mory",
+          "rozdzielnia": "Rozdzielnia 110 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 28,
+          "zko": "Warszawa",
+          "symbol": "MOR",
+          "kody": [
+            "MOR"
+          ],
+          "opis": "Mory",
+          "rozdzielnia": "Rozdzielnia 220 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 29,
+          "zko": "Katowice",
+          "symbol": "MOS",
+          "kody": [
+            "MOS"
+          ],
+          "opis": "Moszczenica",
+          "rozdzielnia": "Rozdzielnia 220 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 30,
+          "zko": "Warszawa",
+          "symbol": "MSK",
+          "kody": [
+            "MSK"
+          ],
+          "opis": "Mościska",
+          "rozdzielnia": "Rozdzielnia 400 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 31,
+          "zko": "Bydgoszcz",
+          "symbol": "OLS",
+          "kody": [
+            "OLS"
+          ],
+          "opis": "Olsztyn I",
+          "rozdzielnia": "Rozdzielnia 220 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 32,
+          "zko": "Bydgoszcz",
+          "symbol": "OLM",
+          "kody": [
+            "OLM"
+          ],
+          "opis": "Olsztyn Mątki",
+          "rozdzielnia": "Rozdzielnia 220 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 33,
+          "zko": "Warszawa",
+          "symbol": "OST",
+          "kody": [
+            "OST"
+          ],
+          "opis": "Ostrołęka",
+          "rozdzielnia": "Rozdzielnia 400 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 34,
+          "zko": "Warszawa",
+          "symbol": "PIA",
+          "kody": [
+            "PIA"
+          ],
+          "opis": "Piaseczno",
+          "rozdzielnia": "Rozdzielnia 220 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 35,
+          "zko": "Poznań",
+          "symbol": "PKW",
+          "kody": [
+            "PKW"
+          ],
+          "opis": "Piła Krzewina",
+          "rozdzielnia": "Rozdzielnia 220 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 36,
+          "zko": "Warszawa",
+          "symbol": "PIO",
+          "kody": [
+            "PIO"
+          ],
+          "opis": "Piotrków",
+          "rozdzielnia": "Rozdzielnia 220 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 37,
+          "zko": "Warszawa",
+          "symbol": "PDE",
+          "kody": [
+            "PDE"
+          ],
+          "opis": "Podolszyce",
+          "rozdzielnia": "Rozdzielnia 220 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 38,
+          "zko": "Poznań",
+          "symbol": "PPD",
+          "kody": [
+            "PPD"
+          ],
+          "opis": "Poznań Południe",
+          "rozdzielnia": "Rozdzielnia 220 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 39,
+          "zko": "Warszawa",
+          "symbol": "PRG",
+          "kody": [
+            "PRG"
+          ],
+          "opis": "Praga",
+          "rozdzielnia": "Rozdzielnia 110 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 40,
+          "zko": "Warszawa",
+          "symbol": "SOC",
+          "kody": [
+            "SOC"
+          ],
+          "opis": "Sochaczew",
+          "rozdzielnia": "Rozdzielnia 220 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 41,
+          "zko": "Poznań",
+          "symbol": "WRC",
+          "kody": [
+            "WRC"
+          ],
+          "opis": "Wrocław",
+          "rozdzielnia": "Rozdzielnia 400 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 42,
+          "zko": "Katowice",
+          "symbol": "WRZ",
+          "kody": [
+            "WRZ"
+          ],
+          "opis": "Wrzosowa",
+          "rozdzielnia": "Rozdzielnia 220 kV",
+          "miejsca": 0
+        }
+      ]
+    },
+    {
+      "tytul": "Lista planowanych rozdzielni, których PSE S.A. nie będą właścicielem, lub ich realizacja nie została jeszcze przesądzona",
+      "uwaga": "Wnioski złożone do tych rozdzielni pozostaną bez weryfikacji i bez rozpatrzenia",
+      "naglowek": [
+        "ZKO PSE",
+        "Symbol stacji",
+        "Poz. w PRSP 2025 - 2034",
+        "Rozdzielnia",
+        "Liczba dostępnych miejsc przyłączenia"
+      ],
+      "rozdzielnie": [
+        {
+          "wiersz": 47,
+          "zko": "Bydgoszcz",
+          "symbol": "BEB (EJ1)",
+          "kody": [
+            "BEB",
+            "EJ1"
+          ],
+          "opis": "III.33",
+          "rozdzielnia": "Rozdzielnia 110 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 48,
+          "zko": "Katowice",
+          "symbol": "JOA",
+          "kody": [
+            "JOA"
+          ],
+          "opis": "III.10",
+          "rozdzielnia": "Rozdzielnia 110 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 49,
+          "zko": "Poznań",
+          "symbol": "MKA",
+          "kody": [
+            "MKA"
+          ],
+          "opis": "III.21",
+          "rozdzielnia": "Rozdzielnia 110 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 50,
+          "zko": "Poznań",
+          "symbol": "PSC",
+          "kody": [
+            "PSC"
+          ],
+          "opis": "III.71",
+          "rozdzielnia": "Rozdzielnia 110 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 51,
+          "zko": "Katowice",
+          "symbol": "PBO",
+          "kody": [
+            "PBO"
+          ],
+          "opis": "II.78",
+          "rozdzielnia": "Rozdzielnia 110 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 52,
+          "zko": "Warszawa",
+          "symbol": "DMO",
+          "kody": [
+            "DMO"
+          ],
+          "opis": "II.12",
+          "rozdzielnia": "Rozdzielnia 110 kV",
+          "miejsca": 0
+        }
+      ]
+    },
+    {
+      "tytul": "Lista planowanych rozdzielni PSE S.A., których realizacja została uwzględniona warunkowo",
+      "uwaga": "Wnioski złożone do tych rozdzielni pozostaną bez weryfikacji i bez rozpatrzenia",
+      "naglowek": [
+        "ZKO PSE",
+        "Symbol stacji",
+        "Poz. w PRSP 2025 - 2034",
+        "Rozdzielnia",
+        "Liczba dostępnych miejsc przyłączenia"
+      ],
+      "rozdzielnie": [
+        {
+          "wiersz": 57,
+          "zko": "Bydgoszcz",
+          "symbol": "DZO",
+          "kody": [
+            "DZO"
+          ],
+          "opis": "III.37",
+          "rozdzielnia": "Rozdzielnia 110 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 58,
+          "zko": "Bydgoszcz",
+          "symbol": "DZO",
+          "kody": [
+            "DZO"
+          ],
+          "opis": "III.37",
+          "rozdzielnia": "Rozdzielnia 220 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 59,
+          "zko": "Bydgoszcz",
+          "symbol": "DZO",
+          "kody": [
+            "DZO"
+          ],
+          "opis": "III.37",
+          "rozdzielnia": "Rozdzielnia 400 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 60,
+          "zko": "Radom",
+          "symbol": "EPK",
+          "kody": [
+            "EPK"
+          ],
+          "opis": "III.41",
+          "rozdzielnia": "Rozdzielnia 110 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 61,
+          "zko": "Radom",
+          "symbol": "EPK",
+          "kody": [
+            "EPK"
+          ],
+          "opis": "III.41",
+          "rozdzielnia": "Rozdzielnia 400 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 62,
+          "zko": "Poznań",
+          "symbol": "GDM",
+          "kody": [
+            "GDM"
+          ],
+          "opis": "III.22",
+          "rozdzielnia": "Rozdzielnia 110 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 63,
+          "zko": "Poznań",
+          "symbol": "GDM",
+          "kody": [
+            "GDM"
+          ],
+          "opis": "III.22",
+          "rozdzielnia": "Rozdzielnia 400 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 64,
+          "zko": "Poznań",
+          "symbol": "GNA",
+          "kody": [
+            "GNA"
+          ],
+          "opis": "III.100",
+          "rozdzielnia": "Rozdzielnia 400 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 65,
+          "zko": "Warszawa",
+          "symbol": "KUZ",
+          "kody": [
+            "KUZ"
+          ],
+          "opis": "III.89",
+          "rozdzielnia": "Rozdzielnia 400 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 66,
+          "zko": "Katowice",
+          "symbol": "LWN",
+          "kody": [
+            "LWN"
+          ],
+          "opis": "III.45",
+          "rozdzielnia": "Rozdzielnia 110 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 67,
+          "zko": "Katowice",
+          "symbol": "LWN",
+          "kody": [
+            "LWN"
+          ],
+          "opis": "III.45",
+          "rozdzielnia": "Rozdzielnia 400 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 68,
+          "zko": "Bydgoszcz",
+          "symbol": "MAO",
+          "kody": [
+            "MAO"
+          ],
+          "opis": "III.12",
+          "rozdzielnia": "Rozdzielnia 110 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 69,
+          "zko": "Bydgoszcz",
+          "symbol": "MAO",
+          "kody": [
+            "MAO"
+          ],
+          "opis": "III.12",
+          "rozdzielnia": "Rozdzielnia 400 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 70,
+          "zko": "Warszawa",
+          "symbol": "REM",
+          "kody": [
+            "REM"
+          ],
+          "opis": "III.3",
+          "rozdzielnia": "Rozdzielnia 110 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 71,
+          "zko": "Warszawa",
+          "symbol": "REM",
+          "kody": [
+            "REM"
+          ],
+          "opis": "III.3",
+          "rozdzielnia": "Rozdzielnia 220 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 72,
+          "zko": "Warszawa",
+          "symbol": "REM",
+          "kody": [
+            "REM"
+          ],
+          "opis": "III.3",
+          "rozdzielnia": "Rozdzielnia 400 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 73,
+          "zko": "Poznań",
+          "symbol": "SBO",
+          "kody": [
+            "SBO"
+          ],
+          "opis": "III.251",
+          "rozdzielnia": "Rozdzielnia 400 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 74,
+          "zko": "Warszawa",
+          "symbol": "SWR",
+          "kody": [
+            "SWR"
+          ],
+          "opis": "III.9",
+          "rozdzielnia": "Rozdzielnia 110 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 75,
+          "zko": "Warszawa",
+          "symbol": "SWR",
+          "kody": [
+            "SWR"
+          ],
+          "opis": "III.9",
+          "rozdzielnia": "Rozdzielnia 220 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 76,
+          "zko": "Warszawa",
+          "symbol": "SWR",
+          "kody": [
+            "SWR"
+          ],
+          "opis": "III.9",
+          "rozdzielnia": "Rozdzielnia 400 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 77,
+          "zko": "Katowice",
+          "symbol": "WRS",
+          "kody": [
+            "WRS"
+          ],
+          "opis": "III.203",
+          "rozdzielnia": "Rozdzielnia 110 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 78,
+          "zko": "Katowice",
+          "symbol": "WRS",
+          "kody": [
+            "WRS"
+          ],
+          "opis": "III.203",
+          "rozdzielnia": "Rozdzielnia 400 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 79,
+          "zko": "Poznań",
+          "symbol": "ZER",
+          "kody": [
+            "ZER"
+          ],
+          "opis": "III.46",
+          "rozdzielnia": "Rozdzielnia 110 kV",
+          "miejsca": 0
+        },
+        {
+          "wiersz": 80,
+          "zko": "Poznań",
+          "symbol": "ZER",
+          "kody": [
+            "ZER"
+          ],
+          "opis": "III.46",
+          "rozdzielnia": "Rozdzielnia 400 kV",
+          "miejsca": 0
+        }
+      ]
+    }
+  ],
+  "uwagi_koncowe": [
+    "Dodatkowo informujemy, że bez weryfikacji i bez rozpatrzenia pozostaną także wnioski do:",
+    "- stacji niebędących własnością OSP,",
+    "- nacięć linii NN w tym układów gwiazdowych."
+  ]
+}

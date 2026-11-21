@@ -1,0 +1,164 @@
+name: Robot OSIRIS – wolne moce PSE
+
+# Etap A (21.11.2026): tylko ręczne uruchamianie. Harmonogram (środy 05:23 UTC) dojdzie w etapie B, osobnym PR.
+# Robot NIGDY nie scala – nie ma takiego kroku. Nowe dane trafiają na stronę tylko przez PR zatwierdzony przez Anię.
+on:
+  workflow_dispatch:
+    inputs:
+      tryb:
+        description: "normalny – sprawdź i zgłoś; proba – wszystko bez PR/issue; wymus-pr – testowy PR; wymus-problem – testowe issue"
+        type: choice
+        options: [normalny, proba, wymus-pr, wymus-problem]
+        default: normalny
+
+# Domyślnie żadnych uprawnień – każde zadanie dostaje tylko to, czego potrzebuje.
+permissions: {}
+
+concurrency:
+  group: robot-osiris-pse
+  cancel-in-progress: false
+
+jobs:
+  sprawdz:
+    name: Sprawdź PSE
+    # macOS: odczyt PDF przez wbudowany PDFKit (bez instalowania narzędzi). To zadanie czyta niezaufany plik,
+    # więc nie ma żadnych uprawnień ani tokena zapisu.
+    runs-on: macos-15
+    timeout-minutes: 10
+    permissions: {}
+    outputs:
+      stan: ${{ steps.robot.outputs.stan }}
+      stan_na: ${{ steps.robot.outputs.stan_na }}
+      sha256: ${{ steps.robot.outputs.sha256 }}
+    steps:
+      - name: Pobierz kod repo (publiczne, bez tokena)
+        run: |
+          git init -q repo
+          git -C repo fetch -q --depth 1 "https://github.com/${GITHUB_REPOSITORY}.git" "${GITHUB_SHA}"
+          git -C repo checkout -q FETCH_HEAD
+          node --version
+
+      - name: Testy odczytu i sprawdzianu prawdy
+        working-directory: repo
+        run: node --test scripts/pse-moce/testy.mjs
+
+      - name: Robot – pobierz z pse.pl, porównaj skrót, odczytaj, sprawdź
+        id: robot
+        working-directory: repo
+        env:
+          TRYB: ${{ inputs.tryb }}
+        run: |
+          WYNIK="${RUNNER_TEMP}/wynik"
+          case "$TRYB" in
+            wymus-pr) FLAGI="--wymus" ;;
+            wymus-problem) FLAGI="--wymus --symuluj-problem" ;;
+            *) FLAGI="" ;;
+          esac
+          node scripts/pse-moce/robot.mjs $FLAGI --wyjscie "$WYNIK"
+          pole() { node -p "require(process.argv[1])['$1'] ?? ''" "$WYNIK/wynik.json"; }
+          STAN="$(pole stan)"
+          {
+            echo "stan=$STAN"
+            echo "stan_na=$(pole stan_na)"
+            echo "sha256=$(pole sha256)"
+          } >> "$GITHUB_OUTPUT"
+          if [ "$STAN" = "nowe-dane" ]; then cp public/data/moce-pse.json "$WYNIK/moce-pse.json"; fi
+          {
+            echo "## Robot OSIRIS – wynik: \`$STAN\` (tryb: $TRYB)"
+            echo
+            if [ "$STAN" = "bez-zmian" ]; then
+              echo "Na pse.pl nie ma nowszej wersji dokumentu (ten sam SHA-256). Nic nie wysyłam."
+            else
+              cat "$WYNIK/opis.md"
+            fi
+            if [ "$TRYB" = "proba" ] && [ "$STAN" != "bez-zmian" ]; then
+              echo
+              echo "**Tryb próba:** robot otworzyłby teraz $([ "$STAN" = nowe-dane ] && echo 'PR' || echo 'issue') – w tym trybie nic nie wysyła."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Przekaż wynik do zadania „Zgłoś” (bez PDF)
+        if: steps.robot.outputs.stan != 'bez-zmian'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: wynik-robota
+          path: ${{ runner.temp }}/wynik/
+          if-no-files-found: error
+          retention-days: 7
+
+  potwierdz:
+    # Nazwa tego zadania jest czytana przy budowaniu strony (scripts/pse-moce/sprawdzono.mjs) – nie zmieniać bez zmiany tam.
+    name: Potwierdź aktualność danych
+    needs: sprawdz
+    if: needs.sprawdz.outputs.stan == 'bez-zmian'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    permissions: {}
+    steps:
+      - name: Dane na stronie są aktualne
+        env:
+          STAN_NA: ${{ needs.sprawdz.outputs.stan_na }}
+        run: |
+          echo "Robot OSIRIS: na pse.pl nie ma nowszej wersji niż stan na ${STAN_NA}."
+
+  zglos:
+    name: Zgłoś (PR albo issue)
+    needs: sprawdz
+    if: inputs.tryb != 'proba' && (needs.sprawdz.outputs.stan == 'nowe-dane' || needs.sprawdz.outputs.stan == 'problem')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    # Tylko to, co potrzebne: gałąź (contents), PR z prośbą o przegląd (pull-requests), issue (issues).
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+    steps:
+      - name: Odbierz wynik z zadania „Sprawdź PSE”
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: wynik-robota
+          path: ${{ runner.temp }}/wynik
+
+      - name: Otwórz PR albo issue (bez scalania)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TRYB: ${{ inputs.tryb }}
+          STAN: ${{ needs.sprawdz.outputs.stan }}
+          STAN_NA: ${{ needs.sprawdz.outputs.stan_na }}
+          SHA256: ${{ needs.sprawdz.outputs.sha256 }}
+          RECENZENT: ${{ github.repository_owner }}
+        run: |
+          WYNIK="${RUNNER_TEMP}/wynik"
+          DATA_PL() { echo "$1" | awk -F- '{print $3"."$2"."$1}'; }
+          TEST=""; [ "$TRYB" != "normalny" ] && TEST="TEST – "
+          # Bez spamu: jeśli PR albo issue dla tego samego pliku (SHA-256 w opisie) jest już otwarty – nic nie wysyłamy.
+          if [ -n "$(gh pr list -R "$GITHUB_REPOSITORY" --state open --search "$SHA256 in:body" --json number --jq '.[].number')" ] \
+             || [ -n "$(gh issue list -R "$GITHUB_REPOSITORY" --state open --search "$SHA256 in:body" --json number --jq '.[].number')" ]; then
+            echo "Dla pliku $SHA256 jest już otwarty PR albo issue – nic nie wysyłam." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          if [ "$STAN" = "problem" ]; then
+            TYTUL="[Robot OSIRIS] ${TEST}Problem z danymi PSE – $(DATA_PL "$(TZ=Europe/Warsaw date +%F)")"
+            gh issue create -R "$GITHUB_REPOSITORY" --title "$TYTUL" --body-file "$WYNIK/opis.md"
+            exit 0
+          fi
+          TYTUL="[Robot OSIRIS] ${TEST}Nowe dane PSE – stan na $(DATA_PL "$STAN_NA")"
+          GALAZ="robot-osiris/pse-${STAN_NA}-${SHA256:0:8}"
+          gh auth setup-git
+          git clone -q --depth 1 "https://github.com/${GITHUB_REPOSITORY}.git" repo
+          cd repo
+          if git ls-remote --exit-code --heads origin "$GALAZ" >/dev/null; then
+            echo "Gałąź $GALAZ już istnieje – nic nie wysyłam." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git switch -q -c "$GALAZ"
+          cp "$WYNIK/moce-pse.json" public/data/moce-pse.json
+          git config user.name "Robot OSIRIS"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/data/moce-pse.json
+          git commit -q -m "$TYTUL" -m "Źródło: PSE S.A., dokument o dostępności mocy przyłączeniowej, SHA-256 ${SHA256}. Wyciąg i sprawdzian: scripts/pse-moce/."
+          git push -q origin "$GALAZ"
+          gh pr create -R "$GITHUB_REPOSITORY" --base main --head "$GALAZ" --title "$TYTUL" --body-file "$WYNIK/opis.md"
+          # Prośba o przegląd (mail do właścicielki repo). Gdy GitHub odmówi, PR i tak zostaje – zapisujemy to w podsumowaniu.
+          gh pr edit -R "$GITHUB_REPOSITORY" "$GALAZ" --add-reviewer "$RECENZENT" \
+            || echo "Nie udało się dodać prośby o przegląd dla $RECENZENT." | tee -a "$GITHUB_STEP_SUMMARY"

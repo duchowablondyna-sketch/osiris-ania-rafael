@@ -1,3 +1,9 @@
+/* Odsłonięcie treści strony tytułowej ukrytej przez styl w <head> (index.html) – dopiero gdy te style są wczytane. */
+body.tytulowa > * {
+  visibility: visible;
+  animation: none;
+}
+
 /* Strona tytułowa OSIRIS – styl inspirowany God's Eye View (ciemne tło, cienki tytuł, etykiety o stałej szerokości,
    cienkie ramki, zegar), ale nasz: złoty akcent, kolory warstw z mapy, nasze teksty i układ.
    Wspólne zmienne (--tlo, --zloto, czcionki) i stopka pochodzą z style.css. */

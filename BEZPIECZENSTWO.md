@@ -70,6 +70,15 @@
 
 **Weryfikacja 18.11.2026:** ustawienia odczytane przez `gh api` (tylko GET) – zgodne z opisem (poziom 2). Malware alerts, Dependency graph i nazwa roli w bypass (Repository admin, tylko dla PR) – API nie podaje ich wprost; potwierdzone przez Anię na ekranie ustawień GitHuba (poziom 3).
 
+## Robot OSIRIS – wolne moce PSE (od 21.11.2026, etap A: tylko ręczne uruchamianie)
+
+- Workflow `.github/workflows/robot-osiris-pse.yml`. Każdy PR, issue i commit robota ma w tytule „[Robot OSIRIS]”. Robot **nigdy nie scala** – nie ma takiego kroku; scala tylko Ania po przeglądzie.
+- Uprawnienia: domyślnie `permissions: {}`. Zadanie „sprawdź” (macOS, czyta niezaufany PDF) – bez żadnych uprawnień i bez tokena zapisu. Zadanie „zgłoś” (Ubuntu, tylko przy nowych danych albo problemie) – `contents: write` (gałąź `robot-osiris/…`), `pull-requests: write`, `issues: write`. Robot nie odwołuje się do żadnego sekretu (w tym `CLOUDFLARE_DEPLOY_HOOK`).
+- Bez gotowych akcji z zewnątrz; jedyne akcje to `actions/upload-artifact` i `actions/download-artifact` (GitHub), przypięte do pełnego SHA.
+- Pobieranie tylko z `https://www.pse.pl` (sprawdzane także po przekierowaniu), plik do 20 MB, nagłówek `%PDF-`. Surowy PDF nie trafia do repo ani do artefaktów (`*.pdf` w `.gitignore`).
+- Ustawienie potrzebne do tworzenia PR: Settings → Actions → General → Workflow permissions → „Allow GitHub Actions to create and approve pull requests” (decyzja Ani: włączy sama). Zatwierdzanie: autor PR (robot) nie może zatwierdzić własnego PR, a ruleset wymaga dziś 0 zatwierdzeń – decyzja o „1 wymaganym zatwierdzeniu” odłożona (Ania, 21.11.2026).
+- Przy budowaniu strony (Cloudflare) `scripts/pse-moce/sprawdzono.mjs` pyta publiczne API GitHuba (api.github.com, bez tokena) o datę ostatniego potwierdzenia przez robota. To połączenie serwera budującego, nie przeglądarki widza.
+
 ## Połączenia przeglądarki widza z zewnętrznymi serwerami
 
 - Od etapu „Wygląd 1” (19.11.2026) przeglądarka widza pobiera kafelki tła satelitarnego z serwera NASA GIBS (`gibs.earthdata.nasa.gov`), więc NASA widzi adres IP odwiedzającego. Od etapu „Prąd nocą” (20.11.2026) dotyczy to obu teł: Blue Marble (Dzień) i VIIRS_Black_Marble (Noc). Od etapu „Strona tytułowa” (20.11.2026) także strona tytułowa (/) pobiera kafelki Black Marble do globusa – połączenie z NASA zaczyna się już tam. Dane PSE nadal są pobierane tylko przy budowaniu strony.
@@ -78,12 +87,15 @@
 - [ ] Robot Playwright jako wymagany test.
 - [ ] `dependabot.yml`.
 - [ ] Private vulnerability reporting.
-- [ ] Po dołączeniu Rafaela: 1 zatwierdzenie i CODEOWNERS.
+- [ ] Po dołączeniu Rafaela: 1 zatwierdzenie i CODEOWNERS. Wtedy wrócić do „1 wymaganego zatwierdzenia” w rulesecie „ochrona-main” – Rafael jako recenzent (decyzja Ani 21.11.2026: nie teraz; powód: robot ma prawo zapisu, a przy 0 zatwierdzeń scalanie pilnuje tylko brak takiego kroku w workflow).
 - [ ] Bramka Jev przed agentem.
 - [ ] Sprawdzić secret scanning non-provider patterns i validity checks (czy darmowe dla repo publicznego).
 - [ ] Potwierdzić w źródle jednostkę pola `wi` (MW) i czy warunki PSE obejmują API raporty.pse.pl.
 - [ ] Porównanie długości linii OSM z danymi PSE.
-- [ ] Harmonogram w publicznym repo wyłącza się po 60 dniach bez aktywności ([dokumentacja GitHub](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/disable-and-enable-workflows)); po przerwie sprawdzić workflow „Odśwież stronę” i włączyć ponownie.
+- [ ] Harmonogram w publicznym repo wyłącza się po 60 dniach bez aktywności ([dokumentacja GitHub](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/disable-and-enable-workflows)); po przerwie sprawdzić workflow „Odśwież stronę” i „Robot OSIRIS – wolne moce PSE” (gdy będzie miał harmonogram) i włączyć ponownie.
+- [x] Dopisek z „Wykazu rozdzielni na stacjach bez możliwości przyłączenia” PSE (XLSX, stan 4.02.2026) w okienkach 16 stacji (11 z rozdzielnią 400 kV – pusty sześciokąt; 5 tylko z 110 kV – pełny sześciokąt i zawężone zdanie), podsumowanie w panelu – zrobione 21.11.2026 (do przeglądu przez Anię).
+- [ ] Robot OSIRIS: co tydzień sprawdzać też nową wersję „Wykazu rozdzielni” (link z datą w nazwie pliku – szukać na stronie PSE, porównać SHA-256, `scripts/pse-moce/rozdzielnie.mjs` + sprawdzian, PR albo issue).
+- [ ] Robot OSIRIS etap B: harmonogram w środy 05:23 UTC; issue o niedostępności pse.pl dopiero po 2 nieudanych tygodniach z rzędu.
 - [ ] W niedalekiej przyszłości profesjonalne tło satelitarne (rozważyć płatne źródło), gdy będzie potrzeba.
 - [ ] Rozważyć kafelki tła dla Polski zapisane u nas (żeby przeglądarka widza nie łączyła się z NASA GIBS).
 - [ ] Harmonogram GitHub Actions bywa opóźniany lub pomijany (20.11.2026: zamiast 5 uruchomień były 2, z opóźnieniem 2–3 h) – jeśli się powtarza, rozważyć Cloudflare Cron Triggers.

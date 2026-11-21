@@ -2,6 +2,7 @@ import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url';
 import { odmiana, formatMocy, zbierzElektrownie, podsumujLadowe, podsumujElektrownie, podsumujMorskie } from './liczniki.js';
+import { dodajWarstweMocy } from './moce.js';
 import './czcionki.css';
 import './style.css';
 
@@ -323,6 +324,9 @@ function filtrElektrowni() {
 }
 
 map.on('load', () => {
+  // Okienko stacji z wolną mocą (src/moce.js) ma pierwszeństwo przed okienkami elektrowni i farm w tym samym miejscu.
+  const podZnaczkiemMocy = (e) => Boolean(map.getLayer('moce')) && map.queryRenderedFeatures(e.point, { layers: ['moce'] }).length > 0;
+
   for (const przycisk of document.querySelectorAll('.przelacznik button')) {
     przycisk.addEventListener('click', () => {
       ustawTryb(przycisk.dataset.tryb);
@@ -428,6 +432,7 @@ map.on('load', () => {
     .catch(() => ustawLicznik('morskie', 'brak danych', true));
 
   map.on('click', 'elektrownie', (e) => {
+    if (podZnaczkiemMocy(e)) return;
     const p = e.features[0].properties;
     const el = document.createElement('div');
     const tytul = document.createElement('strong');
@@ -465,12 +470,14 @@ map.on('load', () => {
     linie: ['linie-nn-obwodka', 'linie-nn', 'linie-nn-klik'],
     morskie: ['farmy-pelne', 'farmy-puste'],
     ladowe: ['farmy-lad-dziala', 'farmy-lad-budowa', 'farmy-lad-budowa-srodek'],
+    moce: ['moce-kola', 'moce-kola-obwodka', 'moce-podpis', 'moce'],
   };
   for (const pole of document.querySelectorAll('.legenda input[type="checkbox"]')) {
     pole.addEventListener('change', () => {
       const w = pole.dataset.warstwa;
       if (WARSTWY_LEGENDY[w]) {
-        for (const id of WARSTWY_LEGENDY[w]) map.setLayoutProperty(id, 'visibility', pole.checked ? 'visible' : 'none');
+        // getLayer: podpis „lokalizacja przybliżona” dochodzi później (czeka na czcionkę) – i sam przejmuje widoczność.
+        for (const id of WARSTWY_LEGENDY[w]) if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', pole.checked ? 'visible' : 'none');
       } else {
         if (pole.checked) widoczneElektrownie.add(w);
         else widoczneElektrownie.delete(w);
@@ -530,6 +537,7 @@ map.on('load', () => {
   };
   const STATUS_PL = { operating: 'działa', construction: 'w budowie – jeszcze nie produkuje albo produkuje częściowo' };
   map.on('click', ['farmy-lad-dziala', 'farmy-lad-budowa'], (e) => {
+    if (podZnaczkiemMocy(e)) return;
     const lokalizacja = e.features[0].properties.gem_location_id;
     const fazy = e.features.filter((f) => f.properties.gem_location_id === lokalizacja);
     const unikalne = [...new Map(fazy.map((f) => [f.properties.gem_unit_id, f.properties])).values()];
@@ -591,6 +599,7 @@ map.on('load', () => {
   });
 
   map.on('click', ['farmy-pelne', 'farmy-puste'], (e) => {
+    if (podZnaczkiemMocy(e)) return;
     const { nazwa, status, moc_mw, weryfikacja, weryfikacja_opis } = e.features[0].properties;
     const el = document.createElement('div');
     const tytul = document.createElement('strong');
@@ -612,7 +621,7 @@ map.on('load', () => {
 
   // Okienko linii 220/400 kV: nazwa z OSM, napięcie, źródło. Linie są cienkie – klikamy w szerszy, niewidoczny pas
   // (warstwa „linie-nn-klik”). Gdy w tym samym miejscu jest farma albo elektrownia, wygrywa jej okienko.
-  const KROPKI_I_ZNACZKI = ['elektrownie', 'farmy-lad-dziala', 'farmy-lad-budowa', 'farmy-pelne', 'farmy-puste'];
+  const KROPKI_I_ZNACZKI = ['elektrownie', 'farmy-lad-dziala', 'farmy-lad-budowa', 'farmy-pelne', 'farmy-puste', 'moce'];
   map.on('click', 'linie-nn-klik', (e) => {
     if (map.queryRenderedFeatures(e.point, { layers: KROPKI_I_ZNACZKI.filter((id) => map.getLayer(id)) }).length) return;
     const p = e.features[0].properties;
@@ -624,6 +633,9 @@ map.on('load', () => {
     el.append(tytul, document.createElement('br'), napiecie, linijkaZrodla('OpenStreetMap', 'stan', '19.11.2026'));
     new maplibregl.Popup().setLngLat(e.lngLat).setDOMContent(el).addTo(map);
   });
+
+  // Wolna moc dla odbiorców (PSE): na samym wierzchu, bo to najważniejsza warstwa dla pytania „gdzie się podłączyć” (src/moce.js).
+  dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, odmiana });
 
   // Kursor „rączka” nad wszystkim, co da się kliknąć.
   for (const id of ['linie-nn-klik', ...KROPKI_I_ZNACZKI]) {

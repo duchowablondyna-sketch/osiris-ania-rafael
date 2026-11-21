@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "node scripts/pobierz-pse.mjs && node scripts/podsumowanie.mjs",
+    "prebuild": "node scripts/pobierz-pse.mjs && node scripts/podsumowanie.mjs && node scripts/pse-moce/sprawdzono.mjs",
     "build": "vite build",
     "preview": "vite preview"
   },
