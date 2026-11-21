@@ -3,6 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Pierwsza klatka, zanim wczyta się główny CSS (w trybie deweloperskim Vite wstawia go dopiero z JavaScriptu):
+         od razu ciemne tło, a treść ukryta do chwili, gdy główny CSS ją odsłoni (style.css / tytulowa.css).
+         Zabezpieczenie: gdyby CSS się nie wczytał, treść i tak pokaże się po 3 s. Bez JavaScriptu. -->
+    <meta name="color-scheme" content="dark" />
+    <style>
+      html, body { margin: 0; background: #05070d; color: #e8eef7; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+      body > * { visibility: hidden; animation: osiris-pokaz 0s linear 3s forwards; }
+      @keyframes osiris-pokaz { to { visibility: visible; } }
+    </style>
     <title>OSIRIS – mapa prądu Polski</title>
     <meta name="description" content="Zobacz w jednym miejscu, skąd Polska bierze prąd i ile on kosztuje. Elektrownie, farmy wiatrowe, linie najwyższych napięć, produkcja z wiatru i cena energii – z oficjalnych, publicznych źródeł." />
     <meta property="og:type" content="website" />

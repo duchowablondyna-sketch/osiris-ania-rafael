@@ -1,0 +1,199 @@
+{
+  "opis": "Wybór miejsca na mapie dla stacji z mocą dla odbiorców (PSE, rozdział 5). Wybór ręczny (Claude, 21.11.2026, do sprawdzenia przez Anię). rodzaj: 'stacja-osm' – planowana stacja jest już w OpenStreetMap (znaczek w punkcie, dopasowanie niepewne); 'okolica' – PSE podaje tylko nazwę miejscowości albo „w rejonie X” (koło o promieniu promien_km wokół miejscowości z OSM); 'brak' – nie da się wskazać miejsca bez zgadywania (tylko lista). Współrzędne dopisuje scripts/pse-moce/pobierz-lokalizacje.mjs (© OpenStreetMap contributors, ODbL).",
+  "promien_km": 20,
+  "stan_osm": "2026-11-21T07:33:06Z",
+  "stacje": {
+    "NOR": {
+      "rodzaj": "okolica",
+      "osm": "node/3009665708",
+      "uwaga": "W OSM jedna miejscowość Norki (ok. 15 km na płn.-wsch. od Ełku) – zgodnie z położeniem na schemacie PSE (między Ełkiem a Wigrami). Stacji w OSM nie ma.",
+      "lon": 22.53833,
+      "lat": 53.955,
+      "nazwa_osm": "Norki"
+    },
+    "WIG": {
+      "rodzaj": "okolica",
+      "osm": "node/31518706",
+      "uwaga": "Wieś Wigry (pow. suwalski) – PSE podaje tylko nazwę stacji. Stacji w OSM nie ma.",
+      "lon": 23.08674,
+      "lat": 54.06882,
+      "nazwa_osm": "Wigry"
+    },
+    "WYP": {
+      "rodzaj": "okolica",
+      "osm": "node/3121596876",
+      "uwaga": "Wieś Wypędy (gm. Raszyn) – jedyna o tej nazwie w OSM. Stacji w OSM nie ma.",
+      "lon": 20.88561,
+      "lat": 52.13725,
+      "nazwa_osm": "Wypędy"
+    },
+    "MKA": {
+      "rodzaj": "okolica",
+      "osm": "node/3952721523",
+      "uwaga": "„W rejonie Legnicy” – środek koła: Legnica.",
+      "lon": 16.16032,
+      "lat": 51.20816,
+      "nazwa_osm": "Legnica"
+    },
+    "REM": {
+      "rodzaj": "okolica",
+      "osm": "node/428339515",
+      "uwaga": "„W rejonie Warszawy” – środek koła: Warszawa (to samo koło co SWR).",
+      "lon": 21.00672,
+      "lat": 52.23196,
+      "nazwa_osm": "Warszawa"
+    },
+    "SWR": {
+      "rodzaj": "okolica",
+      "osm": "node/428339515",
+      "uwaga": "„W rejonie Warszawy” – środek koła: Warszawa (to samo koło co REM).",
+      "lon": 21.00672,
+      "lat": 52.23196,
+      "nazwa_osm": "Warszawa"
+    },
+    "EPK": {
+      "rodzaj": "okolica",
+      "osm": "node/1854937161",
+      "uwaga": "„W rejonie Stalowej Woli” – środek koła: Stalowa Wola.",
+      "lon": 22.06441,
+      "lat": 50.56531,
+      "nazwa_osm": "Stalowa Wola"
+    },
+    "LWN": {
+      "rodzaj": "okolica",
+      "osm": "node/128054630",
+      "uwaga": "„W rejonie Opola” – środek koła: Opole.",
+      "lon": 17.92364,
+      "lat": 50.66682,
+      "nazwa_osm": "Opole"
+    },
+    "WRS": {
+      "rodzaj": "okolica",
+      "osm": "node/31916562",
+      "uwaga": "„W rejonie Opola (Wrzoski)” – Wrzoski, część Opola wg OSM (powiat Opole); inne Wrzoski w OSM leżą daleko od Opola.",
+      "lon": 17.82153,
+      "lat": 50.68488,
+      "nazwa_osm": "Wrzoski"
+    },
+    "KUZ": {
+      "rodzaj": "okolica",
+      "osm": "node/31781976",
+      "uwaga": "„W rejonie Złoczewa” – środek koła: Złoczew.",
+      "lon": 18.60603,
+      "lat": 51.41805,
+      "nazwa_osm": "Złoczew"
+    },
+    "ZER": {
+      "rodzaj": "okolica",
+      "osm": "node/27161819",
+      "uwaga": "„W rejonie Poznania” – środek koła: Poznań (to samo koło co PSC).",
+      "lon": 16.93352,
+      "lat": 52.40827,
+      "nazwa_osm": "Poznań"
+    },
+    "GNA": {
+      "rodzaj": "okolica",
+      "osm": "node/253530808",
+      "uwaga": "„W rejonie Konina” – środek koła: Konin (miasto).",
+      "lon": 18.25211,
+      "lat": 52.23019,
+      "nazwa_osm": "Konin"
+    },
+    "DSC": {
+      "rodzaj": "okolica",
+      "osm": "node/31530688",
+      "uwaga": "„W rejonie Trójmiasta” – środek koła: Sopot, środek Trójmiasta (nasz wybór; PSE nie wskazuje miasta).",
+      "lon": 18.56849,
+      "lat": 54.44479,
+      "nazwa_osm": "Sopot"
+    },
+    "DZO": {
+      "rodzaj": "okolica",
+      "osm": "node/1697487051",
+      "uwaga": "„W rejonie Torunia” – środek koła: Toruń (miasto).",
+      "lon": 18.60481,
+      "lat": 53.01027,
+      "nazwa_osm": "Toruń"
+    },
+    "CPK": {
+      "rodzaj": "okolica",
+      "osm": "way/830160388",
+      "uwaga": "„W rejonie Portu Polska” – środek koła: obszar „Port Polska” w OSM.",
+      "lon": 20.41816,
+      "lat": 52.12991,
+      "nazwa_osm": "Port Polska"
+    },
+    "DMO": {
+      "rodzaj": "okolica",
+      "osm": "node/31881060",
+      "uwaga": "„Stryków (Dmosin)” – środek koła: wieś Dmosin (nazwa w nawiasie, jak przy Wypędach i Wrzoskach); Stryków leży ok. 10 km dalej, w tym samym kole.",
+      "lon": 19.75334,
+      "lat": 51.9267,
+      "nazwa_osm": "Dmosin"
+    },
+    "WTN": {
+      "rodzaj": "okolica",
+      "osm": "node/253556355",
+      "uwaga": "„W rejonie Kutna” – środek koła: Kutno.",
+      "lon": 19.35702,
+      "lat": 52.23176,
+      "nazwa_osm": "Kutno"
+    },
+    "MAK": {
+      "rodzaj": "stacja-osm",
+      "osm": "way/1420993603",
+      "uwaga": "W OSM planowana stacja „Jarosław Systemowa 400/110kV” – nazwa się zgadza, w OSM brak kodu PSE (MAK): dopasowanie niepewne.",
+      "lon": 22.81706,
+      "lat": 50.05619,
+      "nazwa_osm": "Jarosław Systemowa 400/110kV"
+    },
+    "ZGN": {
+      "rodzaj": "stacja-osm",
+      "osm": "way/1417171093",
+      "uwaga": "W OSM stacja w budowie „Marszów 220/110kV” (operator PSE) – nazwa się zgadza, ale kod w OSM (MRS) różni się od kodu PSE (ZGN): dopasowanie niepewne.",
+      "lon": 15.23642,
+      "lat": 51.62844,
+      "nazwa_osm": "Stacja elektroenergetyczna Marszów 220/110kV"
+    },
+    "POM": {
+      "rodzaj": "stacja-osm",
+      "osm": "way/628655950",
+      "uwaga": "W OSM stacja „Pomorzany” 220 kV (operator PSE), bez kodu; w dokumencie PSE stacja oznaczona „w przyszłości”: dopasowanie niepewne.",
+      "lon": 14.5218,
+      "lat": 53.39028,
+      "nazwa_osm": "Stacja Elektroenergetyczna 220kV Pomorzany"
+    },
+    "PBO": {
+      "rodzaj": "brak",
+      "uwaga": "W OSM kilkanaście miejscowości Podborze, żadna w rejonie wskazanym na schemacie PSE (Śląsk, między Moszczenicą a Komorowicami). Nie zgadujemy – tylko lista."
+    },
+    "PSC": {
+      "rodzaj": "okolica",
+      "osm": "node/27161819",
+      "uwaga": "„W rejonie Poznania” – środek koła: Poznań (to samo koło co ZER).",
+      "lon": 16.93352,
+      "lat": 52.40827,
+      "nazwa_osm": "Poznań"
+    },
+    "SBO": {
+      "rodzaj": "brak",
+      "uwaga": "PSE podaje tylko „na terenie Pomorza Zachodniego” – bez miejscowości. Nie zgadujemy – tylko lista."
+    },
+    "EJ1": {
+      "rodzaj": "stacja-osm",
+      "osm": "way/1503567239",
+      "uwaga": "W OSM planowana „Stacja Elektroenergetyczna 400/110 kV Biebrowo” (teren budowy elektrowni jądrowej), bez kodu PSE: dopasowanie niepewne.",
+      "lon": 17.81897,
+      "lat": 54.77667,
+      "nazwa_osm": "Stacja Elektroenergetyczna 400/110 kV Biebrowo"
+    },
+    "MAO": {
+      "rodzaj": "okolica",
+      "osm": "node/1751621506",
+      "uwaga": "„W rejonie Włocławka” – środek koła: Włocławek.",
+      "lon": 19.07195,
+      "lat": 52.66039,
+      "nazwa_osm": "Włocławek"
+    }
+  }
+}

@@ -11,6 +11,11 @@
   --tekst: #e8eef7;
   --tekst-pomocniczy: #a9b7cc;
   --zloto: #f2c14e;
+  --kolor-moce: #2dd4bf; /* wolna moc dla odbiorców (PSE) – src/moce.js */
+  /* Kolory elektrowni (tryb Noc) – od pierwszej klatki; main.js podmienia je przy przełączaniu Dzień/Noc. */
+  --kolor-wegiel: #ef4444;
+  --kolor-gaz: #8b5cf6;
+  --kolor-woda: #3b82f6;
   --ostrzezenie: #ff8a5b;
   --fokus: #8ccbff;
   --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -21,6 +26,13 @@
   --szklo-tlo-okienka: rgba(11, 18, 32, 0.86);
   --szklo-ramka: rgba(232, 238, 247, 0.12);
   --szklo-rozmycie: blur(14px) saturate(1.2);
+}
+
+/* Odsłonięcie treści ukrytej przez styl w <head> (mapa/index.html) – dopiero gdy ten CSS jest wczytany.
+   Strona tytułowa ma własne odsłonięcie w tytulowa.css (po wczytaniu jej stylów). */
+body:not(.tytulowa) > * {
+  visibility: visible;
+  animation: none;
 }
 
 html,
@@ -60,6 +72,7 @@ main {
 .wskaznik,
 .legenda,
 .przelacznik,
+.panel-moce,
 .maplibregl-popup-content {
   background: var(--szklo-tlo);
   border: 1px solid var(--szklo-ramka);
@@ -73,6 +86,7 @@ main {
   .wskaznik,
   .legenda,
   .przelacznik,
+  .panel-moce,
   .maplibregl-popup-content {
     background: rgba(11, 18, 32, 0.94);
   }
@@ -82,6 +96,7 @@ main {
   .wskaznik,
   .legenda,
   .przelacznik,
+  .panel-moce,
   .maplibregl-popup-content {
     background: rgb(11, 18, 32);
     -webkit-backdrop-filter: none;
@@ -513,4 +528,156 @@ main {
 .powrot:focus-visible {
   outline: 2px solid var(--fokus);
   outline-offset: 2px;
+}
+
+/* ── Wolna moc dla odbiorców (PSE): panel z listą stacji – lewy dolny róg, nad linkiem „← OSIRIS”, zwijany ── */
+.panel-moce {
+  position: absolute;
+  left: 16px;
+  bottom: 56px;
+  width: 360px;
+  max-width: calc(100% - 32px);
+  /* Rozwinięty panel nie może zasłonić okienka PSE nad nim (przycisk „Odtwórz dobę”). */
+  max-height: 40vh;
+  overflow: auto;
+  padding: 8px 12px;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  border-radius: 10px;
+}
+
+.panel-moce summary {
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--kolor-moce);
+  cursor: pointer;
+}
+
+.panel-moce summary:focus-visible,
+.panel-moce button:focus-visible {
+  outline: 2px solid var(--fokus);
+  outline-offset: 2px;
+}
+
+.panel-moce p {
+  margin: 8px 0 0;
+}
+
+.panel-moce__wazne {
+  color: var(--tekst);
+}
+
+.panel-moce__uwaga,
+.panel-moce__stan {
+  color: var(--tekst-pomocniczy);
+}
+
+.panel-moce__stan {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+}
+
+.panel-moce h2 {
+  margin: 12px 0 4px;
+  line-height: 1.35;
+}
+
+.panel-moce__lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.panel-moce__lista li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: 8px;
+  padding: 3px 0;
+  border-top: 1px solid var(--szklo-ramka);
+}
+
+.panel-moce__nazwa {
+  padding: 0;
+  font: inherit;
+  text-align: left;
+  color: var(--tekst);
+  background: none;
+  border: 0;
+}
+
+button.panel-moce__nazwa {
+  cursor: pointer;
+  text-decoration: underline dotted var(--kolor-moce);
+  text-underline-offset: 3px;
+}
+
+button.panel-moce__nazwa:hover {
+  color: var(--kolor-moce);
+}
+
+.panel-moce__mw {
+  grid-row: span 2;
+  align-self: center;
+  color: var(--kolor-moce);
+  font-weight: 600;
+}
+
+.panel-moce__lok {
+  font-size: 0.6875rem;
+  color: var(--tekst-pomocniczy);
+}
+
+.legenda__uwaga--moce {
+  color: var(--tekst);
+}
+
+.legenda .znak-maly {
+  width: 12px;
+  height: 12px;
+  vertical-align: -2px;
+}
+
+/* Okienko stacji z wolną mocą: przy kilku stacjach w jednym miejscu tekst jest długi – przewijanie zamiast wyjścia poza ekran. */
+.okienko-mocy {
+  max-height: 46vh;
+  overflow: auto;
+}
+
+.okienko-mocy__moc {
+  color: var(--kolor-moce);
+  font-weight: 600;
+}
+
+.okienko-mocy__uwaga {
+  display: inline-block;
+  margin-top: 4px;
+  color: var(--tekst-pomocniczy);
+}
+
+.okienko-mocy hr {
+  margin: 8px 0;
+  border: 0;
+  border-top: 1px solid var(--szklo-ramka);
+}
+
+/* Wykaz rozdzielni PSE: stacje, do których wnioski obecnie pozostają bez rozpatrzenia */
+.okienko-mocy__ostrzezenie {
+  display: inline-block;
+  margin-top: 4px;
+  color: var(--ostrzezenie);
+  font-weight: 600;
+}
+
+.panel-moce__podsumowanie {
+  color: var(--tekst);
+  font-weight: 600;
+}
+
+.panel-moce__wstrzymane {
+  color: var(--ostrzezenie);
+}
+
+.panel-moce__pozycja--wstrzymana .panel-moce__mw {
+  opacity: 0.55;
 }

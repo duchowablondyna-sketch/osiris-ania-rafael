@@ -14,7 +14,8 @@ Wygląd 1 (globus + ciemny kosmiczny motyw + tło satelitarne NASA GIBS) – zak
 Mapa źródeł prądu, część 1 (lądowe farmy wiatrowe ≥10 MW z GEM) – zakończona 20.11.2026.
 Mapa źródeł prądu, część 2 (działające elektrownie z GEM, legenda z przełącznikami, zwijana stopka) – zakończona 20.11.2026.
 „Wygląd i zaufanie” (źródło w okienkach, liczniki, czcionki u nas, szkło, lot po przełączeniu) – zakończony 20.11.2026.
-Cel: strona tytułowa na / (tytuł, opis, liczby z danych, chipy, zegar, obracający się globus z nocnym tłem NASA, karty „Co znajdziesz”, meta Open Graph), mapa przeniesiona na /mapa/, wspólna stopka „Źródła i licencje”.
+Strona tytułowa na / i mapa na /mapa/ – zakończone (PR #16).
+Cel: wolne moce przyłączeniowe – część 1: PSE. Warstwa „Wolna moc dla odbiorców” (stacje planowane 220/400 kV, sześciokąt #2DD4BF, koła „lokalizacja przybliżona”, panel z listą), uwaga z wykazu rozdzielni PSE (stacje bez rozpatrywania wniosków – pusty sześciokąt), zdanie o mocy dla nowych źródeł, Robot OSIRIS etap A (ręczne uruchamianie: sprawdzenie nowej wersji PDF, sprawdzian prawdy, PR albo issue).
 Robimy tylko to, bez czego cel nie zostanie osiągnięty.
 Nie robimy teraz: innych animacji, nowych warstw danych i wersji na telefon (to później).
 Zanim zaproponujesz cokolwiek, sprawdź: czy bez tego cel zostanie osiągnięty? Jeśli tak — nie proponuj, dopisz najwyżej jedną linię do listy „Do zrobienia” w BEZPIECZENSTWO.md.

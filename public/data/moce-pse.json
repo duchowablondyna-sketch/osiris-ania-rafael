@@ -1,0 +1,3117 @@
+{
+  "opis": "Wolne moce przyłączeniowe w sieci przesyłowej PSE (220/400 kV) – wyciąg OSIRIS. Szacunek operatora, nie gwarancja przyłączenia. Mocy stacji nie sumujemy.",
+  "zrodlo": {
+    "nazwa": "PSE S.A., „Informacja o dostępności mocy przyłączeniowej do sieci przesyłowej”",
+    "url_strony": "https://www.pse.pl/obszary-dzialalnosci/krajowy-system-elektroenergetyczny/informacja-o-dostepnosci-mocy-przylaczeniowej",
+    "url_pdf": "https://www.pse.pl/documents/20182/51490/informacja_o_dostepnosci_mocy_przylaczeniowej_do_sieci_przesylowej.pdf/81835e70-c6bb-4ed1-8154-1959a45b44f1?safeargs=646f776e6c6f61643d74727565",
+    "pobrano": "2026-11-21",
+    "sha256": "e3612af437f862d071f299ff795081d4af15c2eb34b22dc5819e1ff8dd272555",
+    "last_modified": "Wed, 04 Nov 2026 14:04:07 GMT"
+  },
+  "stan_na": "2026-10-31",
+  "przyjeto": "2026-11-21",
+  "lokalizacje": {
+    "stan_osm": "2026-11-21T07:33:06Z",
+    "promien_km": 20,
+    "licencja": "© OpenStreetMap contributors, ODbL"
+  },
+  "zrodla_polska": {
+    "rok_2026_krok_2": 0,
+    "rok_2031_krok_2": 0
+  },
+  "odbiorcy": [
+    {
+      "tabela": 1,
+      "lp": 1,
+      "kod": "NOR",
+      "opis_pse": "Norki",
+      "moc_mw": 100,
+      "lokalizacja": {
+        "rodzaj": "okolica",
+        "lon": 22.53833,
+        "lat": 53.955,
+        "osm": "node/3009665708",
+        "nazwa_osm": "Norki",
+        "uwaga": "W OSM jedna miejscowość Norki (ok. 15 km na płn.-wsch. od Ełku) – zgodnie z położeniem na schemacie PSE (między Ełkiem a Wigrami). Stacji w OSM nie ma."
+      }
+    },
+    {
+      "tabela": 1,
+      "lp": 2,
+      "kod": "WIG",
+      "opis_pse": "stacja Wigry",
+      "moc_mw": 100,
+      "lokalizacja": {
+        "rodzaj": "okolica",
+        "lon": 23.08674,
+        "lat": 54.06882,
+        "osm": "node/31518706",
+        "nazwa_osm": "Wigry",
+        "uwaga": "Wieś Wigry (pow. suwalski) – PSE podaje tylko nazwę stacji. Stacji w OSM nie ma."
+      }
+    },
+    {
+      "tabela": 1,
+      "lp": 3,
+      "kod": "WYP",
+      "opis_pse": "stacja w rejonie Warszawy (Wypędy)",
+      "moc_mw": 200,
+      "lokalizacja": {
+        "rodzaj": "okolica",
+        "lon": 20.88561,
+        "lat": 52.13725,
+        "osm": "node/3121596876",
+        "nazwa_osm": "Wypędy",
+        "uwaga": "Wieś Wypędy (gm. Raszyn) – jedyna o tej nazwie w OSM. Stacji w OSM nie ma."
+      }
+    },
+    {
+      "tabela": 1,
+      "lp": 4,
+      "kod": "MKA",
+      "opis_pse": "stacja w rejonie Legnicy",
+      "moc_mw": 1000,
+      "lokalizacja": {
+        "rodzaj": "okolica",
+        "lon": 16.16032,
+        "lat": 51.20816,
+        "osm": "node/3952721523",
+        "nazwa_osm": "Legnica",
+        "uwaga": "„W rejonie Legnicy” – środek koła: Legnica."
+      }
+    },
+    {
+      "tabela": 1,
+      "lp": 5,
+      "kod": "REM",
+      "opis_pse": "stacja w rejonie Warszawy",
+      "moc_mw": 500,
+      "lokalizacja": {
+        "rodzaj": "okolica",
+        "lon": 21.00672,
+        "lat": 52.23196,
+        "osm": "node/428339515",
+        "nazwa_osm": "Warszawa",
+        "uwaga": "„W rejonie Warszawy” – środek koła: Warszawa (to samo koło co SWR)."
+      }
+    },
+    {
+      "tabela": 1,
+      "lp": 6,
+      "kod": "SWR",
+      "opis_pse": "stacja w rejonie Warszawy",
+      "moc_mw": 500,
+      "lokalizacja": {
+        "rodzaj": "okolica",
+        "lon": 21.00672,
+        "lat": 52.23196,
+        "osm": "node/428339515",
+        "nazwa_osm": "Warszawa",
+        "uwaga": "„W rejonie Warszawy” – środek koła: Warszawa (to samo koło co REM)."
+      }
+    },
+    {
+      "tabela": 1,
+      "lp": 7,
+      "kod": "EPK",
+      "opis_pse": "stacja w rejonie Stalowej Woli",
+      "moc_mw": 1000,
+      "lokalizacja": {
+        "rodzaj": "okolica",
+        "lon": 22.06441,
+        "lat": 50.56531,
+        "osm": "node/1854937161",
+        "nazwa_osm": "Stalowa Wola",
+        "uwaga": "„W rejonie Stalowej Woli” – środek koła: Stalowa Wola."
+      }
+    },
+    {
+      "tabela": 1,
+      "lp": 8,
+      "kod": "LWN",
+      "opis_pse": "stacja w rejonie Opola",
+      "moc_mw": 500,
+      "lokalizacja": {
+        "rodzaj": "okolica",
+        "lon": 17.92364,
+        "lat": 50.66682,
+        "osm": "node/128054630",
+        "nazwa_osm": "Opole",
+        "uwaga": "„W rejonie Opola” – środek koła: Opole."
+      }
+    },
+    {
+      "tabela": 1,
+      "lp": 9,
+      "kod": "WRS",
+      "opis_pse": "stacja w rejonie Opola (Wrzoski)",
+      "moc_mw": 500,
+      "lokalizacja": {
+        "rodzaj": "okolica",
+        "lon": 17.82153,
+        "lat": 50.68488,
+        "osm": "node/31916562",
+        "nazwa_osm": "Wrzoski",
+        "uwaga": "„W rejonie Opola (Wrzoski)” – Wrzoski, część Opola wg OSM (powiat Opole); inne Wrzoski w OSM leżą daleko od Opola."
+      }
+    },
+    {
+      "tabela": 1,
+      "lp": 10,
+      "kod": "KUZ",
+      "opis_pse": "stacja w rejonie Złoczewa",
+      "moc_mw": 500,
+      "lokalizacja": {
+        "rodzaj": "okolica",
+        "lon": 18.60603,
+        "lat": 51.41805,
+        "osm": "node/31781976",
+        "nazwa_osm": "Złoczew",
+        "uwaga": "„W rejonie Złoczewa” – środek koła: Złoczew."
+      }
+    },
+    {
+      "tabela": 1,
+      "lp": 11,
+      "kod": "ZER",
+      "opis_pse": "stacja w rejonie Poznania",
+      "moc_mw": 500,
+      "lokalizacja": {
+        "rodzaj": "okolica",
+        "lon": 16.93352,
+        "lat": 52.40827,
+        "osm": "node/27161819",
+        "nazwa_osm": "Poznań",
+        "uwaga": "„W rejonie Poznania” – środek koła: Poznań (to samo koło co PSC)."
+      }
+    },
+    {
+      "tabela": 1,
+      "lp": 12,
+      "kod": "GNA",
+      "opis_pse": "stacja w rejonie Konina",
+      "moc_mw": 500,
+      "lokalizacja": {
+        "rodzaj": "okolica",
+        "lon": 18.25211,
+        "lat": 52.23019,
+        "osm": "node/253530808",
+        "nazwa_osm": "Konin",
+        "uwaga": "„W rejonie Konina” – środek koła: Konin (miasto)."
+      }
+    },
+    {
+      "tabela": 1,
+      "lp": 13,
+      "kod": "DSC",
+      "opis_pse": "stacja w rejonie Trójmiasta",
+      "moc_mw": 500,
+      "lokalizacja": {
+        "rodzaj": "okolica",
+        "lon": 18.56849,
+        "lat": 54.44479,
+        "osm": "node/31530688",
+        "nazwa_osm": "Sopot",
+        "uwaga": "„W rejonie Trójmiasta” – środek koła: Sopot, środek Trójmiasta (nasz wybór; PSE nie wskazuje miasta)."
+      }
+    },
+    {
+      "tabela": 1,
+      "lp": 14,
+      "kod": "DZO",
+      "opis_pse": "stacja w rejonie Torunia",
+      "moc_mw": 1000,
+      "lokalizacja": {
+        "rodzaj": "okolica",
+        "lon": 18.60481,
+        "lat": 53.01027,
+        "osm": "node/1697487051",
+        "nazwa_osm": "Toruń",
+        "uwaga": "„W rejonie Torunia” – środek koła: Toruń (miasto)."
+      }
+    },
+    {
+      "tabela": 2,
+      "lp": 1,
+      "kod": "CPK",
+      "opis_pse": "stacja w rejonie Portu Polska",
+      "moc_mw": 250,
+      "lokalizacja": {
+        "rodzaj": "okolica",
+        "lon": 20.41816,
+        "lat": 52.12991,
+        "osm": "way/830160388",
+        "nazwa_osm": "Port Polska",
+        "uwaga": "„W rejonie Portu Polska” – środek koła: obszar „Port Polska” w OSM."
+      }
+    },
+    {
+      "tabela": 2,
+      "lp": 2,
+      "kod": "DMO",
+      "opis_pse": "stacja Stryków (Dmosin)",
+      "moc_mw": 500,
+      "lokalizacja": {
+        "rodzaj": "okolica",
+        "lon": 19.75334,
+        "lat": 51.9267,
+        "osm": "node/31881060",
+        "nazwa_osm": "Dmosin",
+        "uwaga": "„Stryków (Dmosin)” – środek koła: wieś Dmosin (nazwa w nawiasie, jak przy Wypędach i Wrzoskach); Stryków leży ok. 10 km dalej, w tym samym kole."
+      }
+    },
+    {
+      "tabela": 2,
+      "lp": 3,
+      "kod": "WTN",
+      "opis_pse": "stacja w rejonie Kutna",
+      "moc_mw": 500,
+      "lokalizacja": {
+        "rodzaj": "okolica",
+        "lon": 19.35702,
+        "lat": 52.23176,
+        "osm": "node/253556355",
+        "nazwa_osm": "Kutno",
+        "uwaga": "„W rejonie Kutna” – środek koła: Kutno."
+      }
+    },
+    {
+      "tabela": 2,
+      "lp": 4,
+      "kod": "MAK",
+      "opis_pse": "stacja Jarosław",
+      "moc_mw": 200,
+      "lokalizacja": {
+        "rodzaj": "stacja-osm",
+        "lon": 22.81706,
+        "lat": 50.05619,
+        "osm": "way/1420993603",
+        "nazwa_osm": "Jarosław Systemowa 400/110kV",
+        "uwaga": "W OSM planowana stacja „Jarosław Systemowa 400/110kV” – nazwa się zgadza, w OSM brak kodu PSE (MAK): dopasowanie niepewne."
+      }
+    },
+    {
+      "tabela": 2,
+      "lp": 5,
+      "kod": "ZGN",
+      "opis_pse": "stacja Żagań (Marszów)",
+      "moc_mw": 100,
+      "lokalizacja": {
+        "rodzaj": "stacja-osm",
+        "lon": 15.23642,
+        "lat": 51.62844,
+        "osm": "way/1417171093",
+        "nazwa_osm": "Stacja elektroenergetyczna Marszów 220/110kV",
+        "uwaga": "W OSM stacja w budowie „Marszów 220/110kV” (operator PSE) – nazwa się zgadza, ale kod w OSM (MRS) różni się od kodu PSE (ZGN): dopasowanie niepewne."
+      }
+    },
+    {
+      "tabela": 2,
+      "lp": 6,
+      "kod": "POM",
+      "opis_pse": "stacja Pomorzany",
+      "moc_mw": 100,
+      "lokalizacja": {
+        "rodzaj": "stacja-osm",
+        "lon": 14.5218,
+        "lat": 53.39028,
+        "osm": "way/628655950",
+        "nazwa_osm": "Stacja Elektroenergetyczna 220kV Pomorzany",
+        "uwaga": "W OSM stacja „Pomorzany” 220 kV (operator PSE), bez kodu; w dokumencie PSE stacja oznaczona „w przyszłości”: dopasowanie niepewne."
+      }
+    },
+    {
+      "tabela": 2,
+      "lp": 7,
+      "kod": "PBO",
+      "opis_pse": "stacja Podborze",
+      "moc_mw": 200,
+      "lokalizacja": {
+        "rodzaj": "brak",
+        "uwaga": "W OSM kilkanaście miejscowości Podborze, żadna w rejonie wskazanym na schemacie PSE (Śląsk, między Moszczenicą a Komorowicami). Nie zgadujemy – tylko lista."
+      }
+    },
+    {
+      "tabela": 2,
+      "lp": 8,
+      "kod": "PSC",
+      "opis_pse": "stacja w rejonie Poznania",
+      "moc_mw": 500,
+      "lokalizacja": {
+        "rodzaj": "okolica",
+        "lon": 16.93352,
+        "lat": 52.40827,
+        "osm": "node/27161819",
+        "nazwa_osm": "Poznań",
+        "uwaga": "„W rejonie Poznania” – środek koła: Poznań (to samo koło co ZER)."
+      }
+    },
+    {
+      "tabela": 2,
+      "lp": 9,
+      "kod": "SBO",
+      "opis_pse": "stacja na terenie Pomorza Zachodniego",
+      "moc_mw": 500,
+      "lokalizacja": {
+        "rodzaj": "brak",
+        "uwaga": "PSE podaje tylko „na terenie Pomorza Zachodniego” – bez miejscowości. Nie zgadujemy – tylko lista."
+      }
+    },
+    {
+      "tabela": 2,
+      "lp": 10,
+      "kod": "EJ1",
+      "opis_pse": "stacja Biebrowo (elektrownia jądrowa)",
+      "moc_mw": 250,
+      "lokalizacja": {
+        "rodzaj": "stacja-osm",
+        "lon": 17.81897,
+        "lat": 54.77667,
+        "osm": "way/1503567239",
+        "nazwa_osm": "Stacja Elektroenergetyczna 400/110 kV Biebrowo",
+        "uwaga": "W OSM planowana „Stacja Elektroenergetyczna 400/110 kV Biebrowo” (teren budowy elektrowni jądrowej), bez kodu PSE: dopasowanie niepewne."
+      }
+    },
+    {
+      "tabela": 2,
+      "lp": 11,
+      "kod": "MAO",
+      "opis_pse": "stacja w rejonie Włocławka",
+      "moc_mw": 500,
+      "lokalizacja": {
+        "rodzaj": "okolica",
+        "lon": 19.07195,
+        "lat": 52.66039,
+        "osm": "node/1751621506",
+        "nazwa_osm": "Włocławek",
+        "uwaga": "„W rejonie Włocławka” – środek koła: Włocławek."
+      }
+    }
+  ],
+  "wyciag": {
+    "stan_na": "2026-10-31",
+    "liczba_stron": 13,
+    "tytuly_obecne": [
+      "2. Zestawienie dostępnych mocy przyłączeniowych wytwórczych w roku 2026 i 2031",
+      "5. Zestawienie dostępnych mocy przyłączeniowych odbiorczych"
+    ],
+    "zdania_obecne": [
+      "Dostępne moce przyłączeniowe wyznaczone w kroku 2 uznać należy za prawdopodobne i przewidziane są do publikacji.",
+      "Dla stacji istniejących w chwili obecnej identyfikuje się zerowe wartości dostępnych mocy przyłączeniowych.",
+      "Dostępne moce przyłączeniowe odbiorcze podano dla roku 2031",
+      "Dostępna moc przyłączeniowa dla danej stacji ma wpływ na dostępną moc przyłączeniową w stacjach sąsiednich."
+    ],
+    "legenda_zrodel": [
+      "[1] Rok 2026 - Moc dostępna bez uwzględnienia WP do sieci 110 kV [MW] – krok 1",
+      "[2] Rok 2031 - Moc dostępna bez uwzględnienia WP do sieci 110 kV [MW] – krok 1",
+      "[3] Rok 2026 - Moc dostępna z uwzględnieniem WP do sieci 110 kV [MW] – krok 2",
+      "[4] Rok 2031 - Moc dostępna z uwzględnieniem WP do sieci 110 kV [MW] – krok 2"
+    ],
+    "zrodla": [
+      {
+        "lp": "0.",
+        "poziom": "polska",
+        "nazwa": "POLSKA",
+        "wartosci": [
+          300,
+          500,
+          0,
+          0
+        ]
+      },
+      {
+        "lp": "1.",
+        "poziom": "obszar",
+        "nazwa": "Obszar POMORZE",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "lp": "1.1",
+        "poziom": "podobszar",
+        "nazwa": "Podobszar POMORZE ZACHODNIE",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar POMORZE"
+      },
+      {
+        "lp": "1.1.1",
+        "poziom": "grupa",
+        "nazwa": "Grupa AGLOMERACJA SZCZECIŃSKA",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar POMORZE",
+        "podobszar": "Podobszar POMORZE ZACHODNIE"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Morzyczyn",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POMORZE",
+        "podobszar": "Podobszar POMORZE ZACHODNIE",
+        "grupa": "Grupa AGLOMERACJA SZCZECIŃSKA"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Glinki",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POMORZE",
+        "podobszar": "Podobszar POMORZE ZACHODNIE",
+        "grupa": "Grupa AGLOMERACJA SZCZECIŃSKA"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Pomorzany",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": true,
+        "obszar": "Obszar POMORZE",
+        "podobszar": "Podobszar POMORZE ZACHODNIE",
+        "grupa": "Grupa AGLOMERACJA SZCZECIŃSKA"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Recław",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POMORZE",
+        "podobszar": "Podobszar POMORZE ZACHODNIE",
+        "grupa": "Grupa AGLOMERACJA SZCZECIŃSKA"
+      },
+      {
+        "lp": "1.1.2",
+        "poziom": "grupa",
+        "nazwa": "Grupa DOLNA ODRA",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar POMORZE",
+        "podobszar": "Podobszar POMORZE ZACHODNIE"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Krajnik",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POMORZE",
+        "podobszar": "Podobszar POMORZE ZACHODNIE",
+        "grupa": "Grupa DOLNA ODRA"
+      },
+      {
+        "lp": "1.1.3",
+        "poziom": "grupa",
+        "nazwa": "Grupa GORZÓW WIELKOPOLSKI",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar POMORZE",
+        "podobszar": "Podobszar POMORZE ZACHODNIE"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Gorzów",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POMORZE",
+        "podobszar": "Podobszar POMORZE ZACHODNIE",
+        "grupa": "Grupa GORZÓW WIELKOPOLSKI"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Baczyna",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POMORZE",
+        "podobszar": "Podobszar POMORZE ZACHODNIE",
+        "grupa": "Grupa GORZÓW WIELKOPOLSKI"
+      },
+      {
+        "lp": "1.2",
+        "poziom": "podobszar",
+        "nazwa": "Podobszar POMORZE WSCHODNIE",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar POMORZE"
+      },
+      {
+        "lp": "1.2.1",
+        "poziom": "grupa",
+        "nazwa": "Grupa KOSZALIN-SŁUPSK",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar POMORZE",
+        "podobszar": "Podobszar POMORZE WSCHODNIE"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Dunowo",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POMORZE",
+        "podobszar": "Podobszar POMORZE WSCHODNIE",
+        "grupa": "Grupa KOSZALIN-SŁUPSK"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Słupsk Wierzbięcino",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POMORZE",
+        "podobszar": "Podobszar POMORZE WSCHODNIE",
+        "grupa": "Grupa KOSZALIN-SŁUPSK"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Krzemienica",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": true,
+        "obszar": "Obszar POMORZE",
+        "podobszar": "Podobszar POMORZE WSCHODNIE",
+        "grupa": "Grupa KOSZALIN-SŁUPSK"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Żydowo Kierzkowo",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POMORZE",
+        "podobszar": "Podobszar POMORZE WSCHODNIE",
+        "grupa": "Grupa KOSZALIN-SŁUPSK"
+      },
+      {
+        "lp": "1.2.2",
+        "poziom": "grupa",
+        "nazwa": "Grupa ŻARNOWIEC",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar POMORZE",
+        "podobszar": "Podobszar POMORZE WSCHODNIE"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Żarnowiec",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POMORZE",
+        "podobszar": "Podobszar POMORZE WSCHODNIE",
+        "grupa": "Grupa ŻARNOWIEC"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Choczewo",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POMORZE",
+        "podobszar": "Podobszar POMORZE WSCHODNIE",
+        "grupa": "Grupa ŻARNOWIEC"
+      },
+      {
+        "lp": "1.2.3",
+        "poziom": "grupa",
+        "nazwa": "Grupa TRÓJMIASTO",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar POMORZE",
+        "podobszar": "Podobszar POMORZE WSCHODNIE"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Gdańsk Leźno",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POMORZE",
+        "podobszar": "Podobszar POMORZE WSCHODNIE",
+        "grupa": "Grupa TRÓJMIASTO"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Gdańsk Błonia",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POMORZE",
+        "podobszar": "Podobszar POMORZE WSCHODNIE",
+        "grupa": "Grupa TRÓJMIASTO"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Gdańsk Przyjaźń",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POMORZE",
+        "podobszar": "Podobszar POMORZE WSCHODNIE",
+        "grupa": "Grupa TRÓJMIASTO"
+      },
+      {
+        "lp": "1.2.4",
+        "poziom": "grupa",
+        "nazwa": "Grupa PELPLIN",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar POMORZE",
+        "podobszar": "Podobszar POMORZE WSCHODNIE"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Pelplin",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POMORZE",
+        "podobszar": "Podobszar POMORZE WSCHODNIE",
+        "grupa": "Grupa PELPLIN"
+      },
+      {
+        "lp": "2.",
+        "poziom": "obszar",
+        "nazwa": "Obszar WARMIA-PODLASIE",
+        "wartosci": [
+          0,
+          50,
+          0,
+          0
+        ]
+      },
+      {
+        "lp": "1.1",
+        "poziom": "grupa",
+        "nazwa": "Grupa OLSZTYN",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar WARMIA-PODLASIE"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Olsztyn Mątki",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WARMIA-PODLASIE",
+        "grupa": "Grupa OLSZTYN"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Olsztyn I",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WARMIA-PODLASIE",
+        "grupa": "Grupa OLSZTYN"
+      },
+      {
+        "lp": "1.2",
+        "poziom": "grupa",
+        "nazwa": "Grupa OSTROŁĘKA",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar WARMIA-PODLASIE"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Ostrołęka",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WARMIA-PODLASIE",
+        "grupa": "Grupa OSTROŁĘKA"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Łomża Systemowa",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WARMIA-PODLASIE",
+        "grupa": "Grupa OSTROŁĘKA"
+      },
+      {
+        "lp": "1.3",
+        "poziom": "grupa",
+        "nazwa": "Grupa EŁK",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar WARMIA-PODLASIE"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Ełk",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WARMIA-PODLASIE",
+        "grupa": "Grupa EŁK"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Ełk Bis",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WARMIA-PODLASIE",
+        "grupa": "Grupa EŁK"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Norki",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": true,
+        "obszar": "Obszar WARMIA-PODLASIE",
+        "grupa": "Grupa EŁK"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Wigry",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": true,
+        "obszar": "Obszar WARMIA-PODLASIE",
+        "grupa": "Grupa EŁK"
+      },
+      {
+        "lp": "1.4",
+        "poziom": "grupa",
+        "nazwa": "Grupa BIAŁYSTOK",
+        "wartosci": [
+          0,
+          50,
+          0,
+          0
+        ],
+        "obszar": "Obszar WARMIA-PODLASIE"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Narew",
+        "wartosci": [
+          0,
+          50,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WARMIA-PODLASIE",
+        "grupa": "Grupa BIAŁYSTOK"
+      },
+      {
+        "lp": "3.",
+        "poziom": "obszar",
+        "nazwa": "Obszar WIELKOPOLSKA-KUJAWY",
+        "wartosci": [
+          50,
+          50,
+          0,
+          0
+        ]
+      },
+      {
+        "lp": "3.1",
+        "poziom": "grupa",
+        "nazwa": "Grupa AGLOMERACJA POZNAŃSKA",
+        "wartosci": [
+          50,
+          50,
+          0,
+          0
+        ],
+        "obszar": "Obszar WIELKOPOLSKA-KUJAWY"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Plewiska",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WIELKOPOLSKA-KUJAWY",
+        "grupa": "Grupa AGLOMERACJA POZNAŃSKA"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Czerwonak",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WIELKOPOLSKA-KUJAWY",
+        "grupa": "Grupa AGLOMERACJA POZNAŃSKA"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Poznań Południe",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WIELKOPOLSKA-KUJAWY",
+        "grupa": "Grupa AGLOMERACJA POZNAŃSKA"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Kromolice",
+        "wartosci": [
+          50,
+          50,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WIELKOPOLSKA-KUJAWY",
+        "grupa": "Grupa AGLOMERACJA POZNAŃSKA"
+      },
+      {
+        "lp": "3.2",
+        "poziom": "grupa",
+        "nazwa": "Grupa PIŁA",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar WIELKOPOLSKA-KUJAWY"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Piła Krzewina",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WIELKOPOLSKA-KUJAWY",
+        "grupa": "Grupa PIŁA"
+      },
+      {
+        "lp": "3.3",
+        "poziom": "grupa",
+        "nazwa": "Grupa BYDGOSZCZ",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar WIELKOPOLSKA-KUJAWY"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Jasiniec",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WIELKOPOLSKA-KUJAWY",
+        "grupa": "Grupa BYDGOSZCZ"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Bydgoszcz Zachód",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WIELKOPOLSKA-KUJAWY",
+        "grupa": "Grupa BYDGOSZCZ"
+      },
+      {
+        "lp": "3.4",
+        "poziom": "grupa",
+        "nazwa": "Grupa PĄTNÓW-ADAMÓW-KONIN",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar WIELKOPOLSKA-KUJAWY"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Pątnów",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WIELKOPOLSKA-KUJAWY",
+        "grupa": "Grupa PĄTNÓW-ADAMÓW-KONIN"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Konin",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WIELKOPOLSKA-KUJAWY",
+        "grupa": "Grupa PĄTNÓW-ADAMÓW-KONIN"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Adamów",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WIELKOPOLSKA-KUJAWY",
+        "grupa": "Grupa PĄTNÓW-ADAMÓW-KONIN"
+      },
+      {
+        "lp": "3.5",
+        "poziom": "grupa",
+        "nazwa": "Grupa TORUŃ-WŁOCŁAWEK",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar WIELKOPOLSKA-KUJAWY"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Toruń Elana",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WIELKOPOLSKA-KUJAWY",
+        "grupa": "Grupa TORUŃ-WŁOCŁAWEK"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Włocławek Azoty",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WIELKOPOLSKA-KUJAWY",
+        "grupa": "Grupa TORUŃ-WŁOCŁAWEK"
+      },
+      {
+        "lp": "3.6",
+        "poziom": "grupa",
+        "nazwa": "Grupa GRUDZIĄDZ",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar WIELKOPOLSKA-KUJAWY"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Grudziądz",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WIELKOPOLSKA-KUJAWY",
+        "grupa": "Grupa GRUDZIĄDZ"
+      },
+      {
+        "lp": "4.",
+        "poziom": "obszar",
+        "nazwa": "Obszar MAZOWSZE",
+        "wartosci": [
+          50,
+          50,
+          0,
+          0
+        ]
+      },
+      {
+        "lp": "4.1",
+        "poziom": "grupa",
+        "nazwa": "Grupa AGLOMERACJA WARSZAWSKA",
+        "wartosci": [
+          50,
+          50,
+          0,
+          0
+        ],
+        "obszar": "Obszar MAZOWSZE"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Mory",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar MAZOWSZE",
+        "grupa": "Grupa AGLOMERACJA WARSZAWSKA"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Mościska",
+        "wartosci": [
+          50,
+          50,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar MAZOWSZE",
+        "grupa": "Grupa AGLOMERACJA WARSZAWSKA"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Miłosna",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar MAZOWSZE",
+        "grupa": "Grupa AGLOMERACJA WARSZAWSKA"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Piaseczno",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar MAZOWSZE",
+        "grupa": "Grupa AGLOMERACJA WARSZAWSKA"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Ołtarzew",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar MAZOWSZE",
+        "grupa": "Grupa AGLOMERACJA WARSZAWSKA"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Stanisławów",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar MAZOWSZE",
+        "grupa": "Grupa AGLOMERACJA WARSZAWSKA"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Siedlce Ujrzanów",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar MAZOWSZE",
+        "grupa": "Grupa AGLOMERACJA WARSZAWSKA"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Praga",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar MAZOWSZE",
+        "grupa": "Grupa AGLOMERACJA WARSZAWSKA"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Wypędy",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": true,
+        "obszar": "Obszar MAZOWSZE",
+        "grupa": "Grupa AGLOMERACJA WARSZAWSKA"
+      },
+      {
+        "lp": "4.2",
+        "poziom": "grupa",
+        "nazwa": "Grupa SOCHACZEW",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar MAZOWSZE"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Sochaczew",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar MAZOWSZE",
+        "grupa": "Grupa SOCHACZEW"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Port Polska",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": true,
+        "obszar": "Obszar MAZOWSZE",
+        "grupa": "Grupa SOCHACZEW"
+      },
+      {
+        "lp": "4.3",
+        "poziom": "grupa",
+        "nazwa": "Grupa PŁOCK 400 kV",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar MAZOWSZE"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Płock",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar MAZOWSZE",
+        "grupa": "Grupa PŁOCK 400 kV"
+      },
+      {
+        "lp": "4.4",
+        "poziom": "grupa",
+        "nazwa": "Grupa PŁOCK 220 kV",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar MAZOWSZE"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Podolszyce",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar MAZOWSZE",
+        "grupa": "Grupa PŁOCK 220 kV"
+      },
+      {
+        "lp": "4.5",
+        "poziom": "grupa",
+        "nazwa": "Grupa WYSZKÓW",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar MAZOWSZE"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Wyszków",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar MAZOWSZE",
+        "grupa": "Grupa WYSZKÓW"
+      },
+      {
+        "lp": "5.",
+        "poziom": "obszar",
+        "nazwa": "Obszar ZIEMIA LUBUSKA-ŁUŻYCE",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "lp": "5.1",
+        "poziom": "grupa",
+        "nazwa": "Grupa TURÓW",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar ZIEMIA LUBUSKA-ŁUŻYCE"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Mikułowa",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar ZIEMIA LUBUSKA-ŁUŻYCE",
+        "grupa": "Grupa TURÓW"
+      },
+      {
+        "lp": "5.2",
+        "poziom": "grupa",
+        "nazwa": "Grupa SUDETY",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar ZIEMIA LUBUSKA-ŁUŻYCE"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Cieplice",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar ZIEMIA LUBUSKA-ŁUŻYCE",
+        "grupa": "Grupa SUDETY"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Boguszów",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar ZIEMIA LUBUSKA-ŁUŻYCE",
+        "grupa": "Grupa SUDETY"
+      },
+      {
+        "lp": "5.3",
+        "poziom": "grupa",
+        "nazwa": "Grupa LEGNICA",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar ZIEMIA LUBUSKA-ŁUŻYCE"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Czarna",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar ZIEMIA LUBUSKA-ŁUŻYCE",
+        "grupa": "Grupa LEGNICA"
+      },
+      {
+        "lp": "5.4",
+        "poziom": "grupa",
+        "nazwa": "Grupa ZIELONA GÓRA-POLKOWICE",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar ZIEMIA LUBUSKA-ŁUŻYCE"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Leśniów",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar ZIEMIA LUBUSKA-ŁUŻYCE",
+        "grupa": "Grupa ZIELONA GÓRA-POLKOWICE"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Żukowice",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar ZIEMIA LUBUSKA-ŁUŻYCE",
+        "grupa": "Grupa ZIELONA GÓRA-POLKOWICE"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Polkowice",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar ZIEMIA LUBUSKA-ŁUŻYCE",
+        "grupa": "Grupa ZIELONA GÓRA-POLKOWICE"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Żagań (Marszów)",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": true,
+        "obszar": "Obszar ZIEMIA LUBUSKA-ŁUŻYCE",
+        "grupa": "Grupa ZIELONA GÓRA-POLKOWICE"
+      },
+      {
+        "lp": "5.5",
+        "poziom": "grupa",
+        "nazwa": "Grupa LESZNO",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar ZIEMIA LUBUSKA-ŁUŻYCE"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Leszno Gronowo",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar ZIEMIA LUBUSKA-ŁUŻYCE",
+        "grupa": "Grupa LESZNO"
+      },
+      {
+        "lp": "6.",
+        "poziom": "obszar",
+        "nazwa": "Obszar WROCŁAW-OPOLE",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "lp": "6.1",
+        "poziom": "grupa",
+        "nazwa": "Grupa AGLOMERACJA WROCŁAWSKA",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar WROCŁAW-OPOLE"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Pasikurowice",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WROCŁAW-OPOLE",
+        "grupa": "Grupa AGLOMERACJA WROCŁAWSKA"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Wrocław",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WROCŁAW-OPOLE",
+        "grupa": "Grupa AGLOMERACJA WROCŁAWSKA"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Miękinia",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": true,
+        "obszar": "Obszar WROCŁAW-OPOLE",
+        "grupa": "Grupa AGLOMERACJA WROCŁAWSKA"
+      },
+      {
+        "lp": "6.2",
+        "poziom": "grupa",
+        "nazwa": "Grupa OPOLE",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar WROCŁAW-OPOLE"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Dobrzeń",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WROCŁAW-OPOLE",
+        "grupa": "Grupa OPOLE"
+      },
+      {
+        "lp": "6.3",
+        "poziom": "grupa",
+        "nazwa": "Grupa DOLNY ŚLĄSK",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar WROCŁAW-OPOLE"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Świebodzice",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WROCŁAW-OPOLE",
+        "grupa": "Grupa DOLNY ŚLĄSK"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Ząbkowice",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WROCŁAW-OPOLE",
+        "grupa": "Grupa DOLNY ŚLĄSK"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Nysa",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WROCŁAW-OPOLE",
+        "grupa": "Grupa DOLNY ŚLĄSK"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Groszowice",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WROCŁAW-OPOLE",
+        "grupa": "Grupa DOLNY ŚLĄSK"
+      },
+      {
+        "lp": "7.",
+        "poziom": "obszar",
+        "nazwa": "Obszar CENTRUM",
+        "wartosci": [
+          200,
+          200,
+          0,
+          0
+        ]
+      },
+      {
+        "lp": "7.1",
+        "poziom": "grupa",
+        "nazwa": "Grupa AGLOMERACJA ŁÓDZKA",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar CENTRUM"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Janów",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar CENTRUM",
+        "grupa": "Grupa AGLOMERACJA ŁÓDZKA"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Zgierz",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar CENTRUM",
+        "grupa": "Grupa AGLOMERACJA ŁÓDZKA"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Pabianice",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar CENTRUM",
+        "grupa": "Grupa AGLOMERACJA ŁÓDZKA"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Piotrków",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar CENTRUM",
+        "grupa": "Grupa AGLOMERACJA ŁÓDZKA"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Stryków (Dmosin)",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": true,
+        "obszar": "Obszar CENTRUM",
+        "grupa": "Grupa AGLOMERACJA ŁÓDZKA"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Witonia",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": true,
+        "obszar": "Obszar CENTRUM",
+        "grupa": "Grupa AGLOMERACJA ŁÓDZKA"
+      },
+      {
+        "lp": "7.2",
+        "poziom": "grupa",
+        "nazwa": "Grupa BEŁCHATÓW ELEKTROWNIA",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar CENTRUM"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Rogowiec",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar CENTRUM",
+        "grupa": "Grupa BEŁCHATÓW ELEKTROWNIA"
+      },
+      {
+        "lp": "7.3",
+        "poziom": "grupa",
+        "nazwa": "Grupa TRĘBACZEW",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar CENTRUM"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Trębaczew",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar CENTRUM",
+        "grupa": "Grupa TRĘBACZEW"
+      },
+      {
+        "lp": "7.4",
+        "poziom": "grupa",
+        "nazwa": "Grupa OSTRÓW",
+        "wartosci": [
+          200,
+          200,
+          0,
+          0
+        ],
+        "obszar": "Obszar CENTRUM"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Ostrów",
+        "wartosci": [
+          200,
+          200,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar CENTRUM",
+        "grupa": "Grupa OSTRÓW"
+      },
+      {
+        "lp": "8.",
+        "poziom": "obszar",
+        "nazwa": "Obszar WSCHÓD",
+        "wartosci": [
+          0,
+          150,
+          0,
+          0
+        ]
+      },
+      {
+        "lp": "8.1",
+        "poziom": "grupa",
+        "nazwa": "Grupa KOZIENICE-LUBLIN",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar WSCHÓD"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Kozienice",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WSCHÓD",
+        "grupa": "Grupa KOZIENICE-LUBLIN"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Puławy",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WSCHÓD",
+        "grupa": "Grupa KOZIENICE-LUBLIN"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Lublin Systemowa",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WSCHÓD",
+        "grupa": "Grupa KOZIENICE-LUBLIN"
+      },
+      {
+        "lp": "8.2",
+        "poziom": "grupa",
+        "nazwa": "Grupa ZAMOŚĆ-CHEŁM",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar WSCHÓD"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Mokre",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WSCHÓD",
+        "grupa": "Grupa ZAMOŚĆ-CHEŁM"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Zamość",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WSCHÓD",
+        "grupa": "Grupa ZAMOŚĆ-CHEŁM"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Chełm",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WSCHÓD",
+        "grupa": "Grupa ZAMOŚĆ-CHEŁM"
+      },
+      {
+        "lp": "8.3",
+        "poziom": "grupa",
+        "nazwa": "Grupa STALOWA WOLA",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar WSCHÓD"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Abramowice",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WSCHÓD",
+        "grupa": "Grupa STALOWA WOLA"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Stalowa Wola",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WSCHÓD",
+        "grupa": "Grupa STALOWA WOLA"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Chmielów",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WSCHÓD",
+        "grupa": "Grupa STALOWA WOLA"
+      },
+      {
+        "lp": "8.4",
+        "poziom": "grupa",
+        "nazwa": "Grupa RADOM",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar WSCHÓD"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Rożki",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WSCHÓD",
+        "grupa": "Grupa RADOM"
+      },
+      {
+        "lp": "8.5",
+        "poziom": "grupa",
+        "nazwa": "Grupa OSTROWIEC",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar WSCHÓD"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Ostrowiec",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WSCHÓD",
+        "grupa": "Grupa OSTROWIEC"
+      },
+      {
+        "lp": "8.6",
+        "poziom": "grupa",
+        "nazwa": "Grupa KIELCE",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar WSCHÓD"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Kielce",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WSCHÓD",
+        "grupa": "Grupa KIELCE"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Kielce Piaski",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WSCHÓD",
+        "grupa": "Grupa KIELCE"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Radkowice",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WSCHÓD",
+        "grupa": "Grupa KIELCE"
+      },
+      {
+        "lp": "8.7",
+        "poziom": "grupa",
+        "nazwa": "Grupa POŁANIEC",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar WSCHÓD"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Połaniec",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WSCHÓD",
+        "grupa": "Grupa POŁANIEC"
+      },
+      {
+        "lp": "8.8",
+        "poziom": "grupa",
+        "nazwa": "Grupa RZESZÓW",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar WSCHÓD"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Rzeszów",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WSCHÓD",
+        "grupa": "Grupa RZESZÓW"
+      },
+      {
+        "lp": "8.9",
+        "poziom": "grupa",
+        "nazwa": "Grupa BOGUCHWAŁA",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar WSCHÓD"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Boguchwała",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar WSCHÓD",
+        "grupa": "Grupa BOGUCHWAŁA"
+      },
+      {
+        "lp": "8.10",
+        "poziom": "grupa",
+        "nazwa": "Grupa JAROSŁAW",
+        "wartosci": [
+          0,
+          150,
+          0,
+          0
+        ],
+        "obszar": "Obszar WSCHÓD"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Jarosław",
+        "wartosci": [
+          0,
+          150,
+          0,
+          0
+        ],
+        "w_przyszlosci": true,
+        "obszar": "Obszar WSCHÓD",
+        "grupa": "Grupa JAROSŁAW"
+      },
+      {
+        "lp": "9.",
+        "poziom": "obszar",
+        "nazwa": "Obszar POŁUDNIE",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "lp": "9.1",
+        "poziom": "grupa",
+        "nazwa": "Grupa CZĘSTOCHOWA",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar POŁUDNIE"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Joachimów",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POŁUDNIE",
+        "grupa": "Grupa CZĘSTOCHOWA"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Aniołów",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POŁUDNIE",
+        "grupa": "Grupa CZĘSTOCHOWA"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Wrzosowa",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POŁUDNIE",
+        "grupa": "Grupa CZĘSTOCHOWA"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Huta Częstochowa",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POŁUDNIE",
+        "grupa": "Grupa CZĘSTOCHOWA"
+      },
+      {
+        "lp": "9.2",
+        "poziom": "grupa",
+        "nazwa": "Grupa GÓRNY ŚLĄSK",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar POŁUDNIE"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Wielopole",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POŁUDNIE",
+        "grupa": "Grupa GÓRNY ŚLĄSK"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Rokitnica",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POŁUDNIE",
+        "grupa": "Grupa GÓRNY ŚLĄSK"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Łagisza",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POŁUDNIE",
+        "grupa": "Grupa GÓRNY ŚLĄSK"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Tucznawa",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POŁUDNIE",
+        "grupa": "Grupa GÓRNY ŚLĄSK"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Byczyna",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POŁUDNIE",
+        "grupa": "Grupa GÓRNY ŚLĄSK"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Blachownia",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POŁUDNIE",
+        "grupa": "Grupa GÓRNY ŚLĄSK"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Kędzierzyn",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POŁUDNIE",
+        "grupa": "Grupa GÓRNY ŚLĄSK"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Czeczott",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POŁUDNIE",
+        "grupa": "Grupa GÓRNY ŚLĄSK"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Łośnice",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POŁUDNIE",
+        "grupa": "Grupa GÓRNY ŚLĄSK"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Koksochemia",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POŁUDNIE",
+        "grupa": "Grupa GÓRNY ŚLĄSK"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Jamki",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POŁUDNIE",
+        "grupa": "Grupa GÓRNY ŚLĄSK"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Siersza",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POŁUDNIE",
+        "grupa": "Grupa GÓRNY ŚLĄSK"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Katowice",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POŁUDNIE",
+        "grupa": "Grupa GÓRNY ŚLĄSK"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Halemba",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POŁUDNIE",
+        "grupa": "Grupa GÓRNY ŚLĄSK"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Kopanina",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POŁUDNIE",
+        "grupa": "Grupa GÓRNY ŚLĄSK"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Bieruń",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POŁUDNIE",
+        "grupa": "Grupa GÓRNY ŚLĄSK"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Poręba",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POŁUDNIE",
+        "grupa": "Grupa GÓRNY ŚLĄSK"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Moszczenica",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POŁUDNIE",
+        "grupa": "Grupa GÓRNY ŚLĄSK"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Komorowice",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POŁUDNIE",
+        "grupa": "Grupa GÓRNY ŚLĄSK"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Bujaków",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar POŁUDNIE",
+        "grupa": "Grupa GÓRNY ŚLĄSK"
+      },
+      {
+        "lp": "10.",
+        "poziom": "obszar",
+        "nazwa": "Obszar MAŁOPOLSKA",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "lp": "10.1",
+        "poziom": "grupa",
+        "nazwa": "Grupa AGLOMERACJA KRAKOWSKA",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar MAŁOPOLSKA"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Skawina",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar MAŁOPOLSKA",
+        "grupa": "Grupa AGLOMERACJA KRAKOWSKA"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Lubocza",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar MAŁOPOLSKA",
+        "grupa": "Grupa AGLOMERACJA KRAKOWSKA"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Wanda",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar MAŁOPOLSKA",
+        "grupa": "Grupa AGLOMERACJA KRAKOWSKA"
+      },
+      {
+        "lp": "10.2",
+        "poziom": "grupa",
+        "nazwa": "Grupa TARNÓW 400 kV",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar MAŁOPOLSKA"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Tarnów",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar MAŁOPOLSKA",
+        "grupa": "Grupa TARNÓW 400 kV"
+      },
+      {
+        "lp": "10.3",
+        "poziom": "grupa",
+        "nazwa": "Grupa TARNÓW 220 kV",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar MAŁOPOLSKA"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Klikowa",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar MAŁOPOLSKA",
+        "grupa": "Grupa TARNÓW 220 kV"
+      },
+      {
+        "lp": "10.4",
+        "poziom": "grupa",
+        "nazwa": "Grupa KROSNO",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "obszar": "Obszar MAŁOPOLSKA"
+      },
+      {
+        "lp": null,
+        "poziom": "stacja",
+        "nazwa": "Krosno Iskrzynia",
+        "wartosci": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "w_przyszlosci": false,
+        "obszar": "Obszar MAŁOPOLSKA",
+        "grupa": "Grupa KROSNO"
+      }
+    ],
+    "odbiorcy": [
+      [
+        {
+          "lp": 1,
+          "kod": "NOR",
+          "opis": "Norki",
+          "moc": 100
+        },
+        {
+          "lp": 2,
+          "kod": "WIG",
+          "opis": "stacja Wigry",
+          "moc": 100
+        },
+        {
+          "lp": 3,
+          "kod": "WYP",
+          "opis": "stacja w rejonie Warszawy (Wypędy)",
+          "moc": 200
+        },
+        {
+          "lp": 4,
+          "kod": "MKA",
+          "opis": "stacja w rejonie Legnicy",
+          "moc": 1000
+        },
+        {
+          "lp": 5,
+          "kod": "REM",
+          "opis": "stacja w rejonie Warszawy",
+          "moc": 500
+        },
+        {
+          "lp": 6,
+          "kod": "SWR",
+          "opis": "stacja w rejonie Warszawy",
+          "moc": 500
+        },
+        {
+          "lp": 7,
+          "kod": "EPK",
+          "opis": "stacja w rejonie Stalowej Woli",
+          "moc": 1000
+        },
+        {
+          "lp": 8,
+          "kod": "LWN",
+          "opis": "stacja w rejonie Opola",
+          "moc": 500
+        },
+        {
+          "lp": 9,
+          "kod": "WRS",
+          "opis": "stacja w rejonie Opola (Wrzoski)",
+          "moc": 500
+        },
+        {
+          "lp": 10,
+          "kod": "KUZ",
+          "opis": "stacja w rejonie Złoczewa",
+          "moc": 500
+        },
+        {
+          "lp": 11,
+          "kod": "ZER",
+          "opis": "stacja w rejonie Poznania",
+          "moc": 500
+        },
+        {
+          "lp": 12,
+          "kod": "GNA",
+          "opis": "stacja w rejonie Konina",
+          "moc": 500
+        },
+        {
+          "lp": 13,
+          "kod": "DSC",
+          "opis": "stacja w rejonie Trójmiasta",
+          "moc": 500
+        },
+        {
+          "lp": 14,
+          "kod": "DZO",
+          "opis": "stacja w rejonie Torunia",
+          "moc": 1000
+        }
+      ],
+      [
+        {
+          "lp": 1,
+          "kod": "CPK",
+          "opis": "stacja w rejonie Portu Polska",
+          "moc": 250
+        },
+        {
+          "lp": 2,
+          "kod": "DMO",
+          "opis": "stacja Stryków (Dmosin)",
+          "moc": 500
+        },
+        {
+          "lp": 3,
+          "kod": "WTN",
+          "opis": "stacja w rejonie Kutna",
+          "moc": 500
+        },
+        {
+          "lp": 4,
+          "kod": "MAK",
+          "opis": "stacja Jarosław",
+          "moc": 200
+        },
+        {
+          "lp": 5,
+          "kod": "ZGN",
+          "opis": "stacja Żagań (Marszów)",
+          "moc": 100
+        },
+        {
+          "lp": 6,
+          "kod": "POM",
+          "opis": "stacja Pomorzany",
+          "moc": 100
+        },
+        {
+          "lp": 7,
+          "kod": "PBO",
+          "opis": "stacja Podborze",
+          "moc": 200
+        },
+        {
+          "lp": 8,
+          "kod": "PSC",
+          "opis": "stacja w rejonie Poznania",
+          "moc": 500
+        },
+        {
+          "lp": 9,
+          "kod": "SBO",
+          "opis": "stacja na terenie Pomorza Zachodniego",
+          "moc": 500
+        },
+        {
+          "lp": 10,
+          "kod": "EJ1",
+          "opis": "stacja Biebrowo (elektrownia jądrowa)",
+          "moc": 250
+        },
+        {
+          "lp": 11,
+          "kod": "MAO",
+          "opis": "stacja w rejonie Włocławka",
+          "moc": 500
+        }
+      ]
+    ],
+    "nierozpoznane": []
+  }
+}

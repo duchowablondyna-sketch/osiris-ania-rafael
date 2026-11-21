@@ -3,8 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Pierwsza klatka, zanim wczyta się główny CSS (w trybie deweloperskim Vite wstawia go dopiero z JavaScriptu):
+         od razu ciemne tło, a treść ukryta do chwili, gdy główny CSS ją odsłoni (style.css / tytulowa.css).
+         Zabezpieczenie: gdyby CSS się nie wczytał, treść i tak pokaże się po 3 s. Bez JavaScriptu. -->
+    <meta name="color-scheme" content="dark" />
+    <style>
+      html, body { margin: 0; background: #05070d; color: #e8eef7; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+      body > * { visibility: hidden; animation: osiris-pokaz 0s linear 3s forwards; }
+      @keyframes osiris-pokaz { to { visibility: visible; } }
+    </style>
     <title>OSIRIS – mapa</title>
-    <meta name="description" content="Mapa źródeł prądu w Polsce: elektrownie, farmy wiatrowe na lądzie i na Bałtyku, linie najwyższych napięć, produkcja z wiatru i cena energii – z oficjalnych, publicznych źródeł." />
+    <meta name="description" content="Mapa źródeł prądu w Polsce: elektrownie, farmy wiatrowe na lądzie i na Bałtyku, linie najwyższych napięć, wolna moc przyłączeniowa dla odbiorców w sieci PSE, produkcja z wiatru i cena energii – z oficjalnych, publicznych źródeł." />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="OSIRIS – mapa prądu Polski" />
     <meta property="og:description" content="Skąd Polska bierze prąd i ile on kosztuje – z oficjalnych, publicznych źródeł, z datą przy każdej liczbie." />
@@ -51,28 +60,32 @@
       <details class="legenda" open>
         <summary>Co oznaczają znaczki</summary>
         <ul>
+          <li><label><input type="checkbox" data-warstwa="moce" checked />
+            <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><polygon points="12,0.7 18.3,4.35 18.3,11.65 12,15.3 5.7,11.65 5.7,4.35" fill="none" stroke="#05070d" stroke-width="2.6" /><polygon points="12,0.7 18.3,4.35 18.3,11.65 12,15.3 5.7,11.65 5.7,4.35" fill="none" stroke="#2dd4bf" stroke-width="1.3" stroke-dasharray="1.8 1.3" /><polygon points="12,3.6 15.8,5.8 15.8,10.2 12,12.4 8.2,10.2 8.2,5.8" fill="#2dd4bf" stroke="#05070d" stroke-width="1" /></svg>
+            <span><strong>Wolna moc dla odbiorców (PSE)</strong> <span class="legenda__licznik" data-licznik="moce">wczytywanie…</span> – sieć najwyższych napięć 220/400 kV, dla największych odbiorców; sześciokąt: stacja planowana z wolną mocą; <svg class="znak-maly" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="rgba(45,212,191,0.18)" stroke="#2dd4bf" stroke-width="1.2" stroke-dasharray="2.5 1.6" /></svg> koło: lokalizacja przybliżona; <svg class="znak-maly" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><polygon points="8,1.5 13.6,4.75 13.6,11.25 8,14.5 2.4,11.25 2.4,4.75" fill="#05070d" stroke="rgba(45,212,191,0.9)" stroke-width="1.4" /></svg> pusty sześciokąt: według wykazu PSE wnioski do rozdzielni 220/400 kV obecnie bez rozpatrzenia</span></label></li>
           <li><label><input type="checkbox" data-warstwa="linie" checked />
-            <svg class="znak" viewBox="0 0 24 16" aria-hidden="true"><line x1="1" y1="8" x2="23" y2="8" stroke="#05070d" stroke-width="5" /><line x1="1" y1="8" x2="23" y2="8" stroke="#f2c14e" stroke-width="3" /></svg>
+            <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><line x1="1" y1="8" x2="23" y2="8" stroke="#05070d" stroke-width="5" /><line x1="1" y1="8" x2="23" y2="8" stroke="#f2c14e" stroke-width="3" /></svg>
             <span><strong>Linie najwyższych napięć</strong> <span class="legenda__licznik" data-licznik="linie">wczytywanie…</span> – 220 i 400 kV (grubsza linia: 400 kV)</span></label></li>
           <li><label><input type="checkbox" data-warstwa="morskie" checked />
-            <svg class="znak" viewBox="0 0 24 16" aria-hidden="true"><circle cx="7" cy="8" r="5" fill="#5cc8ff" stroke="#05070d" stroke-width="1.5" /><circle cx="18" cy="8" r="4.5" fill="none" stroke="#5cc8ff" stroke-width="2" /></svg>
+            <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><circle cx="7" cy="8" r="5" fill="#5cc8ff" stroke="#05070d" stroke-width="1.5" /><circle cx="18" cy="8" r="4.5" fill="none" stroke="#5cc8ff" stroke-width="2" /></svg>
             <span><strong>Morskie farmy wiatrowe</strong> <span class="legenda__licznik" data-licznik="morskie">wczytywanie…</span> – puste kółko: prawdopodobny duplikat lub brak na liście MKiŚ</span></label></li>
           <li><label><input type="checkbox" data-warstwa="ladowe" checked />
-            <svg class="znak" viewBox="0 0 24 16" aria-hidden="true"><circle cx="7" cy="8" r="4" fill="#4ade80" stroke="#05070d" stroke-width="1.5" /><circle cx="18" cy="8" r="4.5" fill="#05070d" stroke="#4ade80" stroke-width="2" /><circle cx="18" cy="8" r="1.5" fill="#4ade80" /></svg>
+            <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><circle cx="7" cy="8" r="4" fill="#4ade80" stroke="#05070d" stroke-width="1.5" /><circle cx="18" cy="8" r="4.5" fill="#05070d" stroke="#4ade80" stroke-width="2" /><circle cx="18" cy="8" r="1.5" fill="#4ade80" /></svg>
             <span><strong>Lądowe farmy wiatrowe od 10 MW</strong> <span class="legenda__licznik" data-licznik="ladowe">wczytywanie…</span> – pełne kółko: działa; pierścień z kropką: w budowie</span></label></li>
           <li><label><input type="checkbox" data-warstwa="wegiel" checked />
-            <svg class="znak" viewBox="0 0 24 16" aria-hidden="true"><rect x="6" y="2" width="12" height="12" style="fill: var(--kolor-wegiel)" stroke="#05070d" stroke-width="1.5" /></svg>
+            <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><rect x="6" y="2" width="12" height="12" style="fill: var(--kolor-wegiel)" stroke="#05070d" stroke-width="1.5" /></svg>
             <span><strong>Elektrownie węglowe</strong> <span class="legenda__licznik" data-licznik="wegiel">wczytywanie…</span> – kwadrat: elektrownia spalająca paliwo</span></label></li>
           <li><label><input type="checkbox" data-warstwa="gaz" checked />
-            <svg class="znak" viewBox="0 0 24 16" aria-hidden="true"><rect x="6" y="2" width="12" height="12" style="fill: var(--kolor-gaz)" stroke="#05070d" stroke-width="1.5" /></svg>
+            <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><rect x="6" y="2" width="12" height="12" style="fill: var(--kolor-gaz)" stroke="#05070d" stroke-width="1.5" /></svg>
             <span><strong>Elektrownie gazowe i olejowe</strong> <span class="legenda__licznik" data-licznik="gaz">wczytywanie…</span> – kwadrat: elektrownia spalająca paliwo</span></label></li>
           <li><label><input type="checkbox" data-warstwa="woda" checked />
-            <svg class="znak" viewBox="0 0 24 16" aria-hidden="true"><circle cx="12" cy="8" r="6" style="fill: var(--kolor-woda)" stroke="#05070d" stroke-width="1.5" /></svg>
+            <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><circle cx="12" cy="8" r="6" style="fill: var(--kolor-woda)" stroke="#05070d" stroke-width="1.5" /></svg>
             <span><strong>Elektrownie wodne</strong> <span class="legenda__licznik" data-licznik="woda">wczytywanie…</span></span></label></li>
           <li><label><input type="checkbox" data-warstwa="pompowa" checked />
-            <svg class="znak" viewBox="0 0 24 16" aria-hidden="true"><polygon points="12,1 19,8 12,15 5,8" style="fill: var(--kolor-woda)" stroke="#05070d" stroke-width="1.5" /></svg>
+            <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><polygon points="12,1 19,8 12,15 5,8" style="fill: var(--kolor-woda)" stroke="#05070d" stroke-width="1.5" /></svg>
             <span><strong>Elektrownie szczytowo-pompowe</strong> <span class="legenda__licznik" data-licznik="pompowa">wczytywanie…</span> – magazyn energii: pompują wodę w górę, gdy prądu jest dużo, i oddają go, gdy brakuje</span></label></li>
         </ul>
+        <p class="legenda__uwaga legenda__uwaga--moce" id="legenda-moce-zrodla">Moc dla nowych źródeł: wczytywanie…</p>
         <p class="legenda__uwaga">Elektrownie: tylko działające i tylko duże (progi w „Źródła i licencje”)</p>
         <p class="legenda__uwaga"><strong>Rozmiar znaczka elektrowni = moc zainstalowana, nie bieżąca produkcja</strong></p>
         <div class="legenda__skala" aria-hidden="true">
@@ -82,6 +95,24 @@
           <svg viewBox="0 0 28 28" width="28" height="28"><rect x="1.65" y="1.65" width="24.7" height="24.7" fill="#a9b7cc" stroke="#05070d" stroke-width="1" /></svg><span>5 000 MW</span>
         </div>
         <p class="tylko-czytnik">Wzorce rozmiaru: 100 MW – mały kwadrat, 1 000 MW – średni, 5 000 MW – duży.</p>      </details>
+
+      <!-- Wolna moc dla odbiorców (PSE): lista wszystkich stacji, zwijana (src/moce.js wypełnia ją z public/data/moce-pse.json). -->
+      <details class="panel-moce" id="panel-moce">
+        <summary>Wolna moc dla odbiorców · PSE 220/400 kV</summary>
+        <div class="panel-moce__tresc">
+          <p class="panel-moce__wazne">Sieć najwyższych napięć (220/400 kV) – dla największych odbiorców, np. fabryk i centrów danych. Mniejsze firmy przyłączają się do sieci operatorów dystrybucyjnych (kolejny etap OSIRIS).</p>
+          <p class="panel-moce__podsumowanie" id="moce-podsumowanie">wczytywanie…</p>
+          <p>Dla istniejących stacji PSE podaje 0 MW – wolną moc mają tylko stacje planowane. Moc podana dla roku 2031; niektóre stacje powstaną później.</p>
+          <h2 class="etykieta-mala">Stacje dla nowych odbiorców</h2>
+          <ul class="panel-moce__lista" id="moce-lista-1"></ul>
+          <h2 class="etykieta-mala">Stacje budowane głównie dla sieci i nowych źródeł – według PSE mogą też zasilać odbiorców</h2>
+          <ul class="panel-moce__lista" id="moce-lista-2"></ul>
+          <p class="panel-moce__uwaga">Szacunek operatora, nie gwarancja przyłączenia. Wykorzystanie mocy w jednej stacji może zmniejszyć moc w stacjach sąsiednich – dlatego mocy stacji nie sumujemy.</p>
+          <p class="panel-moce__uwaga" id="moce-zrodla-zdanie">Moc dla nowych źródeł: wczytywanie…</p>
+          <p class="panel-moce__stan" id="moce-stan">stan na: wczytywanie…</p>
+          <div id="moce-zrodlo"></div>
+        </div>
+      </details>
 
       <!-- Powrót na stronę tytułową: zwykły link (działa z klawiatury i z przyciskiem „Wstecz” przeglądarki). -->
       <a class="powrot" href="/" aria-label="Strona główna OSIRIS">← OSIRIS</a>

@@ -166,3 +166,8 @@ public/data/doba.json
 *.xlsx
 Global Integrated Power*
 public/data/podsumowanie.json
+
+# Wolne moce PSE: data sprawdzenia generowana przy budowaniu (scripts/pse-moce/sprawdzono.mjs)
+public/data/moce-pse-sprawdzono.json
+# Surowe PDF-y (np. dokumenty PSE) zostają POZA repo (~/Projekty/_dane/) – w repo tylko nasz wyciąg.
+*.pdf
