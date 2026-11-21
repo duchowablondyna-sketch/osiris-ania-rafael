@@ -16,9 +16,20 @@ Mapa źródeł prądu, część 2 (działające elektrownie z GEM, legenda z prz
 „Wygląd i zaufanie” (źródło w okienkach, liczniki, czcionki u nas, szkło, lot po przełączeniu) – zakończony 20.11.2026.
 Strona tytułowa na / i mapa na /mapa/ – zakończone (PR #16).
 Wolne moce przyłączeniowe – część 1: PSE (warstwa „Wolna moc dla odbiorców”, wykaz rozdzielni, Robot OSIRIS etap A) – zakończona 21.11.2026 (PR #17, #18).
-Cel: Robot OSIRIS etap B – co tydzień (środa 05:17 UTC) sprawdza dokument PSE o dostępności mocy przyłączeniowej; ręczne uruchamianie zostaje.
+Robot OSIRIS etap B (co tydzień, środa 05:17 UTC, sprawdza dokument PSE o dostępności mocy przyłączeniowej; ręczne uruchamianie zostaje) – działa od 21.11.2026 (PR #22).
+
+Cel: „Karta Polski”.
+- 5 kafelków: główne źródło (węgiel razem), cena RCE, ślad CO2 (szacunek OSIRIS), OZE %, wymiana z zagranicą.
+- Paski: produkcja na tle mocy zainstalowanej; wiatr i PV kreskowane, z „?”.
+- Podpis „stan na HH:MM · PSE opublikowało HH:MM” zamiast „teraz”.
+- Źródło miksu: PSE API `his-gen-pal-sire`; przy każdym pobraniu sprawdzian zgodności z `his-wlk-cal` (wiatr i PV).
+
+Następne w kolejce: operatorzy OSD (Stoen, potem PGE, Energa).
+
+W tle (nie blokują celu): Otwarte punkty Robota OSIRIS: patrz BEZPIECZENSTWO.md → Do zrobienia.
+
 Robimy tylko to, bez czego cel nie zostanie osiągnięty.
-Nie robimy teraz: innych animacji, nowych warstw danych i wersji na telefon (to później).
+Nie robimy teraz: innych animacji, nowych warstw danych na mapie i wersji na telefon (to później).
 Zanim zaproponujesz cokolwiek, sprawdź: czy bez tego cel zostanie osiągnięty? Jeśli tak — nie proponuj, dopisz najwyżej jedną linię do listy „Do zrobienia” w BEZPIECZENSTWO.md.
 
 ## Cel
