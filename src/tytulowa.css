@@ -528,3 +528,82 @@ body.tytulowa {
   right: auto;
   left: 0;
 }
+
+/* ── Tytuł „szklany” nad krawędzią Ziemi (decyzja Ani, 21.11.2026) ──
+   Litery OSIRIS zachodzą na górną krawędź kuli i poświatę; podtytuł i przycisk niżej, pod pasem, w którym obraca się
+   złota kropka Polski. Geometria: kula ma promień R = 0,8 · ½ wysokości kontenera (tytulowa.js) = 0,464 vh, środek
+   na 73% wysokości ekranu (po przesunięciu o 10% w górę – decyzja Ani 21.11.2026, mniej pustego nieba nad napisem).
+   Polska (52°N, środek widoku 8°S) przy pełnym obrocie przesuwa się tylko poziomo, w wąskim pasie tuż pod krawędzią
+   – tam nie stawiamy tekstu. */
+#globus {
+  /* Wysokość kontenera 116% (jak wcześniej) – od niej zależy rozmiar kuli (tytulowa.js); przesunięty o 10% w górę. */
+  top: 15%;
+  bottom: -31%;
+}
+
+.bohater {
+  background:
+    radial-gradient(
+      circle farthest-side at 50% 73%,
+      rgba(0, 212, 255, 0.42) 0,
+      rgba(0, 200, 250, 0.3) 40%,
+      rgba(0, 160, 230, 0.12) 56%,
+      rgba(0, 120, 200, 0.03) 70%,
+      rgba(5, 7, 13, 0) 86%
+    ),
+    var(--tlo);
+}
+
+/* Przyciemnienie tylko pod podtytułem i przyciskiem (nad nocną Ziemią) – nie pod literami i nie nad kropką Polski. */
+.bohater__przyciemnienie {
+  background:
+    radial-gradient(ellipse 30% 8% at 50% 50%, rgba(5, 7, 13, 0.8) 0%, rgba(5, 7, 13, 0.6) 55%, rgba(5, 7, 13, 0) 100%),
+    linear-gradient(0deg, var(--tlo) 0%, rgba(5, 7, 13, 0.85) 20%, rgba(5, 7, 13, 0) 31%);
+}
+
+.tytul {
+  /* Dobrane z pomiaru zrzutów 1440×900 i 1920×1080 (21.11.2026): dół liter ok. 14–19 px poniżej krawędzi Ziemi,
+     ok. 10 px nad kropką Polski w jej najwyższym położeniu. */
+  /* −10 px względem pomiaru: większy napis (decyzja Ani 21.11.2026) – dół liter zostaje nad kropką Polski. */
+  padding-top: calc(37.77vh - 206px);
+}
+
+.bohater .tytul__podtytul {
+  margin-top: calc(9.5vh + 20px);
+}
+
+/* ── Napis OSIRIS „ze szkła” – wariant „blask” (wybór Ani, 21.11.2026). Litery półprzezroczyste (krycie 0,55) – przez
+   nie widać poświatę i krawędź Ziemi; co 4 s przez napis przesuwa się delikatny pas światła (do 1,0). Tylko CSS.
+   Kontrast (pomiar 21.11.2026 po przesunięciu i powiększeniu, 3 chwile obrotu, 1440×900): poza pasem 4,4–5,5 : 1,
+   w pasie i przy „ogranicz ruch” 10,7–16,9 : 1. Tylko cienka, najjaśniejsza linia krawędzi Ziemi (< 2% obszaru liter)
+   zlewa się z końcami liter.
+   Selektor „.bohater …” i text-shadow: none – starsza reguła daje napisowi ciemny cień, który prześwitywałby przez
+   półprzezroczyste litery i je przyciemniał. ── */
+.bohater .tytul__nazwa {
+  text-shadow: none;
+  color: transparent;
+  background: linear-gradient(105deg, rgba(232, 238, 247, 0.55) 0%, rgba(232, 238, 247, 0.55) 46.5%, rgba(255, 255, 255, 1) 50%, rgba(232, 238, 247, 0.55) 53.5%, rgba(232, 238, 247, 0.55) 100%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  /* Blask co 4 s (decyzja Ani 21.11.2026): przejście 1,6 s, potem 2,4 s przerwy. */
+  animation: osiris-blask 4s ease-in-out infinite;
+}
+@keyframes osiris-blask {
+  0% { background-position: 100% 0; }
+  40%, 100% { background-position: 0% 0; }
+}
+
+/* „Ogranicz ruch”: bez animacji, w wersji najbardziej czytelnej – pełny, jasny napis. */
+@media (prefers-reduced-motion: reduce) {
+  .bohater .tytul__nazwa {
+    animation: none;
+    color: var(--tekst);
+    background: none;
+  }
+}
+
+/* Napis OSIRIS o ok. 10% większy (decyzja Ani 21.11.2026; wcześniej clamp(3.5rem, 10vw, 8rem)). */
+.bohater .tytul__nazwa {
+  font-size: clamp(3.85rem, 11vw, 8.8rem);
+}
