@@ -246,3 +246,72 @@ test('pusty sześciokąt: reguła na przykładach (110 → nie, 220 → tak, 400
   assert.equal(czyPusty({ rozdzielnie: ['Rozdzielnia 400 kV'] }), true);
   assert.equal(czyPusty(undefined), false);
 });
+
+// ── Robot: „nowy plik, te same dane”, symulacja, krok „Zgłoś” (poprawka po teście wymus-pr 21.11.2026) ──
+import { rodzajZmiany, naglowekSymulacji, oznaczSymulacje } from './robot.mjs';
+import { zglos, tytul, ZNACZNIK_TESTU } from './zglos.mjs';
+import { writeFileSync as zapiszPlik, mkdirSync as utworzKatalog } from 'node:fs';
+
+test('rodzaj zmiany: ten sam SHA → bez-zmian; inny SHA i ten sam wyciąg → nowy-plik; inny wyciąg → nowe-dane', () => {
+  const poprzedni = { zrodlo: { sha256: 'aaa' }, wyciag: kopia() };
+  assert.equal(rodzajZmiany({ wyciag: kopia(), poprzedni, sha256: 'aaa' }), 'bez-zmian');
+  assert.equal(rodzajZmiany({ wyciag: kopia(), poprzedni, sha256: 'bbb' }), 'nowy-plik');
+  const inny = kopia();
+  inny.odbiorcy[0][0].moc = 300;
+  assert.equal(rodzajZmiany({ wyciag: inny, poprzedni, sha256: 'bbb' }), 'nowe-dane');
+  assert.equal(rodzajZmiany({ wyciag: kopia(), poprzedni, sha256: 'aaa', wymus: true }), 'nowe-dane');
+  assert.equal(rodzajZmiany({ wyciag: kopia(), poprzedni: null, sha256: 'aaa' }), 'nowe-dane');
+});
+
+test('symulacja: nagłówek NIE SCALAĆ i dopisek (SYMULACJA) przy ostrzeżeniu „Plik się zmienił…”', () => {
+  assert.match(naglowekSymulacji('wymus-pr', true), /SYMULACJA – tryb wymus-pr, dane bez zmian, NIE SCALAĆ/);
+  assert.match(naglowekSymulacji('wymus-problem', true), /SYMULACJA – tryb wymus-problem/);
+  const ostrz = sprawdz(kopia(), kopia(), DZIS).ostrzezenia;
+  const oznaczone = oznaczSymulacje(ostrz, true);
+  assert.ok(oznaczone.some((o) => o.startsWith('Plik się zmienił') && o.includes('(SYMULACJA')));
+  assert.deepEqual(oznaczSymulacje(ostrz, false), ostrz); // prawdziwy nowy plik – bez dopisku
+  assert.equal(tytul({ stan: 'nowe-dane', stan_na: '2026-10-31', tryb: 'wymus-pr' }), '[Robot OSIRIS][TEST] Nowe dane PSE – stan na 31.10.2026');
+  assert.equal(tytul({ stan: 'nowy-plik', stan_na: '2026-10-31', tryb: 'normalny' }), '[Robot OSIRIS] Nowy plik PSE, te same dane – stan na 31.10.2026');
+});
+
+// Prawdziwe repozytorium git w katalogu tymczasowym; zglos() na sucho (bez push i bez gh).
+function repoTestowe(daneNaMain, daneRobota, stan) {
+  const repo = mkdtempSync(join(tmpdir(), 'osiris-repo-'));
+  const git = (...a) => execFileSync('git', a, { cwd: repo, stdio: 'pipe', encoding: 'utf-8' });
+  git('init', '-q', '-b', 'main');
+  utworzKatalog(join(repo, 'public/data'), { recursive: true });
+  zapiszPlik(join(repo, 'public/data/moce-pse.json'), daneNaMain);
+  git('add', '.');
+  git('-c', 'user.name=Test', '-c', 'user.email=test@example.invalid', 'commit', '-q', '-m', 'start');
+  const wynikDir = mkdtempSync(join(tmpdir(), 'osiris-wynik-'));
+  zapiszPlik(join(wynikDir, 'wynik.json'), JSON.stringify({ stan, stan_na: '2026-10-31', sha256: 'e3612af437f862d0' }));
+  zapiszPlik(join(wynikDir, 'opis.md'), 'opis');
+  zapiszPlik(join(wynikDir, 'moce-pse.json'), daneRobota);
+  return { repo, wynikDir, git };
+}
+
+test('zgłoś: „nic do zapisania” w trybie normalnym – zielony koniec, bez PR i bez błędu (przypadek z przebiegu #2)', () => {
+  const { repo, wynikDir, git } = repoTestowe('{"a":1}\n', '{"a":1}\n', 'nowe-dane');
+  const w = zglos({ wynikDir, repo, tryb: 'normalny', naSucho: true, log: () => {} });
+  assert.equal(w.akcja, 'nic-do-zapisania');
+  assert.equal(git('log', '--oneline').trim().split('\n').length, 1); // żadnego nowego commita
+});
+test('zgłoś: wymus-pr przy identycznych danych – zawsze PR do obejrzenia (plik-znacznik testu, tytuł [TEST])', () => {
+  const { repo, wynikDir, git } = repoTestowe('{"a":1}\n', '{"a":1}\n', 'nowe-dane');
+  const w = zglos({ wynikDir, repo, tryb: 'wymus-pr', naSucho: true, log: () => {} });
+  assert.equal(w.akcja, 'pr');
+  assert.deepEqual(w.pliki, [ZNACZNIK_TESTU]);
+  assert.match(git('log', '-1', '--format=%s'), /^\[Robot OSIRIS\]\[TEST\] Nowe dane PSE – stan na 31\.10\.2026/);
+  assert.match(git('show', `HEAD:${ZNACZNIK_TESTU}`), /SYMULACJA – tryb wymus-pr, NIE SCALAĆ/);
+});
+test('zgłoś: nowy plik PSE (inny SHA w pliku danych) – PR tylko z plikiem danych', () => {
+  const { repo, wynikDir, git } = repoTestowe('{"sha":"aaa"}\n', '{"sha":"bbb"}\n', 'nowy-plik');
+  const w = zglos({ wynikDir, repo, tryb: 'normalny', naSucho: true, log: () => {} });
+  assert.equal(w.akcja, 'pr');
+  assert.deepEqual(w.pliki, ['public/data/moce-pse.json']);
+  assert.match(git('log', '-1', '--format=%s'), /^\[Robot OSIRIS\] Nowy plik PSE, te same dane/);
+});
+test('zgłoś: bez-zmian – nic nie robi', () => {
+  const { repo, wynikDir } = repoTestowe('{"a":1}\n', '{"a":1}\n', 'bez-zmian');
+  assert.equal(zglos({ wynikDir, repo, tryb: 'normalny', naSucho: true, log: () => {} }).akcja, 'nic');
+});
