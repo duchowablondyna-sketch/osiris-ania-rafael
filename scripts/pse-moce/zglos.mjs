@@ -26,14 +26,16 @@ export function tytul({ stan, stan_na, tryb }) {
   return `${prefiks}Nowe dane PSE – stan na ${dataPL(stan_na)}`;
 }
 
-export function zglos({ wynikDir, repo, tryb, naSucho = false, log = console.log, uruchom }) {
+// podsumowanie: ścieżka podsumowania przebiegu (GITHUB_STEP_SUMMARY) – podaje ją tylko prawdziwe uruchomienie z robota.
+// Tryb na sucho i testy nigdy nie piszą do podsumowania (poprawka 21.11.2026: linijki z testów trafiały do raportu).
+export function zglos({ wynikDir, repo, tryb, naSucho = false, log = console.log, uruchom, podsumowanie = null }) {
   const run = uruchom ?? ((cmd, args, opcje = {}) => execFileSync(cmd, args, { cwd: repo, encoding: 'utf-8', stdio: ['ignore', 'pipe', 'pipe'], ...opcje }));
   const wynik = JSON.parse(readFileSync(join(wynikDir, 'wynik.json'), 'utf-8'));
   const opisPlik = join(wynikDir, 'opis.md');
   const t = tytul({ ...wynik, tryb });
   const raport = (tekst) => {
     log(tekst);
-    if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, `${tekst}\n`);
+    if (podsumowanie && !naSucho) appendFileSync(podsumowanie, `${tekst}\n`);
   };
   const repoGh = process.env.GITHUB_REPOSITORY;
 
@@ -110,5 +112,6 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     console.error('Brak wynik.json w katalogu --wynik.');
     process.exit(2);
   }
-  zglos({ wynikDir: opcja('--wynik'), repo: opcja('--repo'), tryb: opcja('--tryb'), naSucho: args.includes('--na-sucho') });
+  const naSucho = args.includes('--na-sucho');
+  zglos({ wynikDir: opcja('--wynik'), repo: opcja('--repo'), tryb: opcja('--tryb'), naSucho, podsumowanie: naSucho ? null : process.env.GITHUB_STEP_SUMMARY || null });
 }

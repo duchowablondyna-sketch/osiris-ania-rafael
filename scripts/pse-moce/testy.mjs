@@ -315,3 +315,20 @@ test('zgłoś: bez-zmian – nic nie robi', () => {
   const { repo, wynikDir } = repoTestowe('{"a":1}\n', '{"a":1}\n', 'bez-zmian');
   assert.equal(zglos({ wynikDir, repo, tryb: 'normalny', naSucho: true, log: () => {} }).akcja, 'nic');
 });
+
+test('zgłoś na sucho (testy) nie pisze do podsumowania przebiegu, nawet gdy GITHUB_STEP_SUMMARY jest ustawione', () => {
+  const plikPodsumowania = join(mkdtempSync(join(tmpdir(), 'osiris-podsum-')), 'summary.md');
+  zapiszPlik(plikPodsumowania, '');
+  const poprzednie = process.env.GITHUB_STEP_SUMMARY;
+  process.env.GITHUB_STEP_SUMMARY = plikPodsumowania; // tak jak w GitHub Actions podczas kroku z testami
+  try {
+    for (const [tryb, stan] of [['normalny', 'nowe-dane'], ['wymus-pr', 'nowe-dane'], ['normalny', 'bez-zmian']]) {
+      const { repo, wynikDir } = repoTestowe('{"a":1}\n', '{"a":1}\n', stan);
+      zglos({ wynikDir, repo, tryb, naSucho: true, log: () => {} });
+    }
+  } finally {
+    if (poprzednie === undefined) delete process.env.GITHUB_STEP_SUMMARY;
+    else process.env.GITHUB_STEP_SUMMARY = poprzednie;
+  }
+  assert.equal(readFileSync(plikPodsumowania, 'utf-8'), '');
+});
