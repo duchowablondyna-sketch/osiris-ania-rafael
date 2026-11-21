@@ -196,6 +196,28 @@ Metoda dla paliw kopalnych: 820 g/kWh (IPCC, węgiel) × (wskaźnik KOBiZE paliw
 - **Data sprawdzenia:** 20.11.2026
 - **Poziom weryfikacji:** 1 (GetCapabilities i metadane GIBS; kafelek nad Polską pobrany i obejrzany; strony produktu Black Marble w NASA Earth Observatory nie czytałam)
 
+### Kopia kafelków Black Marble 2016 dla globusa na stronie tytułowej
+
+- **Co:** te same kafelki co wyżej (`VIIRS_Black_Marble`, 2016-01-01, PNG 256 px), **tylko przybliżenia 0–3** – wszystkie 85 (1 + 4 + 16 + 64), razem **1 901 156 B** (ok. 1,8 MB). Zapisane **bajt w bajt, bez obróbki**; odbarwienie (`raster-saturation: -0.3`) robi MapLibre przy rysowaniu.
+- **Gdzie:** `public/kafelki/black-marble-2016/{z}/{y}/{x}.png`; sumy SHA-256 każdego kafelka i data pobrania: `public/kafelki/black-marble-2016/sumy-sha256.txt`.
+- **Jak:** jednorazowo, ręcznie: `node scripts/pobierz-kafelki-globusa.mjs` (pobranie 21.11.2026, sprawdza kod 200, typ `image/png` i nagłówek PNG); sprawdzenie plików z sumami bez sieci: `node scripts/pobierz-kafelki-globusa.mjs --sprawdz` (21.11.2026: 85/85 zgodnych). Skrypt nie działa przy budowaniu.
+- **Używamy w:** globus na stronie tytułowej (`src/tytulowa.js`, `maxzoom: 3` – na bardzo wysokich ekranach kafelki z poziomu 3 są powiększane zamiast pobierania poziomu 4 z NASA). Mapa /mapa/ dalej pobiera kafelki z NASA GIBS (wpis wyżej).
+- **Po co:** serwer NASA wysyła `cache-control: max-age=0, no-store, no-cache` i odpowiada ok. 0,2–0,8 s na kafelek – przy każdym powrocie na stronę tytułową kula była przez chwilę „urwana” (pomiar 21.11.2026). Z kopią: 0 połączeń z NASA na stronie tytułowej, kafelki gotowe w ok. 0,1–0,5 s od wejścia (pomiar 21.11.2026 na wersji zbudowanej, przejście mapa → strona tytułowa).
+- **Warunki (przeczytane w całości 21.11.2026):** NASA Earthdata, „Data Use and Citation Guidance”, https://www.earthdata.nasa.gov/engage/open-data-services-software-policies/data-use-guidance – treści NASA ESDIS, w tym obrazy, „are generally not copyrighted” i można ich używać m.in. na stronach internetowych; dane z misji prowadzonych przez NASA bez oznaczonej licencji są na licencji CC0 („no restrictions on the use”, z bardzo mocną prośbą o podanie źródła); niechronione prawem autorskim materiały NASA „may be reproduced and distributed without further permission from NASA”; NASA należy podać jako źródło; nie wolno sugerować poparcia NASA ani używać materiałów w sposób wprowadzający w błąd. Strona odsyła do wskazówek GIBS (podziękowanie – wpis o Blue Marble wyżej, w stopce).
+- **Podpis:** na stronie tytułowej bez zmian „Tło: NASA Black Marble 2016 (GIBS)”; w stopce podpis Black Marble i podziękowanie dla GIBS – bez zmian. Bez logo NASA, bez sugerowania poparcia.
+- **Data sprawdzenia:** 21.11.2026
+- **Poziom weryfikacji:** 1 (warunki przeczytane w całości; kafelek z Europą obejrzany; sumy zgodne)
+
+### Plakat kuli na stronie tytułowej (obraz pochodny od kafelków wyżej)
+
+- **Co:** `public/obrazy/globus-plakat.webp` – nieruchomy obraz naszego globusa (kafelki Black Marble 2016 z kopii wyżej, odbarwienie MapLibre `raster-saturation: -0.3`, atmosfera MapLibre, złoty punkt Polski), widoczny od pierwszej klatki strony, zanim MapLibre i WebGL się uruchomią; potem prawdziwa kula przejmuje go w 0,3 s (`src/tytulowa.js`, `src/tytulowa.css`). WebP 1482 × 1482 px z przezroczystością, jakość 0,9, **72 614 B**, SHA-256 `be57623d3f3b71cdf912be5dfa12d4a19840bab41a54c984c613f697b8d1e018`.
+- **Jak powstał (21.11.2026, jednorazowo):** zbudowana strona tytułowa (podgląd 127.0.0.1), okno 1440 × 900 przy gęstości pikseli 2, „ogranicz ruch” (kula stoi w pozycji startowej obrotu: środek widoku 19,4° E, 7,9° S); po narysowaniu kuli wycięty z płótna MapLibre kwadrat 1482 px wokół środka (kula 1347 px = 0,6451 wysokości kontenera) i zapisany przez przeglądarkę jako WebP. Narzędzie: agent-browser (Chrome) na komputerze Ani – bez pakietów w projekcie.
+- **Zgodność położenia:** zrzut z samym plakatem i z samą kulą w tej samej chwili – PSNR 35,5 dB (1440 × 900), 38,0 dB (1280 × 720), 38,2 dB (1920 × 1080); różnica tylko na krawędzi kuli (wygładzanie).
+- **Kiedy wygenerować od nowa:** po zmianie środka widoku, wielkości kuli (`zoomKuli` w `src/tytulowa.js`), położenia `#globus` w CSS, kafelków albo wyglądu globusa (odbarwienie, atmosfera, punkt Polski).
+- **Warunki i podpis:** jak przy kafelkach wyżej (NASA – bez ograniczeń, podać źródło, bez sugerowania poparcia); podpis „Tło: NASA Black Marble 2016 (GIBS)” bez zmian.
+- **Data sprawdzenia:** 21.11.2026
+- **Poziom weryfikacji:** 1 (obraz obejrzany; położenie zmierzone na trzech rozmiarach okna)
+
 ## EMODnet: morskie farmy wiatrowe
 
 - **Co:** EMODnet Human Activities, Energy, Wind Farms – punkty morskich farm wiatrowych (warstwa WFS `emodnet:windfarms`).

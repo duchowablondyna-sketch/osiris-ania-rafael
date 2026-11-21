@@ -535,8 +535,10 @@ body.tytulowa {
    na 73% wysokości ekranu (po przesunięciu o 10% w górę – decyzja Ani 21.11.2026, mniej pustego nieba nad napisem).
    Polska (52°N, środek widoku 8°S) przy pełnym obrocie przesuwa się tylko poziomo, w wąskim pasie tuż pod krawędzią
    – tam nie stawiamy tekstu. */
-#globus {
-  /* Wysokość kontenera 116% (jak wcześniej) – od niej zależy rozmiar kuli (tytulowa.js); przesunięty o 10% w górę. */
+#globus,
+.globus-plakat {
+  /* Wysokość kontenera 116% (jak wcześniej) – od niej zależy rozmiar kuli (tytulowa.js); przesunięty o 10% w górę.
+     Plakat kuli (niżej) dostaje tę samą regułę – musi stać dokładnie tam, gdzie prawdziwa kula. */
   top: 15%;
   bottom: -31%;
 }
@@ -606,4 +608,41 @@ body.tytulowa {
 /* Napis OSIRIS o ok. 10% większy (decyzja Ani 21.11.2026; wcześniej clamp(3.5rem, 10vw, 8rem)). */
 .bohater .tytul__nazwa {
   font-size: clamp(3.85rem, 11vw, 8.8rem);
+}
+
+/* ── Plakat kuli: nieruchomy obraz Ziemi widoczny od pierwszej klatki strony ──
+   Nowa strona = MapLibre i WebGL uruchamiają się od zera (pomiar 21.11.2026: ok. 0,2–0,4 s na M1, dłużej na
+   wolniejszych komputerach). Do tej chwili widać plakat: zrzut naszej kuli w pozycji startowej obrotu
+   (public/obrazy/globus-plakat.webp, opis w ZRODLA.md). Ten sam kontener i ta sama geometria co #globus:
+   kula ma średnicę 0,6451 wysokości kontenera, środek w środku kontenera; plakat to kwadrat 1482 px wokół kuli
+   o średnicy 1347 px → bok = 70,977% wysokości kontenera. Gdy prawdziwa kula narysuje pełną klatkę, przejmuje
+   ją płynnie (0,3 s, src/tytulowa.js), potem plakat znika i rusza obrót. Przy „ogranicz ruch” – bez przejścia.
+   Uwaga: po zmianie środka widoku, przybliżenia kuli albo wyglądu globusa trzeba wygenerować plakat od nowa. */
+.globus-plakat {
+  position: absolute;
+  /* top i bottom – wspólna reguła z #globus wyżej („Tytuł szklany”) */
+  left: 0;
+  right: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: url('/obrazy/globus-plakat.webp') center / auto 70.977% no-repeat;
+}
+
+.globus-plakat--ukryty {
+  visibility: hidden;
+}
+
+#globus {
+  opacity: 0;
+  transition: opacity 0.3s linear;
+}
+
+#globus.globus--gotowy {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #globus {
+    transition: none;
+  }
 }

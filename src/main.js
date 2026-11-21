@@ -148,33 +148,7 @@ let uzytkownikRuszylMape = false;
 for (const zdarzenie of ['mousedown', 'touchstart', 'wheel', 'keydown']) {
   document.getElementById('mapa').addEventListener(zdarzenie, () => (uzytkownikRuszylMape = true), { once: true, passive: true });
 }
-// Chwila ostatniego dotknięcia mapy (każdego, nie tylko pierwszego) – dla lotu po przełączeniu Dzień/Noc.
-let ostatnieDotkniecie = -Infinity;
-for (const zdarzenie of ['mousedown', 'touchstart', 'wheel', 'keydown']) {
-  document.getElementById('mapa').addEventListener(zdarzenie, () => (ostatnieDotkniecie = performance.now()), { passive: true });
-}
-
-// Lot po kliknięciu „Dzień” albo „Noc”: ten sam co przy starcie – od całej kuli do kadru Polski.
-// Każde kliknięcie ma swój numer: zatrzymuje trwający lot i zaczyna od nowa (szybkie podwójne kliknięcie
-// nie zacina się – czekające wcześniejsze loty po prostu nie ruszają). Lot rusza, gdy kafelki nowego tła są
-// wczytane (najpóźniej po 5 s), i tylko jeśli od kliknięcia nikt nie dotknął mapy. Dotknięcie w trakcie lotu
-// przerywa go (MapLibre sam przerywa flyTo przy przeciąganiu i przewijaniu). Przy prefers-reduced-motion – od razu kadr Polski.
-let numerLotu = 0;
-function lotPoPrzelaczeniu() {
-  const numer = ++numerLotu;
-  map.stop();
-  if (BEZ_RUCHU) {
-    ustawKadr();
-    return;
-  }
-  const start = performance.now();
-  map.jumpTo(kameraKuli());
-  Promise.race([new Promise((r) => map.once('idle', r)), czekaj(5000)]).then(() => {
-    if (numer !== numerLotu || ostatnieDotkniecie > start) return;
-    const k = kameraPolski();
-    if (k) map.flyTo({ ...k, duration: 3500, essential: false });
-  });
-}
+// Przełączenie Dzień/Noc nie uruchamia lotu (decyzja Ani 21.11.2026) – mapa zostaje w miejscu.
 function lotDoPolski() {
   if (uzytkownikRuszylMape) return;
   const k = kameraPolski();
@@ -206,7 +180,7 @@ const map = new maplibregl.Map({
       'tlo-noc': { type: 'raster', tiles: [GIBS_BLACK_MARBLE], tileSize: 256, maxzoom: 8 },
       polska: { type: 'geojson', data: KONTUR_URL },
     },
-    // Domyślnie tryb Noc; przełącznik Dzień/Noc tylko pokazuje jedną warstwę tła i chowa drugą (bez animacji).
+    // Domyślnie tryb Noc; przełącznik Dzień/Noc pokazuje jedną warstwę tła i – gdy ma już kafelki – chowa drugą (bez animacji).
     layers: [
       { id: 'tlo', type: 'background', paint: { 'background-color': KOLORY.kosmos } },
       { id: 'tlo-dzien', type: 'raster', source: 'tlo-dzien', layout: { visibility: 'none' }, paint: TLO_PRZETWORZENIE.dzien },
@@ -228,14 +202,40 @@ const tloGotowe = Promise.race([new Promise((r) => map.once('idle', r)), czekaj(
 map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
 
 // Przełącznik Dzień/Noc: zwykłe przyciski (Tab, Enter, Spacja), stan w aria-pressed. Wybór nie jest zapamiętywany.
+// Bez czarnych dziur: nowe tło włączamy od razu, a stare chowamy dopiero, gdy nowe ma wszystkie kafelki widoku
+// (do tej chwili spod nowego, niewczytanego tła widać stare). Kafelek z błędem też kończy czekanie (MapLibre liczy
+// go jako wczytany). Szybkie kolejne kliknięcia: każde ma swój numer, starsze czekanie nic już nie zmienia.
+// Stan przycisku (aria-pressed) i kolory elektrowni zmieniają się w tej samej chwili co tło (decyzja Ani 21.11.2026).
+let numerZmianyTla = 0;
 function ustawTryb(tryb) {
-  trybMapy = tryb;
-  map.setLayoutProperty('tlo-noc', 'visibility', tryb === 'noc' ? 'visible' : 'none');
-  map.setLayoutProperty('tlo-dzien', 'visibility', tryb === 'dzien' ? 'visible' : 'none');
-  for (const przycisk of document.querySelectorAll('.przelacznik button')) {
-    przycisk.setAttribute('aria-pressed', String(przycisk.dataset.tryb === tryb));
-  }
-  odswiezKoloryElektrowni();
+  const nowe = tryb === 'noc' ? 'tlo-noc' : 'tlo-dzien'; // ta sama nazwa warstwy i źródła
+  const stare = tryb === 'noc' ? 'tlo-dzien' : 'tlo-noc';
+  const numer = ++numerZmianyTla;
+  map.setLayoutProperty(nowe, 'visibility', 'visible');
+
+  const zmienNaraz = () => {
+    trybMapy = tryb;
+    map.setLayoutProperty(stare, 'visibility', 'none');
+    for (const przycisk of document.querySelectorAll('.przelacznik button')) {
+      przycisk.setAttribute('aria-pressed', String(przycisk.dataset.tryb === tryb));
+    }
+    odswiezKoloryElektrowni();
+  };
+
+  // Najpierw jedna klatka – dopiero wtedy MapLibre wie, których kafelków nowego tła potrzebuje.
+  const sprawdz = () => {
+    if (numer !== numerZmianyTla) {
+      map.off('sourcedata', sprawdz);
+      return;
+    }
+    if (!map.isSourceLoaded(nowe)) return;
+    map.off('sourcedata', sprawdz);
+    zmienNaraz();
+  };
+  map.once('render', () => {
+    map.on('sourcedata', sprawdz);
+    sprawdz();
+  });
 }
 
 // Elektrownie (GEM, tylko działające): kolory zależne od trybu. W trybie Dzień jaśniejsze odcienie tej samej barwy,
@@ -337,7 +337,6 @@ map.on('load', () => {
   for (const przycisk of document.querySelectorAll('.przelacznik button')) {
     przycisk.addEventListener('click', () => {
       ustawTryb(przycisk.dataset.tryb);
-      lotPoPrzelaczeniu();
     });
   }
 

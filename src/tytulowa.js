@@ -82,10 +82,14 @@ document.getElementById('przycisk-zrodla').addEventListener('click', (e) => {
 });
 if (location.hash === '#zrodla') otworzZrodla();
 
-// ── Globus: nocne zdjęcie NASA (ten sam adres co na mapie), Polska jako złoty punkt, wolny obrót ──
+// ── Globus: nocne zdjęcie NASA (Black Marble 2016), Polska jako złoty punkt, wolny obrót ──
 // Tylko do oglądania (bez przeciągania i przybliżania – nie łapie przewijania strony).
-const GIBS_BLACK_MARBLE =
-  'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_Black_Marble/default/2016-01-01/GoogleMapsCompatible_Level8/{z}/{y}/{x}.png';
+// Kafelki z NASZEJ kopii (public/kafelki/black-marble-2016, przybliżenia 0–3, bajt w bajt z NASA GIBS – skrypt
+// scripts/pobierz-kafelki-globusa.mjs, sumy SHA-256 obok kafelków, opis w ZRODLA.md). Serwer NASA zabrania
+// zapamiętywania kafelków i odpowiada wolno, więc przy każdym powrocie kula była „urwana” (diagnoza 21.11.2026).
+// Przeglądarka widza nie łączy się już tu z NASA. Mapa /mapa/ nadal pobiera kafelki z NASA.
+const KAFELKI_GLOBUSA = `${location.origin}/kafelki/black-marble-2016/{z}/{y}/{x}.png`;
+const MAKS_PRZYBLIZENIE_KOPII = 3; // większe przybliżenie = powiększony kafelek z poziomu 3 (bez sięgania do NASA)
 const POLSKA = [19.4, 52.1];
 const kontener = document.getElementById('globus');
 // Promień kuli w pikselach przy przybliżeniu z to ok. 512 · 2^z / (2π): kula ma 80% połowy wysokości okna
@@ -110,9 +114,9 @@ const globus = new maplibregl.Map({
     sources: {
       noc: {
         type: 'raster',
-        tiles: [GIBS_BLACK_MARBLE],
+        tiles: [KAFELKI_GLOBUSA],
         tileSize: 256,
-        maxzoom: 8,
+        maxzoom: MAKS_PRZYBLIZENIE_KOPII,
       },
       polska: { type: 'geojson', data: { type: 'Feature', geometry: { type: 'Point', coordinates: POLSKA }, properties: {} } },
     },
@@ -141,7 +145,18 @@ function klatka(t) {
   ostatniaKlatka = t;
   requestAnimationFrame(klatka);
 }
-if (!BEZ_RUCHU) {
-  globus.once('load', () => requestAnimationFrame(klatka));
-  new IntersectionObserver(([wpis]) => (widoczny = wpis.isIntersecting)).observe(kontener);
-}
+if (!BEZ_RUCHU) new IntersectionObserver(([wpis]) => (widoczny = wpis.isIntersecting)).observe(kontener);
+
+// Przejęcie od plakatu (tytulowa.css, .globus-plakat): od pierwszej klatki strony widać nieruchomy obraz tej samej kuli.
+// Gdy MapLibre zgłosi „load” (pierwsza pełna klatka: wszystkie kafelki widoku narysowane), prawdziwa kula pojawia się
+// nad plakatem w 0,3 s – w tej samej pozycji, więc bez przeskoku – potem plakat znika i dopiero wtedy rusza obrót.
+// Przy „ogranicz ruch” – bez przejścia i bez obrotu. Gdyby „load” nie przyszło, zostaje plakat (strona nie jest bez Ziemi).
+const PRZEJECIE_MS = BEZ_RUCHU ? 0 : 300;
+const plakat = document.querySelector('.globus-plakat');
+globus.once('load', () => {
+  kontener.classList.add('globus--gotowy');
+  setTimeout(() => {
+    plakat?.classList.add('globus-plakat--ukryty');
+    if (!BEZ_RUCHU) requestAnimationFrame(klatka);
+  }, PRZEJECIE_MS);
+});
