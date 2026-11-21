@@ -86,7 +86,7 @@ Pliki źródłowe (PDF) pobrane 21.11.2026 leżą poza repo: `~/Projekty/_dane/k
 - **Sprawdzian ręczny (Claude, 21.11.2026):** doba 20.11.2026, 12:00–12:15: WI 2591,804 + WM 582,400 = 3174,204 = `wi`; ES 3853,504 = `pv`. Produkcja 22 755,8 MW; węgiel 53,5%; OZE 33,4%; ślad CO2 554,1 g/kWh – przeliczone niezależnie w Pythonie i w teście (`scripts/karta/testy/pse-2026-11-20-1200.json` – prawdziwe odpowiedzi API).
 - **Licencja:** jak wyżej (warunki PSE).
 - **Data sprawdzenia:** 21.11.2026
-- **Poziom weryfikacji:** 1
+- **Poziom weryfikacji:** 1 – wiatr (WI+WM) i PV (ES) potwierdzone pośrednio przez Anię (21.11) w his-wlk-cal; węgiel, gaz i pozostałe paliwa – tylko sprawdzian automatyczny, strona raportu na raporty.pse.pl niedostępna (404).
 
 ### PSE: saldo wymiany z zagranicą (his-wlk-cal, pola swm_p i swm_np)
 
@@ -95,7 +95,7 @@ Pliki źródłowe (PDF) pobrane 21.11.2026 leżą poza repo: `~/Projekty/_dane/k
 - **Wymiana planowa**, nie zmierzona (słowo „planned” w komentarzu PSE). Na stronie: „wymiana planowa”.
 - **Przetworzenie:** saldo = `swm_p` + `swm_np`. Sprawdzenie bilansu (informacyjnie, nie blokuje): 20.11.2026 12:00–12:15 produkcja 22 755,8 + saldo 1 225,1 = 23 980,9 MW wobec zapotrzebowania `demand` 23 993,5 MW (różnica 12,6 MW).
 - **Data sprawdzenia:** 21.11.2026
-- **Poziom weryfikacji:** 1
+- **Poziom weryfikacji:** 3 (Ania, 21.11.2026, porównanie z raporty.pse.pl: kwadrans 17:15–17:30 – `swm_p` −791,200, `swm_np` 205,606 zgodne z `karta.json`)
 
 ### ENTSO-E: znaczenia kodów źródeł (B01–B20)
 
