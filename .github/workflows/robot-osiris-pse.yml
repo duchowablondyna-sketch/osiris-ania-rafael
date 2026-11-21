@@ -1,8 +1,13 @@
 name: Robot OSIRIS – wolne moce PSE
 
-# Etap A (21.11.2026): tylko ręczne uruchamianie. Harmonogram (środy 05:23 UTC) dojdzie w etapie B, osobnym PR.
+# Etap B (od 21.11.2026): co tydzień w środę rano + ręczne uruchamianie (tryby testowe).
 # Robot NIGDY nie scala – nie ma takiego kroku. Nowe dane trafiają na stronę tylko przez PR zatwierdzony przez Anię.
+# Powiadomienia o przebiegach z harmonogramu GitHub wysyła osobie, która ostatnia zmieniła linijkę „cron” w tym pliku.
 on:
+  schedule:
+    # Środa 05:17 UTC = 06:17 czasu polskiego zimą, 07:17 latem. Minuta nieokrągła – GitHub mocniej opóźnia
+    # przebiegi o pełnych godzinach. Raz w tygodniu – nie obciążamy serwera PSE.
+    - cron: "17 5 * * 3"
   workflow_dispatch:
     inputs:
       tryb:
@@ -46,7 +51,8 @@ jobs:
         id: robot
         working-directory: repo
         env:
-          TRYB: ${{ inputs.tryb }}
+          # Przebieg z harmonogramu nie ma wyboru trybu – wtedy zawsze „normalny”.
+          TRYB: ${{ inputs.tryb || 'normalny' }}
         run: |
           WYNIK="${RUNNER_TEMP}/wynik"
           case "$TRYB" in
@@ -108,6 +114,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     # Tylko to, co potrzebne: gałąź (contents), PR z prośbą o przegląd (pull-requests), issue (issues).
+    # contents: write daje też prawo push – bez niego GitHub po cichu pomija przypisanie (assignee) nowego issue.
     permissions:
       contents: write
       pull-requests: write
@@ -124,7 +131,7 @@ jobs:
         # „Nic do zapisania” kończy się zielono z raportem; tryb wymus-pr zawsze daje PR (plik-znacznik testu).
         env:
           GH_TOKEN: ${{ github.token }}
-          TRYB: ${{ inputs.tryb }}
+          TRYB: ${{ inputs.tryb || 'normalny' }}
           RECENZENT: ${{ github.repository_owner }}
         run: |
           gh auth setup-git

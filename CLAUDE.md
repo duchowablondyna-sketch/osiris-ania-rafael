@@ -15,7 +15,8 @@ Mapa źródeł prądu, część 1 (lądowe farmy wiatrowe ≥10 MW z GEM) – za
 Mapa źródeł prądu, część 2 (działające elektrownie z GEM, legenda z przełącznikami, zwijana stopka) – zakończona 20.11.2026.
 „Wygląd i zaufanie” (źródło w okienkach, liczniki, czcionki u nas, szkło, lot po przełączeniu) – zakończony 20.11.2026.
 Strona tytułowa na / i mapa na /mapa/ – zakończone (PR #16).
-Cel: wolne moce przyłączeniowe – część 1: PSE. Warstwa „Wolna moc dla odbiorców” (stacje planowane 220/400 kV, sześciokąt #2DD4BF, koła „lokalizacja przybliżona”, panel z listą), uwaga z wykazu rozdzielni PSE (stacje bez rozpatrywania wniosków – pusty sześciokąt), zdanie o mocy dla nowych źródeł, Robot OSIRIS etap A (ręczne uruchamianie: sprawdzenie nowej wersji PDF, sprawdzian prawdy, PR albo issue).
+Wolne moce przyłączeniowe – część 1: PSE (warstwa „Wolna moc dla odbiorców”, wykaz rozdzielni, Robot OSIRIS etap A) – zakończona 21.11.2026 (PR #17, #18).
+Cel: Robot OSIRIS etap B – co tydzień (środa 05:17 UTC) sprawdza dokument PSE o dostępności mocy przyłączeniowej; ręczne uruchamianie zostaje.
 Robimy tylko to, bez czego cel nie zostanie osiągnięty.
 Nie robimy teraz: innych animacji, nowych warstw danych i wersji na telefon (to później).
 Zanim zaproponujesz cokolwiek, sprawdź: czy bez tego cel zostanie osiągnięty? Jeśli tak — nie proponuj, dopisz najwyżej jedną linię do listy „Do zrobienia” w BEZPIECZENSTWO.md.
@@ -48,6 +49,11 @@ Strona z mapą pokazującą, jak i gdzie Polska może uzyskać więcej prądu. R
 ## Git
 - Pracujemy na gałęziach. Nigdy nie commituj bezpośrednio na main.
 - Zmiany trafiają na main tylko przez pull request.
+
+## Robot OSIRIS (PR i issue z „[Robot OSIRIS]” w tytule)
+- Robot nigdy nie scala. PR z nowymi danymi scala tylko Ania – po porównaniu kilku liczb z PDF i aktualizacji poziomu weryfikacji w ZRODLA.md.
+- PR i issue z „[TEST]” / „SYMULACJA” – tylko zamknąć, nie scalać; gałąź `robot-osiris/test-…` usunąć.
+- Issue „Problem z danymi PSE” – najpierw przeczytać dokument PSE, potem poprawić odczyt albo opisać zmianę u PSE. Szczegóły: BEZPIECZENSTWO.md, sekcja „Robot OSIRIS”.
 
 ## Dane i źródła
 - Każde źródło danych ma wpis w pliku ZRODLA.md: link, licencja, data sprawdzenia, poziom weryfikacji (0-4).

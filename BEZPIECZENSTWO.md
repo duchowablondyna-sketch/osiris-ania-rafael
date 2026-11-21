@@ -70,7 +70,12 @@
 
 **Weryfikacja 18.11.2026:** ustawienia odczytane przez `gh api` (tylko GET) – zgodne z opisem (poziom 2). Malware alerts, Dependency graph i nazwa roli w bypass (Repository admin, tylko dla PR) – API nie podaje ich wprost; potwierdzone przez Anię na ekranie ustawień GitHuba (poziom 3).
 
-## Robot OSIRIS – wolne moce PSE (od 21.11.2026, etap A: tylko ręczne uruchamianie)
+## Robot OSIRIS – wolne moce PSE (od 21.11.2026; etap B: co tydzień + ręcznie)
+
+- **Kiedy:** co środę o 05:17 UTC (06:17 zimą, 07:17 latem czasu polskiego) oraz ręcznie (Actions → „Robot OSIRIS – wolne moce PSE” → Run workflow; tryby `normalny`, `proba`, `wymus-pr`, `wymus-problem`). Przebieg z harmonogramu zawsze w trybie `normalny`. Testy etapu A zaliczone 21.11.2026: `proba` → bez zmian, `wymus-pr` → PR #19/#20 i e-mail z prośbą o przegląd, `wymus-problem` → issue #21; testowe PR i issue zamknięte, gałęzie `robot-osiris/test-*` usunięte.
+- **Kto dostaje powiadomienia:** PR robota – prośba o przegląd do właścicielki repo (`duchowablondyna-sketch`, e-mail z GitHuba). Issue robota – **zawsze do Ani, niezależnie od „Watch”** (repo ma Watch 0): robot przypisuje issue do `duchowablondyna-sketch` (assignee) i wspomina `@duchowablondyna-sketch` na górze treści – według dokumentacji GitHuba przypisanie i wzmianka zapisują do wątku automatycznie. Przypisanie przy tworzeniu wymaga prawa push (dokumentacja REST API: inaczej „Assignees are silently dropped”) – zadanie „Zgłoś” ma `contents: write`, a robot po utworzeniu sprawdza przypisanie i w razie potrzeby dopisuje je ponownie (`gh issue edit --add-assignee`); `issues: write` samo by nie wystarczyło. Przebiegi z harmonogramu, które się nie udadzą – według dokumentacji GitHuba osoba, która ostatnia zmieniła linijkę `cron` w pliku workflow (dziś: konto `duchowablondyna-sketch`). Udany przebieg bez zmian nie wysyła nic.
+- **Co robić z PR robota** („[Robot OSIRIS] Nowe dane PSE – stan na …” albo „… Nowy plik PSE, te same dane …”): przeczytać opis zmian, porównać kilka liczb z PDF (link w opisie), podnieść poziom weryfikacji w ZRODLA.md po sprawdzeniu, dopiero potem scalić. Nowe stacje bez miejsca na mapie – uzupełnić `scripts/pse-moce/lokalizacje.json`. PR z „[TEST]” i „SYMULACJA – NIE SCALAĆ” – tylko zamknąć (bez scalania) i usunąć gałąź `robot-osiris/test-…`.
+- **Co robić z issue robota** („[Robot OSIRIS] Problem z danymi PSE – …”): na stronie nic się nie zmieniło. Otworzyć PDF, porównać z opisem problemu i zdecydować: poprawić odczyt (`scripts/pse-moce/`, testy) albo PSE zmieniło układ/znaczenie danych. Issue z „[TEST]” – zamknąć.
 
 - Workflow `.github/workflows/robot-osiris-pse.yml`. Każdy PR, issue i commit robota ma w tytule „[Robot OSIRIS]”. Robot **nigdy nie scala** – nie ma takiego kroku; scala tylko Ania po przeglądzie.
 - Uprawnienia: domyślnie `permissions: {}`. Zadanie „sprawdź” (macOS, czyta niezaufany PDF) – bez żadnych uprawnień i bez tokena zapisu. Zadanie „zgłoś” (Ubuntu, tylko przy nowych danych albo problemie) – `contents: write` (gałąź `robot-osiris/…`), `pull-requests: write`, `issues: write`. Robot nie odwołuje się do żadnego sekretu (w tym `CLOUDFLARE_DEPLOY_HOOK`).
@@ -93,10 +98,11 @@
 - [ ] Sprawdzić secret scanning non-provider patterns i validity checks (czy darmowe dla repo publicznego).
 - [ ] Potwierdzić w źródle jednostkę pola `wi` (MW) i czy warunki PSE obejmują API raporty.pse.pl.
 - [ ] Porównanie długości linii OSM z danymi PSE.
-- [ ] Harmonogram w publicznym repo wyłącza się po 60 dniach bez aktywności ([dokumentacja GitHub](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/disable-and-enable-workflows)); po przerwie sprawdzić workflow „Odśwież stronę” i „Robot OSIRIS – wolne moce PSE” (gdy będzie miał harmonogram) i włączyć ponownie.
+- [ ] Harmonogram w publicznym repo wyłącza się po 60 dniach bez aktywności ([dokumentacja GitHub](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/disable-and-enable-workflows)); po przerwie sprawdzić workflow „Odśwież stronę” i „Robot OSIRIS – wolne moce PSE” (harmonogram od 21.11.2026) i włączyć ponownie.
 - [x] Dopisek z „Wykazu rozdzielni na stacjach bez możliwości przyłączenia” PSE (XLSX, stan 4.02.2026) w okienkach 16 stacji (11 z rozdzielnią 400 kV – pusty sześciokąt; 5 tylko z 110 kV – pełny sześciokąt i zawężone zdanie), podsumowanie w panelu – zrobione 21.11.2026 (do przeglądu przez Anię).
-- [ ] Robot OSIRIS: co tydzień sprawdzać też nową wersję „Wykazu rozdzielni” (link z datą w nazwie pliku – szukać na stronie PSE, porównać SHA-256, `scripts/pse-moce/rozdzielnie.mjs` + sprawdzian, PR albo issue).
-- [ ] Robot OSIRIS etap B: harmonogram w środy 05:23 UTC; issue o niedostępności pse.pl dopiero po 2 nieudanych tygodniach z rzędu.
+- [ ] Robot OSIRIS: co tydzień sprawdzać też nową wersję „Wykazu rozdzielni” (dziś robot sprawdza tylko dokument o dostępności mocy) (link z datą w nazwie pliku – szukać na stronie PSE, porównać SHA-256, `scripts/pse-moce/rozdzielnie.mjs` + sprawdzian, PR albo issue).
+- [x] Robot OSIRIS etap B: harmonogram w środy (05:17 UTC) – zrobione 21.11.2026.
+- [ ] Robot OSIRIS: issue o niedostępności pse.pl dopiero po 2 nieudanych tygodniach z rzędu (dziś pojedynczy nieudany przebieg kończy się czerwono i e-mailem z GitHuba, bez issue).
 - [ ] W niedalekiej przyszłości profesjonalne tło satelitarne (rozważyć płatne źródło), gdy będzie potrzeba.
 - [ ] Rozważyć kafelki tła dla Polski zapisane u nas (żeby przeglądarka widza nie łączyła się z NASA GIBS).
 - [ ] Harmonogram GitHub Actions bywa opóźniany lub pomijany (20.11.2026: zamiast 5 uruchomień były 2, z opóźnieniem 2–3 h) – jeśli się powtarza, rozważyć Cloudflare Cron Triggers.
