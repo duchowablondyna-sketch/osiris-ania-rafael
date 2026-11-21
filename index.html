@@ -13,6 +13,8 @@
       @keyframes osiris-pokaz { to { visibility: visible; } }
     </style>
     <title>OSIRIS – mapa prądu Polski</title>
+    <!-- Plakat kuli (tytulowa.css) – pobierany od razu, żeby był widoczny od pierwszej klatki. -->
+    <link rel="preload" as="image" href="/obrazy/globus-plakat.webp" type="image/webp" fetchpriority="high" />
     <meta name="description" content="Zobacz w jednym miejscu, skąd Polska bierze prąd i ile on kosztuje. Elektrownie, farmy wiatrowe, linie najwyższych napięć, produkcja z wiatru i cena energii – z oficjalnych, publicznych źródeł." />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="OSIRIS – serce danych o polskim prądzie" />
@@ -28,6 +30,8 @@
   <body class="tytulowa">
     <section class="bohater">
       <!-- Globus „zawieszony w kosmosie”: tło całej pierwszej odsłony; nie łapie kliknięć ani przewijania. -->
+      <!-- Plakat: nieruchomy obraz tej samej kuli, widoczny, zanim prawdziwy globus (MapLibre) narysuje pierwszą pełną klatkę. -->
+      <div class="globus-plakat" aria-hidden="true"></div>
       <div id="globus" role="img" aria-label="Obracający się globus z nocnym zdjęciem Ziemi (NASA), Polska zaznaczona złotym punktem"></div>
       <div class="bohater__przyciemnienie" aria-hidden="true"></div>
 

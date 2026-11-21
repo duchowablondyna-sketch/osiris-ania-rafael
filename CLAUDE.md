@@ -44,6 +44,7 @@ Strona z mapą pokazującą, jak i gdzie Polska może uzyskać więcej prądu. R
 - Globus od razu przybliżony do Polski.
 - Priorytet: komputer (telefon później).
 - Ruch: jeden lot wprowadzający przy otwarciu (bez lotu przy prefers-reduced-motion); odtwarzanie doby uruchamiane przyciskiem przez widza; inne animacje – decyzja później.
+- Płynne przejście między stronami (View Transitions) i plakat kuli na stronie tytułowej – decyzja Ani 21.11; bez animacji przy ogranicz ruch.
 
 ## Jak ze mną pracować
 - Odpowiadaj po polsku, prostymi słowami.

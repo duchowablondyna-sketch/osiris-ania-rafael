@@ -969,3 +969,18 @@ button.panel-moce__nazwa:hover {
 .panel-moce__pozycja--wstrzymana .panel-moce__mw {
   opacity: 0.55;
 }
+
+/* ── Płynne przejście między stroną tytułową a mapą (obie strony wczytują ten plik) ──
+   Przeglądarka trzyma obraz starej strony, aż nowa będzie gotowa do pierwszego wyświetlenia, i przenika jedną w drugą
+   (domyślnie ok. 0,25 s) – bez czarnego „uskoku” przy przejściu. Działa w przeglądarkach z przejściami między
+   dokumentami (Chrome, Edge, Safari 18.2+); w pozostałych przejście jest zwykłe. Bez pakietów, sam CSS.
+   „Ogranicz ruch”: bez animacji. */
+@view-transition {
+  navigation: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+}

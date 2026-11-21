@@ -87,11 +87,12 @@
 
 ## Połączenia przeglądarki widza z zewnętrznymi serwerami
 
-- Od etapu „Wygląd 1” (19.11.2026) przeglądarka widza pobiera kafelki tła satelitarnego z serwera NASA GIBS (`gibs.earthdata.nasa.gov`), więc NASA widzi adres IP odwiedzającego. Od etapu „Prąd nocą” (20.11.2026) dotyczy to obu teł: Blue Marble (Dzień) i VIIRS_Black_Marble (Noc). Od etapu „Strona tytułowa” (20.11.2026) także strona tytułowa (/) pobiera kafelki Black Marble do globusa – połączenie z NASA zaczyna się już tam. Dane PSE nadal są pobierane tylko przy budowaniu strony.
+- Od etapu „Wygląd 1” (19.11.2026) przeglądarka widza pobiera kafelki tła satelitarnego z serwera NASA GIBS (`gibs.earthdata.nasa.gov`), więc NASA widzi adres IP odwiedzającego. Od etapu „Prąd nocą” (20.11.2026) dotyczy to obu teł: Blue Marble (Dzień) i VIIRS_Black_Marble (Noc). Od etapu „Strona tytułowa” (20.11.2026) do 21.11.2026 także strona tytułowa (/) pobierała kafelki Black Marble do globusa z NASA. **Od 21.11.2026 globus na stronie tytułowej korzysta z naszej kopii kafelków** (`public/kafelki/black-marble-2016`, przybliżenia 0–3, sumy SHA-256 obok) – strona tytułowa nie łączy już widza z NASA; połączenie z NASA zaczyna się dopiero na /mapa/. Dane PSE nadal są pobierane tylko przy budowaniu strony.
 
 ### Do zrobienia
 - [ ] Robot Playwright jako wymagany test.
 - [ ] Testy karty uruchamiane automatycznie na GitHubie (Actions): `node --test scripts/karta/testy.mjs scripts/karta/testy-panel.mjs` (dziś tylko ręcznie; budowanie na Cloudflare ich nie uruchamia – dane zatrzymuje sam sprawdzian w skrypcie).
+- [x] Kafelki NASA u nas – globus na stronie tytułowej: 85 kafelków Black Marble 2016 (przybliżenia 0–3, 1 901 156 B), `scripts/pobierz-kafelki-globusa.mjs`, sumy SHA-256, warunki NASA w ZRODLA.md – zrobione 21.11.2026. Mapa /mapa/ nadal korzysta z NASA bezpośrednio (punkt niżej o kafelkach tła dla Polski).
 - [ ] Ślad CO2: policzyć wpływ założenia dla węgla brunatnego (957 g/kWh, ok. 17% produkcji) – zakres przy wartościach ze źródeł, do Metodologii i ZRODLA.md.
 - [ ] `dependabot.yml`.
 - [ ] Private vulnerability reporting.
@@ -107,6 +108,8 @@
 - [ ] Robot OSIRIS: issue o niedostępności pse.pl dopiero po 2 nieudanych tygodniach z rzędu (dziś pojedynczy nieudany przebieg kończy się czerwono i e-mailem z GitHuba, bez issue).
 - [ ] W niedalekiej przyszłości profesjonalne tło satelitarne (rozważyć płatne źródło), gdy będzie potrzeba.
 - [ ] Rozważyć kafelki tła dla Polski zapisane u nas (żeby przeglądarka widza nie łączyła się z NASA GIBS).
+- [ ] Mapa: kopia kafelków NASA dla /mapa/ (żeby nie było samego konturu Polski po przejściu).
+- [ ] Kafelki: długie zapamiętywanie w Cloudflare (_headers).
 - [ ] Harmonogram GitHub Actions bywa opóźniany lub pomijany (20.11.2026: zamiast 5 uruchomień były 2, z opóźnieniem 2–3 h) – jeśli się powtarza, rozważyć Cloudflare Cron Triggers.
 - [ ] Pulsowanie farm wiatrowych w rytm produkcji krajowej – dopiero po dodaniu farm lądowych; skala względem mocy zainstalowanej, nie maksimum doby.
 - [ ] Okienko farmy zasłania kropki, a kropki blisko siebie nachodzą na siebie (np. Baltic Power pod pustą kropką Orlen Neptun VIII, 2,5 km) – okienko powinno pokazywać wszystkie farmy w klikniętym miejscu, nie tylko tę z wierzchu.
