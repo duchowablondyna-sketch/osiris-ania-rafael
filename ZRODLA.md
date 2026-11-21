@@ -68,6 +68,110 @@ Poziomy weryfikacji:
 - **Data sprawdzenia:** 19.11.2026
 - **Poziom weryfikacji:** 1
 
+## Karta Polski: miks paliw, wymiana z zagranicą, ślad CO2
+
+Pliki źródłowe (PDF) pobrane 21.11.2026 leżą poza repo: `~/Projekty/_dane/karta/`. Tekst czytany wbudowanym w macOS PDFKit (bez instalowania programów).
+
+### PSE: produkcja według paliw (raport his-gen-pal-sire)
+
+- **Co:** produkcja w Polsce według rodzaju paliwa, co 15 min. Każdy rekord: `alias_sire` (kod PSE), `alias_entsoe` (kod ENTSO-E), `value`, `period`, `dtime_utc`, `publication_ts`.
+- **Używamy w:** `public/data/karta.json`, generowany przy budowaniu przez `scripts/karta/pobierz.mjs` (logika: `scripts/karta/licz.mjs`, testy: `node --test scripts/karta/testy.mjs`). Bierzemy doby „wczoraj” i „dziś” (czas polski), `$first=2000` – cała doba (1 440 rekordów = 96 kwadransów × 15 kodów) w jednym zapytaniu.
+- **Link:** https://api.raporty.pse.pl/api/his-gen-pal-sire (API). Strona raportu https://raporty.pse.pl/report/his-gen-pal-sire zwraca 404 (21.11.2026); raportu nie ma też w EndpointsMap.pdf – jego opisu u PSE nie znaleźliśmy.
+- **Wartości z przecinkiem:** `value` to tekst, np. `"7556,431"` – zamieniamy na liczbę (7556.431). Inny zapis (spacje, kropki tysięcy, pusty) = błąd danych → sprawdzian nie przechodzi.
+- **Jednostka:** MW – **wniosek, nie opis PSE**: WI+WM i ES zgadzają się co do 0,001 z polami `wi` i `pv` raportu `his-wlk-cal`, które na raporty.pse.pl mają podpis „[MW]”.
+- **Aktualność (obserwacja):** 21.11.2026 o 18:02 najnowszy kwadrans to 17:15–17:30 (publikacja 17:52) – opóźnienie ok. 30–45 min. Doba poprzednia uzupełniona w nocy (doba 20.11: publikacja 21.11, 02:52). Przy budowaniu co 4 h dane mają zwykle 1–5 h.
+- **Sprawdzian przy każdym pobraniu:** w każdym kwadransie obecnym w obu raportach WI+WM = `wi` i ES = `pv` z `his-wlk-cal`, tolerancja 1 MW. Kwadranse tylko w jednym raporcie pomijamy (miks bywa o kwadrans nowszy). Dodatkowo: nieznany kod PSE, kod ENTSO-E inny niż w tabeli niżej albo podwójny kod = błąd danych. Gdy sprawdzian nie przejdzie: zostaje poprzedni `karta.json` pobrany z https://osiris-ania-rafael.pages.dev/data/karta.json (tylko ten adres, bez przekierowań) z plakietką „nowe dane nie przeszły sprawdzianu”; gdy PSE nie odpowie – ta sama droga z plakietką „nie udało się pobrać nowych danych PSE”; gdy i to zawiedzie – brak danych.
+- **Wybór kwadransu:** najnowszy, który ma wszystkie 15 kodów w miksie oraz `wi`, `pv`, `swm_p`, `swm_np` w `his-wlk-cal`.
+- **Przetworzenie:** udziały liczone **z produkcji w Polsce** (suma 14 kodów bez WS); szczytowo-pompowe (WS, magazyn) pomijane w udziałach i w śladzie CO2, zapisywane osobno (do Metodologii). Pasek: kamienny (WK) / brunatny (WB) / gaz i inne (GZ, GK, OO, OD, IN) / OZE. **OZE (decyzja Ani 21.11.2026):** WI, WM, ES, WP, WZ, BM, BG; odpady (OD) nie są OZE.
+- **Sprawdzian ręczny (Claude, 21.11.2026):** doba 20.11.2026, 12:00–12:15: WI 2591,804 + WM 582,400 = 3174,204 = `wi`; ES 3853,504 = `pv`. Produkcja 22 755,8 MW; węgiel 53,5%; OZE 33,4%; ślad CO2 554,1 g/kWh – przeliczone niezależnie w Pythonie i w teście (`scripts/karta/testy/pse-2026-11-20-1200.json` – prawdziwe odpowiedzi API).
+- **Licencja:** jak wyżej (warunki PSE).
+- **Data sprawdzenia:** 21.11.2026
+- **Poziom weryfikacji:** 1 – wiatr (WI+WM) i PV (ES) potwierdzone pośrednio przez Anię (21.11) w his-wlk-cal; węgiel, gaz i pozostałe paliwa – tylko sprawdzian automatyczny, strona raportu na raporty.pse.pl niedostępna (404).
+
+### PSE: saldo wymiany z zagranicą (his-wlk-cal, pola swm_p i swm_np)
+
+- **Co:** `swm_p` – „Krajowe saldo wymiany międzysystemowej (równoległa)”, `swm_np` – „… (nierównoległa)” (EndpointsMap.pdf, przeczytany cały fragment o `his-wlk-cal`).
+- **Znak – z opisu PSE, nie z wniosku:** komentarz pod tabelą raportu na https://raporty.pse.pl/report/his-wlk-cal (odczyt 21.11.2026): „For planned cross-border exchange following sign convention was used: '+' represents energy import to Poland, '-' represents energy export from Poland.” Czyli **+ = Polska kupuje, − = Polska sprzedaje**.
+- **Wymiana planowa**, nie zmierzona (słowo „planned” w komentarzu PSE). Na stronie: „wymiana planowa”.
+- **Przetworzenie:** saldo = `swm_p` + `swm_np`. Sprawdzenie bilansu (informacyjnie, nie blokuje): 20.11.2026 12:00–12:15 produkcja 22 755,8 + saldo 1 225,1 = 23 980,9 MW wobec zapotrzebowania `demand` 23 993,5 MW (różnica 12,6 MW).
+- **Data sprawdzenia:** 21.11.2026
+- **Poziom weryfikacji:** 3 (Ania, 21.11.2026, porównanie z raporty.pse.pl: kwadrans 17:15–17:30 – `swm_p` −791,200, `swm_np` 205,606 zgodne z `karta.json`)
+
+### ENTSO-E: znaczenia kodów źródeł (B01–B20)
+
+- **Źródło:** ENTSO-E, „ENTSO-E Code Lists”, wersja 36, wydanie 0 (2015-06-09), lista typów zasobów (B01–B20): https://www.entsoe.eu/Documents/EDI/Library/Core/entso-e-code-list-v36r0.pdf – SHA-256 `46c24a92f04c578594b0c175f295e48c9f1e52de4f151a1403884121dfb624eb`. Nowszych wersji listy nie sprawdzaliśmy.
+- **Powiązanie kodów PSE z ENTSO-E:** podaje samo PSE w każdym rekordzie (`alias_sire` ↔ `alias_entsoe`); skrypt sprawdza je przy każdym pobraniu.
+
+| PSE | ENTSO-E | ENTSO-E (oryginał) | Na stronie | Grupa | OZE |
+|---|---|---|---|---|---|
+| WK | B05 | Fossil Hard coal | węgiel kamienny | kamienny | nie |
+| WB | B02 | Fossil Brown coal/Lignite | węgiel brunatny | brunatny | nie |
+| GZ | B04 | Fossil Gas | gaz ziemny | gaz i inne | nie |
+| GK | B03 | Fossil Coal-derived gas | gaz z węgla | gaz i inne | nie |
+| OO | B06 | Fossil Oil | olej | gaz i inne | nie |
+| OD | B17 | Waste | odpady | gaz i inne | nie |
+| IN | B20 | Other | inne | gaz i inne | nie |
+| WI | B19 | Wind Onshore | wiatr na lądzie | OZE | tak |
+| WM | B18 | Wind Offshore | wiatr na morzu | OZE | tak |
+| ES | B16 | Solar | słońce | OZE | tak |
+| WP | B11 | Hydro Run-of-river and poundage | woda przepływowa | OZE | tak |
+| WZ | B12 | Hydro Water Reservoir | woda zbiornikowa | OZE | tak |
+| BM | B01 | Biomass | biomasa | OZE | tak |
+| BG | B15 | Other renewable | inne OZE | OZE | tak |
+| WS | B10 | Hydro Pumped Storage | szczytowo-pompowe (magazyn) | pomijane | – |
+
+- **Nieznane:** co dokładnie PSE wlicza do BG („inne OZE”) i IN („inne”) – brak opisu u PSE.
+- **Data sprawdzenia:** 21.11.2026
+- **Poziom weryfikacji:** 1
+
+### IPCC AR5: ślad CO2 źródeł prądu (cykl życia)
+
+- **Źródło:** Schlömer S. i in., 2014: Annex III: Technology-specific cost and performance parameters. W: Climate Change 2014: Mitigation of Climate Change. Contribution of Working Group III to the Fifth Assessment Report of the IPCC. Cambridge University Press. **Tabela A.III.2** „Emissions of selected electricity supply technologies (gCO2eq/kWh)”, kolumna „Lifecycle emissions (incl. albedo effect)”, mediana.
+- **Link:** https://www.ipcc.ch/site/assets/uploads/2018/02/ipcc_wg3_ar5_annex-iii.pdf – SHA-256 `dec39383e03caf843f833ad8f4b373f72be3b86ada6d826bd172e8955ffe24c2`
+- **Wartości (mediana, g CO2eq/kWh):** węgiel PC 820, gaz – cykl kombinowany 490, biomasa dedykowana 230, woda 24, PV na farmach (utility) 48 (decyzja Ani: 48, nie 41 dla dachów), wiatr na lądzie 11, wiatr na morzu 12.
+- **Ograniczenia:** wartości dla typowych technologii z literatury, nie dla polskich elektrowni; gaz 490 to blok gazowo-parowy (w Polsce pracują też inne bloki gazowe); węgla brunatnego, oleju, gazu z węgla, odpadów i „innych” tabela nie podaje (założenia niżej).
+- **Licencja:** warunków ponownego użycia IPCC nie czytaliśmy; używamy tylko liczb z podaniem źródła.
+- **Data sprawdzenia:** 21.11.2026 (tabela przeczytana w całości)
+- **Poziom weryfikacji:** 1
+
+### KOBiZE: wskaźniki emisyjności dla energii elektrycznej za 2024 (553 kg/MWh)
+
+- **Dokument:** KOBiZE, „Wskaźniki emisyjności CO2, SO2, NOx, CO i pyłu całkowitego dla energii elektrycznej na podstawie informacji zawartych w Krajowej bazie o emisjach gazów cieplarnianych i innych substancji za 2024 rok”, Warszawa, grudzień 2025 (8 stron, przeczytany w całości).
+- **Oryginalny adres:** https://www.kobize.pl/uploads/materialy/materialy_do_pobrania/aktualnosci/2025/142_Wskazniki_emisyjnosci_2025.pdf – 21.11.2026 zwraca stronę HTML zamiast pliku (serwis kobize.pl w przebudowie).
+- **Kopia w Internet Archive (12.06.2026, 04:20:33 UTC):** https://web.archive.org/web/20260612042033/https://www.kobize.pl/uploads/materialy/materialy_do_pobrania/aktualnosci/2025/142_Wskazniki_emisyjnosci_2025.pdf
+- **SHA-256 pliku:** `d14908ca6c5b73cefa4e5bb14f15288e696b6659d297c84d71539e40b73c1d41` (dwa pobrania 21.11.2026 – zgodne)
+- **Wartości:** Tabela 1 – 717 kg CO2/MWh dla energii wyprodukowanej w instalacjach spalania paliw; Tabela 2 – **553 kg CO2/MWh dla odbiorców końcowych**.
+- **Co to znaczy (z rozdziałów 1, 4, 5 dokumentu):** tylko emisja **ze spalania** (raporty instalacji do Krajowej bazy, wszystkie paliwa, w tym biomasa), rozłożona na całą energię w kraju (spalanie 123,7 TWh + woda 3,1 TWh + wiatr i inne OZE 42,2 TWh − straty i różnice bilansowe 8,6 TWh = 160,4 TWh). **To nie jest cykl życia** jak w IPCC – liczb OSIRIS i KOBiZE nie porównujemy wprost (zapis do Metodologii).
+- **Data sprawdzenia:** 21.11.2026
+- **Poziom weryfikacji:** 1
+
+### KOBiZE: wartości opałowe i wskaźniki emisji CO2 paliw (Tabele 14, 16, 17)
+
+- **Dokument:** KOBiZE, „Wartości opałowe (WO) i wskaźniki emisji CO2 (WE) w roku 2022 do raportowania w ramach Systemu Handlu Uprawnieniami do Emisji za rok 2025”, Warszawa, grudzień 2024 (7 stron, przeczytany w całości).
+- **Oryginalny adres:** https://www.kobize.pl/uploads/materialy/materialy_do_pobrania/monitorowanie_raportowanie_weryfikacja_emisji_w_eu_ets/WO_i_WE_do_monitorowania-ETS-2025.pdf – 21.11.2026 zwraca stronę HTML zamiast pliku.
+- **Kopia w Internet Archive (16.04.2026, 15:15:11 UTC):** https://web.archive.org/web/20260416151511/https://kobize.pl/uploads/materialy/materialy_do_pobrania/monitorowanie_raportowanie_weryfikacja_emisji_w_eu_ets/WO_i_WE_do_monitorowania-ETS-2025.pdf
+- **SHA-256 pliku:** `e25798a0d3999f3fa1bf00c9f61dc82d71913f4bd9ad049d661f3bf4ba056fd3` (dwa pobrania 21.11.2026 – zgodne)
+- **Wartości (kg CO2/GJ):** Tabela 17 (średnie krajowe WO): węgiel kamienny **94,84**, węgiel brunatny **110,71**. Tabela 14: olej opałowy **76,86**. Tabela 16 (wartości z wytycznych IPCC 2006): odpady komunalne niebiogeniczne **91,70**, odpady przemysłowe 143,00, gaz koksowniczy 44,40, gaz wielkopiecowy 260,00, biogaz 54,60 (w systemie handlu emisjami biomasy i biogazu się nie wlicza).
+- **Data sprawdzenia:** 21.11.2026
+- **Poziom weryfikacji:** 1
+
+### Założenia OSIRIS: ślad CO2 paliw bez wartości w IPCC (zatwierdziła Ania 21.11.2026)
+
+Metoda dla paliw kopalnych: 820 g/kWh (IPCC, węgiel) × (wskaźnik KOBiZE paliwa ÷ 94,84, wskaźnik KOBiZE węgla kamiennego). Zakłada tę samą sprawność elektrowni co dla węgla – to uproszczenie.
+
+| Kod | Paliwo | g CO2/kWh | Jak wyliczone |
+|---|---|---|---|
+| WB / B02 | węgiel brunatny | **957** | 820 × 110,71 / 94,84 = 957,2 (KOBiZE tab. 17) |
+| OO / B06 | olej | **665** | 820 × 76,86 / 94,84 = 664,5 (KOBiZE tab. 14) |
+| GK / B03 | gaz z węgla | **820** | jak węgiel kamienny, z którego pochodzi; KOBiZE ma dwa skrajne wskaźniki (koksowniczy 44,40 → 384; wielkopiecowy 260,00 → 2 248), a proporcji nie znamy |
+| OD / B17 | odpady | **793** | 820 × 91,70 / 94,84 = 792,9 (KOBiZE tab. 16, odpady komunalne niebiogeniczne); liczone w całości jak paliwo kopalne |
+| IN / B20 | inne | **717** | KOBiZE 2024, tab. 1 – średnia dla prądu ze spalania paliw (to emisja bez cyklu życia) |
+| BG / B15 | inne OZE | **230** | jak biomasa dedykowana w IPCC (brak wartości dla „innych OZE”) |
+
+- **Waga założeń (20.11.2026, 12:00–12:15):** te paliwa (bez węgla brunatnego) to 4,2% produkcji; skrajne warianty dają 543–570 g/kWh wobec 554 z założeniami (Claude, obliczenie w czacie 21.11.2026).
+- **Na stronie:** ślad CO2 zaokrąglony do dziesiątek, z „ok.” (np. „ok. 550 g/kWh”), podpis „szacunek OSIRIS wg IPCC”; dokładna wartość tylko w Metodologii. Średnia ważona produkcją (bez WS), bez prądu kupionego za granicą.
+- **Poziom weryfikacji:** 1 (założenie – do potwierdzenia przez Anię)
+
 ## NASA GIBS: tło satelitarne Blue Marble
 
 - **Co:** warstwa `BlueMarble_NextGeneration` – „Blue Marble (August 2004)”, „MODIS / NASA Earth Observatory” (metadane: https://gibs.earthdata.nasa.gov/layer-metadata/v1.0/BlueMarble_NextGeneration.json). Warstwa bez wymiaru czasu.
