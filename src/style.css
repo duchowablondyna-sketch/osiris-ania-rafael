@@ -14,6 +14,9 @@
   --kolor-moce: #2dd4bf; /* wolna moc dla odbiorców (PSE) – src/moce.js */
   /* Kolory elektrowni (tryb Noc) – od pierwszej klatki; main.js podmienia je przy przełączaniu Dzień/Noc. */
   --kolor-wegiel: #ef4444;
+  --kolor-brunatny: #c2410c; /* tylko pasek miksu w Karcie Polski */
+  --kolor-oze: #4ade80; /* OZE w Karcie Polski – ta sama zieleń co lądowe farmy wiatrowe */
+  --kolor-wegiel-tekst: #f87171; /* duży procent węgla: jaśniejsza czerwień – kontrast ≥ 3:1 także nad jasnym tłem */
   --kolor-gaz: #8b5cf6;
   --kolor-woda: #3b82f6;
   --ostrzezenie: #ff8a5b;
@@ -72,7 +75,7 @@ main {
 .wskaznik,
 .legenda,
 .przelacznik,
-.panel-moce,
+.karta,
 .maplibregl-popup-content {
   background: var(--szklo-tlo);
   border: 1px solid var(--szklo-ramka);
@@ -86,7 +89,7 @@ main {
   .wskaznik,
   .legenda,
   .przelacznik,
-  .panel-moce,
+  .karta,
   .maplibregl-popup-content {
     background: rgba(11, 18, 32, 0.94);
   }
@@ -96,7 +99,7 @@ main {
   .wskaznik,
   .legenda,
   .przelacznik,
-  .panel-moce,
+  .karta,
   .maplibregl-popup-content {
     background: rgb(11, 18, 32);
     -webkit-backdrop-filter: none;
@@ -530,31 +533,316 @@ main {
   outline-offset: 2px;
 }
 
-/* ── Wolna moc dla odbiorców (PSE): panel z listą stacji – lewy dolny róg, nad linkiem „← OSIRIS”, zwijany ── */
-.panel-moce {
+/* ── Karta Polski (panel B): lewy dolny róg, nad linkiem „← OSIRIS”, zwijany ── */
+.karta {
   position: absolute;
   left: 16px;
   bottom: 56px;
-  width: 360px;
+  width: 420px;
   max-width: calc(100% - 32px);
-  /* Rozwinięty panel nie może zasłonić okienka PSE nad nim (przycisk „Odtwórz dobę”). */
+  /* Wysokość ustawia src/karta.js: rozwinięty panel kończy się pod okienkiem PSE (nie zasłania „Odtwórz dobę”). */
   max-height: 40vh;
   overflow: auto;
-  padding: 8px 12px;
   font-size: 0.8125rem;
   line-height: 1.4;
   border-radius: 10px;
 }
 
-.panel-moce summary {
+.karta__naglowek {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  padding: 8px 12px;
+  cursor: pointer;
+  list-style: none;
+  background: inherit;
+}
+
+.karta__naglowek::-webkit-details-marker {
+  display: none;
+}
+
+/* Strzałka jak w stopce: ▸ zwinięty, ▾ rozwinięty – po prawej. */
+.karta__naglowek::after {
+  margin-left: auto;
+  content: '▸';
+  color: var(--tekst-pomocniczy);
+}
+
+.karta[open] > .karta__naglowek::after {
+  content: '▾';
+}
+
+.karta__tytul {
   font-size: 0.6875rem;
+  font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--kolor-moce);
+  color: var(--zloto);
+}
+
+/* Skrót liczb – tylko gdy panel jest zwinięty (rozwinięty pokazuje je w treści). */
+.karta__skrot {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--tekst);
+}
+
+.karta[open] .karta__skrot {
+  display: none;
+}
+
+.karta summary:focus-visible,
+.karta button:focus-visible,
+.karta__tresc:focus-visible,
+.karta input:focus-visible {
+  outline: 2px solid var(--fokus);
+  outline-offset: 2px;
+}
+
+.karta__zakladki {
+  display: flex;
+  gap: 2px;
+  margin: 0 12px;
+  border-bottom: 1px solid var(--szklo-ramka);
+}
+
+.karta__zakladki button {
+  padding: 6px 8px;
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--tekst-pomocniczy);
+  cursor: pointer;
+  background: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+}
+
+.karta__zakladki button:hover {
+  color: var(--tekst);
+}
+
+.karta__zakladki button[aria-selected='true'] {
+  color: var(--tekst);
+  border-bottom-color: var(--zloto);
+}
+
+.karta__tresc {
+  padding: 8px 12px 10px;
+}
+
+/* Atrybut hidden ma wygrać z display: flex/grid (zakładki, pasek przy braku danych). */
+.karta [hidden] {
+  display: none;
+}
+
+.karta__tresc p {
+  margin: 8px 0 0;
+}
+
+.karta__plakietka {
+  padding: 6px 8px;
+  color: var(--ostrzezenie);
+  border: 1px solid var(--ostrzezenie);
+  border-radius: 6px;
+}
+
+.karta .karta__bohater {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  margin-top: 6px;
+  font-size: 0.9375rem;
+  line-height: 1.25;
+}
+
+.karta__procent {
+  font-size: 2.5rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.karta__procent--wegiel {
+  color: var(--kolor-wegiel-tekst);
+}
+
+.karta__procent--oze {
+  color: var(--kolor-oze);
+}
+
+.karta .karta__podpis {
+  margin-top: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--tekst-pomocniczy);
+}
+
+/* Pasek miksu: odcinki oddzielone przerwą w kolorze tła – granica widoczna bez polegania na samym kolorze. */
+.karta__pasek {
+  display: flex;
+  gap: 2px;
+  height: 14px;
+  margin-top: 12px;
+  overflow: hidden;
+  border-radius: 3px;
+}
+
+.karta__odcinek--kamienny {
+  background: var(--kolor-wegiel);
+}
+
+.karta__odcinek--brunatny {
+  background: var(--kolor-brunatny);
+}
+
+.karta__odcinek--gaz_i_inne {
+  background: var(--kolor-gaz);
+}
+
+.karta__odcinek--oze {
+  background: var(--kolor-oze);
+}
+
+.karta__legenda-paska {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px 12px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.75rem;
+}
+
+.karta__kolor {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 6px;
+  vertical-align: -1px;
+  border-radius: 2px;
+}
+
+.karta__liczby {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 12px 0 0;
+}
+
+.karta__liczby dd {
+  margin: 0;
+}
+
+.karta__wartosc {
+  margin-top: 2px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--tekst);
+}
+
+.karta__opis {
+  font-size: 0.6875rem;
+  color: var(--tekst-pomocniczy);
+}
+
+.karta__stopka {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-size: 0.75rem;
+}
+
+.karta__metodologia summary {
+  color: var(--tekst);
+  cursor: pointer;
+  text-decoration: underline dotted var(--zloto);
+  text-underline-offset: 3px;
+}
+
+/* Rozwinięta Metodologia zajmuje całą szerokość; kłódka przechodzi pod nią. */
+.karta__metodologia[open] {
+  flex-basis: 100%;
+}
+
+.karta__metodologia ul {
+  margin: 6px 0 0;
+  padding-left: 16px;
+  color: var(--tekst-pomocniczy);
+}
+
+.karta__metodologia li + li {
+  margin-top: 4px;
+}
+
+.karta__metodologia strong {
+  color: var(--tekst);
+}
+
+.karta__klodka {
+  color: var(--tekst-pomocniczy);
+}
+
+.karta__klodka svg {
+  vertical-align: -1px;
+}
+
+.karta__wstep {
+  color: var(--tekst);
+}
+
+.karta__warstwy {
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.karta__warstwy li + li {
+  margin-top: 4px;
+}
+
+.karta__warstwy label {
+  display: grid;
+  grid-template-columns: auto 24px 1fr;
+  gap: 6px;
+  align-items: start;
   cursor: pointer;
 }
 
-.panel-moce summary:focus-visible,
+.karta__warstwy .znak {
+  margin-top: 1px;
+}
+
+.karta__warstwy .legenda__licznik {
+  display: block;
+}
+
+.karta__uwaga {
+  color: var(--tekst-pomocniczy);
+}
+
+/* ── Wolna moc dla odbiorców (PSE): lista stacji – w Karcie Polski, zakładka „Gdzie” ── */
+.panel-moce__tytul {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--kolor-moce);
+}
+
+.panel-moce .panel-moce__tytul {
+  margin: 0;
+}
+
 .panel-moce button:focus-visible {
   outline: 2px solid var(--fokus);
   outline-offset: 2px;
