@@ -108,8 +108,9 @@
 - [ ] Robot OSIRIS: issue o niedostępności pse.pl dopiero po 2 nieudanych tygodniach z rzędu (dziś pojedynczy nieudany przebieg kończy się czerwono i e-mailem z GitHuba, bez issue).
 - [ ] W niedalekiej przyszłości profesjonalne tło satelitarne (rozważyć płatne źródło), gdy będzie potrzeba.
 - [ ] Rozważyć kafelki tła dla Polski zapisane u nas (żeby przeglądarka widza nie łączyła się z NASA GIBS).
-- [ ] Mapa: kopia kafelków NASA dla /mapa/ (żeby nie było samego konturu Polski po przejściu).
-- [ ] Kafelki: długie zapamiętywanie w Cloudflare (_headers).
+- [x] Mapa: kopia kafelków NASA dla /mapa/ (żeby nie było samego konturu Polski po przejściu) – zrobione 22.11.2026: nocą spód z naszej kopii (poziomy 0–3), NASA GIBS na wierzchu od przybliżenia 4.
+- [x] Kafelki: długie zapamiętywanie w Cloudflare (_headers) – zrobione 22.11.2026, tylko `/kafelki/*`.
+- [ ] Na później: kafelki Polski z poziomów 4+ u nas, kopia warstwy Dzień (Blue Marble), dopasowanie położenia i skali kuli między stroną tytułową a /mapa/ (wtedy też rozważyć długie zapamiętywanie `/obrazy/*`).
 - [ ] Harmonogram GitHub Actions bywa opóźniany lub pomijany (20.11.2026: zamiast 5 uruchomień były 2, z opóźnieniem 2–3 h) – jeśli się powtarza, rozważyć Cloudflare Cron Triggers.
 - [ ] Pulsowanie farm wiatrowych w rytm produkcji krajowej – dopiero po dodaniu farm lądowych; skala względem mocy zainstalowanej, nie maksimum doby.
 - [ ] Okienko farmy zasłania kropki, a kropki blisko siebie nachodzą na siebie (np. Baltic Power pod pustą kropką Orlen Neptun VIII, 2,5 km) – okienko powinno pokazywać wszystkie farmy w klikniętym miejscu, nie tylko tę z wierzchu.

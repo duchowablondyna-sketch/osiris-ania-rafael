@@ -12,6 +12,12 @@
       body > * { visibility: hidden; animation: osiris-pokaz 0s linear 3s forwards; }
       @keyframes osiris-pokaz { to { visibility: visible; } }
     </style>
+    <!-- Płynne przejście między stronami: ta sama reguła co w src/style.css, ale tutaj w <head>, żeby przeglądarka
+         znała ją od pierwszej chwili (sama reguła w zewnętrznym CSS przegrywała w Chrome wyścig z ciężkim modułem). -->
+    <style>
+      @view-transition { navigation: auto; }
+      @media (prefers-reduced-motion: reduce) { @view-transition { navigation: none; } }
+    </style>
     <title>OSIRIS – mapa</title>
     <meta name="description" content="Mapa źródeł prądu w Polsce: elektrownie, farmy wiatrowe na lądzie i na Bałtyku, linie najwyższych napięć, wolna moc przyłączeniowa dla odbiorców w sieci PSE, produkcja z wiatru i cena energii – z oficjalnych, publicznych źródeł." />
     <meta property="og:type" content="website" />
@@ -34,11 +40,11 @@
           <span class="odtw-zegar" id="odtw-zegar"></span>
         </div>
         <span class="wskaznik__etykieta etykieta-mala" id="wiatr-etykieta">Produkcja z wiatru (ostatni dostępny pomiar):</span>
-        <span class="wskaznik__wartosc" id="wiatr-teraz">brak danych</span>
+        <span class="wskaznik__wartosc" id="wiatr-teraz">wczytywanie…</span>
         <div id="wiatr-wykres"></div>
         <span class="wskaznik__etykieta" id="wiatr-stan"></span>
-        <span class="wskaznik__etykieta" id="wiatr-ograniczenie">Ostatnie polecenie PSE ograniczenia wiatru: brak danych</span>
-        <span class="wskaznik__etykieta" id="rce-teraz">Cena prądu (RCE): brak danych na dziś</span>
+        <span class="wskaznik__etykieta" id="wiatr-ograniczenie">Ostatnie polecenie PSE ograniczenia wiatru: wczytywanie…</span>
+        <span class="wskaznik__etykieta" id="rce-teraz">Cena prądu (RCE): wczytywanie…</span>
         <div id="rce-wykres"></div>
         <div class="odtw-przyciski">
           <button type="button" id="odtw-start" hidden>▶ Odtwórz dobę</button>

@@ -20,8 +20,16 @@ const GIBS_BLUE_MARBLE =
   'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/BlueMarble_NextGeneration/default/GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpeg';
 // Tło nocne: NASA GIBS, warstwa Black Marble (Suomi NPP / VIIRS), zdjęcie z 2016 r. wpisane na stałe
 // (żeby obraz nie zmienił się bez naszej wiedzy). PNG, poziomy 0–8, bez klucza API.
+// Na /mapa/ z NASA pobieramy ją dopiero od przybliżenia 4 (warstwa „tlo-noc”, minzoom 4) – na wierzch, żeby przy
+// zbliżaniu do Polski obraz się wyostrzał.
 const GIBS_BLACK_MARBLE =
   'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_Black_Marble/default/2016-01-01/GoogleMapsCompatible_Level8/{z}/{y}/{x}.png';
+// Spód tła nocnego: NASZA kopia tej samej warstwy (public/kafelki/black-marble-2016, poziomy 0–3, bajt w bajt
+// z NASA GIBS – ta sama co globus na stronie tytułowej, opis w ZRODLA.md). Zawsze pod spodem w trybie Noc:
+// pierwszy widok kuli idzie tylko z niej, a przy większym przybliżeniu MapLibre powiększa kafelki z poziomu 3,
+// więc pod kafelkami NASA zawsze jest ziemia (nigdy czarne dziury). NASA wysyła no-store – nasza kopia jest
+// zapamiętywana przez przeglądarkę (public/_headers).
+const KAFELKI_NOC_U_NAS = `${location.origin}/kafelki/black-marble-2016/{z}/{y}/{x}.png`;
 
 // Tło satelitarne przetworzone, żeby dane mocniej się wyróżniały – opis w ZRODLA.md. Zmienia tylko obraz NASA,
 // nie kolory danych. Noc: tylko odbarwienie, bez przyciemniania – pomiar 20.11.2026: przyciemnione środki miast
@@ -177,14 +185,17 @@ const map = new maplibregl.Map({
     sky: { 'atmosphere-blend': 1 },
     sources: {
       'tlo-dzien': { type: 'raster', tiles: [GIBS_BLUE_MARBLE], tileSize: 256, maxzoom: 8 },
-      'tlo-noc': { type: 'raster', tiles: [GIBS_BLACK_MARBLE], tileSize: 256, maxzoom: 8 },
+      'tlo-noc': { type: 'raster', tiles: [GIBS_BLACK_MARBLE], tileSize: 256, minzoom: 4, maxzoom: 8 },
+      'tlo-noc-baza': { type: 'raster', tiles: [KAFELKI_NOC_U_NAS], tileSize: 256, maxzoom: 3 },
       polska: { type: 'geojson', data: KONTUR_URL },
     },
     // Domyślnie tryb Noc; przełącznik Dzień/Noc pokazuje jedną warstwę tła i – gdy ma już kafelki – chowa drugą (bez animacji).
+    // Noc to dwie warstwy: na spodzie nasza kopia (tlo-noc-baza), na wierzchu NASA od przybliżenia 4 (tlo-noc).
     layers: [
       { id: 'tlo', type: 'background', paint: { 'background-color': KOLORY.kosmos } },
+      { id: 'tlo-noc-baza', type: 'raster', source: 'tlo-noc-baza', layout: { visibility: 'visible' }, paint: TLO_PRZETWORZENIE.noc },
       { id: 'tlo-dzien', type: 'raster', source: 'tlo-dzien', layout: { visibility: 'none' }, paint: TLO_PRZETWORZENIE.dzien },
-      { id: 'tlo-noc', type: 'raster', source: 'tlo-noc', layout: { visibility: 'visible' }, paint: TLO_PRZETWORZENIE.noc },
+      { id: 'tlo-noc', type: 'raster', source: 'tlo-noc', minzoom: 4, layout: { visibility: 'visible' }, paint: TLO_PRZETWORZENIE.noc },
       { id: 'polska-kontur', type: 'line', source: 'polska', paint: { 'line-color': KOLORY.kontur, 'line-opacity': 0.6, 'line-width': 1.2 } },
     ],
   },
@@ -210,12 +221,16 @@ let numerZmianyTla = 0;
 function ustawTryb(tryb) {
   const nowe = tryb === 'noc' ? 'tlo-noc' : 'tlo-dzien'; // ta sama nazwa warstwy i źródła
   const stare = tryb === 'noc' ? 'tlo-dzien' : 'tlo-noc';
+  // Nocą czekamy na naszą warstwę spodnią (to ona jest ziemią); kafelki NASA dochodzą na wierzch później.
+  const czekamyNa = tryb === 'noc' ? 'tlo-noc-baza' : 'tlo-dzien';
   const numer = ++numerZmianyTla;
   map.setLayoutProperty(nowe, 'visibility', 'visible');
+  if (tryb === 'noc') map.setLayoutProperty('tlo-noc-baza', 'visibility', 'visible');
 
   const zmienNaraz = () => {
     trybMapy = tryb;
     map.setLayoutProperty(stare, 'visibility', 'none');
+    if (tryb === 'dzien') map.setLayoutProperty('tlo-noc-baza', 'visibility', 'none');
     for (const przycisk of document.querySelectorAll('.przelacznik button')) {
       przycisk.setAttribute('aria-pressed', String(przycisk.dataset.tryb === tryb));
     }
@@ -228,7 +243,7 @@ function ustawTryb(tryb) {
       map.off('sourcedata', sprawdz);
       return;
     }
-    if (!map.isSourceLoaded(nowe)) return;
+    if (!map.isSourceLoaded(czekamyNa)) return;
     map.off('sourcedata', sprawdz);
     zmienNaraz();
   };
@@ -805,6 +820,8 @@ function pokazWiatr(d) {
   ograniczenie.hidden = false;
   if (ogr && typeof ogr.mwh === 'number' && ogr.doba) {
     ograniczenie.textContent = `Ostatnie polecenie PSE ograniczenia wiatru: ${formatDoby(ogr.doba)} – ok. ${ogr.mwh.toLocaleString('pl-PL')} MWh`;
+  } else {
+    ograniczenie.textContent = 'Ostatnie polecenie PSE ograniczenia wiatru: brak danych PSE';
   }
   const wartosc = document.getElementById('wiatr-teraz');
   wartosc.classList.toggle('brak-danych', typeof d?.wartosc !== 'number');

@@ -87,7 +87,8 @@ if (location.hash === '#zrodla') otworzZrodla();
 // Kafelki z NASZEJ kopii (public/kafelki/black-marble-2016, przybliżenia 0–3, bajt w bajt z NASA GIBS – skrypt
 // scripts/pobierz-kafelki-globusa.mjs, sumy SHA-256 obok kafelków, opis w ZRODLA.md). Serwer NASA zabrania
 // zapamiętywania kafelków i odpowiada wolno, więc przy każdym powrocie kula była „urwana” (diagnoza 21.11.2026).
-// Przeglądarka widza nie łączy się już tu z NASA. Mapa /mapa/ nadal pobiera kafelki z NASA.
+// Przeglądarka widza nie łączy się już tu z NASA. Mapa /mapa/ używa tej samej kopii jako spodu tła nocnego,
+// a z NASA pobiera kafelki dopiero od przybliżenia 4.
 const KAFELKI_GLOBUSA = `${location.origin}/kafelki/black-marble-2016/{z}/{y}/{x}.png`;
 const MAKS_PRZYBLIZENIE_KOPII = 3; // większe przybliżenie = powiększony kafelek z poziomu 3 (bez sięgania do NASA)
 const POLSKA = [19.4, 52.1];

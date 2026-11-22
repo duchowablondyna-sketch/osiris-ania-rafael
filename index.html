@@ -12,6 +12,12 @@
       body > * { visibility: hidden; animation: osiris-pokaz 0s linear 3s forwards; }
       @keyframes osiris-pokaz { to { visibility: visible; } }
     </style>
+    <!-- Płynne przejście między stronami: ta sama reguła co w src/style.css, ale tutaj w <head>, żeby przeglądarka
+         znała ją od pierwszej chwili (sama reguła w zewnętrznym CSS przegrywała w Chrome wyścig z ciężkim modułem). -->
+    <style>
+      @view-transition { navigation: auto; }
+      @media (prefers-reduced-motion: reduce) { @view-transition { navigation: none; } }
+    </style>
     <title>OSIRIS – mapa prądu Polski</title>
     <!-- Plakat kuli (tytulowa.css) – pobierany od razu, żeby był widoczny od pierwszej klatki. -->
     <link rel="preload" as="image" href="/obrazy/globus-plakat.webp" type="image/webp" fetchpriority="high" />
