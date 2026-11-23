@@ -56,6 +56,13 @@ function linijkaZrodla(nazwa, rodzajDaty, data) {
   return p;
 }
 
+// Data w stopce „Źródła i licencje”: do wczytania „wczytywanie…” (w szablonie), potem data albo – przy prawdziwym
+// braku – „brak danych” (zasada z PR #29).
+function dataStopki(id, tekst) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = tekst || t('wspolne.brak_danych');
+}
+
 // Licznik pod nazwą warstwy (w legendzie i w zakładce „Skąd” Karty Polski); brak = true pokazuje napis ostrzegawczy.
 function ustawLicznik(warstwa, tekst, brak = false) {
   for (const el of document.querySelectorAll(`.legenda__licznik[data-licznik="${warstwa}"]`)) {
@@ -785,13 +792,14 @@ const cenaGotowa = fetch(`${import.meta.env.BASE_URL}data/rce.json`, { cache: 'n
   .then((odp) => (odp.ok ? odp.json() : null))
   .then((rce) => {
     daneRce = rce;
-    if (rce?.czas_pobrania) document.getElementById('rce-pobrano').textContent = formatCzasu(rce.czas_pobrania);
+    dataStopki('rce-pobrano', rce?.czas_pobrania && formatCzasu(rce.czas_pobrania));
     pokazCene(rce);
     setInterval(() => pokazCene(rce), 60_000); // co minutę: nowy kwadrans, a po północy – nowa doba
   })
   .catch(() => {
     daneRce = null;
     pokazCene(null); // plik się nie wczytał – „brak danych PSE”
+    dataStopki('rce-pobrano', null);
   });
 
 // Karta Polski (panel w lewym dolnym rogu) – cena z tego samego rce.json, bez drugiego pobrania.
@@ -856,13 +864,17 @@ const wiatrGotowy = fetch(`${import.meta.env.BASE_URL}data/wiatr.json`, { cache:
   .then((d) => {
     if (!d) {
       pokazWiatr(null);
+      dataStopki('wiatr-pobrano', null);
       return;
     }
     daneWiatr = d;
-    if (d.czas_pobrania) document.getElementById('wiatr-pobrano').textContent = formatCzasu(d.czas_pobrania);
+    dataStopki('wiatr-pobrano', d.czas_pobrania && formatCzasu(d.czas_pobrania));
     pokazWiatr(d);
   })
-  .catch(() => pokazWiatr(null)); // plik się nie wczytał – „brak danych PSE”
+  .catch(() => {
+    pokazWiatr(null); // plik się nie wczytał – „brak danych PSE”
+    dataStopki('wiatr-pobrano', null);
+  });
 
 // Linijka „ŹRÓDŁO PSE · pobrano: …” na dole okienka – po wczytaniu (albo nie) obu plików PSE.
 Promise.allSettled([wiatrGotowy, cenaGotowa]).then(() => {
@@ -976,10 +988,11 @@ const dobaGotowa = fetch(`${import.meta.env.BASE_URL}data/doba.json`, { cache: '
     const pelna = d?.doba && Array.isArray(d.kwadranse) && d.kwadranse.length >= 2;
     if (!pelna) {
       document.getElementById('odtw-stan').textContent = t('odtw.brak');
+      dataStopki('odtw-zrodlo-doba', null);
       return;
     }
     daneDoby = d;
-    document.getElementById('odtw-zrodlo-doba').textContent = formatDoby(d.doba);
+    dataStopki('odtw-zrodlo-doba', formatDoby(d.doba));
     przyciskStart.hidden = false;
   });
 

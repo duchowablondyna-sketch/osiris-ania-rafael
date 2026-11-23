@@ -25,11 +25,15 @@ Cel: „Karta Polski”.
 - Podpis „stan na HH:MM · PSE opublikowało HH:MM” zamiast „teraz”.
 - Źródło miksu: PSE API `his-gen-pal-sire`; przy każdym pobraniu sprawdzian zgodności z `his-wlk-cal` (wiatr i PV).
 
-Teraz: wersja angielska (decyzja Ani 23.11.2026 – wchodzi przed operatorami OSD), trzy PR-y:
-e1 mechanizm + strona tytułowa (/en/), e2 mapa (/en/map/), e3 metodologia, źródła i angielski og-obraz.
-Jeden szablon strony, dwa słowniki (src/teksty/pl.js i en.js, słowniczek pojęć na górze en.js), wtyczka scripts/jezyki.mjs,
-test: node --test scripts/testy-jezyki.mjs (lista przejściowa w teście ma być pusta po e3).
-Robot OSIRIS, jego issue i PR-y oraz ZRODLA.md zostają po polsku.
+Wersja angielska (/en/, /en/map/) – zakończona 23.11.2026 (PR #33 e1, #34 e2, e3 stopka + obrazki do udostępniania).
+Zasady na dalej:
+- Jeden szablon strony, dwa słowniki (src/teksty/pl.js i en.js, słowniczek pojęć na górze en.js), cytaty PSE:
+  src/teksty/cytaty-pse.js, wtyczka scripts/jezyki.mjs. Każdy nowy tekst na stronie – od razu w obu słownikach.
+- Test: node --test scripts/testy-jezyki.mjs (lista przejściowa pusta – nowy tekst bez tłumaczenia go wywraca).
+- Licencje i wymagane podpisy w stopce – w oryginale; tłumaczymy tylko nasze objaśnienia.
+- Obrazki do udostępniania (public/og-obraz.png, og-obraz-en.png) – po zmianie wyglądu strony tytułowej zrobić od nowa
+  (sposób w ZRODLA.md).
+- Robot OSIRIS, jego issue i PR-y oraz ZRODLA.md zostają po polsku.
 
 Następne w kolejce: operatorzy OSD (Stoen, potem PGE, Energa).
 

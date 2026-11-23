@@ -249,6 +249,27 @@ Metoda dla paliw kopalnych: 820 g/kWh (IPCC, węgiel) × (wskaźnik KOBiZE paliw
 - **Data sprawdzenia:** 21.11.2026
 - **Poziom weryfikacji:** 1 (obraz obejrzany; położenie zmierzone na trzech rozmiarach okna)
 
+### Obrazki do udostępniania (og:image) – PL i EN (zrzut strony tytułowej)
+
+- **Co:** `public/og-obraz.png` (strony PL: `/`, `/mapa/`) i `public/og-obraz-en.png` (strony EN: `/en/`, `/en/map/`) – zrzut
+  strony tytułowej w danym języku, pokazywany przy udostępnianiu linku. PNG 1200 × 630 px: PL **275 119 B**, SHA-256
+  `602df1ab3f3112bd02363b10baaf457c5dac9f90e28207ce14dd05f17f1cb944`; EN **276 027 B**, SHA-256
+  `bf80e8ad6bf9fb358088eab5f84276b80115da8c930c8ddc2ab7123016891488`. Adres obrazka w stronie: klucz `meta.og_obraz`
+  w słownikach `src/teksty/pl.js` / `en.js`.
+- **Jak powstały (23.11.2026, oba tą samą metodą – decyzja Ani):** zbudowana strona (`npx vite build`, podgląd
+  127.0.0.1:4173), przeglądarka agent-browser (Chrome) na komputerze Ani – bez pakietów w projekcie; okno 1200 × 630 przy
+  gęstości pikseli 1, ciemny motyw i „ogranicz ruch” (napis OSIRIS w pełnej jasności, kula w pozycji startowej obrotu);
+  czekanie, aż kula się narysuje (`#globus.globus--gotowy`) i wczytają się liczby, potem 1,2 s; na czas zrzutu ukryte
+  (`visibility: hidden`, układ bez zmian) tylko to, co by się zestarzało: linijka „ostatnie pobranie / last retrieved”
+  (`#liczba-pse`) i zegar „CZAS WARSZAWA / WARSAW TIME” (`.zegar`, decyzja Ani 23.11.2026); zrzut całego okna. Liczby na obrazku: stan danych z dnia zrzutu (40 · 27,3 GW, 233 · 9,0 GW, 23).
+- **Wcześniej:** polski obrazek z 20.11.2026 (commit 2ac509f) – sposób powstania nie był zapisany; pokazywał starszy wygląd
+  strony i datę „ostatnie pobranie: 20.11, 15:50”. Zastąpiony 23.11.2026.
+- **Kiedy wygenerować od nowa:** po zmianie wyglądu strony tytułowej, haseł, liczb (np. nowe dane GEM/EMODnet) albo tła.
+- **Warunki i podpis:** na obrazku widać tło NASA Black Marble 2016 – warunki jak przy kafelkach wyżej; podpis
+  „Tło: NASA Black Marble 2016 (GIBS)” / „Background: NASA Black Marble 2016 (GIBS)” jest na obrazku.
+- **Data sprawdzenia:** 23.11.2026
+- **Poziom weryfikacji:** 1 (oba obrazy obejrzane; wymiary i rozmiar plików sprawdzone)
+
 ## EMODnet: morskie farmy wiatrowe
 
 - **Co:** EMODnet Human Activities, Energy, Wind Farms – punkty morskich farm wiatrowych (warstwa WFS `emodnet:windfarms`).

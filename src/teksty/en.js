@@ -50,6 +50,8 @@ export default {
     'Where Poland gets its electricity and what it costs – power plants, wind farms, the extra-high-voltage grid, wind and the energy price. From official, public sources, with a date next to every number.',
   'meta.og_obraz_alt': "OSIRIS – Poland's power map: title and a night-time globe with Poland marked",
   'meta.og_locale': 'en_GB',
+  // Obrazek do udostępniania (zrzut strony tytułowej w tym języku – sposób w ZRODLA.md).
+  'meta.og_obraz': 'https://osiris-ania-rafael.pages.dev/og-obraz-en.png',
 
   // ── Wspólne ──
   'wspolne.jezyki_etykieta': 'Language',
@@ -395,4 +397,54 @@ export default {
     "<strong>KOBiZE's 553 kg CO<sub>2</sub>/MWh (2024)</strong> is a different measure: combustion emissions only, averaged over the whole year. We do not compare it directly with our estimate.",
   'met.wymiana':
     '<strong>Scheduled cross-border exchange:</strong> scheduled exchange according to PSE (sum of two balances: swm_p + swm_np), not measured. “Importing” – power flows into Poland, “exporting” – out of Poland.',
+
+  // ── Stopka „Źródła i licencje” (src/czesci/stopka.html) – e3 ──
+  // Linki, nazwy licencji i podpisy – w oryginale (te same co w PL); streszczenie CC BY 4.0 po angielsku (deed.en, decyzja Ani 23.11.2026).
+  // Wyjaśnienia instytucji przy pierwszym użyciu: PSE, EMODnet, MKiŚ, GEM, OSM, KOBiZE (GIBS – w podpisie NASA).
+  'stopka.tytul':
+    'Sources and licences',
+  'stopka.kontur':
+    'Outline of Poland: <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a> (public domain), data simplified to the outline of a single country.',
+  'stopka.wiatr':
+    'Wind generation: PSE S.A. (Poland\'s transmission system operator), <a href="https://raporty.pse.pl/" target="_blank" rel="noopener">raporty.pse.pl</a>, data retrieved <span id="wiatr-pobrano">loading…</span>, processed.',
+  'stopka.ograniczenia':
+    'Wind curtailment: PSE S.A., report “Nierynkowe redysponowanie źródeł OZE” (non-market redispatch of renewable sources), same retrieval time, processed (sum of quarter-hours ÷ 4, assuming the values are in MW).',
+  'stopka.rce':
+    'Electricity price (RCE): PSE S.A., <a href="https://raporty.pse.pl/report/rce-pln" target="_blank" rel="noopener">report “Rynkowa cena energii elektrycznej”</a> (market price of electricity), data retrieved <span id="rce-pobrano">loading…</span>, processed.',
+  'stopka.odtworzenie':
+    'Day replay: PSE S.A., reports his-wlk-cal and rce-pln, day <span id="odtw-zrodlo-doba">loading…</span>, processed.',
+  'stopka.karta':
+    'Poland at a glance (fuel mix, scheduled cross-border exchange): PSE S.A., reports his-gen-pal-sire and his-wlk-cal, data retrieved <span id="karta-pobrano">loading…</span>, processed (shares, cross-check; life-cycle carbon intensity in g CO₂eq/kWh – OSIRIS estimate based on IPCC AR5 and factors from KOBiZE (Polish National Centre for Emissions Management), method in the “Methodology” panel).',
+  'stopka.morskie':
+    'Offshore wind farms: <a href="https://emodnet.ec.europa.eu/en/" target="_blank" rel="noopener">EMODnet</a> (European Marine Observation and Data Network) Human Activities, Wind Farms (data creator: CETMAR, as of 10 Jul 2026), <a href="https://creativecommons.org/licenses/by/4.0/deed.en" target="_blank" rel="noopener">CC BY 4.0</a>; only farms in Polish marine areas were selected; compared with the <a href="https://www.gov.pl/web/morska-energetyka-wiatrowa/obecnie-realizowane-projekty-w-polsce" target="_blank" rel="noopener">project list of MKiŚ</a> (Polish Ministry of Climate and Environment) (as of January 2024) – empty dots: likely duplicate or not on the list.',
+  'stopka.baltic':
+    'Baltic Power status supplemented from <a href="https://balticpower.pl/" target="_blank" rel="noopener">balticpower.pl</a> (commissioning since 10 Jul 2026).',
+  'stopka.ladowe':
+    'Onshore wind farms (green): Global Energy Monitor (GEM), <a href="https://globalenergymonitor.org/projects/global-integrated-power-tracker/" target="_blank" rel="noopener">Global Integrated Power Tracker</a>, September 2026 release (wind data from the Global Wind Power Tracker, February 2026), <a href="https://creativecommons.org/licenses/by/4.0/deed.en" target="_blank" rel="noopener">CC BY 4.0</a>, modified (extract).',
+  'stopka.ladowe_tylko':
+    'Only onshore wind farms of 10 MW and above – smaller farms and single turbines are not shown.',
+  'stopka.ladowe_znaczki':
+    'Filled dot: operating; ring with a dot: under construction; planned farms are not shown. About half of the locations are approximate.',
+  'stopka.elektrownie':
+    'Power plants (squares, circles, diamonds): the same GEM extract, CC BY 4.0, modified (units summed per power plant); operating only.',
+  'stopka.progi':
+    'GEM thresholds: coal – units of 30 MW and above; gas and oil – 20 MW and above in the EU; hydro (including pumped storage) – 30 MW and above, 10 MW for some countries.',
+  'stopka.dane':
+    'Data: coal – July 2026, gas and oil – August 2026, hydro – March 2026. Marker size = installed capacity, not current generation.',
+  'stopka.tlo_dzien':
+    'Daytime background: Blue Marble (August 2004), MODIS / NASA Earth Observatory.',
+  'stopka.tlo_noc':
+    'Night-time background: Black Marble (2016), Suomi NPP / VIIRS, NASA Earth Observatory.',
+  'stopka.tla':
+    'Backgrounds processed so the data is easier to see: daytime darkened and desaturated, night-time desaturated (not darkened).',
+  'stopka.moce':
+    'Available connection capacity for large consumers (hexagons, circles) and the sentence on capacity for new generators: PSE S.A., <a href="https://www.pse.pl/obszary-dzialalnosci/krajowy-system-elektroenergetyczny/informacja-o-dostepnosci-mocy-przylaczeniowej" target="_blank" rel="noopener">“Informacja o dostępności mocy przyłączeniowej do sieci przesyłowej”</a> (information on available connection capacity in the transmission grid), as of 31 Oct 2026, document retrieved 21 Nov 2026, processed (extract of the tables; we do not add up substation capacities). The operator\'s estimate, not a guarantee of connection.',
+  'stopka.wykaz':
+    'Substations where applications are currently not being processed (empty hexagon – the list covers the 220/400 kV switchyard; if only 110 kV – filled hexagon and a note in the pop-up): PSE S.A., <a href="https://www.pse.pl/dane-systemowe/praca-kse/informacje-ogolne/wykaz-obiektow-planowanych-do-przylaczenia" target="_blank" rel="noopener">“Wykaz rozdzielni na stacjach bez możliwości przyłączenia nowych obiektów”</a> (list of switchyards at substations where new facilities cannot be connected), as of 4 Feb 2026 (older than the capacities – as of 31 Oct 2026), file retrieved 21 Nov 2026, processed (extract of lists 2 and 3).',
+  'stopka.miejsca':
+    'Substation locations: OpenStreetMap (OSM), ODbL – planned substations from OSM, or 20 km circles around the town named by PSE (approximate location, chosen by OSIRIS).',
+  'stopka.linie':
+    'Extra-high-voltage lines: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>, <a href="https://opendatacommons.org/licenses/odbl/" target="_blank" rel="noopener">ODbL</a> (this credit is also always visible on the map, bottom right).',
+  'stopka.czcionki':
+    'Fonts: Inter and JetBrains Mono, SIL Open Font License 1.1 (<a href="/licencje/OFL-Inter.txt" target="_blank" rel="noopener">Inter licence</a>, <a href="/licencje/OFL-JetBrains-Mono.txt" target="_blank" rel="noopener">JetBrains Mono licence</a>); the font files are hosted on our server.',
 };
