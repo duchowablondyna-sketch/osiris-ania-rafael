@@ -126,3 +126,5 @@
 - [ ] Ustalić z dokumentów (bez pisania do instytucji), czy produkcja PV w raportach PSE (`his-wlk-cal` `pv`, `his-gen-pal-sire` ES) obejmuje panele na dachach i czy jest mierzona, czy szacowana – dziś PSE tego nie opisuje (ZRODLA.md).
 - [ ] Potwierdzić w oficjalnym dokumencie PSE moc zainstalowaną farm wiatrowych (czerwiec 2026; podawane 11,16 GW / 11 191 MW) – do tego czasu liczba nie trafia na stronę.
 - [x] Warstwa VIIRS_Black_Marble (nocne światła miast, NASA GIBS) – zrobione w etapie „Prąd nocą” (20.11.2026).
+- [x] Kula na stronie tytułowej i na obrazkach pokazuje głównie Afrykę, Polska jest na krawędzi – rozważyć obrót, żeby Europa była bliżej środka. Zrobione 23.11.2026: środek widoku 37° na południe od Polski (wariant B), nowy plakat kuli.
+- [ ] Po wdrożeniu wersji 3 strony tytułowej (nowe og-obraz.png / og-obraz-en.png, tytuły podglądu) odświeżyć podgląd linków w LinkedIn Post Inspector (https://www.linkedin.com/post-inspector/) – dla /, /en/, /mapa/ i /en/map/.

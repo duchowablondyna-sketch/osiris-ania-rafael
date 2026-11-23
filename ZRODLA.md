@@ -241,29 +241,34 @@ Metoda dla paliw kopalnych: 820 g/kWh (IPCC, węgiel) × (wskaźnik KOBiZE paliw
 
 ### Plakat kuli na stronie tytułowej (obraz pochodny od kafelków wyżej)
 
-- **Co:** `public/obrazy/globus-plakat.webp` – nieruchomy obraz naszego globusa (kafelki Black Marble 2016 z kopii wyżej, odbarwienie MapLibre `raster-saturation: -0.3`, atmosfera MapLibre, złoty punkt Polski), widoczny od pierwszej klatki strony, zanim MapLibre i WebGL się uruchomią; potem prawdziwa kula przejmuje go w 0,3 s (`src/tytulowa.js`, `src/tytulowa.css`). WebP 1482 × 1482 px z przezroczystością, jakość 0,9, **72 614 B**, SHA-256 `be57623d3f3b71cdf912be5dfa12d4a19840bab41a54c984c613f697b8d1e018`.
-- **Jak powstał (21.11.2026, jednorazowo):** zbudowana strona tytułowa (podgląd 127.0.0.1), okno 1440 × 900 przy gęstości pikseli 2, „ogranicz ruch” (kula stoi w pozycji startowej obrotu: środek widoku 19,4° E, 7,9° S); po narysowaniu kuli wycięty z płótna MapLibre kwadrat 1482 px wokół środka (kula 1347 px = 0,6451 wysokości kontenera) i zapisany przez przeglądarkę jako WebP. Narzędzie: agent-browser (Chrome) na komputerze Ani – bez pakietów w projekcie.
-- **Zgodność położenia:** zrzut z samym plakatem i z samą kulą w tej samej chwili – PSNR 35,5 dB (1440 × 900), 38,0 dB (1280 × 720), 38,2 dB (1920 × 1080); różnica tylko na krawędzi kuli (wygładzanie).
+- **Co:** `public/obrazy/globus-plakat.webp` – nieruchomy obraz naszego globusa (kafelki Black Marble 2016 z kopii wyżej, odbarwienie MapLibre `raster-saturation: -0.3`, atmosfera MapLibre, złoty punkt Polski), widoczny od pierwszej klatki strony, zanim MapLibre i WebGL się uruchomią; potem prawdziwa kula przejmuje go w 0,3 s (`src/tytulowa.js`, `src/tytulowa.css`). WebP 1482 × 1482 px z przezroczystością, jakość 0,9, **92 728 B**, SHA-256 `f134f7b686300460706eeb51254c4ae99d313e8883aebe5bdcf78eead42df527`.
+- **Jak powstał (23.11.2026, po obrocie kuli – wariant B, decyzja Ani):** zbudowana strona tytułowa (podgląd 127.0.0.1), okno 1440 × 900 przy gęstości pikseli 2, „ogranicz ruch” (kula stoi w pozycji startowej obrotu: środek widoku 19,4° E, 15,1° N – 37° na południe od Polski); po narysowaniu kuli wycięty z płótna MapLibre kwadrat 1482 px wokół środka (kula 1347 px = 0,6451 wysokości kontenera) i zapisany przez przeglądarkę jako WebP. Żeby płótno dało się odczytać, skrypt startowy przeglądarki (tylko na czas zrzutu, poza repo) włączał `preserveDrawingBuffer`. Narzędzie: agent-browser (Chrome) na komputerze Ani – bez pakietów w projekcie.
+- **Wcześniej:** plakat z 21.11.2026 (72 614 B, SHA-256 `be57623d…`) – środek widoku 7,9° S, na kuli głównie Afryka. Zastąpiony 23.11.2026.
+- **Zgodność położenia (23.11.2026):** zrzut z samym plakatem i z samą kulą w tej samej chwili – PSNR 34,1 dB (1440 × 900), 36,4 dB (1280 × 720), 36,9 dB (1920 × 1080); dla poprzedniego plakatu było 35,5 / 38,0 / 38,2 dB.
 - **Kiedy wygenerować od nowa:** po zmianie środka widoku, wielkości kuli (`zoomKuli` w `src/tytulowa.js`), położenia `#globus` w CSS, kafelków albo wyglądu globusa (odbarwienie, atmosfera, punkt Polski).
 - **Warunki i podpis:** jak przy kafelkach wyżej (NASA – bez ograniczeń, podać źródło, bez sugerowania poparcia); podpis „Tło: NASA Black Marble 2016 (GIBS)” bez zmian.
-- **Data sprawdzenia:** 21.11.2026
+- **Data sprawdzenia:** 23.11.2026
 - **Poziom weryfikacji:** 1 (obraz obejrzany; położenie zmierzone na trzech rozmiarach okna)
 
 ### Obrazki do udostępniania (og:image) – PL i EN (zrzut strony tytułowej)
 
 - **Co:** `public/og-obraz.png` (strony PL: `/`, `/mapa/`) i `public/og-obraz-en.png` (strony EN: `/en/`, `/en/map/`) – zrzut
-  strony tytułowej w danym języku, pokazywany przy udostępnianiu linku. PNG 1200 × 630 px: PL **275 119 B**, SHA-256
-  `602df1ab3f3112bd02363b10baaf457c5dac9f90e28207ce14dd05f17f1cb944`; EN **276 027 B**, SHA-256
-  `bf80e8ad6bf9fb358088eab5f84276b80115da8c930c8ddc2ab7123016891488`. Adres obrazka w stronie: klucz `meta.og_obraz`
+  strony tytułowej w danym języku, pokazywany przy udostępnianiu linku. PNG 1200 × 630 px: PL **276 691 B**, SHA-256
+  `56eb243384153b91547faa76591b1de319adfa254011d01edcdd05f396fc2fde`; EN **276 255 B**, SHA-256
+  `3cc7b2416b8aed8e519c797232fe4934271f5a581697e64b1a81370629914043`. Adres obrazka w stronie: klucz `meta.og_obraz`
   w słownikach `src/teksty/pl.js` / `en.js`.
-- **Jak powstały (23.11.2026, oba tą samą metodą – decyzja Ani):** zbudowana strona (`npx vite build`, podgląd
+- **Jak powstały (23.11.2026, wersja 3 strony tytułowej – napis „PRĄD W POLSCE” / „ELECTRICITY IN POLAND”, małe logo
+  OSIRIS w pasku, kula po obrocie; oba tą samą metodą – decyzja Ani):** zbudowana strona (`npx vite build`, podgląd
   127.0.0.1:4173), przeglądarka agent-browser (Chrome) na komputerze Ani – bez pakietów w projekcie; okno 1200 × 630 przy
-  gęstości pikseli 1, ciemny motyw i „ogranicz ruch” (napis OSIRIS w pełnej jasności, kula w pozycji startowej obrotu);
+  gęstości pikseli 1, ciemny motyw i „ogranicz ruch” (duży napis w pełnej jasności, kula w pozycji startowej obrotu);
   czekanie, aż kula się narysuje (`#globus.globus--gotowy`) i wczytają się liczby, potem 1,2 s; na czas zrzutu ukryte
   (`visibility: hidden`, układ bez zmian) tylko to, co by się zestarzało: linijka „ostatnie pobranie / last retrieved”
-  (`#liczba-pse`) i zegar „CZAS WARSZAWA / WARSAW TIME” (`.zegar`, decyzja Ani 23.11.2026); zrzut całego okna. Liczby na obrazku: stan danych z dnia zrzutu (40 · 27,3 GW, 233 · 9,0 GW, 23).
+  (`#liczba-pse`) i zegar „CZAS WARSZAWA / WARSAW TIME” (`.zegar`), a także rogi paska: „Źródła i licencje”, „Opis ▾”
+  (`.rog--lewy`) i przełącznik „PL | EN” (`.gora .jezyki`) – decyzje Ani 23.11.2026; logo OSIRIS i podpis NASA zostają;
+  zrzut całego okna. Liczby na obrazku: stan danych z dnia zrzutu (40 · 27,3 GW, 233 · 9,0 GW, 23).
 - **Wcześniej:** polski obrazek z 20.11.2026 (commit 2ac509f) – sposób powstania nie był zapisany; pokazywał starszy wygląd
-  strony i datę „ostatnie pobranie: 20.11, 15:50”. Zastąpiony 23.11.2026.
+  strony i datę „ostatnie pobranie: 20.11, 15:50”. Zastąpiony 23.11.2026. Obrazki z 23.11.2026 z dużym napisem OSIRIS
+  (PL 275 119 B, SHA-256 `602df1ab…`; EN 276 027 B, SHA-256 `bf80e8ad…`) – zastąpione tego samego dnia wersją 3.
 - **Kiedy wygenerować od nowa:** po zmianie wyglądu strony tytułowej, haseł, liczb (np. nowe dane GEM/EMODnet) albo tła.
 - **Warunki i podpis:** na obrazku widać tło NASA Black Marble 2016 – warunki jak przy kafelkach wyżej; podpis
   „Tło: NASA Black Marble 2016 (GIBS)” / „Background: NASA Black Marble 2016 (GIBS)” jest na obrazku.

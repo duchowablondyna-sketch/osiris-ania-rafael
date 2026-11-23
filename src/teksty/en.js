@@ -42,13 +42,14 @@
 
 export default {
   // ── <head> ──
-  'meta.tytul': "OSIRIS – Poland's power map",
+  'meta.tytul': 'OSIRIS – Electricity in Poland',
   'meta.opis':
     'See in one place where Poland gets its electricity and what it costs. Power plants, wind farms, extra-high-voltage lines, wind generation and the energy price – from official, public sources.',
-  'meta.og_tytul': "OSIRIS – the heart of Poland's power data",
+  'meta.og_tytul': 'OSIRIS – Electricity in Poland',
   'meta.og_opis':
     'Where Poland gets its electricity and what it costs – power plants, wind farms, the extra-high-voltage grid, wind and the energy price. From official, public sources, with a date next to every number.',
-  'meta.og_obraz_alt': "OSIRIS – Poland's power map: title and a night-time globe with Poland marked",
+  'meta.og_obraz_alt':
+    'OSIRIS: the title “Electricity in Poland” above a night-time globe with Poland marked, with figures on power plants and wind farms',
   'meta.og_locale': 'en_GB',
   // Obrazek do udostępniania (zrzut strony tytułowej w tym języku – sposób w ZRODLA.md).
   'meta.og_obraz': 'https://osiris-ania-rafael.pages.dev/og-obraz-en.png',
@@ -106,7 +107,7 @@ export default {
   'cytat.bez_tlumaczenia': 'PSE wording, not yet translated',
 
   // ── <head>, mapa, przyciski ──
-  'mapa.meta.tytul': "OSIRIS – Poland's power map",
+  'mapa.meta.tytul': 'Map · OSIRIS – Electricity in Poland',
   'mapa.meta.opis':
     "Map of Poland's power sources: power plants, onshore and Baltic offshore wind farms, extra-high-voltage lines, available connection capacity for large consumers on the PSE grid, wind generation and the energy price – from official, public sources.",
   'mapa.meta.og_opis': 'Where Poland gets its electricity and what it costs – from official, public sources, with a date next to every number.',

@@ -107,9 +107,10 @@ const kontener = document.getElementById('globus');
 // Promień kuli w pikselach przy przybliżeniu z to ok. 512 · 2^z / (2π): kula ma 80% połowy wysokości okna
 // (poświata w tytulowa.css liczy na tę samą proporcję).
 // MapLibre powiększa kulę o 1/cos(szerokości geograficznej środka widoku) – stąd mnożnik cos(…).
-// Kula nisko jak horyzont: środek widoku 60° na południe od Polski – Polska (52°N) wypada przy górnej krawędzi kuli,
-// nad rzędem liczb.
-const SZEROKOSC_SRODKA = POLSKA[1] - 60;
+// Kula nisko jak horyzont: środek widoku 37° na południe od Polski (15,1°N) – Europa w górnej części kuli, Afryki
+// niewiele (wariant B, decyzja Ani 23.11.2026; wcześniej 60° – Polska na samej krawędzi, widać głównie Afrykę).
+// Po zmianie – plakat kuli od nowa (ZRODLA.md).
+const SZEROKOSC_SRODKA = POLSKA[1] - 37;
 const zoomKuli = () =>
   Math.log2((((kontener.clientHeight * 0.8) / 2) * Math.cos((SZEROKOSC_SRODKA * Math.PI) / 180)) / (512 / (2 * Math.PI)));
 

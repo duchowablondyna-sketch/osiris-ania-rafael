@@ -592,11 +592,10 @@ body.tytulowa {
     var(--tlo);
 }
 
-/* Przyciemnienie tylko pod podtytułem i przyciskiem (nad nocną Ziemią) – nie pod literami i nie nad kropką Polski. */
+/* Przyciemnienie tylko u dołu, nad liczbami. Plama pod podtytułem i przyciskiem usunięta 23.11.2026 (podtytułu już nie
+   ma, przycisk ma pełne tło; po obrocie kuli plama przygaszała kropkę Polski). */
 .bohater__przyciemnienie {
-  background:
-    radial-gradient(ellipse 30% 8% at 50% 50%, rgba(5, 7, 13, 0.8) 0%, rgba(5, 7, 13, 0.6) 55%, rgba(5, 7, 13, 0) 100%),
-    linear-gradient(0deg, var(--tlo) 0%, rgba(5, 7, 13, 0.85) 20%, rgba(5, 7, 13, 0) 31%);
+  background: linear-gradient(0deg, var(--tlo) 0%, rgba(5, 7, 13, 0.85) 20%, rgba(5, 7, 13, 0) 31%);
 }
 
 .tytul {
