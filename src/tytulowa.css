@@ -97,18 +97,8 @@ body.tytulowa {
 
 .tytul__opis,
 .tytul__podtytul,
-.etykieta,
 .tytul__nazwa {
   max-width: 640px;
-}
-
-.etykieta {
-  margin: 0;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-weight: 400;
-  letter-spacing: 0.14em;
-  color: var(--zloto);
 }
 
 .tytul__nazwa {
@@ -236,62 +226,9 @@ body.tytulowa {
   color: var(--ostrzezenie);
 }
 
-/* ── Karty „Co znajdziesz” ── */
-.karty {
-  margin-top: 48px;
-}
-
-.karty__siatka {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin-top: 12px;
-}
-
-.karta {
-  position: relative;
-  padding: 16px;
-  font-size: 0.9375rem;
-  line-height: 1.5;
-  color: var(--tekst-pomocniczy);
-  border: 1px solid rgba(232, 238, 247, 0.12);
-  border-radius: 8px;
-}
-
-.karta p {
-  margin: 8px 0 0;
-}
-
-.karta__tytul {
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--tekst);
-}
-
-/* Zapowiedź: przerywana ramka i znaczek – wyraźnie „jeszcze tego nie ma”. */
-.karta--wkrotce {
-  border-style: dashed;
-  border-color: rgba(255, 138, 91, 0.6);
-}
-
-.karta__znaczek {
-  display: inline-block;
-  margin-bottom: 8px;
-  padding: 2px 8px;
-  font-family: var(--font-mono);
-  font-size: 0.625rem;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  color: var(--ostrzezenie);
-  border: 1px solid currentColor;
-  border-radius: 999px;
-}
-
-/* Węższe ekrany: liczby i karty w dwóch kolumnach (pełna wersja na telefon – później). */
+/* Węższe ekrany: liczby w dwóch kolumnach (pełna wersja na telefon – później). */
 @media (max-width: 900px) {
-  .liczby,
-  .karty__siatka {
+  .liczby {
     grid-template-columns: repeat(2, 1fr);
   }
 }
@@ -362,12 +299,6 @@ body.tytulowa {
   text-align: right;
 }
 
-.tytul-dalej {
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 8px 24px 48px;
-}
-
 /* Opis węższy (nie sięga nad środek kuli) i delikatny cień pod napisami na globusie – dodatkowy zapas czytelności. */
 .bohater .tytul__opis {
   max-width: 600px;
@@ -375,8 +306,7 @@ body.tytulowa {
 
 .bohater .tytul__nazwa,
 .bohater .tytul__podtytul,
-.bohater .tytul__opis,
-.bohater .etykieta {
+.bohater .tytul__opis {
   text-shadow: 0 0 12px rgba(5, 7, 13, 0.9), 0 0 2px rgba(5, 7, 13, 0.9);
 }
 
@@ -450,15 +380,9 @@ body.tytulowa {
   text-align: center;
 }
 
-.bohater .etykieta,
 .bohater .tytul__nazwa,
 .bohater .tytul__podtytul {
   max-width: none;
-}
-
-.bohater .etykieta {
-  font-weight: 300;
-  letter-spacing: 0.22em;
 }
 
 /* Rozstrzelenie dodaje odstęp po ostatniej literze – równoważymy z lewej, żeby napis był na osi środka. */
@@ -575,14 +499,17 @@ body.tytulowa {
 .globus-plakat {
   /* Wysokość kontenera 116% (jak wcześniej) – od niej zależy rozmiar kuli (tytulowa.js); przesunięty o 10% w górę.
      Plakat kuli (niżej) dostaje tę samą regułę – musi stać dokładnie tam, gdzie prawdziwa kula. */
-  top: 15%;
-  bottom: -31%;
+  /* Względem okna (vh), nie wysokości części z kulą – ta jest niższa o stopkę (jeden ekran, 23.11.2026), a kula,
+     napis i plakat mają zostać dokładnie tam, gdzie były. */
+  top: 15vh;
+  bottom: auto;
+  height: 116vh;
 }
 
 .bohater {
   background:
     radial-gradient(
-      circle farthest-side at 50% 73%,
+      circle farthest-side at 50% 73vh, /* środek kuli – względem okna, jak kula */
       rgba(0, 212, 255, 0.42) 0,
       rgba(0, 200, 250, 0.3) 40%,
       rgba(0, 160, 230, 0.12) 56%,
@@ -741,4 +668,11 @@ body.tytulowa {
    + wysokość linii hasła (19 px, pomiar 23.11.2026) + dawny odstęp przycisku (30 px). */
 .bohater .przycisk--glowny {
   margin-top: calc(9.5vh + 20px + 19px + 30px);
+}
+
+/* ── Jeden ekran (decyzja Ani 23.11.2026): sekcja „Co znajdziesz” usunięta; część z kulą niższa o wysokość zwiniętej
+   stopki („Źródła i licencje ▸”: linia 0,8125rem × 1,4 + odstępy 2 × 8 px + ramka 1 px – src/style.css), więc kula,
+   liczby, podpis NASA i stopka mieszczą się w oknie bez przewijania. Rozwinięta stopka – pod spodem, jak dotąd. ── */
+.bohater {
+  min-height: calc(100vh - (0.8125rem * 1.4 + 17px));
 }
