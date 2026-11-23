@@ -646,3 +646,64 @@ body.tytulowa {
     transition: none;
   }
 }
+
+/* ── Złoty drucik pulsu nad hasłem (ozdoba, nie dane; decyzja Ani 23.11.2026) ──
+   Kotwica owija litery „H O POLS”, a drucik leży tuż nad nią, więc trzyma się tych liter przy każdej szerokości
+   okna. Szerokość minus 0.32em – odstęp po ostatniej literze (rozstrzelenie hasła), żeby linia kończyła się nad „S”.
+   Sama linia jest o 8% krótsza z każdej strony (x od 8 do 92 w SVG) – symbol odrobinę krótszy (decyzja Ani 23.11.2026).
+   Linia bazowa stale słabo widoczna; co 1,5 s przebiega po niej jasny impuls (tylko stroke-dashoffset i opacity).
+   Złoto na płaskich częściach, lekka miedź tylko na iskrze. „Ogranicz ruch”: linia stoi, bez impulsu.
+   Poniżej 700 px szerokości – ukryty (hasło może się łamać; wersja na telefon później). */
+.puls-kotwica {
+  position: relative;
+}
+
+.puls {
+  position: absolute;
+  left: 0;
+  width: calc(100% - 0.32em);
+  bottom: calc(100% + 0.75em);
+  height: 1.3em;
+  overflow: visible;
+  pointer-events: none;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 2px rgba(242, 193, 78, 0.45));
+}
+
+.puls__baza {
+  stroke: url(#puls-kolor);
+  stroke-width: 1.15;
+  opacity: 0.4;
+}
+
+.puls__impuls {
+  stroke: #ffe3a1;
+  stroke-width: 1.3;
+  stroke-dasharray: 14 200;
+  stroke-dashoffset: 14;
+  opacity: 0;
+  animation: puls-bieg 1.5s linear infinite;
+}
+
+@keyframes puls-bieg {
+  0% { stroke-dashoffset: 14; opacity: 0; }
+  6% { opacity: 1; }
+  52% { opacity: 1; }
+  60% { stroke-dashoffset: -100; opacity: 0; }
+  100% { stroke-dashoffset: -100; opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .puls__impuls {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+@media (max-width: 700px) {
+  .puls {
+    display: none;
+  }
+}
