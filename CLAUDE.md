@@ -47,6 +47,7 @@ Strona z mapą pokazującą, jak i gdzie Polska może uzyskać więcej prądu. R
 - Płynne przejście między stronami (View Transitions) i plakat kuli na stronie tytułowej – decyzja Ani 21.11; bez animacji przy ogranicz ruch.
 - Reguła przenikania (`@view-transition`) musi być także w małym `<style>` w `<head>` obu stron (index.html i mapa/index.html), nie tylko w src/style.css – sama reguła w zewnętrznym CSS przegrywa w Chrome wyścig z ciężkim modułem (22.11.2026).
 - Wszystkie okienka na mapie korzystają z jednego wzoru C (`src/okienko.js`): najechanie – obok kursora, kliknięcie – przypięte, Esc zamyka, okienko nad panelami, źródło przyklejone na dole. Nowe okienka nie używają `maplibregl.Popup` (23.11.2026).
+- Każdy znak „?” na stronie (znaczek niepewności przy liczbie) jest klikalny i otwiera wyjaśnienie we wzorze C (`okienka.podlacz`, dostępny z klawiatury: Tab + Enter). Treść okienka = to samo wyjaśnienie, które stoi na stronie (jedno źródło tekstu, bez kopiowania) + linijka źródła (23.11.2026).
 - Każde miejsce na stronie, które się przewija, od razu (bez klikania) pokazuje ten sam sygnał co okienko C: zanikanie u dołu + klikalny przycisk „↓ więcej poniżej”, który przewija w dół i znika po dojechaniu do końca. Jeden wspólny kod: `src/wiecej-ponizej.js` (bez kopiowania); „ogranicz ruch” – bez animacji. Nagłówki paneli stoją, przewija się tylko treść. Wyjątek: okienko PSE (lewa góra) (23.11.2026).
 
 ## Jak ze mną pracować

@@ -1,0 +1,19 @@
+{
+  "zrodlo": "PSE S.A., Raport 2025 KSE, Tabela 1.1 „Struktura mocy zainstalowanej w KSE [MW]”, dane operatywne – wielkości brutto",
+  "link": "https://www.pse.pl/dane-systemowe/funkcjonowanie-kse/raporty-roczne-z-funkcjonowania-kse-za-rok/raporty-za-rok-2025#t1_1",
+  "stan_na": "2025-12-31",
+  "pobrano": "2026-11-23",
+  "jednostka": "MW",
+  "wiersze": {
+    "ogolem": 77331,
+    "elektrownie_zawodowe": 40225,
+    "zawodowe_wodne": 2431,
+    "zawodowe_cieplne": 37794,
+    "wegiel_kamienny": 23097,
+    "wegiel_brunatny": 8351,
+    "gazowe": 6346,
+    "wiatrowe_i_inne_odnawialne": 37106,
+    "jwcd": 28124,
+    "njwcd": 49207
+  }
+}

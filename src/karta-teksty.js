@@ -46,6 +46,54 @@ export const PODZIAL_OZE = [
   { grupa: 'biomasa', nazwa: 'biomasa i inne OZE', kody: ['BM', 'BG'] },
 ];
 
+// Paski „Ile pracuje z tego, co mamy”: produkcja teraz (kody PSE z karta.json) na tle mocy zainstalowanej
+// (wiersze PSE, Raport 2025 KSE, Tabela 1.1 – scripts/karta/moc-zainstalowana-pse-2025.json). Decyzje Ani 23.11.2026:
+// bez paska wody (moc „zawodowe wodne” obejmuje prawdopodobnie szczytowo-pompowe, których nie liczymy w produkcji),
+// gaz = tylko gaz ziemny (GZ), jeden pasek kreskowany z „?” dla wiatru, słońca i innych OZE (raport ich nie rozdziela).
+// Olej, odpady, „inne” i gaz z węgla – bez paska (brak wiersza mocy).
+export const PASKI_MOCY = [
+  { klucz: 'kamienny', nazwa: 'węgiel kamienny', kody: ['WK'], wiersz: 'wegiel_kamienny' },
+  { klucz: 'brunatny', nazwa: 'węgiel brunatny', kody: ['WB'], wiersz: 'wegiel_brunatny' },
+  { klucz: 'gaz', nazwa: 'gaz ziemny', kody: ['GZ'], wiersz: 'gazowe' },
+  { klucz: 'oze', nazwa: 'wiatr, słońce i inne OZE', kody: ['WI', 'WM', 'ES', 'BM', 'BG'], wiersz: 'wiatrowe_i_inne_odnawialne', niepewny: true },
+];
+
+const gw = (mw) => (mw / 1000).toLocaleString('pl-PL', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
+// karta – karta.json (z polem moc_zainstalowana); stan – „13:45” albo „22.11, 13:45” (ten sam co w podpisie panelu).
+export function tekstyMocy(karta, stan) {
+  const brak = { ok: false, tekst: 'brak danych o mocy zainstalowanej' };
+  const moc = karta?.moc_zainstalowana;
+  const data = /^(\d{4})-(\d{2})-(\d{2})$/.exec(moc?.stan_na ?? '');
+  if (!moc?.wiersze || !data || !Array.isArray(karta.paliwa)) return brak;
+  const stanMocy = `${data[3]}.${data[2]}.${data[1]}`;
+  const mwKodu = new Map(karta.paliwa.filter((p) => typeof p.mw === 'number').map((p) => [p.kod_pse, p.mw]));
+  const paski = [];
+  for (const { klucz, nazwa, kody, wiersz, niepewny = false } of PASKI_MOCY) {
+    const mocMw = moc.wiersze[wiersz];
+    if (!(typeof mocMw === 'number' && mocMw > 0) || !kody.every((k) => mwKodu.has(k))) return brak;
+    const produkcjaMw = Math.max(0, kody.reduce((s, k) => s + mwKodu.get(k), 0));
+    const ponad = produkcjaMw > mocMw;
+    paski.push({
+      klucz,
+      nazwa,
+      niepewny,
+      produkcja_mw: produkcjaMw,
+      moc_mw: mocMw,
+      udzial: Math.min(1, produkcjaMw / mocMw), // szerokość kolorowego paska; nigdy ponad 100%
+      ponad,
+      tekst: `${gw(produkcjaMw)} z ${gw(mocMw)} GW`,
+      dopisek: ponad ? `więcej niż moc z raportu PSE (stan ${stanMocy}) – od tego czasu mogły przybyć nowe elektrownie` : null,
+    });
+  }
+  return {
+    ok: true,
+    podpis: `produkcja: stan na ${stan} · moc w całej Polsce: PSE, stan ${stanMocy}`,
+    paski,
+    zrodlo: `PSE, Raport 2025 KSE, Tabela 1.1 · stan ${stanMocy}`,
+  };
+}
+
 // Skala paska CO2 w okienku Polski: 0–1500 g/kWh.
 export const CO2_SKALA_MAX = 1500;
 
@@ -92,6 +140,7 @@ export function tekstyKarty(karta, rce, teraz = Date.now()) {
       skrot: 'brak danych PSE',
       cena,
       pobrano: null, // czas_pobrania przy braku danych to tylko czas nieudanej próby
+      moc: { ok: false, tekst: 'brak danych o mocy zainstalowanej' },
     };
   }
 
@@ -129,6 +178,7 @@ export function tekstyKarty(karta, rce, teraz = Date.now()) {
     bohater,
     podpis,
     pasek,
+    moc: tekstyMocy(karta, stan),
     cena,
     co2,
     // Okienko Polski (po najechaniu na liczbę-bohatera): pierścień = to samo, co liczba-bohater.

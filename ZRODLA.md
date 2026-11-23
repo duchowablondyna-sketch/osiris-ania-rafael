@@ -79,6 +79,7 @@ Pliki źródłowe (PDF) pobrane 21.11.2026 leżą poza repo: `~/Projekty/_dane/k
 - **Link:** https://api.raporty.pse.pl/api/his-gen-pal-sire (API). Strona raportu https://raporty.pse.pl/report/his-gen-pal-sire zwraca 404 (21.11.2026); raportu nie ma też w EndpointsMap.pdf – jego opisu u PSE nie znaleźliśmy.
 - **Wartości z przecinkiem:** `value` to tekst, np. `"7556,431"` – zamieniamy na liczbę (7556.431). Inny zapis (spacje, kropki tysięcy, pusty) = błąd danych → sprawdzian nie przechodzi.
 - **Jednostka:** MW – **wniosek, nie opis PSE**: WI+WM i ES zgadzają się co do 0,001 z polami `wi` i `pv` raportu `his-wlk-cal`, które na raporty.pse.pl mają podpis „[MW]”.
+- **Słońce (ES / `pv`) – dachy i pomiar: PSE tego nie opisuje** (sprawdzone 23.11.2026). EndpointsMap.pdf: `pv` = „Sumaryczna generacja Źródeł fotowoltaicznych”, nic więcej. Komentarz pod tabelą https://raporty.pse.pl/report/his-wlk-cal: „Aggregate generation of Wind Sources and Aggregate generation of Photovoltaic Sources include both the JGz that are in the balancing market and outside the balancing market” – nie mówi, czy mikroinstalacje na dachach są w tych JGz, ani czy wartość jest zmierzona, czy szacowana. Strona pomocy raporty.pse.pl/faq: 404.
 - **Aktualność (obserwacja):** 21.11.2026 o 18:02 najnowszy kwadrans to 17:15–17:30 (publikacja 17:52) – opóźnienie ok. 30–45 min. Doba poprzednia uzupełniona w nocy (doba 20.11: publikacja 21.11, 02:52). Przy budowaniu co 4 h dane mają zwykle 1–5 h.
 - **Sprawdzian przy każdym pobraniu:** w każdym kwadransie obecnym w obu raportach WI+WM = `wi` i ES = `pv` z `his-wlk-cal`, tolerancja 1 MW. Kwadranse tylko w jednym raporcie pomijamy (miks bywa o kwadrans nowszy). Dodatkowo: nieznany kod PSE, kod ENTSO-E inny niż w tabeli niżej albo podwójny kod = błąd danych. Gdy sprawdzian nie przejdzie: zostaje poprzedni `karta.json` pobrany z https://osiris-ania-rafael.pages.dev/data/karta.json (tylko ten adres, bez przekierowań) z plakietką „nowe dane nie przeszły sprawdzianu”; gdy PSE nie odpowie – ta sama droga z plakietką „nie udało się pobrać nowych danych PSE”; gdy i to zawiedzie – brak danych.
 - **Wybór kwadransu:** najnowszy, który ma wszystkie 15 kodów w miksie oraz `wi`, `pv`, `swm_p`, `swm_np` w `his-wlk-cal`.
@@ -87,6 +88,36 @@ Pliki źródłowe (PDF) pobrane 21.11.2026 leżą poza repo: `~/Projekty/_dane/k
 - **Licencja:** jak wyżej (warunki PSE).
 - **Data sprawdzenia:** 21.11.2026
 - **Poziom weryfikacji:** 1 – wiatr (WI+WM) i PV (ES) potwierdzone pośrednio przez Anię (21.11) w his-wlk-cal; węgiel, gaz i pozostałe paliwa – tylko sprawdzian automatyczny, strona raportu na raporty.pse.pl niedostępna (404).
+
+### PSE: moc zainstalowana – paski „Ile pracuje z tego, co mamy” (od 23.11.2026)
+
+- **Co:** „Raport 2025 KSE” („Zestawienie danych ilościowych dotyczących funkcjonowania KSE w 2025 roku”, „Dane operatywne – wielkości brutto*”), **Tabela 1.1 „Struktura mocy zainstalowanej w KSE [MW]”**, kolumna **31.12.2025 r.**
+- **Link:** https://www.pse.pl/dane-systemowe/funkcjonowanie-kse/raporty-roczne-z-funkcjonowania-kse-za-rok/raporty-za-rok-2025#t1_1 (strona HTML; tabela przeczytana w całości 23.11.2026).
+- **Przypis PSE do „*” (dosłownie):** „Prezentowane wielkości są wyznaczane na podstawie pomiarów zbieranych przez OSP w czasie bieżącego prowadzenia ruchu KSE. Dlatego w niektórych przypadkach mogą one różnić się od ostatecznych danych przedstawianych przez przedsiębiorstwa energetyczne dla celów statystycznych.”
+- **Stan na:** 31.12.2025 · **data pobrania:** 23.11.2026
+- **Plik w repo:** `scripts/karta/moc-zainstalowana-pse-2025.json` (wartości przepisane ręcznie). `scripts/karta/pobierz.mjs` dopisuje go do `public/data/karta.json` jako `moc_zainstalowana`. Napisy: `src/karta-teksty.js` (`tekstyMocy`), testy: `node --test scripts/karta/testy-panel.mjs`.
+- **Wartości (MW, 31.12.2025):** Ogółem **77 331**; Elektrownie zawodowe 40 225; Elektrownie zawodowe wodne 2 431; Elektrownie zawodowe cieplne 37 794, w tym: na węglu kamiennym **23 097**, na węglu brunatnym **8 351**, gazowe **6 346**; Elektrownie wiatrowe i inne odnawialne **37 106**; JWCD 28 124; nJWCD 49 207. Sumy się zgadzają (sprawdza test).
+- **Paski (decyzje Ani 23.11.2026):**
+
+  | Pasek | Produkcja (kody PSE z karta.json) | Moc (wiersz Tabeli 1.1) |
+  |---|---|---|
+  | węgiel kamienny | WK | na węglu kamiennym |
+  | węgiel brunatny | WB | na węglu brunatnym |
+  | gaz ziemny | GZ | gazowe |
+  | wiatr, słońce i inne OZE (kreskowany, „?”) | WI + WM + ES + BM + BG | Elektrownie wiatrowe i inne odnawialne |
+
+  Bez paska: woda (WP, WZ), olej (OO), odpady (OD), inne (IN), gaz z węgla (GK).
+- **Czego raport nie rozdziela (nie zgadujemy):**
+  - wiatru na lądzie i na morzu, słońca, biomasy – jeden wiersz „wiatrowe i inne odnawialne”. Wiersz „El. wiatrowe” w Tabeli 5.1 tego samego raportu to **moc osiągalna, średnia z porannych szczytów dni roboczych** (10 898,8 MW w 2025) – inna miara, nieużyta;
+  - nie wiadomo, czy „inne odnawialne” obejmują mikroinstalacje na dachach ani małe elektrownie wodne spoza zawodowych;
+  - **woda:** „zawodowe wodne” obejmują **prawdopodobnie** elektrownie szczytowo-pompowe – wniosek, nie opis PSE (w Tabeli 5.1 wodne JWCD: 1 738 MW; GEM: szczytowo-pompowe 1 875 MW), a w produkcji szczytowo-pompowych (WS) nie liczymy → bez paska wody;
+  - węgiel i gaz w tabeli to **tylko elektrownie zawodowe** – elektrowni przemysłowych tabela nie wymienia, a czy PSE wlicza je do produkcji WK/GZ w `his-gen-pal-sire` – nie wiadomo;
+  - czy „gazowe” obejmują elektrownie na gazie z węgla albo oleju – nie wiadomo (dlatego pasek gazu = tylko GZ).
+- **Produkcja większa niż moc z raportu:** pasek pełny (bez procentu ponad 100), liczby bez przycinania, dopisek „więcej niż moc z raportu PSE (stan 31.12.2025) – od tego czasu mogły przybyć nowe elektrownie”.
+- **Dopiski na stronie:** moc zainstalowana ≠ moc dostępna (remonty, rezerwa); krótki pasek wiatru i słońca = pogoda albo pora dnia, nie awaria; „?” – brak podziału OZE i niejasne panele na dachach; mapa (GEM) pokazuje tylko większe elektrownie.
+- **Porównanie z GEM (zakładka „Skąd”):** patrz sekcja GEM niżej („Sprawdzian prawdy”) – GEM ma 87% węgla, 84% gazu, 86% wody z tej tabeli. Na stronie przy licznikach GEM: „na mapie · bloki od 30 MW (GEM)” (węgiel), „od 20 MW” (gaz), „od 30 MW” (woda, szczytowo-pompowe).
+- **Licencja:** jak wyżej (warunki PSE).
+- **Poziom weryfikacji:** 1 (tabela przeczytana w całości na stronie PSE; sumy wierszy sprawdzone testem; wartości do porównania przez Anię)
 
 ### PSE: saldo wymiany z zagranicą (his-wlk-cal, pola swm_p i swm_np)
 

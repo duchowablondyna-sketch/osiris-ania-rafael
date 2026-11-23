@@ -5,10 +5,11 @@
 // Gdy sprawdzian nie przejdzie albo PSE nie odpowie: bierzemy poprzedni karta.json z opublikowanej strony
 // (tylko z osiris-ania-rafael.pages.dev, bez przekierowań) i dopisujemy plakietkę z powodem.
 // Gdy i to się nie uda: zapisujemy brak danych.
-import { writeFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { zbudujKarte, wygladaJakKarta, BladSprawdzianu, WERSJA } from './licz.mjs';
 
 const PLIK = 'public/data/karta.json';
+const MOC = 'scripts/karta/moc-zainstalowana-pse-2025.json';
 const POPRZEDNI = 'https://osiris-ania-rafael.pages.dev/data/karta.json';
 const API = 'https://api.raporty.pse.pl/api';
 const MAKS_STRON = 10;
@@ -77,6 +78,17 @@ try {
     console.warn(`!!! Poprzednich danych też nie ma (${e2.message ?? e2}) – zapisuję brak danych.`);
   }
   console.warn('');
+}
+
+// Moc zainstalowana (PSE, Raport 2025 KSE, Tabela 1.1) – plik w repo, dopisywany zawsze z bieżącej wersji
+// (także do poprzednich danych ze strony). Bez pliku panel pokaże „brak danych o mocy zainstalowanej”.
+if (wynik.kwadrans) {
+  try {
+    wynik.moc_zainstalowana = JSON.parse(await readFile(MOC, 'utf-8'));
+  } catch (e) {
+    delete wynik.moc_zainstalowana;
+    console.warn(`!!! Karta: brak pliku mocy zainstalowanej (${e.message ?? e}).`);
+  }
 }
 
 await writeFile(PLIK, JSON.stringify(wynik, null, 2));

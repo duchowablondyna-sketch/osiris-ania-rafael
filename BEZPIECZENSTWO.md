@@ -112,6 +112,7 @@
 - [x] Kafelki: długie zapamiętywanie w Cloudflare (_headers) – zrobione 22.11.2026, tylko `/kafelki/*`.
 - [ ] Na później: kafelki Polski z poziomów 4+ u nas, kopia warstwy Dzień (Blue Marble), dopasowanie położenia i skali kuli między stroną tytułową a /mapa/ (wtedy też rozważyć długie zapamiętywanie `/obrazy/*`).
 - [ ] Na później: podświetlanie całej linii 220/400 kV od stacji do stacji (łączenie odcinków OSM po nazwie) – dziś najechanie podświetla tylko jeden odcinek z OSM (decyzja Ani 23.11.2026).
+- [ ] Na później: okienko C otwarte przyciskiem spoza mapy („?” przy pasku OZE, okienko Polski) – po zamknięciu krzyżykiem fokus ma wracać na element, który je otworzył (dziś po kliknięciu myszą wraca na mapę) (23.11.2026).
 - [ ] Na później: po rozwinięciu stopki „Źródła i licencje” panel Karta Polski robi się bardzo niski (za mało miejsca nad stopką) – do poprawy przy układzie strony (23.11.2026).
 - [ ] Harmonogram GitHub Actions bywa opóźniany lub pomijany (20.11.2026: zamiast 5 uruchomień były 2, z opóźnieniem 2–3 h) – jeśli się powtarza, rozważyć Cloudflare Cron Triggers.
 - [ ] Pulsowanie farm wiatrowych w rytm produkcji krajowej – dopiero po dodaniu farm lądowych; skala względem mocy zainstalowanej, nie maksimum doby.
@@ -120,5 +121,7 @@
 - [ ] Osobna podstrona „Źródła” przy rozbudowie strony (zamiast zwijanej stopki „Źródła i licencje”).
 - [ ] Polskie nazwy elektrowni zamiast nazw z GEM (np. „Belchatow power station” → „Elektrownia Bełchatów”).
 - [ ] Moc farm wiatrowych poniżej 10 MW z innego źródła (np. URE) – GEM ich nie obejmuje.
+- [ ] Karta Polski, paski mocy: znaleźć oficjalne źródło mocy zainstalowanej osobno dla wiatru (ląd/morze) i słońca (w tym dachy) – wtedy osobne paski zamiast jednego „wiatr, słońce i inne OZE” (Raport 2025 KSE, Tabela 1.1 ich nie rozdziela).
+- [ ] Ustalić z dokumentów (bez pisania do instytucji), czy produkcja PV w raportach PSE (`his-wlk-cal` `pv`, `his-gen-pal-sire` ES) obejmuje panele na dachach i czy jest mierzona, czy szacowana – dziś PSE tego nie opisuje (ZRODLA.md).
 - [ ] Potwierdzić w oficjalnym dokumencie PSE moc zainstalowaną farm wiatrowych (czerwiec 2026; podawane 11,16 GW / 11 191 MW) – do tego czasu liczba nie trafia na stronę.
 - [x] Warstwa VIIRS_Black_Marble (nocne światła miast, NASA GIBS) – zrobione w etapie „Prąd nocą” (20.11.2026).

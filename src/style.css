@@ -884,6 +884,125 @@ button.karta__procent:disabled {
   border-radius: 2px;
 }
 
+/* „Ile pracuje z tego, co mamy” – zwinięte na starcie; nagłówek jak „Metodologia”. */
+.karta__moce {
+  margin-top: 10px;
+  font-size: 0.75rem;
+}
+
+.karta__moce summary {
+  color: var(--tekst);
+  cursor: pointer;
+  text-decoration: underline dotted var(--zloto);
+  text-underline-offset: 3px;
+}
+
+.karta__moce-lista {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.karta__moc + .karta__moc {
+  margin-top: 8px;
+}
+
+.karta__moc-wiersz {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--tekst);
+}
+
+/* Szary tor = moc zainstalowana; kolorowy pasek = produkcja teraz (szerokość = produkcja / moc, najwyżej 100%). */
+.karta__moc-tor {
+  height: 8px;
+  margin-top: 3px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: rgba(232, 238, 247, 0.14);
+}
+
+.karta__moc-produkcja {
+  display: block;
+  height: 100%;
+}
+
+.karta__moc--kamienny .karta__moc-produkcja {
+  background: var(--kolor-wegiel);
+}
+
+.karta__moc--brunatny .karta__moc-produkcja {
+  background: var(--kolor-brunatny);
+}
+
+.karta__moc--gaz .karta__moc-produkcja {
+  background: var(--kolor-gaz);
+}
+
+/* Niepewna moc (wiatr, słońce i inne OZE): pasek kreskowany – widać różnicę także bez rozróżniania kolorów. */
+.karta__moc--oze .karta__moc-produkcja {
+  background: repeating-linear-gradient(135deg, var(--kolor-oze) 0 4px, rgba(74, 222, 128, 0.35) 4px 7px);
+}
+
+/* „?” – przycisk z okienkiem C (najechanie, kliknięcie przypina, Tab + Enter). */
+.karta__moc-pytajnik {
+  display: inline-block;
+  min-width: 1.5em;
+  margin: 0;
+  padding: 0 4px;
+  border: 1px solid var(--tekst-pomocniczy);
+  border-radius: 999px;
+  background: none;
+  font: inherit;
+  font-size: 0.6875rem;
+  line-height: 1.35;
+  text-align: center;
+  color: var(--tekst);
+  cursor: pointer;
+}
+
+.karta__moc-pytajnik:hover {
+  border-color: var(--tekst);
+}
+
+.karta__moc-pytajnik:focus-visible {
+  outline: 2px solid var(--fokus);
+  outline-offset: 2px;
+}
+
+.okienko-pytajnik p {
+  margin: 6px 0 0;
+}
+
+.karta__moc-dopisek {
+  margin: 2px 0 0;
+  font-size: 0.6875rem;
+  color: var(--tekst-pomocniczy);
+}
+
+.karta__moce-uwagi {
+  margin: 8px 0 0;
+  padding-left: 16px;
+  font-size: 0.6875rem;
+  color: var(--tekst-pomocniczy);
+}
+
+.karta__moce-uwagi li + li {
+  margin-top: 3px;
+}
+
+.karta__moce .zrodlo {
+  margin-top: 6px;
+}
+
+/* Zakładka „Skąd”: zastrzeżenie przy liczbach z GEM (to nie cała moc Polski). */
+.karta__prog {
+  display: block;
+  font-size: 0.6875rem;
+  color: var(--tekst-pomocniczy);
+}
+
 .karta__liczby {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
