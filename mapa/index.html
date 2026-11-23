@@ -125,16 +125,16 @@
           <ul class="karta__warstwy">
             <li><label><input type="checkbox" data-warstwa="wegiel" checked />
               <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><rect x="6" y="2" width="12" height="12" style="fill: var(--kolor-wegiel)" stroke="#05070d" stroke-width="1.5" /></svg>
-              <span><strong>Elektrownie węglowe</strong> <span class="legenda__licznik" data-licznik="wegiel">wczytywanie…</span></span></label></li>
+              <span><strong>Elektrownie węglowe</strong> <span class="legenda__licznik" data-licznik="wegiel">wczytywanie…</span> <span class="karta__prog">na mapie · bloki od 30 MW (GEM)</span></span></label></li>
             <li><label><input type="checkbox" data-warstwa="gaz" checked />
               <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><rect x="6" y="2" width="12" height="12" style="fill: var(--kolor-gaz)" stroke="#05070d" stroke-width="1.5" /></svg>
-              <span><strong>Elektrownie gazowe i olejowe</strong> <span class="legenda__licznik" data-licznik="gaz">wczytywanie…</span></span></label></li>
+              <span><strong>Elektrownie gazowe i olejowe</strong> <span class="legenda__licznik" data-licznik="gaz">wczytywanie…</span> <span class="karta__prog">na mapie · bloki od 20 MW (GEM)</span></span></label></li>
             <li><label><input type="checkbox" data-warstwa="woda" checked />
               <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><circle cx="12" cy="8" r="6" style="fill: var(--kolor-woda)" stroke="#05070d" stroke-width="1.5" /></svg>
-              <span><strong>Elektrownie wodne</strong> <span class="legenda__licznik" data-licznik="woda">wczytywanie…</span></span></label></li>
+              <span><strong>Elektrownie wodne</strong> <span class="legenda__licznik" data-licznik="woda">wczytywanie…</span> <span class="karta__prog">na mapie · od 30 MW (GEM)</span></span></label></li>
             <li><label><input type="checkbox" data-warstwa="pompowa" checked />
               <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><polygon points="12,1 19,8 12,15 5,8" style="fill: var(--kolor-woda)" stroke="#05070d" stroke-width="1.5" /></svg>
-              <span><strong>Elektrownie szczytowo-pompowe</strong> <span class="legenda__licznik" data-licznik="pompowa">wczytywanie…</span></span></label></li>
+              <span><strong>Elektrownie szczytowo-pompowe</strong> <span class="legenda__licznik" data-licznik="pompowa">wczytywanie…</span> <span class="karta__prog">na mapie · od 30 MW (GEM)</span></span></label></li>
             <li><label><input type="checkbox" data-warstwa="ladowe" checked />
               <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><circle cx="7" cy="8" r="4" fill="#4ade80" stroke="#05070d" stroke-width="1.5" /><circle cx="18" cy="8" r="4.5" fill="#05070d" stroke="#4ade80" stroke-width="2" /><circle cx="18" cy="8" r="1.5" fill="#4ade80" /></svg>
               <span><strong>Lądowe farmy wiatrowe od 10 MW</strong> <span class="legenda__licznik" data-licznik="ladowe">wczytywanie…</span></span></label></li>
@@ -170,6 +170,22 @@
           <p class="karta__podpis" id="karta-podpis"></p>
           <div class="karta__pasek" id="karta-pasek" aria-hidden="true"></div>
           <ul class="karta__legenda-paska" id="karta-legenda-paska" aria-label="Miks produkcji w Polsce"></ul>
+          <!-- Paski „produkcja teraz na tle mocy zainstalowanej” (PR d, decyzje Ani 23.11.2026): zwinięte na starcie.
+               Liczby: src/karta-teksty.js (tekstyMocy); moc: PSE, Raport 2025 KSE, Tabela 1.1 (ZRODLA.md). -->
+          <details class="karta__moce" id="karta-moce">
+            <summary>Ile pracuje z tego, co mamy</summary>
+            <p class="karta__podpis" id="karta-moce-podpis"></p>
+            <ul class="karta__moce-lista" id="karta-moce-lista" aria-label="Produkcja teraz na tle mocy zainstalowanej"></ul>
+            <ul class="karta__moce-uwagi">
+              <li>Moc zainstalowana to nie moc dostępna: część bloków stoi w remoncie albo w rezerwie.</li>
+              <li>Wiatr i słońce pracują, gdy wieje i świeci – krótki pasek to pogoda albo pora dnia, a nie awaria.</li>
+              <!-- Jedno źródło wyjaśnienia: ten sam tekst (#karta-moce-niepewnosc) pokazuje okienko C po kliknięciu „?” przy pasku OZE (src/karta.js). -->
+              <li>„?” – <span id="karta-moce-niepewnosc">PSE w raporcie podaje jedną moc dla wiatru (na lądzie i na morzu), słońca i innych OZE – bez podziału. Nie wiemy też, czy liczy panele na dachach. Wody tu nie wliczamy.</span></li>
+              <li>Bez paska: woda, olej, odpady i „inne” – raport PSE nie podaje dla nich mocy, którą da się porównać z produkcją.</li>
+              <li>Mapa pokazuje tylko większe elektrownie, dlatego suma mocy na mapie (zakładka „Skąd”) jest mniejsza.</li>
+            </ul>
+            <p class="zrodlo"><span class="zrodlo__etykieta">Źródło</span> <span id="karta-moce-zrodlo">PSE, Raport 2025 KSE, Tabela 1.1</span></p>
+          </details>
           <dl class="karta__liczby">
             <div>
               <dt class="etykieta-mala">Cena RCE</dt>

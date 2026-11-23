@@ -12,6 +12,80 @@ function ustaw(id, tekst, brak = false) {
   e.classList.toggle('brak-danych', brak);
 }
 
+// „?” przy pasku „wiatr, słońce i inne OZE” – przycisk z okienkiem C (zasada: każdy „?” na stronie jest klikalny).
+// Jeden stały element: panel przebudowuje paski co minutę, a podpięcie okienka (okienka.podlacz) zostaje na przycisku.
+const pytajnikOze = document.createElement('button');
+pytajnikOze.type = 'button';
+pytajnikOze.className = 'karta__moc-pytajnik';
+pytajnikOze.textContent = '?';
+pytajnikOze.setAttribute('aria-label', 'Dlaczego znak zapytania? – wyjaśnienie');
+pytajnikOze.setAttribute('aria-haspopup', 'dialog');
+
+// Treść okienka „?”: nagłówek + to samo wyjaśnienie co w liście pod paskami (czytane ze strony – jedno źródło tekstu)
+// + linijka źródła z tekstyMocy() (ta sama co pod paskami).
+function trescPytajnika() {
+  const m = ostatnie?.moc;
+  const wyjasnienie = $('karta-moce-niepewnosc')?.textContent.trim();
+  if (!m?.ok || !wyjasnienie) return null;
+  const el = document.createElement('div');
+  el.className = 'okienko-pytajnik';
+  const tytul = document.createElement('strong');
+  tytul.textContent = 'Dlaczego znak zapytania?';
+  const tekst = document.createElement('p');
+  tekst.textContent = wyjasnienie;
+  const zrodlo = document.createElement('p');
+  zrodlo.className = 'zrodlo';
+  const etykieta = document.createElement('span');
+  etykieta.className = 'zrodlo__etykieta';
+  etykieta.textContent = 'Źródło';
+  zrodlo.append(etykieta, ` ${m.zrodlo}`);
+  el.append(tytul, tekst, zrodlo); // okienko C przykleja linijkę źródła do dołu
+  return el;
+}
+
+// Paski „Ile pracuje z tego, co mamy”: szary tor = moc zainstalowana, kolorowy pasek = produkcja teraz.
+// Wszystkie liczby i napisy z tekstyMocy() (src/karta-teksty.js). Tor jest tylko dla oka – liczby stoją w tekście obok.
+function pokazMoce(m) {
+  const lista = $('karta-moce-lista');
+  if (!m.ok) {
+    ustaw('karta-moce-podpis', m.tekst, true);
+    lista.replaceChildren();
+    return;
+  }
+  ustaw('karta-moce-podpis', m.podpis);
+  $('karta-moce-zrodlo').textContent = m.zrodlo;
+  lista.replaceChildren(
+    ...m.paski.map((p) => {
+      const li = document.createElement('li');
+      li.className = `karta__moc karta__moc--${p.klucz}` + (p.niepewny ? ' karta__moc--niepewny' : '') + (p.ponad ? ' karta__moc--ponad' : '');
+      const wiersz = document.createElement('div');
+      wiersz.className = 'karta__moc-wiersz';
+      const nazwa = document.createElement('span');
+      nazwa.textContent = p.nazwa;
+      const liczba = document.createElement('span');
+      liczba.className = 'liczby';
+      liczba.textContent = p.tekst;
+      if (p.niepewny) liczba.append(' ', pytajnikOze); // ten sam przycisk przy każdym odświeżeniu – okienko C zostaje podpięte
+      wiersz.append(nazwa, liczba);
+      const tor = document.createElement('div');
+      tor.className = 'karta__moc-tor';
+      tor.setAttribute('aria-hidden', 'true');
+      const produkcja = document.createElement('span');
+      produkcja.className = 'karta__moc-produkcja';
+      produkcja.style.width = `${(p.udzial * 100).toFixed(2)}%`;
+      tor.append(produkcja);
+      li.append(wiersz, tor);
+      if (p.dopisek) {
+        const d = document.createElement('p');
+        d.className = 'karta__moc-dopisek';
+        d.textContent = `▸ ${p.dopisek}`;
+        li.append(d);
+      }
+      return li;
+    }),
+  );
+}
+
 // Ostatnie napisy panelu – z nich (i tylko z nich) powstaje okienko Polski.
 let ostatnie = null;
 
@@ -27,6 +101,7 @@ function pokaz(karta, rce) {
   ustaw('karta-cena', t.cena.wartosc, !t.cena.ok);
   $('karta-cena-opis').textContent = t.cena.opis;
   ustaw('karta-zrodlo', t.pobrano ? `PSE · pobrano: ${t.pobrano}` : 'PSE · brak danych', !t.pobrano);
+  pokazMoce(t.moc);
 
   const procent = $('karta-procent');
   // Bez danych o miksie – podpis i pasek znikają (bez pustej przerwy w panelu).
@@ -252,6 +327,7 @@ export function podlaczOkienkoPolski(okienka) {
     metodologia.querySelector('summary').focus();
   };
   okienka.podlacz($('karta-procent'), () => trescOkienka(ostatnie, wiecej));
+  okienka.podlacz(pytajnikOze, trescPytajnika); // „?” przy pasku OZE → „Dlaczego znak zapytania?”
 }
 
 // rceGotowe: obietnica z obiektem rce.json albo null (src/main.js).

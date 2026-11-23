@@ -5,7 +5,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { zbudujKarte } from './licz.mjs';
-import { tekstyKarty, tekstCeny, PROG_STARYCH_H, PODZIAL_OZE } from '../../src/karta-teksty.js';
+import { tekstyKarty, tekstCeny, PROG_STARYCH_H, PODZIAL_OZE, PASKI_MOCY } from '../../src/karta-teksty.js';
 
 const PROBKA = JSON.parse(readFileSync(new URL('./testy/pse-2026-11-20-1200.json', import.meta.url), 'utf-8'));
 const karta = () => zbudujKarte(structuredClone(PROBKA['his-gen-pal-sire']), structuredClone(PROBKA['his-wlk-cal']), '2026-11-20T12:30:00.000Z');
@@ -207,4 +207,92 @@ test('okienko: kropka CO2 nie wychodzi poza skalę', () => {
 
 test('okienko: bez danych o miksie – nie ma okienka', () => {
   assert.equal(tekstyKarty(null, RCE, Date.parse('2026-11-20T12:05:00Z')).okienko, undefined);
+});
+
+// ── Paski „Ile pracuje z tego, co mamy” (produkcja teraz na tle mocy zainstalowanej, PSE Raport 2025 KSE, Tabela 1.1) ──
+const MOC = JSON.parse(readFileSync(new URL('./moc-zainstalowana-pse-2025.json', import.meta.url), 'utf-8'));
+const kartaZMoca = () => ({ ...karta(), moc_zainstalowana: structuredClone(MOC) });
+const mwKodow = (k, kody) => k.paliwa.filter((p) => kody.includes(p.kod_pse)).reduce((s, p) => s + p.mw, 0);
+
+test('plik mocy: wartości z Tabeli 1.1 składają się na sumy z tej samej tabeli', () => {
+  const w = MOC.wiersze;
+  assert.equal(MOC.stan_na, '2025-12-31');
+  assert.equal(MOC.jednostka, 'MW');
+  assert.equal(w.wegiel_kamienny + w.wegiel_brunatny + w.gazowe, w.zawodowe_cieplne); // 37 794
+  assert.equal(w.zawodowe_wodne + w.zawodowe_cieplne, w.elektrownie_zawodowe); // 40 225
+  assert.equal(w.elektrownie_zawodowe + w.wiatrowe_i_inne_odnawialne, w.ogolem); // 77 331
+  assert.equal(w.jwcd + w.njwcd, w.ogolem);
+  assert.equal(w.ogolem, 77331);
+});
+
+test('paski mocy: te same MW co pasek miksu i lista paliw z tego samego kwadransu', () => {
+  const k = kartaZMoca();
+  const t = tekstyKarty(k, RCE, terazPo(k, 1));
+  const m = t.moc;
+  assert.equal(m.ok, true);
+  assert.deepEqual(m.paski.map((p) => p.klucz), ['kamienny', 'brunatny', 'gaz', 'oze']);
+  const pasek = Object.fromEntries(m.paski.map((p) => [p.klucz, p]));
+  // Węgiel: dokładnie te same MW co grupy paska miksu.
+  assert.equal(pasek.kamienny.produkcja_mw, k.grupy.kamienny.mw);
+  assert.equal(pasek.brunatny.produkcja_mw, k.grupy.brunatny.mw);
+  // Gaz: tylko gaz ziemny (GZ), część grupy „gaz i inne”.
+  assert.equal(pasek.gaz.produkcja_mw, mwKodow(k, ['GZ']));
+  assert.ok(pasek.gaz.produkcja_mw <= k.grupy.gaz_i_inne.mw);
+  // OZE na pasku mocy = OZE z paska miksu bez wody (woda nie ma paska).
+  assert.ok(Math.abs(pasek.oze.produkcja_mw - (k.grupy.oze.mw - mwKodow(k, ['WP', 'WZ']))) < 0.05);
+  // Moc z pliku, wiersze zgodne z definicją pasków.
+  for (const p of PASKI_MOCY) assert.equal(pasek[p.klucz].moc_mw, MOC.wiersze[p.wiersz]);
+  // Tylko OZE jest niepewne (kreskowane, „?”).
+  assert.deepEqual(m.paski.filter((p) => p.niepewny).map((p) => p.klucz), ['oze']);
+  // Ten sam kwadrans co reszta panelu: „stan na” taki jak w podpisie paska miksu.
+  assert.equal(m.podpis, 'produkcja: stan na 12:30 · moc w całej Polsce: PSE, stan 31.12.2025');
+  assert.ok(t.podpis.includes('stan na 12:30'));
+  assert.equal(m.zrodlo, 'PSE, Raport 2025 KSE, Tabela 1.1 · stan 31.12.2025');
+});
+
+test('paski mocy: podpis „X z Y GW”, szerokość = produkcja / moc', () => {
+  const k = kartaZMoca();
+  for (const p of k.paliwa) if (p.kod_pse === 'WK') p.mw = 6589.3;
+  for (const p of k.paliwa) if (p.kod_pse === 'GZ') p.mw = 1937.3;
+  const pasek = Object.fromEntries(tekstyKarty(k, RCE, terazPo(k, 1)).moc.paski.map((p) => [p.klucz, p]));
+  assert.equal(pasek.kamienny.tekst, '6,6 z 23,1 GW');
+  assert.equal(pasek.gaz.tekst, '1,9 z 6,3 GW');
+  assert.equal(pasek.kamienny.udzial, 6589.3 / 23097);
+  assert.equal(pasek.kamienny.ponad, false);
+  assert.equal(pasek.kamienny.dopisek, null);
+});
+
+test('paski mocy: produkcja większa niż moc z raportu – pasek pełny, liczby nie przycięte, dopisek', () => {
+  const k = kartaZMoca();
+  k.moc_zainstalowana.wiersze.gazowe = 1000;
+  for (const p of k.paliwa) if (p.kod_pse === 'GZ') p.mw = 1250;
+  const gaz = tekstyKarty(k, RCE, terazPo(k, 1)).moc.paski.find((p) => p.klucz === 'gaz');
+  assert.equal(gaz.udzial, 1);
+  assert.equal(gaz.ponad, true);
+  assert.equal(gaz.tekst, '1,3 z 1,0 GW');
+  assert.equal(gaz.dopisek, 'więcej niż moc z raportu PSE (stan 31.12.2025) – od tego czasu mogły przybyć nowe elektrownie');
+  assert.doesNotMatch(gaz.dopisek, /%/);
+});
+
+test('paski mocy: brak pliku mocy, zły plik albo brak danych o miksie – „brak danych”, bez pustych pasków', () => {
+  const brak = { ok: false, tekst: 'brak danych o mocy zainstalowanej' };
+  const k = karta(); // bez pola moc_zainstalowana (np. poprzednie dane sprzed tego PR)
+  assert.deepEqual(tekstyKarty(k, RCE, terazPo(k, 1)).moc, brak);
+  const zly = kartaZMoca();
+  delete zly.moc_zainstalowana.wiersze.gazowe;
+  assert.deepEqual(tekstyKarty(zly, RCE, terazPo(zly, 1)).moc, brak);
+  const bezPaliw = kartaZMoca();
+  delete bezPaliw.paliwa;
+  assert.deepEqual(tekstyKarty(bezPaliw, RCE, terazPo(bezPaliw, 1)).moc, brak);
+  assert.deepEqual(tekstyKarty(null, RCE, Date.parse('2026-11-20T12:05:00Z')).moc, brak);
+});
+
+test('paski mocy: napisy na stronie bez słów sugerujących marnowanie', () => {
+  const html = readFileSync(new URL('../../mapa/index.html', import.meta.url), 'utf-8');
+  const sekcja = html.slice(html.indexOf('id="karta-moce"'), html.indexOf('</details>', html.indexOf('id="karta-moce"')));
+  assert.ok(sekcja.includes('Moc zainstalowana to nie moc dostępna'));
+  assert.ok(sekcja.includes('a nie awaria'));
+  assert.doesNotMatch(sekcja.toLowerCase(), /marnow|traci|stoi bezczynn|niewykorzyst|zmarnowan/);
+  // Wyjaśnienie „?” – jedno źródło tekstu dla listy i okienka C (src/karta.js czyta je po id).
+  assert.equal(html.split('id="karta-moce-niepewnosc"').length - 1, 1);
 });
