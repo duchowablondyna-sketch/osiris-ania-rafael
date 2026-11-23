@@ -46,6 +46,7 @@ Strona z mapą pokazującą, jak i gdzie Polska może uzyskać więcej prądu. R
 - Ruch: jeden lot wprowadzający przy otwarciu (bez lotu przy prefers-reduced-motion); odtwarzanie doby uruchamiane przyciskiem przez widza; inne animacje – decyzja później.
 - Płynne przejście między stronami (View Transitions) i plakat kuli na stronie tytułowej – decyzja Ani 21.11; bez animacji przy ogranicz ruch.
 - Reguła przenikania (`@view-transition`) musi być także w małym `<style>` w `<head>` obu stron (index.html i mapa/index.html), nie tylko w src/style.css – sama reguła w zewnętrznym CSS przegrywa w Chrome wyścig z ciężkim modułem (22.11.2026).
+- Wszystkie okienka na mapie korzystają z jednego wzoru C (`src/okienko.js`): najechanie – obok kursora, kliknięcie – przypięte, Esc zamyka, okienko nad panelami, źródło przyklejone na dole. Nowe okienka nie używają `maplibregl.Popup` (23.11.2026).
 
 ## Jak ze mną pracować
 - Odpowiadaj po polsku, prostymi słowami.

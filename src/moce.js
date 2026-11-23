@@ -4,7 +4,6 @@
 // – stacje „w rejonie X”: półprzezroczyste koło (promień z pliku) z podpisem „lokalizacja przybliżona”;
 // – moc dla źródeł: bez znaczków, tylko zdanie w legendzie i w panelu;
 // – mocy stacji nigdy nie sumujemy (PSE: moc jednej stacji wpływa na moc stacji sąsiednich).
-import * as maplibregl from 'maplibre-gl';
 import { stacjeBezRozpatrzenia } from './wykaz-rozdzielni.js';
 
 export const KOLOR_MOCY = '#2DD4BF';
@@ -135,18 +134,18 @@ function opisLokalizacji(s, promien) {
   return 'Brak na mapie – PSE nie podaje miejscowości albo nie da się jej ustalić bez zgadywania.';
 }
 
-export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, odmiana }) {
+export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, odmiana, okienka }) {
   let dane = null;
   let wykaz = null; // wykaz rozdzielni PSE (public/data/rozdzielnie-pse.json); null = nie wczytał się
   let bezRozpatrzenia = new Map();
-  let otwarte = null; // otwarte okienko stacji
   const panel = document.getElementById('panel-moce');
 
-  // Okienko jednej albo kilku stacji w tym samym miejscu (np. dwie stacje „w rejonie Warszawy”) – każda osobno, bez sumy.
-  function okienko(kody, lngLat) {
-    if (!dane) return;
+  // Treść okienka jednej albo kilku stacji w tym samym miejscu (np. dwie stacje „w rejonie Warszawy”) – każda osobno,
+  // bez sumy. Przy kilku stacjach nagłówek mówi to wprost („2 stacje w tym miejscu”).
+  function trescOkienka(kody) {
+    if (!dane) return null;
     const stacje = kody.map((k) => dane.odbiorcy.find((s) => s.kod === k)).filter(Boolean);
-    if (!stacje.length) return;
+    if (!stacje.length) return null;
     const el = document.createElement('div');
     el.className = 'okienko-mocy';
     const span = (tekst, klasa) => {
@@ -155,6 +154,12 @@ export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, odmiana }) 
       if (klasa) s.className = klasa;
       return s;
     };
+    if (stacje.length > 1) {
+      const ile = document.createElement('strong');
+      ile.className = 'okienko-mocy__ile';
+      ile.textContent = `${odmiana(stacje.length, ['stacja', 'stacje', 'stacji'])} w tym miejscu`;
+      el.append(ile, document.createElement('hr'));
+    }
     stacje.forEach((s, i) => {
       if (i) el.append(document.createElement('hr'));
       const tytul = document.createElement('strong');
@@ -198,10 +203,18 @@ export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, odmiana }) 
     el.append(linijkaZrodla('PSE', 'stan', formatDaty(dane.stan_na)));
     if (stacje.some((s) => bezRozpatrzenia.has(s.kod))) el.append(linijkaZrodla('PSE – wykaz rozdzielni', 'stan', formatDaty(wykaz.stan_na)));
     if (stacje.some((s) => s.lokalizacja.rodzaj !== 'brak')) el.append(linijkaZrodla('OpenStreetMap (lokalizacja)', 'stan', formatDaty(dane.lokalizacje.stan_osm?.slice(0, 10))));
-    // Tylko jedno okienko stacji naraz (przycisk w panelu nie klika mapy, więc MapLibre sam go nie zamknie).
-    otwarte?.remove();
-    otwarte = new maplibregl.Popup({ maxWidth: '320px' }).setLngLat(lngLat).setDOMContent(el).addTo(map);
+    return el;
   }
+
+  // Okienko wzoru C (src/okienko.js): najechanie i kliknięcie na mapie.
+  okienka.dodaj({
+    id: 'moce',
+    warstwy: ['moce'],
+    tresc: (obiekty) => {
+      const el = trescOkienka([...new Set(obiekty.map((f) => f.properties.kod))]);
+      return el ? { el, lngLat: obiekty[0].geometry.coordinates } : null;
+    },
+  });
 
   map.addSource('moce-kola', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
   map.addSource('moce', {
@@ -264,10 +277,6 @@ export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, odmiana }) 
     );
   });
 
-  map.on('click', 'moce', (e) => {
-    const kody = [...new Set(e.features.map((f) => f.properties.kod))];
-    okienko(kody, e.features[0].geometry.coordinates);
-  });
   map.on('mouseenter', 'moce', () => (map.getCanvas().style.cursor = 'pointer'));
   map.on('mouseleave', 'moce', () => (map.getCanvas().style.cursor = ''));
 
@@ -295,7 +304,8 @@ export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, odmiana }) 
               nazwa.type = 'button';
               nazwa.addEventListener('click', () => {
                 const razem = dane.odbiorcy.filter((x) => x.lokalizacja.lon === s.lokalizacja.lon && x.lokalizacja.lat === s.lokalizacja.lat).map((x) => x.kod);
-                okienko(razem, [s.lokalizacja.lon, s.lokalizacja.lat]);
+                const el = trescOkienka(razem);
+                if (el) okienka.przypnij(el, [s.lokalizacja.lon, s.lokalizacja.lat], nazwa);
               });
             }
             const moc = document.createElement('span');

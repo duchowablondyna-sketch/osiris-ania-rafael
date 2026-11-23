@@ -76,7 +76,7 @@ main {
 .legenda,
 .przelacznik,
 .karta,
-.maplibregl-popup-content {
+.okienko {
   background: var(--szklo-tlo);
   border: 1px solid var(--szklo-ramka);
   -webkit-backdrop-filter: var(--szklo-rozmycie);
@@ -90,7 +90,7 @@ main {
   .legenda,
   .przelacznik,
   .karta,
-  .maplibregl-popup-content {
+  .okienko {
     background: rgba(11, 18, 32, 0.94);
   }
 }
@@ -100,7 +100,7 @@ main {
   .legenda,
   .przelacznik,
   .karta,
-  .maplibregl-popup-content {
+  .okienko {
     background: rgb(11, 18, 32);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
@@ -428,10 +428,18 @@ main {
   white-space: nowrap;
 }
 
-/* ── Okienka po kliknięciu (MapLibre): ciemne szkło, jasny tekst, złote narożniki ── */
-.maplibregl-popup-content {
-  position: relative;
-  padding: 12px 34px 10px 14px;
+/* ── Okienko C (src/okienko.js): jeden wzór dla całej mapy. Ciemne szkło, jasny tekst, złote narożniki.
+   Zawsze na wierzchu (nad okienkiem PSE, Kartą Polski i legendą); środek przewija się, źródła przyklejone do dołu. ── */
+.okienko {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  width: max-content;
+  max-width: min(240px, calc(100vw - 16px));
+  max-height: min(70vh, 460px);
   font-family: var(--font-sans);
   font-size: 0.8125rem;
   line-height: 1.45;
@@ -440,8 +448,22 @@ main {
   border-radius: 8px;
 }
 
+.okienko[hidden] {
+  display: none;
+}
+
+/* Okienko stacji z wolną mocą – szersze (dużo tekstu PSE). */
+.okienko:has(.okienko-mocy) {
+  max-width: min(320px, calc(100vw - 16px));
+}
+
+.okienko:focus-visible {
+  outline: 2px solid var(--fokus);
+  outline-offset: 2px;
+}
+
 /* Złote narożniki wokół okienka wybranego obiektu: cztery kąty z krótkich kresek (bez animacji, bez poświaty). */
-.maplibregl-popup-content::before {
+.okienko::before {
   position: absolute;
   inset: -3px;
   content: '';
@@ -458,49 +480,119 @@ main {
   background-repeat: no-repeat;
 }
 
-/* „Dzióbek” okienka w kolorze tła okienka (z każdej strony, z której MapLibre go rysuje). */
-.maplibregl-popup-anchor-bottom .maplibregl-popup-tip,
-.maplibregl-popup-anchor-bottom-left .maplibregl-popup-tip,
-.maplibregl-popup-anchor-bottom-right .maplibregl-popup-tip {
-  border-top-color: var(--szklo-tlo-okienka);
+/* Środek: przewija się (miejsce po prawej na krzyżyk – ten sam rozmiar okienka przy najechaniu i po przypięciu). */
+.okienko__tresc {
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 12px 34px 2px 14px;
 }
 
-.maplibregl-popup-anchor-top .maplibregl-popup-tip,
-.maplibregl-popup-anchor-top-left .maplibregl-popup-tip,
-.maplibregl-popup-anchor-top-right .maplibregl-popup-tip {
-  border-bottom-color: var(--szklo-tlo-okienka);
+.okienko__tresc:focus-visible {
+  outline: 2px solid var(--fokus);
+  outline-offset: -2px;
 }
 
-.maplibregl-popup-anchor-left .maplibregl-popup-tip {
-  border-right-color: var(--szklo-tlo-okienka);
+/* Treść się nie mieści: zanikanie u dołu i napis – widoczne od razu (Mac ukrywa paski przewijania). */
+.okienko--wiecej .okienko__tresc {
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 32px), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 32px), transparent);
 }
 
-.maplibregl-popup-anchor-right .maplibregl-popup-tip {
-  border-left-color: var(--szklo-tlo-okienka);
+.okienko__wiecej {
+  display: none;
+  margin: 0;
+  padding: 2px 14px 0;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--zloto);
+  text-align: left;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
 }
 
-/* Przycisk zamknięcia ×: widoczny na ciemnym tle, wygodny do kliknięcia, z obwódką fokusu z klawiatury. */
-.maplibregl-popup-close-button {
-  top: 4px;
-  right: 4px;
-  width: 26px;
-  height: 26px;
-  font-size: 1.25rem;
-  line-height: 1;
+.okienko--wiecej .okienko__wiecej {
+  display: block;
+}
+
+.okienko__wiecej:hover {
+  text-decoration: underline;
+}
+
+.okienko__wiecej:focus-visible {
+  outline: 2px solid var(--fokus);
+  outline-offset: 1px;
+  border-radius: 3px;
+}
+
+/* Podpowiedź przy kursorze (np. „kliknij – szczegóły linii”): jedna linijka, nad wszystkim, nie łapie myszy. */
+.podpowiedz {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 31;
+  padding: 3px 8px;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  white-space: nowrap;
   color: var(--tekst);
+  pointer-events: none;
+  background: var(--szklo-tlo-okienka);
+  border: 1px solid var(--szklo-ramka);
   border-radius: 5px;
 }
 
-.maplibregl-popup-close-button:hover {
+.podpowiedz[hidden] {
+  display: none;
+}
+
+/* Dół: linijki „ŹRÓDŁO …” – zawsze widoczne w całości. */
+.okienko__zrodla {
+  flex: none;
+  padding: 0 14px 10px;
+}
+
+.okienko__zrodla[hidden] {
+  display: none;
+}
+
+/* Krzyżyk – tylko w przypiętym okienku: widoczny na ciemnym tle, wygodny do kliknięcia, z obwódką fokusu. */
+.okienko__zamknij {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  z-index: 1;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  font: inherit;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: var(--tekst);
+  background: transparent;
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.okienko__zamknij[hidden] {
+  display: none;
+}
+
+.okienko__zamknij:hover {
   background: rgba(232, 238, 247, 0.12);
 }
 
-.maplibregl-popup-close-button:focus-visible {
+.okienko__zamknij:focus-visible {
   outline: 2px solid var(--fokus);
   outline-offset: 1px;
 }
 
-.maplibregl-popup-content strong {
+.okienko strong {
   font-size: 0.875rem;
 }
 
@@ -927,11 +1019,6 @@ button.panel-moce__nazwa:hover {
 }
 
 /* Okienko stacji z wolną mocą: przy kilku stacjach w jednym miejscu tekst jest długi – przewijanie zamiast wyjścia poza ekran. */
-.okienko-mocy {
-  max-height: 46vh;
-  overflow: auto;
-}
-
 .okienko-mocy__moc {
   color: var(--kolor-moce);
   font-weight: 600;

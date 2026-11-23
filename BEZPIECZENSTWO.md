@@ -111,6 +111,7 @@
 - [x] Mapa: kopia kafelków NASA dla /mapa/ (żeby nie było samego konturu Polski po przejściu) – zrobione 22.11.2026: nocą spód z naszej kopii (poziomy 0–3), NASA GIBS na wierzchu od przybliżenia 4.
 - [x] Kafelki: długie zapamiętywanie w Cloudflare (_headers) – zrobione 22.11.2026, tylko `/kafelki/*`.
 - [ ] Na później: kafelki Polski z poziomów 4+ u nas, kopia warstwy Dzień (Blue Marble), dopasowanie położenia i skali kuli między stroną tytułową a /mapa/ (wtedy też rozważyć długie zapamiętywanie `/obrazy/*`).
+- [ ] Na później: podświetlanie całej linii 220/400 kV od stacji do stacji (łączenie odcinków OSM po nazwie) – dziś najechanie podświetla tylko jeden odcinek z OSM (decyzja Ani 23.11.2026).
 - [ ] Harmonogram GitHub Actions bywa opóźniany lub pomijany (20.11.2026: zamiast 5 uruchomień były 2, z opóźnieniem 2–3 h) – jeśli się powtarza, rozważyć Cloudflare Cron Triggers.
 - [ ] Pulsowanie farm wiatrowych w rytm produkcji krajowej – dopiero po dodaniu farm lądowych; skala względem mocy zainstalowanej, nie maksimum doby.
 - [ ] Okienko farmy zasłania kropki, a kropki blisko siebie nachodzą na siebie (np. Baltic Power pod pustą kropką Orlen Neptun VIII, 2,5 km) – okienko powinno pokazywać wszystkie farmy w klikniętym miejscu, nie tylko tę z wierzchu.
