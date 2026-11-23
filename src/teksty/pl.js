@@ -80,6 +80,11 @@ export default {
   // ── Okienko PSE (lewa góra): wiatr, ograniczenia, cena, odtwarzanie doby ──
   'mapa.wiatr_etykieta': 'Produkcja z wiatru (ostatni dostępny pomiar):',
   'mapa.wiatr_stan': (doba, okres) => `stan na: ${doba}, ${okres}`,
+  // Tryb spokojny (decyzja Ani 23.11.2026): nagłówek rozwiniętego okienka PSE i jego zwinięta linijka (bez ceny –
+  // cena „teraz” jest tylko w Karcie Polski). kiedy = „08:00–08:15” albo z datą, gdy pomiar nie jest z dziś.
+  'mapa.pse_tytul': 'Wiatr i cena prądu',
+  'mapa.pse_skrot': (mw, kiedy) => `Wiatr ${mw} · stan na ${kiedy} · PSE`,
+  'mapa.pse_skrot_brak': 'Wiatr: brak danych PSE',
   'mapa.ograniczenie_etykieta': 'Ostatnie polecenie PSE ograniczenia wiatru:',
   'mapa.ograniczenie': (doba, mwh) => `Ostatnie polecenie PSE ograniczenia wiatru: ${doba} – ok. ${mwh} MWh`,
   'mapa.ograniczenie_brak': 'Ostatnie polecenie PSE ograniczenia wiatru: brak danych PSE',
@@ -115,6 +120,10 @@ export default {
 
   // ── Legenda „Co oznaczają znaczki” i liczniki ──
   'leg.tytul': 'Co oznaczają znaczki',
+  // Tryb spokojny (wariant 3B): źródła pod listą warstw i przycisk „więcej ▸ / mniej ▾” (strzałkę dokłada CSS).
+  'leg.zrodla': 'Źródła: GEM · OpenStreetMap · EMODnet · PSE',
+  'leg.wiecej': 'więcej',
+  'leg.mniej': 'mniej',
   'leg.moce': 'Wolna moc dla odbiorców (PSE)',
   'leg.moce_opis': '– sieć najwyższych napięć 220/400 kV, dla największych odbiorców; sześciokąt: stacja planowana z wolną mocą;',
   'leg.moce_kolo': 'koło: lokalizacja przybliżona;',
@@ -325,6 +334,8 @@ export default {
   'karta.krotko_oze': 'z OZE',
   'karta.krotko_wegiel': 'z węgla',
   'karta.stan': (stan) => `stan na ${stan}`,
+  // Zwinięta linijka Karty (tryb spokojny, wariant 1A): „56% z węgla · PSE, stan na 08:15”.
+  'karta.skrot': (co, stan) => `${co} · PSE, stan na ${stan}`,
   'karta.opublikowalo': (kiedy) => ` · PSE opublikowało ${kiedy}`,
   'karta.podpis': (stan) => `z produkcji w Polsce · ${stan}`,
   // Ślad CO2 w ekwiwalencie (CO₂eq) – mediany IPCC są w ekwiwalencie (decyzja Ani 23.11.2026, obie wersje mówią to samo).

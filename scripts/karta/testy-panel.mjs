@@ -51,7 +51,7 @@ test('liczba-bohater = OZE, gdy OZE więcej niż węgla; przy remisie węgiel', 
   assert.equal(t.bohater.grupa, 'oze');
   assert.equal(t.bohater.procent, '52%');
   assert.equal(t.bohater.zdanie, 'prądu w Polsce pochodzi z OZE (źródeł odnawialnych)');
-  assert.match(t.skrot, /^52% z OZE · stan na 12:30$/);
+  assert.match(t.skrot, /^52% z OZE · PSE, stan na 12:30$/);
   k.oze_udzial = k.wegiel_udzial;
   assert.equal(tekstyKarty(k, RCE, terazPo(k, 1)).bohater.grupa, 'wegiel');
 });
