@@ -1,5 +1,7 @@
 <!doctype html>
 <html lang="pl">
+  <!-- Szablon mapy: teksty w podwójnych klamrach pochodzą ze słowników src/teksty/pl.js i en.js (scripts/jezyki.mjs).
+       Z tego jednego pliku powstają /mapa/ (PL) i /en/map/ (EN). -->
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -18,90 +20,98 @@
       @view-transition { navigation: auto; }
       @media (prefers-reduced-motion: reduce) { @view-transition { navigation: none; } }
     </style>
-    <title>OSIRIS – mapa</title>
-    <meta name="description" content="Mapa źródeł prądu w Polsce: elektrownie, farmy wiatrowe na lądzie i na Bałtyku, linie najwyższych napięć, wolna moc przyłączeniowa dla odbiorców w sieci PSE, produkcja z wiatru i cena energii – z oficjalnych, publicznych źródeł." />
+    <title>{{mapa.meta.tytul}}</title>
+    <meta name="description" content="{{mapa.meta.opis}}" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="OSIRIS – mapa prądu Polski" />
-    <meta property="og:description" content="Skąd Polska bierze prąd i ile on kosztuje – z oficjalnych, publicznych źródeł, z datą przy każdej liczbie." />
-    <meta property="og:url" content="https://osiris-ania-rafael.pages.dev/mapa/" />
+    <meta property="og:title" content="{{meta.tytul}}" />
+    <meta property="og:description" content="{{mapa.meta.og_opis}}" />
+    <meta property="og:url" content="{{@adres-pelny}}" />
     <meta property="og:image" content="https://osiris-ania-rafael.pages.dev/og-obraz.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:locale" content="pl_PL" />
+    <meta property="og:locale" content="{{meta.og_locale}}" />
+    <!-- Wersje językowe tej strony (PL i EN – scripts/jezyki.mjs). -->
+    <link rel="alternate" hreflang="pl" href="https://osiris-ania-rafael.pages.dev/mapa/" />
+    <link rel="alternate" hreflang="en" href="https://osiris-ania-rafael.pages.dev/en/map/" />
+    <link rel="alternate" hreflang="x-default" href="https://osiris-ania-rafael.pages.dev/mapa/" />
     <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body>
     <main>
-      <div id="mapa" aria-label="Mapa Polski"></div>
+      <div id="mapa" aria-label="{{mapa.aria_mapa}}"></div>
 
       <section class="wskaznik" aria-live="polite">
         <div id="odtw-naglowek" hidden>
           <span class="odtw-data" id="odtw-data"></span>
           <span class="odtw-zegar" id="odtw-zegar"></span>
         </div>
-        <span class="wskaznik__etykieta etykieta-mala" id="wiatr-etykieta">Produkcja z wiatru (ostatni dostępny pomiar):</span>
-        <span class="wskaznik__wartosc" id="wiatr-teraz">wczytywanie…</span>
+        <span class="wskaznik__etykieta etykieta-mala" id="wiatr-etykieta">{{mapa.wiatr_etykieta}}</span>
+        <span class="wskaznik__wartosc" id="wiatr-teraz">{{wspolne.wczytywanie}}</span>
         <div id="wiatr-wykres"></div>
         <span class="wskaznik__etykieta" id="wiatr-stan"></span>
-        <span class="wskaznik__etykieta" id="wiatr-ograniczenie">Ostatnie polecenie PSE ograniczenia wiatru: wczytywanie…</span>
-        <span class="wskaznik__etykieta" id="rce-teraz">Cena prądu (RCE): wczytywanie…</span>
+        <span class="wskaznik__etykieta" id="wiatr-ograniczenie">{{mapa.ograniczenie_etykieta}} {{wspolne.wczytywanie}}</span>
+        <span class="wskaznik__etykieta" id="rce-teraz">{{mapa.rce_etykieta}} {{wspolne.wczytywanie}}</span>
         <div id="rce-wykres"></div>
         <div class="odtw-przyciski">
-          <button type="button" id="odtw-start" hidden>▶ Odtwórz dobę</button>
-          <button type="button" id="odtw-teraz" hidden>Wróć do teraz</button>
+          <button type="button" id="odtw-start" hidden>{{odtw.start}}</button>
+          <button type="button" id="odtw-teraz" hidden>{{odtw.wroc}}</button>
         </div>
         <span class="wskaznik__etykieta" id="odtw-stan"></span>
-        <p class="zrodlo" id="pse-zrodlo"><span class="zrodlo__etykieta">Źródło</span> <span id="pse-zrodlo-tekst">PSE · wczytywanie…</span></p>
+        <p class="zrodlo" id="pse-zrodlo"><span class="zrodlo__etykieta">{{wspolne.zrodlo}}</span> <span id="pse-zrodlo-tekst">PSE · {{wspolne.wczytywanie}}</span></p>
       </section>
       <!-- Ogłoszenia odtwarzania dla czytnika ekranu (start, pauza, koniec) – okienko na ten czas milknie. -->
       <span id="odtw-ogloszenie" class="tylko-czytnik" aria-live="polite"></span>
 
-      <div class="przelacznik" role="group" aria-label="Tło mapy">
-        <button type="button" data-tryb="dzien" aria-pressed="false">Dzień</button>
-        <button type="button" data-tryb="noc" aria-pressed="true" aria-describedby="noc-opis"
-          title="Światła nocne (zdjęcie z 2016 r.) to przybliżenie aktywności i oświetlenia – głównie oświetlenia ulic i zabudowy – a nie pomiar zużycia prądu.">Noc</button>
-        <span id="noc-opis" class="tylko-czytnik">Światła nocne (zdjęcie z 2016 r.) to przybliżenie aktywności i oświetlenia – głównie oświetlenia ulic i zabudowy – a nie pomiar zużycia prądu.</span>
+      <!-- Prawy górny róg, obok + / −: przełącznik PL | EN i DZIEŃ | NOC – para w tym samym stylu (decyzja Ani 23.11.2026). -->
+      <div class="mapa-gora">
+        <!-- JEZYKI -->
+        <div class="przelacznik" role="group" aria-label="{{mapa.tlo_aria}}">
+          <button type="button" data-tryb="dzien" aria-pressed="false">{{mapa.dzien}}</button>
+          <button type="button" data-tryb="noc" aria-pressed="true" aria-describedby="noc-opis"
+            title="{{mapa.noc_opis}}">{{mapa.noc}}</button>
+          <span id="noc-opis" class="tylko-czytnik">{{mapa.noc_opis}}</span>
+        </div>
       </div>
 
       <details class="legenda" open>
-        <summary>Co oznaczają znaczki</summary>
+        <summary>{{leg.tytul}}</summary>
         <div class="legenda__tresc">
         <ul>
           <li><label><input type="checkbox" data-warstwa="moce" checked />
             <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><polygon points="12,0.7 18.3,4.35 18.3,11.65 12,15.3 5.7,11.65 5.7,4.35" fill="none" stroke="#05070d" stroke-width="2.6" /><polygon points="12,0.7 18.3,4.35 18.3,11.65 12,15.3 5.7,11.65 5.7,4.35" fill="none" stroke="#2dd4bf" stroke-width="1.3" stroke-dasharray="1.8 1.3" /><polygon points="12,3.6 15.8,5.8 15.8,10.2 12,12.4 8.2,10.2 8.2,5.8" fill="#2dd4bf" stroke="#05070d" stroke-width="1" /></svg>
-            <span><strong>Wolna moc dla odbiorców (PSE)</strong> <span class="legenda__licznik" data-licznik="moce">wczytywanie…</span> – sieć najwyższych napięć 220/400 kV, dla największych odbiorców; sześciokąt: stacja planowana z wolną mocą; <svg class="znak-maly" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="rgba(45,212,191,0.18)" stroke="#2dd4bf" stroke-width="1.2" stroke-dasharray="2.5 1.6" /></svg> koło: lokalizacja przybliżona; <svg class="znak-maly" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><polygon points="8,1.5 13.6,4.75 13.6,11.25 8,14.5 2.4,11.25 2.4,4.75" fill="#05070d" stroke="rgba(45,212,191,0.9)" stroke-width="1.4" /></svg> pusty sześciokąt: według wykazu PSE wnioski do rozdzielni 220/400 kV obecnie bez rozpatrzenia</span></label></li>
+            <span><strong>{{leg.moce}}</strong> <span class="legenda__licznik" data-licznik="moce">{{wspolne.wczytywanie}}</span> {{leg.moce_opis}} <svg class="znak-maly" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="rgba(45,212,191,0.18)" stroke="#2dd4bf" stroke-width="1.2" stroke-dasharray="2.5 1.6" /></svg> {{leg.moce_kolo}} <svg class="znak-maly" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><polygon points="8,1.5 13.6,4.75 13.6,11.25 8,14.5 2.4,11.25 2.4,4.75" fill="#05070d" stroke="rgba(45,212,191,0.9)" stroke-width="1.4" /></svg> {{leg.moce_pusty}}</span></label></li>
           <li><label><input type="checkbox" data-warstwa="linie" checked />
             <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><line x1="1" y1="8" x2="23" y2="8" stroke="#05070d" stroke-width="5" /><line x1="1" y1="8" x2="23" y2="8" stroke="#f2c14e" stroke-width="3" /></svg>
-            <span><strong>Linie najwyższych napięć</strong> <span class="legenda__licznik" data-licznik="linie">wczytywanie…</span> – 220 i 400 kV (grubsza linia: 400 kV); kliknij linię na mapie, by zobaczyć szczegóły</span></label></li>
+            <span><strong>{{leg.linie}}</strong> <span class="legenda__licznik" data-licznik="linie">{{wspolne.wczytywanie}}</span> {{leg.linie_opis}}</span></label></li>
           <li><label><input type="checkbox" data-warstwa="morskie" checked />
             <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><circle cx="7" cy="8" r="5" fill="#5cc8ff" stroke="#05070d" stroke-width="1.5" /><circle cx="18" cy="8" r="4.5" fill="none" stroke="#5cc8ff" stroke-width="2" /></svg>
-            <span><strong>Morskie farmy wiatrowe</strong> <span class="legenda__licznik" data-licznik="morskie">wczytywanie…</span> – puste kółko: prawdopodobny duplikat lub brak na liście MKiŚ</span></label></li>
+            <span><strong>{{leg.morskie}}</strong> <span class="legenda__licznik" data-licznik="morskie">{{wspolne.wczytywanie}}</span> {{leg.morskie_opis}}</span></label></li>
           <li><label><input type="checkbox" data-warstwa="ladowe" checked />
             <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><circle cx="7" cy="8" r="4" fill="#4ade80" stroke="#05070d" stroke-width="1.5" /><circle cx="18" cy="8" r="4.5" fill="#05070d" stroke="#4ade80" stroke-width="2" /><circle cx="18" cy="8" r="1.5" fill="#4ade80" /></svg>
-            <span><strong>Lądowe farmy wiatrowe od 10 MW</strong> <span class="legenda__licznik" data-licznik="ladowe">wczytywanie…</span> – pełne kółko: działa; pierścień z kropką: w budowie</span></label></li>
+            <span><strong>{{leg.ladowe}}</strong> <span class="legenda__licznik" data-licznik="ladowe">{{wspolne.wczytywanie}}</span> {{leg.ladowe_opis}}</span></label></li>
           <li><label><input type="checkbox" data-warstwa="wegiel" checked />
             <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><rect x="6" y="2" width="12" height="12" style="fill: var(--kolor-wegiel)" stroke="#05070d" stroke-width="1.5" /></svg>
-            <span><strong>Elektrownie węglowe</strong> <span class="legenda__licznik" data-licznik="wegiel">wczytywanie…</span> – kwadrat: elektrownia spalająca paliwo</span></label></li>
+            <span><strong>{{leg.wegiel}}</strong> <span class="legenda__licznik" data-licznik="wegiel">{{wspolne.wczytywanie}}</span> {{leg.kwadrat}}</span></label></li>
           <li><label><input type="checkbox" data-warstwa="gaz" checked />
             <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><rect x="6" y="2" width="12" height="12" style="fill: var(--kolor-gaz)" stroke="#05070d" stroke-width="1.5" /></svg>
-            <span><strong>Elektrownie gazowe i olejowe</strong> <span class="legenda__licznik" data-licznik="gaz">wczytywanie…</span> – kwadrat: elektrownia spalająca paliwo</span></label></li>
+            <span><strong>{{leg.gaz}}</strong> <span class="legenda__licznik" data-licznik="gaz">{{wspolne.wczytywanie}}</span> {{leg.kwadrat}}</span></label></li>
           <li><label><input type="checkbox" data-warstwa="woda" checked />
             <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><circle cx="12" cy="8" r="6" style="fill: var(--kolor-woda)" stroke="#05070d" stroke-width="1.5" /></svg>
-            <span><strong>Elektrownie wodne</strong> <span class="legenda__licznik" data-licznik="woda">wczytywanie…</span></span></label></li>
+            <span><strong>{{leg.woda}}</strong> <span class="legenda__licznik" data-licznik="woda">{{wspolne.wczytywanie}}</span></span></label></li>
           <li><label><input type="checkbox" data-warstwa="pompowa" checked />
             <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><polygon points="12,1 19,8 12,15 5,8" style="fill: var(--kolor-woda)" stroke="#05070d" stroke-width="1.5" /></svg>
-            <span><strong>Elektrownie szczytowo-pompowe</strong> <span class="legenda__licznik" data-licznik="pompowa">wczytywanie…</span> – magazyn energii: pompują wodę w górę, gdy prądu jest dużo, i oddają go, gdy brakuje</span></label></li>
+            <span><strong>{{leg.pompowa}}</strong> <span class="legenda__licznik" data-licznik="pompowa">{{wspolne.wczytywanie}}</span> {{leg.pompowa_opis}}</span></label></li>
         </ul>
-        <p class="legenda__uwaga legenda__uwaga--moce" id="legenda-moce-zrodla">Moc dla nowych źródeł: wczytywanie…</p>
-        <p class="legenda__uwaga">Elektrownie: tylko działające i tylko duże (progi w „Źródła i licencje”)</p>
-        <p class="legenda__uwaga"><strong>Rozmiar znaczka elektrowni = moc zainstalowana, nie bieżąca produkcja</strong></p>
+        <p class="legenda__uwaga legenda__uwaga--moce" id="legenda-moce-zrodla">{{moce.zrodla_etykieta}} {{wspolne.wczytywanie}}</p>
+        <p class="legenda__uwaga">{{leg.elektrownie_uwaga}}</p>
+        <p class="legenda__uwaga"><strong>{{leg.rozmiar}}</strong></p>
         <div class="legenda__skala" aria-hidden="true">
           <!-- Wzorce w tej samej skali co na mapie przy widoku całej Polski: bok = 0,35 px · √MW. -->
           <svg viewBox="0 0 28 28" width="28" height="28"><rect x="12.25" y="12.25" width="3.5" height="3.5" fill="#a9b7cc" stroke="#05070d" stroke-width="1" /></svg><span>100 MW</span>
-          <svg viewBox="0 0 28 28" width="28" height="28"><rect x="8.45" y="8.45" width="11.1" height="11.1" fill="#a9b7cc" stroke="#05070d" stroke-width="1" /></svg><span>1 000 MW</span>
-          <svg viewBox="0 0 28 28" width="28" height="28"><rect x="1.65" y="1.65" width="24.7" height="24.7" fill="#a9b7cc" stroke="#05070d" stroke-width="1" /></svg><span>5 000 MW</span>
+          <svg viewBox="0 0 28 28" width="28" height="28"><rect x="8.45" y="8.45" width="11.1" height="11.1" fill="#a9b7cc" stroke="#05070d" stroke-width="1" /></svg><span>{{leg.skala_1000}}</span>
+          <svg viewBox="0 0 28 28" width="28" height="28"><rect x="1.65" y="1.65" width="24.7" height="24.7" fill="#a9b7cc" stroke="#05070d" stroke-width="1" /></svg><span>{{leg.skala_5000}}</span>
         </div>
-        <p class="tylko-czytnik">Wzorce rozmiaru: 100 MW – mały kwadrat, 1 000 MW – średni, 5 000 MW – duży.</p>
+        <p class="tylko-czytnik">{{leg.wzorce}}</p>
         </div>
       </details>
 
@@ -109,56 +119,56 @@
            rozwinięty na starcie. 4 zakładki; na starcie „Ile i jak czysto” (src/karta.js, napisy: src/karta-teksty.js). -->
       <details class="karta" id="karta" open>
         <summary class="karta__naglowek">
-          <span class="karta__tytul">Karta Polski</span>
-          <span class="karta__skrot" id="karta-skrot">wczytywanie…</span>
+          <span class="karta__tytul">{{karta.tytul}}</span>
+          <span class="karta__skrot" id="karta-skrot">{{wspolne.wczytywanie}}</span>
         </summary>
-        <div class="karta__zakladki" role="tablist" aria-label="Karta Polski">
-          <button type="button" role="tab" id="zakladka-skad" aria-controls="karta-skad" aria-selected="false" tabindex="-1">Skąd</button>
-          <button type="button" role="tab" id="zakladka-gdzie" aria-controls="karta-gdzie" aria-selected="false" tabindex="-1">Gdzie</button>
-          <button type="button" role="tab" id="zakladka-ile" aria-controls="karta-ile" aria-selected="true" tabindex="0">Ile i jak czysto</button>
-          <button type="button" role="tab" id="zakladka-zmiany" aria-controls="karta-zmiany" aria-selected="false" tabindex="-1">Co się zmieni</button>
+        <div class="karta__zakladki" role="tablist" aria-label="{{karta.tytul}}">
+          <button type="button" role="tab" id="zakladka-skad" aria-controls="karta-skad" aria-selected="false" tabindex="-1">{{karta.zakladka_skad}}</button>
+          <button type="button" role="tab" id="zakladka-gdzie" aria-controls="karta-gdzie" aria-selected="false" tabindex="-1">{{karta.zakladka_gdzie}}</button>
+          <button type="button" role="tab" id="zakladka-ile" aria-controls="karta-ile" aria-selected="true" tabindex="0">{{karta.zakladka_ile}}</button>
+          <button type="button" role="tab" id="zakladka-zmiany" aria-controls="karta-zmiany" aria-selected="false" tabindex="-1">{{karta.zakladka_zmiany}}</button>
         </div>
 
         <!-- SKĄD: te same warstwy co w legendzie – pola z tym samym data-warstwa są zsynchronizowane (src/main.js). Bez lotu. -->
         <section class="karta__tresc" role="tabpanel" id="karta-skad" aria-labelledby="zakladka-skad" tabindex="0" hidden>
-          <p class="karta__wstep">Źródła prądu na mapie – zaznacz, co pokazać:</p>
+          <p class="karta__wstep">{{karta.skad_wstep}}</p>
           <ul class="karta__warstwy">
             <li><label><input type="checkbox" data-warstwa="wegiel" checked />
               <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><rect x="6" y="2" width="12" height="12" style="fill: var(--kolor-wegiel)" stroke="#05070d" stroke-width="1.5" /></svg>
-              <span><strong>Elektrownie węglowe</strong> <span class="legenda__licznik" data-licznik="wegiel">wczytywanie…</span> <span class="karta__prog">na mapie · bloki od 30 MW (GEM)</span></span></label></li>
+              <span><strong>{{leg.wegiel}}</strong> <span class="legenda__licznik" data-licznik="wegiel">{{wspolne.wczytywanie}}</span> <span class="karta__prog">{{karta.prog_bloki_30}}</span></span></label></li>
             <li><label><input type="checkbox" data-warstwa="gaz" checked />
               <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><rect x="6" y="2" width="12" height="12" style="fill: var(--kolor-gaz)" stroke="#05070d" stroke-width="1.5" /></svg>
-              <span><strong>Elektrownie gazowe i olejowe</strong> <span class="legenda__licznik" data-licznik="gaz">wczytywanie…</span> <span class="karta__prog">na mapie · bloki od 20 MW (GEM)</span></span></label></li>
+              <span><strong>{{leg.gaz}}</strong> <span class="legenda__licznik" data-licznik="gaz">{{wspolne.wczytywanie}}</span> <span class="karta__prog">{{karta.prog_bloki_20}}</span></span></label></li>
             <li><label><input type="checkbox" data-warstwa="woda" checked />
               <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><circle cx="12" cy="8" r="6" style="fill: var(--kolor-woda)" stroke="#05070d" stroke-width="1.5" /></svg>
-              <span><strong>Elektrownie wodne</strong> <span class="legenda__licznik" data-licznik="woda">wczytywanie…</span> <span class="karta__prog">na mapie · od 30 MW (GEM)</span></span></label></li>
+              <span><strong>{{leg.woda}}</strong> <span class="legenda__licznik" data-licznik="woda">{{wspolne.wczytywanie}}</span> <span class="karta__prog">{{karta.prog_30}}</span></span></label></li>
             <li><label><input type="checkbox" data-warstwa="pompowa" checked />
               <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><polygon points="12,1 19,8 12,15 5,8" style="fill: var(--kolor-woda)" stroke="#05070d" stroke-width="1.5" /></svg>
-              <span><strong>Elektrownie szczytowo-pompowe</strong> <span class="legenda__licznik" data-licznik="pompowa">wczytywanie…</span> <span class="karta__prog">na mapie · od 30 MW (GEM)</span></span></label></li>
+              <span><strong>{{leg.pompowa}}</strong> <span class="legenda__licznik" data-licznik="pompowa">{{wspolne.wczytywanie}}</span> <span class="karta__prog">{{karta.prog_30}}</span></span></label></li>
             <li><label><input type="checkbox" data-warstwa="ladowe" checked />
               <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><circle cx="7" cy="8" r="4" fill="#4ade80" stroke="#05070d" stroke-width="1.5" /><circle cx="18" cy="8" r="4.5" fill="#05070d" stroke="#4ade80" stroke-width="2" /><circle cx="18" cy="8" r="1.5" fill="#4ade80" /></svg>
-              <span><strong>Lądowe farmy wiatrowe od 10 MW</strong> <span class="legenda__licznik" data-licznik="ladowe">wczytywanie…</span></span></label></li>
+              <span><strong>{{leg.ladowe}}</strong> <span class="legenda__licznik" data-licznik="ladowe">{{wspolne.wczytywanie}}</span></span></label></li>
             <li><label><input type="checkbox" data-warstwa="morskie" checked />
               <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><circle cx="7" cy="8" r="5" fill="#5cc8ff" stroke="#05070d" stroke-width="1.5" /><circle cx="18" cy="8" r="4.5" fill="none" stroke="#5cc8ff" stroke-width="2" /></svg>
-              <span><strong>Morskie farmy wiatrowe</strong> <span class="legenda__licznik" data-licznik="morskie">wczytywanie…</span></span></label></li>
+              <span><strong>{{leg.morskie}}</strong> <span class="legenda__licznik" data-licznik="morskie">{{wspolne.wczytywanie}}</span></span></label></li>
           </ul>
-          <p class="karta__uwaga">Rozmiar znaczka elektrowni = moc zainstalowana, nie bieżąca produkcja. Opis wszystkich znaczków: legenda po prawej.</p>
+          <p class="karta__uwaga">{{karta.skad_uwaga}}</p>
         </section>
 
         <!-- GDZIE: wolna moc dla odbiorców (PSE) – dawny osobny panel, treść bez zmian (src/moce.js wypełnia ją z public/data/moce-pse.json). -->
         <section class="karta__tresc" role="tabpanel" id="karta-gdzie" aria-labelledby="zakladka-gdzie" tabindex="0" hidden>
         <div class="panel-moce" id="panel-moce">
-          <h2 class="panel-moce__tytul">Wolna moc dla odbiorców · PSE 220/400 kV</h2>
-          <p class="panel-moce__wazne">Sieć najwyższych napięć (220/400 kV) – dla największych odbiorców, np. fabryk i centrów danych. Mniejsze firmy przyłączają się do sieci operatorów dystrybucyjnych (kolejny etap OSIRIS).</p>
-          <p class="panel-moce__podsumowanie" id="moce-podsumowanie">wczytywanie…</p>
-          <p>Dla istniejących stacji PSE podaje 0 MW – wolną moc mają tylko stacje planowane. Moc podana dla roku 2031; niektóre stacje powstaną później.</p>
-          <h2 class="etykieta-mala">Stacje dla nowych odbiorców</h2>
+          <h2 class="panel-moce__tytul">{{moce.tytul}}</h2>
+          <p class="panel-moce__wazne">{{moce.wazne}}</p>
+          <p class="panel-moce__podsumowanie" id="moce-podsumowanie">{{wspolne.wczytywanie}}</p>
+          <p>{{moce.istniejace}}</p>
+          <h2 class="etykieta-mala">{{moce.lista1}}</h2>
           <ul class="panel-moce__lista" id="moce-lista-1"></ul>
-          <h2 class="etykieta-mala">Stacje budowane głównie dla sieci i nowych źródeł – według PSE mogą też zasilać odbiorców</h2>
+          <h2 class="etykieta-mala">{{moce.lista2}}</h2>
           <ul class="panel-moce__lista" id="moce-lista-2"></ul>
-          <p class="panel-moce__uwaga">Szacunek operatora, nie gwarancja przyłączenia. Wykorzystanie mocy w jednej stacji może zmniejszyć moc w stacjach sąsiednich – dlatego mocy stacji nie sumujemy.</p>
-          <p class="panel-moce__uwaga" id="moce-zrodla-zdanie">Moc dla nowych źródeł: wczytywanie…</p>
-          <p class="panel-moce__stan" id="moce-stan">stan na: wczytywanie…</p>
+          <p class="panel-moce__uwaga">{{moce.szacunek}}</p>
+          <p class="panel-moce__uwaga" id="moce-zrodla-zdanie">{{moce.zrodla_etykieta}} {{wspolne.wczytywanie}}</p>
+          <p class="panel-moce__stan" id="moce-stan">{{moce.stan_etykieta}} {{wspolne.wczytywanie}}</p>
           <div id="moce-zrodlo"></div>
         </div>
         </section>
@@ -166,70 +176,70 @@
         <!-- ILE I JAK CZYSTO (otwarta na starcie): liczba-bohater, pasek miksu, trzy liczby, źródło, Metodologia. -->
         <section class="karta__tresc" role="tabpanel" id="karta-ile" aria-labelledby="zakladka-ile" tabindex="0">
           <p class="karta__plakietka" id="karta-plakietka" hidden><span aria-hidden="true">⚠</span> <span id="karta-plakietka-tekst"></span></p>
-          <p class="karta__bohater"><button type="button" class="karta__procent liczby" id="karta-procent" aria-haspopup="dialog" disabled></button> <span id="karta-zdanie">wczytywanie…</span></p>
+          <p class="karta__bohater"><button type="button" class="karta__procent liczby" id="karta-procent" aria-haspopup="dialog" disabled></button> <span id="karta-zdanie">{{wspolne.wczytywanie}}</span></p>
           <p class="karta__podpis" id="karta-podpis"></p>
           <div class="karta__pasek" id="karta-pasek" aria-hidden="true"></div>
-          <ul class="karta__legenda-paska" id="karta-legenda-paska" aria-label="Miks produkcji w Polsce"></ul>
+          <ul class="karta__legenda-paska" id="karta-legenda-paska" aria-label="{{karta.miks_aria}}"></ul>
           <!-- Paski „produkcja teraz na tle mocy zainstalowanej” (PR d, decyzje Ani 23.11.2026): zwinięte na starcie.
                Liczby: src/karta-teksty.js (tekstyMocy); moc: PSE, Raport 2025 KSE, Tabela 1.1 (ZRODLA.md). -->
           <details class="karta__moce" id="karta-moce">
-            <summary>Ile pracuje z tego, co mamy</summary>
+            <summary>{{karta.moce_tytul}}</summary>
             <p class="karta__podpis" id="karta-moce-podpis"></p>
-            <ul class="karta__moce-lista" id="karta-moce-lista" aria-label="Produkcja teraz na tle mocy zainstalowanej"></ul>
+            <ul class="karta__moce-lista" id="karta-moce-lista" aria-label="{{karta.moce_aria}}"></ul>
             <ul class="karta__moce-uwagi">
-              <li>Moc zainstalowana to nie moc dostępna: część bloków stoi w remoncie albo w rezerwie.</li>
-              <li>Wiatr i słońce pracują, gdy wieje i świeci – krótki pasek to pogoda albo pora dnia, a nie awaria.</li>
+              <li>{{karta.uwaga_dostepna}}</li>
+              <li>{{karta.uwaga_pogoda}}</li>
               <!-- Jedno źródło wyjaśnienia: ten sam tekst (#karta-moce-niepewnosc) pokazuje okienko C po kliknięciu „?” przy pasku OZE (src/karta.js). -->
-              <li>„?” – <span id="karta-moce-niepewnosc">PSE w raporcie podaje jedną moc dla wiatru (na lądzie i na morzu), słońca i innych OZE – bez podziału. Nie wiemy też, czy liczy panele na dachach. Wody tu nie wliczamy.</span></li>
-              <li>Bez paska: woda, olej, odpady i „inne” – raport PSE nie podaje dla nich mocy, którą da się porównać z produkcją.</li>
-              <li>Mapa pokazuje tylko większe elektrownie, dlatego suma mocy na mapie (zakładka „Skąd”) jest mniejsza.</li>
+              <li>{{karta.pytajnik_znak}} <span id="karta-moce-niepewnosc">{{karta.niepewnosc}}</span></li>
+              <li>{{karta.uwaga_bez_paska}}</li>
+              <li>{{karta.uwaga_mapa}}</li>
             </ul>
-            <p class="zrodlo"><span class="zrodlo__etykieta">Źródło</span> <span id="karta-moce-zrodlo">PSE, Raport 2025 KSE, Tabela 1.1</span></p>
+            <p class="zrodlo"><span class="zrodlo__etykieta">{{wspolne.zrodlo}}</span> <span id="karta-moce-zrodlo">{{karta.raport_kse}}</span></p>
           </details>
           <dl class="karta__liczby">
             <div>
-              <dt class="etykieta-mala">Cena RCE</dt>
-              <dd class="karta__wartosc liczby" id="karta-cena">wczytywanie…</dd>
+              <dt class="etykieta-mala">{{karta.cena_rce}}</dt>
+              <dd class="karta__wartosc liczby" id="karta-cena">{{wspolne.wczytywanie}}</dd>
               <dd class="karta__opis" id="karta-cena-opis"></dd>
             </div>
             <div>
-              <dt class="etykieta-mala">Ślad CO<sub>2</sub></dt>
-              <dd class="karta__wartosc liczby" id="karta-co2">wczytywanie…</dd>
+              <dt class="etykieta-mala">{{karta.slad_co2}}</dt>
+              <dd class="karta__wartosc liczby" id="karta-co2">{{wspolne.wczytywanie}}</dd>
               <dd class="karta__opis" id="karta-co2-opis"></dd>
             </div>
             <div>
-              <dt class="etykieta-mala">Wymiana z zagranicą</dt>
-              <dd class="karta__wartosc liczby" id="karta-wymiana">wczytywanie…</dd>
+              <dt class="etykieta-mala">{{karta.wymiana}}</dt>
+              <dd class="karta__wartosc liczby" id="karta-wymiana">{{wspolne.wczytywanie}}</dd>
               <dd class="karta__opis" id="karta-wymiana-opis"></dd>
             </div>
           </dl>
-          <p class="zrodlo"><span class="zrodlo__etykieta">Źródło</span> <span id="karta-zrodlo">PSE · wczytywanie…</span></p>
-          <p class="zrodlo">przetworzenie i ślad CO2: OSIRIS</p>
+          <p class="zrodlo"><span class="zrodlo__etykieta">{{wspolne.zrodlo}}</span> <span id="karta-zrodlo">PSE · {{wspolne.wczytywanie}}</span></p>
+          <p class="zrodlo">{{karta.przetworzenie}}</p>
           <div class="karta__stopka">
             <!-- Metodologia: krótko, prostym językiem – na podstawie ZRODLA.md, sekcja „Karta Polski”. -->
             <details class="karta__metodologia">
-              <summary>Metodologia</summary>
+              <summary>{{met.tytul}}</summary>
               <ul>
-                <li><strong>Skąd dane:</strong> PSE, raport „his-gen-pal-sire” – produkcja prądu w Polsce według paliw, co 15 minut. PSE publikuje go zwykle z opóźnieniem 30–45 minut, a strona pobiera dane co 4 godziny.</li>
-                <li><strong>Sprawdzian:</strong> przy każdym pobraniu wiatr i słońce z tego raportu muszą się zgadzać (do 1 MW) z drugim raportem PSE („his-wlk-cal”). Gdy się nie zgadzają, zostają poprzednie dane z plakietką. Ostatnio: <span id="karta-sprawdzian">brak danych</span>.</li>
-                <li><strong>Udziały:</strong> liczone z produkcji w Polsce. Elektrownie szczytowo-pompowe pomijamy – to magazyn energii, a nie źródło. Odpady nie są liczone jako OZE.</li>
-                <li><strong>Ślad CO<sub>2</sub> – szacunek OSIRIS:</strong> produkcja z każdego paliwa × typowy ślad CO<sub>2</sub> w całym cyklu życia elektrowni (mediany IPCC, raport AR5 z 2014 r.). Dla paliw, których IPCC nie podaje (węgiel brunatny, olej, gaz z węgla, odpady, „inne”, „inne OZE”), przyjęliśmy własne założenia na podstawie wskaźników KOBiZE. W sprawdzonym kwadransie (20.11.2026, 12:00–12:15) skrajne warianty założeń dla tych paliw – bez węgla brunatnego – zmieniały wynik o mniej niż 3%. Prądu kupionego za granicą nie wliczamy. Dokładnie teraz: <span class="liczby" id="karta-co2-dokladnie">brak danych</span>.</li>
-                <li><strong>KOBiZE 553 kg CO<sub>2</sub>/MWh (2024)</strong> to inna miara: tylko emisja ze spalania, średnia z całego roku. Nie porównujemy jej wprost z naszym szacunkiem.</li>
-                <li><strong>Wymiana z zagranicą:</strong> wymiana planowa według PSE (suma dwóch sald: swm_p + swm_np), a nie zmierzona. „Kupuje” – prąd płynie do Polski, „sprzedaje” – z Polski.</li>
+                <li>{{met.skad}}</li>
+                <li>{{met.sprawdzian}} <span id="karta-sprawdzian">{{wspolne.brak_danych}}</span>.</li>
+                <li>{{met.udzialy}}</li>
+                <li>{{met.co2}} <span class="liczby" id="karta-co2-dokladnie">{{wspolne.brak_danych}}</span>.</li>
+                <li>{{met.kobize}}</li>
+                <li>{{met.wymiana}}</li>
               </ul>
             </details>
-            <span class="karta__klodka"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><rect x="3" y="7" width="10" height="7.5" rx="1.5" fill="currentColor" /><path d="M5.2 7V5a2.8 2.8 0 0 1 5.6 0v2" fill="none" stroke="currentColor" stroke-width="1.5" /></svg> Karta lokalizacji – wkrótce</span>
+            <span class="karta__klodka"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><rect x="3" y="7" width="10" height="7.5" rx="1.5" fill="currentColor" /><path d="M5.2 7V5a2.8 2.8 0 0 1 5.6 0v2" fill="none" stroke="currentColor" stroke-width="1.5" /></svg> {{karta.klodka}}</span>
           </div>
         </section>
 
         <!-- CO SIĘ ZMIENI: tylko „Wkrótce.” – bez obietnic treści. -->
         <section class="karta__tresc" role="tabpanel" id="karta-zmiany" aria-labelledby="zakladka-zmiany" tabindex="0" hidden>
-          <p>Wkrótce.</p>
+          <p>{{karta.wkrotce}}</p>
         </section>
       </details>
 
       <!-- Powrót na stronę tytułową: zwykły link (działa z klawiatury i z przyciskiem „Wstecz” przeglądarki). -->
-      <a class="powrot" href="/" aria-label="Strona główna OSIRIS">← OSIRIS</a>
+      <a class="powrot" href="{{@adres:tytulowa}}" aria-label="{{mapa.powrot_aria}}">← OSIRIS</a>
     </main>
 
     <!-- Stopka zwinięta do jednej linijki (więcej miejsca na mapę); <details> działa z klawiatury (Tab, Enter, Spacja). -->

@@ -3,6 +3,7 @@
 // i rce.json (ten sam plik co w okienku PSE – przekazywany z src/main.js, bez drugiego pobrania).
 import { tekstyKarty, formatCzasu, CO2_SKALA_MAX } from './karta-teksty.js';
 import { wiecejPonizej, wysokoscPrzycisku } from './wiecej-ponizej.js';
+import { t, liczba } from './jezyk.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -18,7 +19,7 @@ const pytajnikOze = document.createElement('button');
 pytajnikOze.type = 'button';
 pytajnikOze.className = 'karta__moc-pytajnik';
 pytajnikOze.textContent = '?';
-pytajnikOze.setAttribute('aria-label', 'Dlaczego znak zapytania? – wyjaśnienie');
+pytajnikOze.setAttribute('aria-label', t('karta.pytajnik_aria'));
 pytajnikOze.setAttribute('aria-haspopup', 'dialog');
 
 // Treść okienka „?”: nagłówek + to samo wyjaśnienie co w liście pod paskami (czytane ze strony – jedno źródło tekstu)
@@ -30,14 +31,14 @@ function trescPytajnika() {
   const el = document.createElement('div');
   el.className = 'okienko-pytajnik';
   const tytul = document.createElement('strong');
-  tytul.textContent = 'Dlaczego znak zapytania?';
+  tytul.textContent = t('karta.pytajnik_tytul');
   const tekst = document.createElement('p');
   tekst.textContent = wyjasnienie;
   const zrodlo = document.createElement('p');
   zrodlo.className = 'zrodlo';
   const etykieta = document.createElement('span');
   etykieta.className = 'zrodlo__etykieta';
-  etykieta.textContent = 'Źródło';
+  etykieta.textContent = t('wspolne.zrodlo');
   zrodlo.append(etykieta, ` ${m.zrodlo}`);
   el.append(tytul, tekst, zrodlo); // okienko C przykleja linijkę źródła do dołu
   return el;
@@ -90,48 +91,48 @@ function pokazMoce(m) {
 let ostatnie = null;
 
 function pokaz(karta, rce) {
-  const t = tekstyKarty(karta, rce, Date.now());
-  ostatnie = t;
+  const k = tekstyKarty(karta, rce, Date.now());
+  ostatnie = k;
 
-  $('karta-plakietka').hidden = !t.plakietka;
-  $('karta-plakietka-tekst').textContent = t.plakietka ?? '';
-  $('karta-skrot').textContent = t.plakietka ? `${t.skrot} · ⚠ dane nie są najnowsze` : t.skrot;
-  $('karta-skrot').classList.toggle('brak-danych', Boolean(t.plakietka));
+  $('karta-plakietka').hidden = !k.plakietka;
+  $('karta-plakietka-tekst').textContent = k.plakietka ?? '';
+  $('karta-skrot').textContent = k.plakietka ? t('karta.skrot_stare', k.skrot) : k.skrot;
+  $('karta-skrot').classList.toggle('brak-danych', Boolean(k.plakietka));
 
-  ustaw('karta-cena', t.cena.wartosc, !t.cena.ok);
-  $('karta-cena-opis').textContent = t.cena.opis;
-  ustaw('karta-zrodlo', t.pobrano ? `PSE · pobrano: ${t.pobrano}` : 'PSE · brak danych', !t.pobrano);
-  pokazMoce(t.moc);
+  ustaw('karta-cena', k.cena.wartosc, !k.cena.ok);
+  $('karta-cena-opis').textContent = k.cena.opis;
+  ustaw('karta-zrodlo', k.pobrano ? t('karta.zrodlo_pobrano', k.pobrano) : t('karta.zrodlo_brak'), !k.pobrano);
+  pokazMoce(k.moc);
 
   const procent = $('karta-procent');
   // Bez danych o miksie – podpis i pasek znikają (bez pustej przerwy w panelu).
-  for (const id of ['karta-podpis', 'karta-pasek', 'karta-legenda-paska']) $(id).hidden = !t.ok;
-  procent.disabled = !t.ok; // bez danych nie ma czego pokazać w okienku
-  if (!t.ok) {
+  for (const id of ['karta-podpis', 'karta-pasek', 'karta-legenda-paska']) $(id).hidden = !k.ok;
+  procent.disabled = !k.ok; // bez danych nie ma czego pokazać w okienku
+  if (!k.ok) {
     procent.textContent = '';
     procent.className = 'karta__procent liczby';
     procent.removeAttribute('aria-label');
-    ustaw('karta-zdanie', 'brak danych PSE o miksie', true);
+    ustaw('karta-zdanie', t('karta.brak_miksu'), true);
     $('karta-podpis').textContent = '';
     $('karta-pasek').replaceChildren();
     $('karta-legenda-paska').replaceChildren();
-    for (const id of ['karta-co2', 'karta-wymiana']) ustaw(id, 'brak danych PSE', true);
+    for (const id of ['karta-co2', 'karta-wymiana']) ustaw(id, t('wspolne.brak_danych_pse'), true);
     for (const id of ['karta-co2-opis', 'karta-wymiana-opis']) $(id).textContent = '';
-    $('karta-co2-dokladnie').textContent = 'brak danych';
-    $('karta-sprawdzian').textContent = 'brak danych';
+    $('karta-co2-dokladnie').textContent = t('wspolne.brak_danych');
+    $('karta-sprawdzian').textContent = t('wspolne.brak_danych');
     return;
   }
 
-  procent.textContent = t.bohater.procent;
-  procent.className = `karta__procent liczby karta__procent--${t.bohater.grupa}`;
-  procent.setAttribute('aria-label', `${t.bohater.procent} ${t.bohater.krotko} – szczegóły`);
-  ustaw('karta-zdanie', t.bohater.zdanie);
-  $('karta-podpis').textContent = t.podpis;
+  procent.textContent = k.bohater.procent;
+  procent.className = `karta__procent liczby karta__procent--${k.bohater.grupa}`;
+  procent.setAttribute('aria-label', t('karta.procent_aria', k.bohater.procent, k.bohater.krotko));
+  ustaw('karta-zdanie', k.bohater.zdanie);
+  $('karta-podpis').textContent = k.podpis;
 
   // Pasek: szerokość odcinka = udział; kolory jak na mapie (zmienne CSS, zmieniają się z Dzień/Noc).
   // Dla czytnika ekranu i bez kolorów – legenda pod paskiem z nazwami i procentami.
   $('karta-pasek').replaceChildren(
-    ...t.pasek.map((p) => {
+    ...k.pasek.map((p) => {
       const s = document.createElement('span');
       s.className = `karta__odcinek karta__odcinek--${p.grupa}`;
       s.style.width = `${(p.udzial * 100).toFixed(2)}%`;
@@ -139,7 +140,7 @@ function pokaz(karta, rce) {
     }),
   );
   $('karta-legenda-paska').replaceChildren(
-    ...t.pasek.map((p) => {
+    ...k.pasek.map((p) => {
       const li = document.createElement('li');
       const kolor = document.createElement('span');
       kolor.className = `karta__kolor karta__odcinek--${p.grupa}`;
@@ -152,12 +153,12 @@ function pokaz(karta, rce) {
     }),
   );
 
-  ustaw('karta-co2', t.co2.wartosc);
-  $('karta-co2-opis').textContent = t.co2.opis;
-  ustaw('karta-wymiana', t.wymiana.wartosc);
-  $('karta-wymiana-opis').textContent = t.wymiana.opis;
-  $('karta-co2-dokladnie').textContent = t.metodologia.co2;
-  $('karta-sprawdzian').textContent = t.metodologia.sprawdzian ?? 'brak danych';
+  ustaw('karta-co2', k.co2.wartosc);
+  $('karta-co2-opis').textContent = k.co2.opis;
+  ustaw('karta-wymiana', k.wymiana.wartosc);
+  $('karta-wymiana-opis').textContent = k.wymiana.opis;
+  $('karta-co2-dokladnie').textContent = k.metodologia.co2;
+  $('karta-sprawdzian').textContent = k.metodologia.sprawdzian ?? t('wspolne.brak_danych');
 }
 
 // Zakładki (wzorzec WAI-ARIA „Tabs”): kliknięcie albo strzałki ←/→, Home, End; aktywna zakładka ma tabindex 0.
@@ -258,16 +259,16 @@ function pierscien(o) {
   return svg;
 }
 
-function trescOkienka(t, wiecej) {
-  if (!t?.ok) return null;
-  const o = t.okienko;
-  const el = element('div', `okienko-polski okienko-polski--${t.bohater.grupa}`);
+function trescOkienka(k, wiecej) {
+  if (!k?.ok) return null;
+  const o = k.okienko;
+  const el = element('div', `okienko-polski okienko-polski--${k.bohater.grupa}`);
   el.append(element('strong', '', o.naglowek), element('div', 'okienko-polski__stan', o.stan));
-  if (t.plakietka) {
+  if (k.plakietka) {
     const p = element('p', 'karta__plakietka okienko-polski__plakietka');
     const znak = element('span', '', '⚠');
     znak.setAttribute('aria-hidden', 'true');
-    p.append(znak, ` ${t.plakietka}`);
+    p.append(znak, ` ${k.plakietka}`);
     el.append(p);
   }
 
@@ -283,7 +284,7 @@ function trescOkienka(t, wiecej) {
     lista.append(li);
   }
   const razem = element('li', 'okienko-polski__razem');
-  razem.append(element('span', 'okienko-polski__nazwa', '= razem'), element('span', 'liczby', o.razem));
+  razem.append(element('span', 'okienko-polski__nazwa', t('okienko_polski.razem')), element('span', 'liczby', o.razem));
   lista.append(razem);
   miks.append(pierscien(o), lista);
   el.append(miks);
@@ -291,7 +292,7 @@ function trescOkienka(t, wiecej) {
   // Pasek CO2 0–1500 g/kWh z kropką „tu jesteśmy”.
   const co2 = element('div', 'okienko-polski__co2');
   const tytul = element('div', 'okienko-polski__co2-tytul');
-  tytul.innerHTML = 'Ślad CO<sub>2</sub>';
+  tytul.innerHTML = t('okienko_polski.co2_tytul'); // stały tekst ze słownika (z <sub>), bez danych
   const skala = element('div', 'okienko-polski__skala');
   skala.setAttribute('aria-hidden', 'true');
   const kropka = element('span', 'okienko-polski__kropka');
@@ -299,19 +300,20 @@ function trescOkienka(t, wiecej) {
   skala.append(kropka);
   const krance = element('div', 'okienko-polski__krance liczby');
   krance.setAttribute('aria-hidden', 'true');
-  krance.append(element('span', '', '0'), element('span', '', `${CO2_SKALA_MAX.toLocaleString('pl-PL')} g/kWh`));
+  // Ta sama jednostka co w zdaniu „tu jesteśmy” (g CO₂eq/kWh – decyzja Ani 23.11.2026).
+  krance.append(element('span', '', '0'), element('span', '', `${liczba(CO2_SKALA_MAX)} g CO₂eq/kWh`));
   co2.append(tytul, skala, krance, element('div', 'okienko-polski__tu', o.co2.tekst));
   el.append(co2);
 
   el.append(element('div', 'okienko-polski__zdanie', o.zdanie));
-  const przycisk = element('button', 'okienko-polski__wiecej', 'Więcej');
+  const przycisk = element('button', 'okienko-polski__wiecej', t('okienko_polski.wiecej'));
   przycisk.type = 'button';
-  przycisk.setAttribute('aria-label', 'Więcej – Metodologia w panelu Karty Polski');
+  przycisk.setAttribute('aria-label', t('okienko_polski.wiecej_aria'));
   przycisk.addEventListener('click', wiecej);
   el.append(przycisk);
 
   const zrodlo = element('p', 'zrodlo');
-  zrodlo.append(element('span', 'zrodlo__etykieta', 'Źródło'), t.pobrano ? `PSE · pobrano: ${t.pobrano}` : 'PSE');
+  zrodlo.append(element('span', 'zrodlo__etykieta', t('wspolne.zrodlo')), k.pobrano ? t('karta.zrodlo_pobrano', k.pobrano) : 'PSE');
   el.append(zrodlo); // okienko C przykleja linijkę źródła do dołu
   return el;
 }

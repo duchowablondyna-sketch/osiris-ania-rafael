@@ -261,18 +261,27 @@ main {
   color: var(--tekst);
 }
 
-/* ── Przełącznik Dzień/Noc: prawy górny róg, obok przycisków przybliżania MapLibre ── */
-.przelacznik {
+/* ── Prawy górny róg, obok przycisków przybliżania MapLibre: PL | EN i Dzień/Noc – para w tym samym stylu
+   (decyzja Ani 23.11.2026). Dzień/Noc stoi tam, gdzie wcześniej (52 px od prawej), PL | EN – po jego lewej. ── */
+.mapa-gora {
   position: absolute;
   top: 10px;
   right: 52px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.przelacznik {
   display: flex;
   padding: 3px;
   gap: 3px;
   border-radius: 8px;
 }
 
-.przelacznik button {
+/* Linki PL | EN wyglądają jak przyciski Dzień/Noc; bieżący język – jak wybrane tło (aria-current zamiast aria-pressed). */
+.przelacznik button,
+.przelacznik__opcja {
   padding: 5px 12px;
   font: inherit;
   font-size: 0.75rem;
@@ -286,14 +295,28 @@ main {
   cursor: pointer;
 }
 
-.przelacznik button[aria-pressed='true'] {
+.przelacznik__opcja {
+  text-decoration: none;
+}
+
+.przelacznik button[aria-pressed='true'],
+.przelacznik__opcja[aria-current='page'] {
   color: var(--tlo);
   background: var(--tekst);
 }
 
-.przelacznik button:focus-visible {
+.przelacznik button:focus-visible,
+.przelacznik__opcja:focus-visible {
   outline: 2px solid var(--fokus);
   outline-offset: 2px;
+}
+
+/* Oryginał cytatu z PSE pod naszym tłumaczeniem (tylko wersja EN) – mniejszym drukiem (decyzja Ani 23.11.2026). */
+.cytat-oryginal {
+  display: block;
+  font-size: 0.6875rem;
+  line-height: 1.35;
+  color: var(--tekst-pomocniczy);
 }
 
 /* ── Odtwarzanie doby: podpis daty, duży zegar, przyciski w okienku (nic nie leży na mapie) ── */
@@ -734,6 +757,9 @@ main {
 
 .karta__zakladki {
   display: flex;
+  /* Po angielsku nazwy są dłuższe (534 px przy 394 px miejsca) – zakładki zawijają się do drugiego rzędu, nic nie jest
+     ucięte; po polsku mieszczą się w jednym rzędzie (bez zmian). */
+  flex-wrap: wrap;
   gap: 2px;
   margin: 0 12px;
   border-bottom: 1px solid var(--szklo-ramka);

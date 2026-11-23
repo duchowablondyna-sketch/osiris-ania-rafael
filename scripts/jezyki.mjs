@@ -12,10 +12,11 @@ import en from '../src/teksty/en.js';
 export const SLOWNIKI = { pl, en };
 export const ADRES_SERWISU = 'https://osiris-ania-rafael.pages.dev';
 
-// Strony i ich adresy. en: null – angielskiej wersji jeszcze nie ma (mapa: w e2, adres /en/map/).
+// Strony i ich adresy (en: null – angielskiej wersji jeszcze nie ma).
+// przelacznik: wygląd PL | EN – „tekst” (strona tytułowa, obok zegara) albo „pigulka” (mapa, para z DZIEŃ | NOC).
 export const STRONY = {
-  tytulowa: { plik: 'index.html', pl: '/', en: '/en/' },
-  mapa: { plik: 'mapa/index.html', pl: '/mapa/', en: null },
+  tytulowa: { plik: 'index.html', pl: '/', en: '/en/', przelacznik: 'tekst' },
+  mapa: { plik: 'mapa/index.html', pl: '/mapa/', en: '/en/map/', przelacznik: 'pigulka' },
 };
 
 const adres = (strona, jezyk) => STRONY[strona][jezyk] ?? STRONY[strona].pl;
@@ -23,12 +24,19 @@ const adres = (strona, jezyk) => STRONY[strona][jezyk] ?? STRONY[strona].pl;
 const doAtrybutu = (s) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 
 // Przełącznik PL | EN. Każda nazwa języka w swoim języku (lang), bieżący – aria-current.
+// „tekst”: PL | EN jak zegar (strona tytułowa); „pigulka”: dwa przyciski w szkle, jak DZIEŃ | NOC (mapa).
 function przelacznik(strona, jezyk) {
+  const pigulka = STRONY[strona].przelacznik === 'pigulka';
+  const klasa = pigulka ? 'przelacznik__opcja' : 'jezyki__link';
   const link = (j, skrot, nazwa) =>
-    `<a class="jezyki__link" href="${adres(strona, j)}" lang="${j}" hreflang="${j}" aria-label="${nazwa}"` +
+    `<a class="${klasa}" href="${adres(strona, j)}" lang="${j}" hreflang="${j}" aria-label="${nazwa}"` +
     `${j === jezyk ? ' aria-current="page"' : ''}>${skrot}</a>`;
+  const etykieta = doAtrybutu(SLOWNIKI[jezyk]['wspolne.jezyki_etykieta']);
+  if (pigulka) {
+    return `<nav class="przelacznik przelacznik--jezyki" aria-label="${etykieta}">${link('pl', 'PL', 'Polski')}${link('en', 'EN', 'English')}</nav>`;
+  }
   return (
-    `<nav class="jezyki" aria-label="${doAtrybutu(SLOWNIKI[jezyk]['wspolne.jezyki_etykieta'])}">` +
+    `<nav class="jezyki" aria-label="${etykieta}">` +
     `${link('pl', 'PL', 'Polski')}<span class="jezyki__kreska" aria-hidden="true">|</span>${link('en', 'EN', 'English')}</nav>`
   );
 }

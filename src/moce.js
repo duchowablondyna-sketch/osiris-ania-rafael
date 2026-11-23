@@ -5,13 +5,31 @@
 // – moc dla źródeł: bez znaczków, tylko zdanie w legendzie i w panelu;
 // – mocy stacji nigdy nie sumujemy (PSE: moc jednej stacji wpływa na moc stacji sąsiednich).
 import { stacjeBezRozpatrzenia } from './wykaz-rozdzielni.js';
+import { t, tn, liczba, cytatPse, formatDoby } from './jezyk.js';
 
 export const KOLOR_MOCY = '#2DD4BF';
 const KOSMOS = '#05070D';
 const WARSTWY = ['moce-kola', 'moce-kola-obwodka', 'moce-podpis', 'moce'];
 
-const formatDaty = (iso) => (iso ? iso.split('-').reverse().join('.') : '–');
-const formatMw = (mw) => `${mw.toLocaleString('pl-PL')} MW`;
+// Daty i liczby wg języka strony (src/jezyk.js): 31.10.2026 / 31 Oct 2026, 1 200 MW / 1,200 MW.
+const formatDaty = formatDoby;
+const formatMw = (mw) => `${liczba(mw)} MW`;
+
+// Cytat z PSE jako elementy strony: po angielsku nasze tłumaczenie, a pod nim mniejszym drukiem oryginał po polsku
+// (decyzja Ani 23.11.2026); bez tłumaczenia – oryginał z dopiskiem. Po polsku – sam tekst.
+function podCytatem(tekstPl) {
+  const c = cytatPse(tekstPl);
+  if (!c.oryginal && !c.bezTlumaczenia) return null;
+  const s = document.createElement('span');
+  s.className = 'cytat-oryginal';
+  if (c.oryginal) {
+    s.lang = 'pl';
+    s.textContent = t('cytat.oryginal', c.oryginal);
+  } else {
+    s.textContent = t('cytat.bez_tlumaczenia');
+  }
+  return s;
+}
 
 // Koło o promieniu r km wokół punktu – wielokąt na powierzchni Ziemi (rośnie razem z przybliżeniem mapy).
 function kolo(lon, lat, rKm, punkty = 72) {
@@ -120,21 +138,24 @@ async function obrazekPodpisu(tekst) {
 export function zdanieZrodel(zp) {
   const a = zp?.rok_2026_krok_2, b = zp?.rok_2031_krok_2;
   if (typeof a !== 'number' || typeof b !== 'number') return null;
-  if (a === 0 && b === 0) return 'PSE: 0 MW dla nowych źródeł w sieci najwyższych napięć – w całej Polsce (2026 i 2031)';
-  return `PSE: ${formatMw(a)} (2026) i ${formatMw(b)} (2031) dla nowych źródeł w sieci najwyższych napięć – w całej Polsce`;
+  if (a === 0 && b === 0) return t('moce.zrodla_zero');
+  return t('moce.zrodla', formatMw(a), formatMw(b));
 }
 
 // „stacja w rejonie Warszawy” → „w rejonie Warszawy”; „Norki” → „Norki” (to, co PSE podaje o miejscu).
-const rejonPse = (opis) => opis.replace(/^stacja /, '');
+// Po angielsku – całe przetłumaczone określenie („substation in the Warsaw area”); oryginał stoi pod nagłówkiem okienka.
+const rejonPse = (opis) => {
+  const c = cytatPse(opis);
+  return c.oryginal || c.bezTlumaczenia ? c.tekst : opis.replace(/^stacja /, '');
+};
 function opisLokalizacji(s, promien) {
   const l = s.lokalizacja;
-  if (l.rodzaj === 'okolica')
-    return `Lokalizacja przybliżona – PSE podaje tylko »${rejonPse(s.opis_pse)}«; środek koła wybrał OSIRIS (${l.nazwa_osm}, promień ${promien} km).`;
-  if (l.rodzaj === 'stacja-osm') return `Lokalizacja: planowana stacja w OpenStreetMap („${l.nazwa_osm}”) – dopasowanie niepewne.`;
-  return 'Brak na mapie – PSE nie podaje miejscowości albo nie da się jej ustalić bez zgadywania.';
+  if (l.rodzaj === 'okolica') return t('moce.lok_okolica', rejonPse(s.opis_pse), l.nazwa_osm, promien);
+  if (l.rodzaj === 'stacja-osm') return t('moce.lok_osm', l.nazwa_osm);
+  return t('moce.lok_brak');
 }
 
-export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, odmiana, okienka }) {
+export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, okienka }) {
   let dane = null;
   let wykaz = null; // wykaz rozdzielni PSE (public/data/rozdzielnie-pse.json); null = nie wczytał się
   let bezRozpatrzenia = new Map();
@@ -157,52 +178,49 @@ export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, odmiana, ok
     if (stacje.length > 1) {
       const ile = document.createElement('strong');
       ile.className = 'okienko-mocy__ile';
-      ile.textContent = `${odmiana(stacje.length, ['stacja', 'stacje', 'stacji'])} w tym miejscu`;
+      ile.textContent = t('moce.w_tym_miejscu', tn('liczba.stacja', stacje.length));
       el.append(ile, document.createElement('hr'));
     }
     stacje.forEach((s, i) => {
       if (i) el.append(document.createElement('hr'));
       const tytul = document.createElement('strong');
-      tytul.textContent = `${s.kod} – ${s.opis_pse}`;
+      tytul.textContent = `${s.kod} – ${cytatPse(s.opis_pse).tekst}`;
       el.append(tytul, document.createElement('br'));
-      el.append(span(`wolna moc dla odbiorców: ${formatMw(s.moc_mw)} (rok 2031)`, 'okienko-mocy__moc'), document.createElement('br'));
-      if (s.tabela === 2) el.append(span('stacja budowana głównie dla sieci i nowych źródeł – według PSE może też zasilać odbiorców'), document.createElement('br'));
+      const oryginal = podCytatem(s.opis_pse);
+      if (oryginal) el.append(oryginal, document.createElement('br'));
+      el.append(span(t('moce.moc', formatMw(s.moc_mw)), 'okienko-mocy__moc'), document.createElement('br'));
+      if (s.tabela === 2) el.append(span(t('moce.tabela2')), document.createElement('br'));
       el.append(span(opisLokalizacji(s, dane.lokalizacje.promien_km)), document.createElement('br'));
       const wstrz = bezRozpatrzenia.get(s.kod);
       if (wstrz) {
         el.append(
           span(
-            wstrz.pusty
-              ? `Uwaga: według wykazu PSE (stan na ${formatDaty(wykaz.stan_na)}) wnioski o przyłączenie do tej stacji obecnie pozostają bez rozpatrzenia.`
-              : `Uwaga: według wykazu PSE (stan na ${formatDaty(wykaz.stan_na)}) wnioski do rozdzielni 110 kV tej stacji obecnie pozostają bez rozpatrzenia; o rozdzielniach 220/400 kV wykaz nie mówi.`,
+            t(wstrz.pusty ? 'moce.uwaga_pusty' : 'moce.uwaga_110', formatDaty(wykaz.stan_na)),
             'okienko-mocy__ostrzezenie',
           ),
           document.createElement('br'),
-          span(`Lista PSE: „${wstrz.tytul_listy}”; rozdzielnie w wykazie: ${wstrz.rozdzielnie.map((r) => r.replace('Rozdzielnia ', '')).join(', ')}.`, 'okienko-mocy__uwaga'),
-          document.createElement('br'),
           span(
-            `Daty się różnią: wykaz rozdzielni ma stan na ${formatDaty(wykaz.stan_na)}, a moce – stan na ${formatDaty(dane.stan_na)}. ` +
-              `Nowszego wykazu PSE nie opublikowało (sprawdzone ${formatDaty(wykaz.zrodlo.pobrano)}).`,
+            t('moce.lista_pse', cytatPse(wstrz.tytul_listy).tekst, wstrz.rozdzielnie.map((r) => r.replace(/^Rozdzielnia /, '')).join(', ')),
             'okienko-mocy__uwaga',
           ),
           document.createElement('br'),
         );
+        const oryginalListy = podCytatem(wstrz.tytul_listy);
+        if (oryginalListy) el.append(oryginalListy, document.createElement('br'));
+        el.append(
+          span(t('moce.daty_rozne', formatDaty(wykaz.stan_na), formatDaty(dane.stan_na), formatDaty(wykaz.zrodlo.pobrano)), 'okienko-mocy__uwaga'),
+          document.createElement('br'),
+        );
       } else if (!wykaz) {
-        el.append(span('Wykaz rozdzielni PSE (stacje bez rozpatrywania wniosków): brak danych – nie wiadomo, czy wnioski są rozpatrywane.', 'okienko-mocy__ostrzezenie brak-danych'), document.createElement('br'));
+        el.append(span(t('moce.wykaz_brak'), 'okienko-mocy__ostrzezenie brak-danych'), document.createElement('br'));
       }
     });
-    if (stacje.length > 1) el.append(span('Każda stacja ma własną moc – nie sumujemy.', 'okienko-mocy__uwaga'), document.createElement('br'));
-    el.append(span('Sieć najwyższych napięć (220/400 kV) – dla największych odbiorców.', 'okienko-mocy__uwaga'), document.createElement('br'));
-    el.append(
-      span(
-        `Szacunek operatora (PSE), stan na ${formatDaty(dane.stan_na)}. Stacja planowana, moc podana dla roku 2031. ` +
-          'Wykorzystanie mocy w jednej stacji może zmniejszyć moc w stacjach sąsiednich. To nie jest gwarancja przyłączenia.',
-        'okienko-mocy__uwaga',
-      ),
-    );
+    if (stacje.length > 1) el.append(span(t('moce.kazda_osobno'), 'okienko-mocy__uwaga'), document.createElement('br'));
+    el.append(span(t('moce.siec_nn'), 'okienko-mocy__uwaga'), document.createElement('br'));
+    el.append(span(t('moce.szacunek_okienko', formatDaty(dane.stan_na)), 'okienko-mocy__uwaga'));
     el.append(linijkaZrodla('PSE', 'stan', formatDaty(dane.stan_na)));
-    if (stacje.some((s) => bezRozpatrzenia.has(s.kod))) el.append(linijkaZrodla('PSE – wykaz rozdzielni', 'stan', formatDaty(wykaz.stan_na)));
-    if (stacje.some((s) => s.lokalizacja.rodzaj !== 'brak')) el.append(linijkaZrodla('OpenStreetMap (lokalizacja)', 'stan', formatDaty(dane.lokalizacje.stan_osm?.slice(0, 10))));
+    if (stacje.some((s) => bezRozpatrzenia.has(s.kod))) el.append(linijkaZrodla(t('moce.zrodlo_wykaz'), 'stan', formatDaty(wykaz.stan_na)));
+    if (stacje.some((s) => s.lokalizacja.rodzaj !== 'brak')) el.append(linijkaZrodla(t('moce.zrodlo_osm'), 'stan', formatDaty(dane.lokalizacje.stan_osm?.slice(0, 10))));
     return el;
   }
 
@@ -255,7 +273,7 @@ export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, odmiana, ok
       'icon-ignore-placement': true,
     },
   });
-  obrazekPodpisu('lokalizacja przybliżona').then((p) => {
+  obrazekPodpisu(t('moce.podpis_przyblizona')).then((p) => {
     map.addImage('podpis-przyblizona', p.obraz, { pixelRatio: p.pixelRatio });
     // Podpis od przybliżenia 6 (przy widoku całej Polski 20 podpisów zlałoby się w jedną plamę); nachodzące się podpisy
     // MapLibre sam ukrywa. Przy mniejszym przybliżeniu objaśnia to legenda.
@@ -299,7 +317,7 @@ export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, odmiana, ok
             const li = document.createElement('li');
             const nazwa = document.createElement(s.lokalizacja.rodzaj === 'brak' ? 'span' : 'button');
             nazwa.className = 'panel-moce__nazwa';
-            nazwa.textContent = `${s.kod} – ${s.opis_pse}`;
+            nazwa.textContent = `${s.kod} – ${cytatPse(s.opis_pse).tekst}`;
             if (nazwa.tagName === 'BUTTON') {
               nazwa.type = 'button';
               nazwa.addEventListener('click', () => {
@@ -313,16 +331,18 @@ export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, odmiana, ok
             moc.textContent = formatMw(s.moc_mw);
             const lok = document.createElement('span');
             lok.className = 'panel-moce__lok';
-            lok.textContent = { okolica: 'lokalizacja przybliżona', 'stacja-osm': 'dopasowanie niepewne (OSM)', brak: 'brak na mapie' }[s.lokalizacja.rodzaj];
+            lok.textContent = t(`moce.lok_krotko.${s.lokalizacja.rodzaj}`);
             const wpis = bezRozpatrzenia.get(s.kod);
             if (wpis) {
               const w = document.createElement('span');
               w.className = 'panel-moce__wstrzymane';
-              w.textContent = wpis.pusty ? ' · wnioski bez rozpatrzenia' : ' · 110 kV – bez rozpatrzenia';
+              w.textContent = t(wpis.pusty ? 'moce.wstrzymane_pusty' : 'moce.wstrzymane_110');
               lok.append(w);
               if (wpis.pusty) li.classList.add('panel-moce__pozycja--wstrzymana');
             }
             li.append(nazwa, moc, lok);
+            const oryginal = podCytatem(s.opis_pse);
+            if (oryginal) li.append(oryginal);
             return li;
           }),
       );
@@ -331,27 +351,31 @@ export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, odmiana, ok
     const ile = dane.odbiorcy.length;
     if (wykaz) {
       const { pelne, tylko110, napiecia } = liczWstrzymane();
-      podsumowanie.textContent =
-        `${odmiana(ile, ['stacja ma', 'stacje mają', 'stacji ma'])} moc dla odbiorców. ` +
-        `W ${pelne} z nich PSE obecnie nie rozpatruje wniosków (rozdzielnia ${napiecia}); ` +
-        `przy ${tylko110} kolejnych wykaz dotyczy tylko rozdzielni 110 kV ` +
-        `(wykaz rozdzielni, stan na ${formatDaty(wykaz.stan_na)}; moce – stan na ${formatDaty(dane.stan_na)}).`;
-      podsumowanie.append(linijkaZrodla('PSE – wykaz rozdzielni', 'stan', formatDaty(wykaz.stan_na)));
+      podsumowanie.textContent = t(
+        'moce.podsumowanie',
+        tn('liczba.stacja_ma', ile),
+        pelne,
+        napiecia,
+        tylko110,
+        formatDaty(wykaz.stan_na),
+        formatDaty(dane.stan_na),
+      );
+      podsumowanie.append(linijkaZrodla(t('moce.zrodlo_wykaz'), 'stan', formatDaty(wykaz.stan_na)));
     } else {
-      podsumowanie.textContent = `${odmiana(ile, ['stacja ma', 'stacje mają', 'stacji ma'])} moc dla odbiorców. Wykaz rozdzielni PSE (gdzie wnioski nie są rozpatrywane): brak danych.`;
+      podsumowanie.textContent = t('moce.podsumowanie_bez_wykazu', tn('liczba.stacja_ma', ile));
       podsumowanie.classList.add('brak-danych');
     }
     const zdanie = zdanieZrodel(dane.zrodla_polska);
-    document.getElementById('moce-zrodla-zdanie').textContent = zdanie ?? 'Moc dla nowych źródeł: brak danych';
+    document.getElementById('moce-zrodla-zdanie').textContent = zdanie ?? t('moce.zrodla_brak');
     const sp = sprawdzono?.data
       ? sprawdzono.zrodlo === 'robot'
-        ? `sprawdzono przez Robota OSIRIS: ${formatDaty(sprawdzono.data)}`
-        : `sprawdzono: ${formatDaty(sprawdzono.data)} (data przyjęcia danych)`
-      : `sprawdzono: ${formatDaty(dane.przyjeto)} (data przyjęcia danych)`;
-    document.getElementById('moce-stan').textContent = `stan na: ${formatDaty(dane.stan_na)} · ${sp}`;
+        ? t('moce.sprawdzono_robot', formatDaty(sprawdzono.data))
+        : t('moce.sprawdzono', formatDaty(sprawdzono.data))
+      : t('moce.sprawdzono', formatDaty(dane.przyjeto));
+    document.getElementById('moce-stan').textContent = t('moce.stan', formatDaty(dane.stan_na), sp);
     document.getElementById('moce-zrodlo').replaceChildren(linijkaZrodla('PSE', 'stan', formatDaty(dane.stan_na)));
     const legZdanie = document.getElementById('legenda-moce-zrodla');
-    legZdanie.textContent = zdanie ?? 'Moc dla nowych źródeł: brak danych';
+    legZdanie.textContent = zdanie ?? t('moce.zrodla_brak');
     legZdanie.append(linijkaZrodla('PSE', 'stan', formatDaty(dane.stan_na)));
   }
 
@@ -398,17 +422,22 @@ export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, odmiana, ok
       const lw = wykaz ? liczWstrzymane() : null;
       ustawLicznik(
         'moce',
-        `${odmiana(d.odbiorcy.length, ['stacja planowana', 'stacje planowane', 'stacji planowanych'])} · ${naMapie.length} na mapie · stan ${formatDaty(d.stan_na)} · ` +
-          (lw ? `${lw.pelne} bez rozpatrywania wniosków (${lw.napiecia}), ${lw.tylko110} – tylko 110 kV (wykaz ${formatDaty(wykaz.stan_na)})` : 'wykaz rozdzielni: brak danych'),
+        t(
+          'moce.licznik',
+          tn('liczba.stacja_planowana', d.odbiorcy.length),
+          naMapie.length,
+          formatDaty(d.stan_na),
+          lw ? t('moce.licznik_wykaz', lw.pelne, lw.napiecia, lw.tylko110, formatDaty(wykaz.stan_na)) : t('moce.licznik_wykaz_brak'),
+        ),
         !wykaz,
       );
       wypelnijPanel(await sprawdzonoGotowe);
     })
     .catch(() => {
-      ustawLicznik('moce', 'brak danych', true);
-      document.getElementById('moce-stan').textContent = 'Wolne moce PSE: brak danych';
+      ustawLicznik('moce', t('wspolne.brak_danych'), true);
+      document.getElementById('moce-stan').textContent = t('moce.brak');
       document.getElementById('moce-stan').classList.add('brak-danych');
-      document.getElementById('legenda-moce-zrodla').textContent = 'Moc dla nowych źródeł: brak danych';
+      document.getElementById('legenda-moce-zrodla').textContent = t('moce.zrodla_brak');
     });
 
   return { warstwy: WARSTWY, panel };
