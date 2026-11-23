@@ -14,6 +14,8 @@ export default {
     'Skąd Polska bierze prąd i ile on kosztuje – elektrownie, farmy wiatrowe, sieć najwyższych napięć, wiatr i cena energii. Z oficjalnych, publicznych źródeł, z datą przy każdej liczbie.',
   'meta.og_obraz_alt': 'OSIRIS – mapa prądu Polski: tytuł i nocny globus z zaznaczoną Polską',
   'meta.og_locale': 'pl_PL',
+  // Obrazek do udostępniania (zrzut strony tytułowej w tym języku – sposób w ZRODLA.md).
+  'meta.og_obraz': 'https://osiris-ania-rafael.pages.dev/og-obraz.png',
 
   // ── Wspólne dla obu stron ──
   'wspolne.jezyki_etykieta': 'Wersja językowa',
@@ -363,4 +365,53 @@ export default {
     '<strong>KOBiZE 553 kg CO<sub>2</sub>/MWh (2024)</strong> to inna miara: tylko emisja ze spalania, średnia z całego roku. Nie porównujemy jej wprost z naszym szacunkiem.',
   'met.wymiana':
     '<strong>Wymiana z zagranicą:</strong> wymiana planowa według PSE (suma dwóch sald: swm_p + swm_np), a nie zmierzona. „Kupuje” – prąd płynie do Polski, „sprzedaje” – z Polski.',
+
+  // ── Stopka „Źródła i licencje” (src/czesci/stopka.html) – e3 ──
+  // Linki, nazwy licencji i podpisy („© OpenStreetMap contributors”) – w oryginale; streszczenie CC BY 4.0 po polsku (deed.pl).
+  'stopka.tytul':
+    'Źródła i licencje',
+  'stopka.kontur':
+    'Kontur Polski: <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a> (domena publiczna), dane uproszczone do konturu jednego kraju.',
+  'stopka.wiatr':
+    'Produkcja z wiatru: PSE S.A., <a href="https://raporty.pse.pl/" target="_blank" rel="noopener">raporty.pse.pl</a>, dane pobrane <span id="wiatr-pobrano">wczytywanie…</span>, przetworzone.',
+  'stopka.ograniczenia':
+    'Ograniczenia wiatru: PSE S.A., raport „Nierynkowe redysponowanie źródeł OZE”, ten sam czas pobrania, przetworzone (suma kwadransów ÷ 4, przy założeniu, że wartości są w MW).',
+  'stopka.rce':
+    'Cena prądu (RCE): PSE S.A., <a href="https://raporty.pse.pl/report/rce-pln" target="_blank" rel="noopener">raport „Rynkowa cena energii elektrycznej”</a>, dane pobrane <span id="rce-pobrano">wczytywanie…</span>, przetworzone.',
+  'stopka.odtworzenie':
+    'Odtworzenie doby: PSE S.A., raporty his-wlk-cal i rce-pln, doba <span id="odtw-zrodlo-doba">wczytywanie…</span>, przetworzone.',
+  'stopka.karta':
+    'Karta Polski (miks paliw, wymiana z zagranicą): PSE S.A., raporty his-gen-pal-sire i his-wlk-cal, dane pobrane <span id="karta-pobrano">wczytywanie…</span>, przetworzone (udziały, sprawdzian; ślad CO2 (CO₂eq) – szacunek OSIRIS wg IPCC AR5 i wskaźników KOBiZE, metoda w panelu „Metodologia”).',
+  'stopka.morskie':
+    'Morskie farmy wiatrowe: <a href="https://emodnet.ec.europa.eu/en/" target="_blank" rel="noopener">EMODnet</a> Human Activities, Wind Farms (twórca danych: CETMAR, stan 10.07.2026), <a href="https://creativecommons.org/licenses/by/4.0/deed.pl" target="_blank" rel="noopener">CC BY 4.0</a>; wybrano tylko farmy w polskich obszarach morskich; porównane z <a href="https://www.gov.pl/web/morska-energetyka-wiatrowa/obecnie-realizowane-projekty-w-polsce" target="_blank" rel="noopener">listą projektów MKiŚ</a> (stan: styczeń 2024) – puste kropki: prawdopodobny duplikat albo brak na liście.',
+  'stopka.baltic':
+    'Status Baltic Power uzupełniony według <a href="https://balticpower.pl/" target="_blank" rel="noopener">balticpower.pl</a> (rozruch od 10.07.2026).',
+  'stopka.ladowe':
+    'Lądowe farmy wiatrowe (zielone): Global Energy Monitor, <a href="https://globalenergymonitor.org/projects/global-integrated-power-tracker/" target="_blank" rel="noopener">Global Integrated Power Tracker</a>, September 2026 release (dane wiatrowe z Global Wind Power Tracker, luty 2026), <a href="https://creativecommons.org/licenses/by/4.0/deed.pl" target="_blank" rel="noopener">CC BY 4.0</a>, zmodyfikowane (wyciąg).',
+  'stopka.ladowe_tylko':
+    'Tylko lądowe farmy wiatrowe od 10 MW – mniejsze farmy i pojedyncze turbiny nie są pokazane.',
+  'stopka.ladowe_znaczki':
+    'Pełna kropka: działa; pierścień z kropką: w budowie; planowanych nie pokazujemy. Około połowy lokalizacji jest przybliżonych.',
+  'stopka.elektrownie':
+    'Elektrownie (kwadraty, kółka, romby): ten sam wyciąg GEM, CC BY 4.0, zmodyfikowane (bloki zsumowane do elektrowni); tylko działające.',
+  'stopka.progi':
+    'Progi GEM: węgiel – bloki od 30 MW; gaz i olej – od 20 MW w UE; woda (także szczytowo-pompowe) – od 30 MW, dla niektórych krajów od 10 MW.',
+  'stopka.dane':
+    'Dane: węgiel – lipiec 2026, gaz i olej – sierpień 2026, woda – marzec 2026. Rozmiar znaczka = moc zainstalowana, nie bieżąca produkcja.',
+  'stopka.tlo_dzien':
+    'Tło dzienne: Blue Marble (August 2004), MODIS / NASA Earth Observatory.',
+  'stopka.tlo_noc':
+    'Tło nocne: Black Marble (2016), Suomi NPP / VIIRS, NASA Earth Observatory.',
+  'stopka.tla':
+    'Tła przetworzone, żeby dane były lepiej widoczne: dzienne przyciemnione i mniej nasycone, nocne mniej nasycone (bez przyciemniania).',
+  'stopka.moce':
+    'Wolna moc dla odbiorców (sześciokąty, koła) i zdanie o mocy dla nowych źródeł: PSE S.A., <a href="https://www.pse.pl/obszary-dzialalnosci/krajowy-system-elektroenergetyczny/informacja-o-dostepnosci-mocy-przylaczeniowej" target="_blank" rel="noopener">„Informacja o dostępności mocy przyłączeniowej do sieci przesyłowej”</a>, stan na 31.10.2026, dokument pobrany 21.11.2026, przetworzone (wyciąg tabel; mocy stacji nie sumujemy). Szacunek operatora, nie gwarancja przyłączenia.',
+  'stopka.wykaz':
+    'Stacje, do których wnioski obecnie pozostają bez rozpatrzenia (pusty sześciokąt – wykaz obejmuje rozdzielnię 220/400 kV; gdy tylko 110 kV – pełny sześciokąt i uwaga w okienku): PSE S.A., <a href="https://www.pse.pl/dane-systemowe/praca-kse/informacje-ogolne/wykaz-obiektow-planowanych-do-przylaczenia" target="_blank" rel="noopener">„Wykaz rozdzielni na stacjach bez możliwości przyłączenia nowych obiektów”</a>, stan na 04.02.2026 (starszy niż moce – stan na 31.10.2026), plik pobrany 21.11.2026, przetworzone (wyciąg list 2 i 3).',
+  'stopka.miejsca':
+    'Miejsca stacji: OpenStreetMap (ODbL) – planowane stacje z OSM albo koła 20 km wokół miejscowości z opisu PSE (lokalizacja przybliżona, wybór OSIRIS).',
+  'stopka.linie':
+    'Linie najwyższych napięć: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>, <a href="https://opendatacommons.org/licenses/odbl/" target="_blank" rel="noopener">ODbL</a> (podpis widoczny też stale na mapie, w prawym dolnym rogu).',
+  'stopka.czcionki':
+    'Czcionki: Inter i JetBrains Mono, SIL Open Font License 1.1 (<a href="/licencje/OFL-Inter.txt" target="_blank" rel="noopener">licencja Inter</a>, <a href="/licencje/OFL-JetBrains-Mono.txt" target="_blank" rel="noopener">licencja JetBrains Mono</a>); pliki czcionek są na naszym serwerze.',
 };

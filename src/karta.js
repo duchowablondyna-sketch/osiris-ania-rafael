@@ -344,7 +344,9 @@ export function uruchomKarte(rceGotowe) {
     .catch(() => null);
   return Promise.all([kartaGotowa, rceGotowe.catch(() => null)]).then(([karta, rce]) => {
     pokaz(karta, rce);
-    if (karta?.kwadrans && karta.czas_pobrania) $('karta-pobrano').textContent = formatCzasu(karta.czas_pobrania); // stopka „Źródła i licencje”
+    // Stopka „Źródła i licencje”: data pobrania albo – przy prawdziwym braku – „brak danych”.
+    const pobrano = $('karta-pobrano');
+    if (pobrano) pobrano.textContent = karta?.kwadrans && karta.czas_pobrania ? formatCzasu(karta.czas_pobrania) : t('wspolne.brak_danych');
     // Co minutę: nowy kwadrans ceny i sprawdzenie wieku danych (plakietka po 6 h).
     setInterval(() => pokaz(karta, rce), 60_000);
     return karta;

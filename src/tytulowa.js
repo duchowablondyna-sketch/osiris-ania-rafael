@@ -59,18 +59,26 @@ fetch('/data/podsumowanie.json', { cache: 'no-store' })
     else wpisz('liczba-baltyk', BRAK, true);
     if (d.pse?.pobrano) wpisz('liczba-pse', t('tytulowa.pse_pobranie', formatKrotki(d.pse.pobrano)));
     else wpisz('liczba-pse', t('tytulowa.brak_danych_pse'), true);
-    // Stopka „Źródła i licencje” – te same pola co na mapie.
-    if (d.pse?.wiatrPobrano) document.getElementById('wiatr-pobrano').textContent = formatCzasu(d.pse.wiatrPobrano);
-    if (d.pse?.rcePobrano) document.getElementById('rce-pobrano').textContent = formatCzasu(d.pse.rcePobrano);
-    if (d.pse?.kartaPobrano) document.getElementById('karta-pobrano').textContent = formatCzasu(d.pse.kartaPobrano);
-    if (d.pse?.dobaOdtworzenia) {
-      document.getElementById('odtw-zrodlo-doba').textContent = formatDoby(d.pse.dobaOdtworzenia);
-    }
+    // Stopka „Źródła i licencje” – te same pola co na mapie; do tego czasu „wczytywanie…”, przy braku – „brak danych”.
+    datyStopki({
+      'wiatr-pobrano': d.pse?.wiatrPobrano && formatCzasu(d.pse.wiatrPobrano),
+      'rce-pobrano': d.pse?.rcePobrano && formatCzasu(d.pse.rcePobrano),
+      'karta-pobrano': d.pse?.kartaPobrano && formatCzasu(d.pse.kartaPobrano),
+      'odtw-zrodlo-doba': d.pse?.dobaOdtworzenia && formatDoby(d.pse.dobaOdtworzenia),
+    });
   })
   .catch(() => {
     for (const id of ['liczba-wegiel', 'liczba-ladowe', 'liczba-baltyk']) wpisz(id, BRAK, true);
     wpisz('liczba-pse', t('tytulowa.brak_danych_pse'), true);
+    datyStopki({ 'wiatr-pobrano': null, 'rce-pobrano': null, 'karta-pobrano': null, 'odtw-zrodlo-doba': null });
   });
+// Daty w stopce: tekst albo – gdy danych naprawdę brak – „brak danych” (zasada z PR #29).
+function datyStopki(daty) {
+  for (const [id, tekst] of Object.entries(daty)) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = tekst || BRAK;
+  }
+}
 // ── Przycisk „ŹRÓDŁA I LICENCJE”: przewija do stopki i ją rozwija ──
 function otworzZrodla() {
   const zrodla = document.getElementById('zrodla');

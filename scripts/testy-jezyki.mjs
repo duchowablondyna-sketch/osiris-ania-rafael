@@ -16,14 +16,19 @@ const KATALOG = resolve(import.meta.dirname, '..');
 const czytaj = (p) => readFileSync(resolve(KATALOG, p), 'utf-8');
 const json = (p) => JSON.parse(czytaj(p));
 
-// Pliki jeszcze NIE przetłumaczone – plan: e3 źródła i licencje. Po e3 lista ma być pusta.
-// Nowy plik z tekstami, którego tu nie ma, test sprawdza od razu.
-const PRZEJSCIOWE = {
-  'src/czesci/stopka.html': 'e3',
-};
+// Pliki jeszcze NIE przetłumaczone. Po e3 (stopka) lista jest pusta – każdy plik z tekstami jest sprawdzany.
+const PRZEJSCIOWE = {};
 
-// Polskie nazwy własne, które zostają w tekście angielskim (bez tłumaczenia – nazwa ministerstwa, projektu).
-const NAZWY_WLASNE = ['MKiŚ', 'MFW Bałtyk I'];
+// Polskie nazwy własne, które zostają w tekście angielskim (bez tłumaczenia): nazwa ministerstwa, projektu
+// i tytuły dokumentów PSE w stopce (w cudzysłowie, a obok nasze tłumaczenie w nawiasie).
+const NAZWY_WLASNE = [
+  'MKiŚ',
+  'MFW Bałtyk I',
+  'Nierynkowe redysponowanie źródeł OZE',
+  'Rynkowa cena energii elektrycznej',
+  'Informacja o dostępności mocy przyłączeniowej do sieci przesyłowej',
+  'Wykaz rozdzielni na stacjach bez możliwości przyłączenia nowych obiektów',
+];
 const bezNazwWlasnych = (s) => NAZWY_WLASNE.reduce((w, n) => w.replaceAll(n, ''), s);
 
 // Polskie litery i częste polskie słowa (bez polskich liter, np. „brak danych”).
@@ -193,6 +198,49 @@ test('powody plakietki Karty to dokładnie te teksty, które zapisuje scripts/ka
   const skrypt = czytaj('scripts/karta/pobierz.mjs');
   for (const k of Object.keys(pl).filter((k) => k.startsWith('karta.powod.'))) {
     assert.ok(skrypt.includes(`'${pl[k]}'`), `„${pl[k]}” (${k}) – nie ma takiego tekstu w pobierz.mjs`);
+  }
+});
+
+// ── Stopka „Źródła i licencje”: licencje, podpisy i linki w obu wersjach te same ──
+
+test('stopka: te same linki, miejsca na daty i podpisy licencji w PL i EN; podpis NASA w oryginale', () => {
+  const klucze = Object.keys(pl).filter((k) => k.startsWith('stopka.'));
+  const linki = (s) => [...s.matchAll(/href="([^"]+)"/g)].map((m) => m[1]);
+  const daty = (s) => [...s.matchAll(/<span id="([^"]+)"/g)].map((m) => m[1]);
+  // Jedyna zamierzona różnica w linkach: streszczenie CC BY 4.0 po polsku / po angielsku (decyzja Ani 23.11.2026).
+  const bezJezykaCC = (h) => h.replace(/\/deed\.(pl|en)$/, '/deed');
+  for (const k of klucze) {
+    assert.deepEqual(linki(en[k]).map(bezJezykaCC), linki(pl[k]).map(bezJezykaCC), `${k}: inne linki w EN`);
+    assert.deepEqual(daty(en[k]), daty(pl[k]), `${k}: inne miejsca na daty w EN`);
+    for (const h of linki(pl[k])) if (h.includes('creativecommons.org')) assert.ok(h.endsWith('/deed.pl'), `${k}: PL – deed.pl`);
+    for (const h of linki(en[k])) if (h.includes('creativecommons.org')) assert.ok(h.endsWith('/deed.en'), `${k}: EN – deed.en`);
+    // Do wczytania danych: „wczytywanie…” / „loading…”, nie „brak danych” (zasada z PR #29).
+    for (const [s, napis] of [[pl[k], 'wczytywanie…'], [en[k], 'loading…']]) {
+      for (const m of s.matchAll(/<span id="[^"]+">([^<]*)<\/span>/g)) assert.equal(m[1], napis, `${k}: miejsce na datę`);
+    }
+  }
+  // Nazwy licencji i wymagane podpisy – dokładnie w oryginale, w obu językach.
+  const calosc = (s) => klucze.map((k) => s[k]).join(' ');
+  const OSM = '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>';
+  for (const [nazwa, s] of [['pl', pl], ['en', en]]) {
+    for (const wymagane of [OSM, '>ODbL</a>', '>CC BY 4.0</a>', 'SIL Open Font License 1.1', 'Natural Earth', 'Global Integrated Power Tracker', 'September 2026 release']) {
+      assert.ok(calosc(s).includes(wymagane), `stopka (${nazwa}): brak „${wymagane}”`);
+    }
+  }
+  const szablon = czytaj('src/czesci/stopka.html').replace(/\s+/g, ' ');
+  assert.ok(
+    szablon.includes(
+      "We acknowledge the use of imagery provided by services from NASA's Global Imagery Browse Services (GIBS), part of NASA's Earth Science Data and Information System (ESDIS).",
+    ),
+    'podpis NASA zmieniony',
+  );
+});
+
+test('obrazek do udostępniania: osobny plik dla każdego języka i plik istnieje w public/', () => {
+  assert.notEqual(pl['meta.og_obraz'], en['meta.og_obraz']);
+  for (const s of [pl, en]) {
+    const plik = s['meta.og_obraz'].replace('https://osiris-ania-rafael.pages.dev/', 'public/');
+    assert.ok(existsSync(resolve(KATALOG, plik)), `brak ${plik}`);
   }
 });
 
