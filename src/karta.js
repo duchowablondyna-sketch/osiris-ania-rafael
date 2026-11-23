@@ -1,7 +1,8 @@
 // Karta Polski – panel B na /mapa/ (lewy dolny róg). Napisy liczy src/karta-teksty.js; tu tylko wstawiamy je na stronę,
 // obsługujemy zakładki i pilnujemy wysokości panelu. Dane: public/data/karta.json (scripts/karta/pobierz.mjs)
 // i rce.json (ten sam plik co w okienku PSE – przekazywany z src/main.js, bez drugiego pobrania).
-import { tekstyKarty, formatCzasu } from './karta-teksty.js';
+import { tekstyKarty, formatCzasu, CO2_SKALA_MAX } from './karta-teksty.js';
+import { wiecejPonizej, wysokoscPrzycisku } from './wiecej-ponizej.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -11,8 +12,12 @@ function ustaw(id, tekst, brak = false) {
   e.classList.toggle('brak-danych', brak);
 }
 
+// Ostatnie napisy panelu – z nich (i tylko z nich) powstaje okienko Polski.
+let ostatnie = null;
+
 function pokaz(karta, rce) {
   const t = tekstyKarty(karta, rce, Date.now());
+  ostatnie = t;
 
   $('karta-plakietka').hidden = !t.plakietka;
   $('karta-plakietka-tekst').textContent = t.plakietka ?? '';
@@ -26,9 +31,11 @@ function pokaz(karta, rce) {
   const procent = $('karta-procent');
   // Bez danych o miksie – podpis i pasek znikają (bez pustej przerwy w panelu).
   for (const id of ['karta-podpis', 'karta-pasek', 'karta-legenda-paska']) $(id).hidden = !t.ok;
+  procent.disabled = !t.ok; // bez danych nie ma czego pokazać w okienku
   if (!t.ok) {
     procent.textContent = '';
     procent.className = 'karta__procent liczby';
+    procent.removeAttribute('aria-label');
     ustaw('karta-zdanie', 'brak danych PSE o miksie', true);
     $('karta-podpis').textContent = '';
     $('karta-pasek').replaceChildren();
@@ -42,6 +49,7 @@ function pokaz(karta, rce) {
 
   procent.textContent = t.bohater.procent;
   procent.className = `karta__procent liczby karta__procent--${t.bohater.grupa}`;
+  procent.setAttribute('aria-label', `${t.bohater.procent} ${t.bohater.krotko} – szczegóły`);
   ustaw('karta-zdanie', t.bohater.zdanie);
   $('karta-podpis').textContent = t.podpis;
 
@@ -101,28 +109,157 @@ function zakladki() {
   }
 }
 
-// Wysokość: rozwinięty panel kończy się 12 px pod okienkiem PSE (nie zasłania „Odtwórz dobę”); resztę przewija się w panelu.
+// Wysokość: rozwinięty panel kończy się 12 px pod okienkiem PSE (nie zasłania „Odtwórz dobę”).
+// Nagłówek i zakładki stoją na stałe u góry; przewija się tylko treść zakładki (zmienna --karta-tresc-max).
+// Wcześniej przewijał się cały panel i zakładki wjeżdżały pod półprzezroczysty nagłówek „Karta Polski” (23.11.2026).
 // Okienko PSE zmienia wysokość (dane, odtwarzanie doby) – stąd obserwator rozmiaru zamiast jednego pomiaru.
 const NAJMNIEJ_PX = 160;
 function pilnujWysokosci() {
   const karta = $('karta');
   const okno = document.querySelector('.wskaznik');
   const main = karta.parentElement;
+  const naglowek = karta.querySelector('.karta__naglowek');
+  const zakladki = karta.querySelector('.karta__zakladki');
   const dopasuj = () => {
     const gora = okno ? okno.offsetTop + okno.offsetHeight + 12 : 16;
-    const dol = main.clientHeight - karta.offsetTop - karta.offsetHeight; // odstęp od dołu z CSS (nad „← OSIRIS”)
-    karta.style.maxHeight = `${Math.max(NAJMNIEJ_PX, main.clientHeight - gora - dol)}px`;
+    const dol = parseFloat(getComputedStyle(karta).bottom) || 0; // odstęp od dołu z CSS (nad „← OSIRIS”)
+    const panel = Math.max(NAJMNIEJ_PX, main.clientHeight - gora - dol);
+    const ramka = karta.offsetHeight - karta.clientHeight; // górna + dolna krawędź panelu
+    // Stałe części panelu + miejsce na „↓ więcej poniżej” pod treścią (src/wiecej-ponizej.js).
+    const stale = naglowek.offsetHeight + zakladki.offsetHeight + ramka + wysokoscPrzycisku();
+    karta.style.setProperty('--karta-tresc-max', `${Math.max(60, panel - stale)}px`);
   };
   const obserwator = new ResizeObserver(dopasuj);
   obserwator.observe(main);
   if (okno) obserwator.observe(okno);
+  obserwator.observe(naglowek);
   dopasuj();
+}
+
+// ── Okienko Polski (wzór C, src/okienko.js): po najechaniu na dużą liczbę „XX%” albo Tabem; kliknięcie przypina. ──
+// Wszystkie liczby z tekstyKarty() (te same co w panelu) – tu nic się nie liczy, tylko wstawia napisy.
+const SVG = 'http://www.w3.org/2000/svg';
+const PROMIEN = 100 / (2 * Math.PI); // obwód 100 – długość kawałka = procent
+
+function element(tag, klasa, tekst) {
+  const e = document.createElement(tag);
+  if (klasa) e.className = klasa;
+  if (tekst !== undefined) e.textContent = tekst;
+  return e;
+}
+
+// Pierścień: kawałki po kolei od godziny 12, zgodnie z ruchem wskazówek; reszta prądu – szary tor. W środku „razem”.
+function pierscien(o) {
+  const svg = document.createElementNS(SVG, 'svg');
+  svg.setAttribute('viewBox', '0 0 42 42');
+  svg.setAttribute('class', 'okienko-polski__pierscien');
+  svg.setAttribute('aria-hidden', 'true');
+  const kolo = (klasa) => {
+    const c = document.createElementNS(SVG, 'circle');
+    c.setAttribute('cx', '21');
+    c.setAttribute('cy', '21');
+    c.setAttribute('r', String(PROMIEN));
+    c.setAttribute('class', klasa);
+    return c;
+  };
+  svg.append(kolo('okienko-polski__tor'));
+  let start = 0;
+  for (const k of o.kawalki) {
+    const dl = k.udzial * 100;
+    // Mała przerwa po każdym kawałku (podobne odcienie zieleni się nie zlewają); bardzo małe kawałki zostają widoczne.
+    const kreska = Math.max(0, dl - Math.min(0.6, dl / 3));
+    const c = kolo(`okienko-polski__luk okienko-polski__kolor--${k.grupa}`);
+    c.setAttribute('stroke-dasharray', `${kreska.toFixed(3)} ${(100 - kreska).toFixed(3)}`);
+    c.setAttribute('stroke-dashoffset', (25 - start).toFixed(3)); // 25 = przesunięcie na godzinę 12
+    svg.append(c);
+    start += dl;
+  }
+  const napis = document.createElementNS(SVG, 'text');
+  napis.setAttribute('x', '21');
+  napis.setAttribute('y', '21');
+  napis.setAttribute('class', 'okienko-polski__srodek');
+  napis.textContent = o.razem;
+  svg.append(napis);
+  return svg;
+}
+
+function trescOkienka(t, wiecej) {
+  if (!t?.ok) return null;
+  const o = t.okienko;
+  const el = element('div', `okienko-polski okienko-polski--${t.bohater.grupa}`);
+  el.append(element('strong', '', o.naglowek), element('div', 'okienko-polski__stan', o.stan));
+  if (t.plakietka) {
+    const p = element('p', 'karta__plakietka okienko-polski__plakietka');
+    const znak = element('span', '', '⚠');
+    znak.setAttribute('aria-hidden', 'true');
+    p.append(znak, ` ${t.plakietka}`);
+    el.append(p);
+  }
+
+  // Pierścień + lista kawałków (lista jest dla czytnika ekranu i bez kolorów; pierścień tylko dla oka).
+  const miks = element('div', 'okienko-polski__miks');
+  const lista = element('ul', 'okienko-polski__lista');
+  lista.setAttribute('aria-label', o.naglowek);
+  for (const k of o.kawalki) {
+    const li = element('li');
+    const kolor = element('span', `karta__kolor okienko-polski__kolor--${k.grupa}`);
+    kolor.setAttribute('aria-hidden', 'true');
+    li.append(kolor, element('span', 'okienko-polski__nazwa', k.nazwa), element('span', 'liczby', k.tekst));
+    lista.append(li);
+  }
+  const razem = element('li', 'okienko-polski__razem');
+  razem.append(element('span', 'okienko-polski__nazwa', '= razem'), element('span', 'liczby', o.razem));
+  lista.append(razem);
+  miks.append(pierscien(o), lista);
+  el.append(miks);
+
+  // Pasek CO2 0–1500 g/kWh z kropką „tu jesteśmy”.
+  const co2 = element('div', 'okienko-polski__co2');
+  const tytul = element('div', 'okienko-polski__co2-tytul');
+  tytul.innerHTML = 'Ślad CO<sub>2</sub>';
+  const skala = element('div', 'okienko-polski__skala');
+  skala.setAttribute('aria-hidden', 'true');
+  const kropka = element('span', 'okienko-polski__kropka');
+  kropka.style.left = `${(o.co2.polozenie * 100).toFixed(2)}%`;
+  skala.append(kropka);
+  const krance = element('div', 'okienko-polski__krance liczby');
+  krance.setAttribute('aria-hidden', 'true');
+  krance.append(element('span', '', '0'), element('span', '', `${CO2_SKALA_MAX.toLocaleString('pl-PL')} g/kWh`));
+  co2.append(tytul, skala, krance, element('div', 'okienko-polski__tu', o.co2.tekst));
+  el.append(co2);
+
+  el.append(element('div', 'okienko-polski__zdanie', o.zdanie));
+  const przycisk = element('button', 'okienko-polski__wiecej', 'Więcej');
+  przycisk.type = 'button';
+  przycisk.setAttribute('aria-label', 'Więcej – Metodologia w panelu Karty Polski');
+  przycisk.addEventListener('click', wiecej);
+  el.append(przycisk);
+
+  const zrodlo = element('p', 'zrodlo');
+  zrodlo.append(element('span', 'zrodlo__etykieta', 'Źródło'), t.pobrano ? `PSE · pobrano: ${t.pobrano}` : 'PSE');
+  el.append(zrodlo); // okienko C przykleja linijkę źródła do dołu
+  return el;
+}
+
+// Wołane z src/main.js po wczytaniu mapy (wtedy powstają okienka).
+export function podlaczOkienkoPolski(okienka) {
+  // „Więcej”: okienko się zamyka, w zakładce ILE I JAK CZYSTO rozwija się Metodologia, fokus na jej nagłówek.
+  const wiecej = () => {
+    okienka.zamknij();
+    document.getElementById('zakladka-ile').click();
+    const metodologia = document.querySelector('#karta-ile .karta__metodologia');
+    metodologia.open = true;
+    metodologia.querySelector('summary').focus();
+  };
+  okienka.podlacz($('karta-procent'), () => trescOkienka(ostatnie, wiecej));
 }
 
 // rceGotowe: obietnica z obiektem rce.json albo null (src/main.js).
 export function uruchomKarte(rceGotowe) {
   zakladki();
   pilnujWysokosci();
+  // Każda zakładka, która się nie mieści: zanikanie u dołu i „↓ więcej poniżej” (jak w okienku C).
+  for (const tresc of document.querySelectorAll('.karta__tresc')) wiecejPonizej(tresc);
   // Cloudflare Pages na brakujący plik odpowiada stroną HTML (kod 200) – wtedy .json() rzuca błąd i mamy „brak danych”.
   const kartaGotowa = fetch(`${import.meta.env.BASE_URL}data/karta.json`, { cache: 'no-store' })
     .then((odp) => (odp.ok ? odp.json() : null))

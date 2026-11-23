@@ -4,7 +4,8 @@ import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url';
 import { odmiana, formatMocy, zbierzElektrownie, podsumujLadowe, podsumujElektrownie, podsumujMorskie } from './liczniki.js';
 import { dodajWarstweMocy } from './moce.js';
 import { utworzOkienka } from './okienko.js';
-import { uruchomKarte } from './karta.js';
+import { uruchomKarte, podlaczOkienkoPolski } from './karta.js';
+import { wiecejPonizej, wysokoscPrzycisku } from './wiecej-ponizej.js';
 import './czcionki.css';
 import './style.css';
 
@@ -349,6 +350,7 @@ map.on('load', () => {
   // Okienka wzoru C (src/okienko.js): pierwszeństwo ma obiekt narysowany najwyżej – stacje z wolną mocą (src/moce.js)
   // wygrywają z elektrowniami i farmami w tym samym miejscu, a kropki – z liniami.
   const okienka = utworzOkienka(map);
+  podlaczOkienkoPolski(okienka); // duża liczba w Karcie Polski → okienko Polski
 
   for (const przycisk of document.querySelectorAll('.przelacznik button')) {
     przycisk.addEventListener('click', () => {
@@ -821,6 +823,35 @@ const cenaGotowa = fetch(`${import.meta.env.BASE_URL}data/rce.json`, { cache: 'n
 
 // Karta Polski (panel w lewym dolnym rogu) – cena z tego samego rce.json, bez drugiego pobrania.
 uruchomKarte(cenaGotowa.then(() => daneRce));
+
+// Legenda „Co oznaczają znaczki”: nagłówek stoi, przewija się tylko treść (.legenda__tresc), pod nią
+// „↓ więcej poniżej” (src/wiecej-ponizej.js). Wysokość treści = miejsce od góry legendy do odstępu od dołu
+// (--legenda-od-dolu, miejsce na atrybucję MapLibre) minus nagłówek, odstępy legendy i przycisk.
+function pilnujLegendy() {
+  const legenda = document.querySelector('.legenda');
+  const tresc = legenda?.querySelector('.legenda__tresc');
+  if (!tresc) return;
+  const main = legenda.parentElement;
+  const naglowek = legenda.querySelector('summary');
+  const dopasuj = () => {
+    const styl = getComputedStyle(legenda);
+    const odDolu = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--legenda-od-dolu')) || 0;
+    const odstepy = parseFloat(styl.paddingTop) + parseFloat(styl.paddingBottom) + parseFloat(styl.borderTopWidth) + parseFloat(styl.borderBottomWidth);
+    const marginesTresci = parseFloat(getComputedStyle(tresc).marginTop) || 0;
+    const miejsce = main.clientHeight - legenda.offsetTop - odDolu - odstepy - naglowek.offsetHeight - marginesTresci - wysokoscPrzycisku();
+    legenda.style.setProperty('--legenda-tresc-max', `${Math.max(60, miejsce)}px`);
+  };
+  const obserwator = new ResizeObserver(dopasuj);
+  obserwator.observe(main);
+  obserwator.observe(naglowek);
+  dopasuj();
+  wiecejPonizej(tresc);
+}
+pilnujLegendy();
+
+// Stopka „Źródła i licencje” – rozwinięta treść przewija się (max 40vh): ten sam sygnał.
+const trescStopki = document.querySelector('.stopka__tresc');
+if (trescStopki) wiecejPonizej(trescStopki);
 
 // Widok „teraz” wiatru w okienku (wywoływany po wczytaniu i po zakończeniu odtwarzania doby).
 let daneWiatr = null;

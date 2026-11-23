@@ -8,6 +8,7 @@
 // – bez animacji (także przy „ogranicz ruch” nic się nie rusza).
 // Okienko jest własne (nie MapLibre Popup): Popup jest częścią mapy, więc chował się pod panelami.
 import { wybierzPozycje } from './okienko-pozycja.js';
+import { wiecejPonizej } from './wiecej-ponizej.js';
 
 // Panele, których okienko w miarę możliwości nie zasłania (zasłania tylko, gdy nie ma innego miejsca).
 const PANELE = '.wskaznik, .legenda, .karta, .przelacznik, .maplibregl-ctrl-top-right, .maplibregl-ctrl-bottom-right, .powrot, .stopka';
@@ -28,14 +29,11 @@ export function utworzOkienka(map) {
   krzyzyk.textContent = '×';
   const tresc = document.createElement('div');
   tresc.className = 'okienko__tresc';
-  // „↓ więcej poniżej” – przycisk: przewija środek okienka o mniej więcej jego wysokość (Enter i spacja też).
-  const wiecej = document.createElement('button');
-  wiecej.type = 'button';
-  wiecej.className = 'okienko__wiecej';
-  wiecej.textContent = '↓ więcej poniżej';
   const dol = document.createElement('div');
   dol.className = 'okienko__zrodla';
-  okno.append(krzyzyk, tresc, wiecej, dol);
+  okno.append(krzyzyk, tresc, dol);
+  // Treść za długa → zanikanie u dołu i „↓ więcej poniżej” (wspólny kod: src/wiecej-ponizej.js).
+  const sprawdzPrzewijanie = wiecejPonizej(tresc);
   // Podpowiedź przy kursorze (np. „kliknij – szczegóły linii”): jedna linijka, tylko dla myszy –
   // to samo mówi legenda, więc czytnik ekranu jej nie czyta.
   const podpowiedz = document.createElement('div');
@@ -47,6 +45,7 @@ export function utworzOkienka(map) {
   // stan: null albo { klucz, przypiete, lngLat, punkt, powrotFokusu }
   let stan = null;
   let zegar = null;
+  let oddajeFokus = false;
 
   const anulujUkrycie = () => {
     clearTimeout(zegar);
@@ -56,25 +55,6 @@ export function utworzOkienka(map) {
     if (!stan || stan.przypiete || zegar) return;
     zegar = setTimeout(zamknij, OPOZNIENIE_UKRYCIA_MS);
   };
-
-  // Zanikanie u dołu + „↓ więcej poniżej”, dopóki widz nie dojedzie do końca treści.
-  function sprawdzPrzewijanie() {
-    const nadmiar = tresc.scrollHeight - tresc.clientHeight > 1;
-    const doKonca = tresc.scrollTop + tresc.clientHeight >= tresc.scrollHeight - 2;
-    // Przewijaną treść da się też przewinąć z klawiatury (Tab, potem strzałki).
-    if (nadmiar) tresc.tabIndex = 0;
-    else tresc.removeAttribute('tabindex');
-    const bylFokusNaPrzycisku = document.activeElement === wiecej;
-    okno.classList.toggle('okienko--wiecej', nadmiar && !doKonca);
-    // Przycisk znika po dojechaniu do końca – fokus z klawiatury przechodzi na treść, a nie „w nicość”.
-    if (bylFokusNaPrzycisku && doKonca) tresc.focus({ preventScroll: true });
-  }
-  tresc.addEventListener('scroll', sprawdzPrzewijanie, { passive: true });
-  wiecej.addEventListener('click', () => {
-    // Płynnie, a przy „ogranicz ruch” – od razu (sprawdzane przy każdym kliknięciu: ustawienie mogło się zmienić).
-    const bezRuchu = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    tresc.scrollBy({ top: Math.max(40, tresc.clientHeight - 32), behavior: bezRuchu ? 'instant' : 'smooth' });
-  });
 
   // Punkt zaczepienia w pikselach okna przeglądarki: kursor (najechanie) albo kropka (przypięte).
   function punktZaczepienia() {
@@ -133,7 +113,12 @@ export function utworzOkienka(map) {
     tresc.replaceChildren();
     dol.replaceChildren();
     // Fokus wraca tam, skąd przyszedł (np. przycisk stacji w zakładce GDZIE) – albo na mapę.
-    if (fokusWOkienku) (powrotFokusu?.isConnected ? powrotFokusu : map.getCanvas()).focus({ preventScroll: true });
+    // oddajeFokus: powrót fokusu na przycisk z podlacz() nie otwiera okienka od nowa.
+    if (fokusWOkienku) {
+      oddajeFokus = true;
+      (powrotFokusu?.isConnected ? powrotFokusu : map.getCanvas()).focus({ preventScroll: true });
+      oddajeFokus = false;
+    }
   }
 
   krzyzyk.addEventListener('click', zamknij);
@@ -262,6 +247,38 @@ export function utworzOkienka(map) {
       const widacKropke = Boolean(punktZaczepienia());
       stan = null;
       pokaz(el, { przypiete: true, lngLat: widacKropke ? lngLat : null, punkt: obokPrzycisku, fokus: true });
+    },
+    // Okienko przy elemencie strony, nie przy obiekcie na mapie (np. duża liczba w Karcie Polski – przycisk).
+    // Najechanie albo Tab → okienko obok (kursora / przycisku); zjechanie albo wyjście Tabem → znika jak przy mapie;
+    // kliknięcie, Enter, spacja → przypięte; z klawiatury fokus przechodzi do okienka, a Esc oddaje go przyciskowi.
+    // budowniczy() → element treści albo null (np. brak danych).
+    podlacz(przycisk, budowniczy) {
+      const klucz = Symbol('element');
+      const obokPrzycisku = () => {
+        const r = przycisk.getBoundingClientRect();
+        return { x: r.right, y: r.top + r.height / 2 };
+      };
+      const najechanie = (punkt) => {
+        if (stan?.przypiete) return;
+        anulujUkrycie();
+        if (stan?.klucz === klucz) return; // okienko zostaje tam, gdzie się pojawiło
+        const el = budowniczy();
+        if (el) pokaz(el, { klucz, przypiete: false, punkt });
+      };
+      przycisk.addEventListener('mouseenter', (e) => najechanie({ x: e.clientX, y: e.clientY }));
+      przycisk.addEventListener('mouseleave', zaplanujUkrycie);
+      przycisk.addEventListener('focus', () => {
+        if (!oddajeFokus && przycisk.matches(':focus-visible')) najechanie(obokPrzycisku());
+      });
+      przycisk.addEventListener('blur', () => {
+        if (stan?.klucz === klucz && !stan.przypiete) zamknij();
+      });
+      przycisk.addEventListener('click', (e) => {
+        const el = budowniczy();
+        if (!el) return;
+        const zKlawiatury = e.detail === 0; // Enter i spacja na przycisku dają kliknięcie bez myszy
+        pokaz(el, { klucz, przypiete: true, punkt: zKlawiatury ? obokPrzycisku() : { x: e.clientX, y: e.clientY }, fokus: zKlawiatury });
+      });
     },
     zamknij,
   };

@@ -5,7 +5,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { zbudujKarte } from './licz.mjs';
-import { tekstyKarty, tekstCeny, PROG_STARYCH_H } from '../../src/karta-teksty.js';
+import { tekstyKarty, tekstCeny, PROG_STARYCH_H, PODZIAL_OZE } from '../../src/karta-teksty.js';
 
 const PROBKA = JSON.parse(readFileSync(new URL('./testy/pse-2026-11-20-1200.json', import.meta.url), 'utf-8'));
 const karta = () => zbudujKarte(structuredClone(PROBKA['his-gen-pal-sire']), structuredClone(PROBKA['his-wlk-cal']), '2026-11-20T12:30:00.000Z');
@@ -129,4 +129,82 @@ test('brak danych: plik się nie wczytał, „blad” w karta.json albo zły uk�
   assert.equal(blad.plakietka, 'Brak danych o miksie: nie udało się pobrać nowych danych PSE.');
   assert.equal(blad.cena.wartosc, 'brak danych PSE');
   assert.equal(tekstyKarty({ wersja: 2 }, RCE, t).ok, false);
+});
+
+// ── Okienko Polski: liczby wyłącznie z tekstyKarty() – te same co panel ──
+
+// Przypadek „wygrywa OZE”: ta sama próbka PSE, wiatr na lądzie większy o 20 000 MW w obu raportach
+// (his-gen-pal-sire i his-wlk-cal), więc karta przechodzi też sprawdzian zgodności.
+const DODATEK_WIATRU_MW = 20_000;
+function kartaOze() {
+  const miks = structuredClone(PROBKA['his-gen-pal-sire']);
+  for (const r of miks) {
+    if (r.alias_sire !== 'WI') continue;
+    const mw = Number(String(r.value).replace(',', '.')) + DODATEK_WIATRU_MW;
+    r.value = String(mw).replace('.', ',');
+  }
+  const wlk = structuredClone(PROBKA['his-wlk-cal']).map((w) => ({ ...w, wi: w.wi + DODATEK_WIATRU_MW }));
+  return zbudujKarte(miks, wlk, '2026-11-20T12:30:00.000Z');
+}
+
+const naLiczbe = (tekst) => Number(tekst.replace('%', '').replace(',', '.'));
+
+test('okienko, węgiel: pierścień = kamienny + brunatny z paska, razem = liczba-bohater, CO2 = panel', () => {
+  const k = karta();
+  const t = tekstyKarty(k, RCE, terazPo(k, 1));
+  const o = t.okienko;
+  assert.equal(o.naglowek, 'Polska · prąd z węgla');
+  assert.equal(o.stan, 'stan na 12:30 · PSE opublikowało 21.11, 02:52');
+  assert.equal(t.podpis, `z produkcji w Polsce · ${o.stan}`);
+  // Procenty w pierścieniu = procenty paska (te same napisy).
+  const zPaska = t.pasek.filter((p) => p.grupa === 'kamienny' || p.grupa === 'brunatny');
+  assert.deepEqual(o.kawalki, zPaska);
+  // „razem” z jednym miejscem po przecinku, liczone z całości; po zaokrągleniu = liczba-bohater.
+  assert.match(o.razem, /^\d{1,3},\d%$/);
+  assert.equal(o.razem, `${(k.wegiel_udzial * 100).toLocaleString('pl-PL', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`);
+  assert.equal(`${Math.round(naLiczbe(o.razem))}%`, t.bohater.procent);
+  // CO2 = wartość z panelu; kropka na skali 0–1500.
+  assert.equal(o.co2.wartosc, t.co2.wartosc);
+  assert.equal(o.co2.tekst, `tu jesteśmy: ${t.co2.wartosc} – szacunek OSIRIS wg IPCC`);
+  assert.equal(o.co2.polozenie, k.co2.g_kwh_ok / 1500);
+  assert.equal(o.zdanie, 'z produkcji w Polsce · dane PSE co 15 min');
+});
+
+test('okienko, OZE: pięć kawałków OZE, razem = OZE z paska = liczba-bohater, CO2 = panel', () => {
+  const k = kartaOze();
+  assert.ok(k.oze_udzial > k.wegiel_udzial, 'w tym przypadku OZE musi wygrywać');
+  const t = tekstyKarty(k, RCE, terazPo(k, 1));
+  const o = t.okienko;
+  assert.equal(t.bohater.grupa, 'oze');
+  assert.equal(o.naglowek, 'Polska · prąd z OZE');
+  assert.deepEqual(o.kawalki.map((x) => x.nazwa), ['wiatr na lądzie', 'wiatr na morzu', 'słońce', 'woda', 'biomasa i inne OZE']);
+  // Kawałki składają się na całe OZE (bez zaokrągleń – dokładnie; po zaokrągleniu najwyżej o 0,1 punktu na kawałek).
+  const suma = o.kawalki.reduce((s, x) => s + x.udzial, 0);
+  assert.ok(Math.abs(suma - k.grupy.oze.udzial) < 0.0001, `suma kawałków ${suma} ≠ OZE ${k.grupy.oze.udzial}`);
+  // Każdy kawałek = suma MW swoich paliw / produkcja.
+  for (const [i, r] of PODZIAL_OZE.entries()) {
+    const mw = k.paliwa.filter((p) => r.kody.includes(p.kod_pse)).reduce((s, p) => s + p.mw, 0);
+    assert.equal(o.kawalki[i].udzial, mw / k.produkcja_mw);
+  }
+  // „razem” = procent OZE z paska panelu = liczba-bohater po zaokrągleniu.
+  assert.equal(o.razem, t.pasek.find((p) => p.grupa === 'oze').tekst);
+  assert.equal(`${Math.round(naLiczbe(o.razem))}%`, t.bohater.procent);
+  assert.equal(o.co2.wartosc, t.co2.wartosc);
+});
+
+test('okienko, OZE: starszy karta.json bez listy paliw – jeden kawałek „OZE” z paska, bez zgadywania', () => {
+  const k = kartaOze();
+  delete k.paliwa;
+  const t = tekstyKarty(k, RCE, terazPo(k, 1));
+  assert.deepEqual(t.okienko.kawalki, [t.pasek.find((p) => p.grupa === 'oze')].map((p) => ({ ...p, nazwa: 'OZE' })));
+});
+
+test('okienko: kropka CO2 nie wychodzi poza skalę', () => {
+  const k = karta();
+  k.co2.g_kwh_ok = 2000;
+  assert.equal(tekstyKarty(k, RCE, terazPo(k, 1)).okienko.co2.polozenie, 1);
+});
+
+test('okienko: bez danych o miksie – nie ma okienka', () => {
+  assert.equal(tekstyKarty(null, RCE, Date.parse('2026-11-20T12:05:00Z')).okienko, undefined);
 });

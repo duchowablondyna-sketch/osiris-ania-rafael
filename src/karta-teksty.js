@@ -36,6 +36,19 @@ export const PASEK = [
   { grupa: 'oze', nazwa: 'OZE' },
 ];
 
+// Okienko Polski, przypadek OZE: podział OZE na rodzaje (kody PSE z scripts/karta/licz.mjs).
+// Biomasa i „inne OZE” razem – żeby kawałki składały się na całe OZE (decyzja Ani 23.11.2026).
+export const PODZIAL_OZE = [
+  { grupa: 'wiatr_lad', nazwa: 'wiatr na lądzie', kody: ['WI'] },
+  { grupa: 'wiatr_morze', nazwa: 'wiatr na morzu', kody: ['WM'] },
+  { grupa: 'slonce', nazwa: 'słońce', kody: ['ES'] },
+  { grupa: 'woda', nazwa: 'woda', kody: ['WP', 'WZ'] },
+  { grupa: 'biomasa', nazwa: 'biomasa i inne OZE', kody: ['BM', 'BG'] },
+];
+
+// Skala paska CO2 w okienku Polski: 0–1500 g/kWh.
+export const CO2_SKALA_MAX = 1500;
+
 // Cena RCE w bieżącym kwadransie (ta sama zasada co w okienku PSE: tylko doba dzisiejsza wg czasu polskiego).
 export function tekstCeny(rce, teraz) {
   const seria = (rce?.doby?.[dobaPL(teraz)] ?? []).filter((p) => typeof p.cena === 'number' && p.koniec_utc);
@@ -51,6 +64,19 @@ function tekstWymiany(saldo) {
   const mw = Math.round(Math.abs(saldo) / 10) * 10;
   if (mw === 0) return { wartosc: 'ok. 0 MW', opis: 'planowo, prawie bez wymiany' };
   return { wartosc: `${saldo > 0 ? 'kupuje' : 'sprzedaje'} ok. ${mw.toLocaleString('pl-PL')} MW`, opis: 'planowo' };
+}
+
+// Kawałki OZE z listy paliw w karta.json; udział = suma MW rodzaju / cała produkcja (jak udziały grup w licz.mjs).
+// Starszy plik bez listy paliw: jeden kawałek „OZE” (ta sama liczba co na pasku), bez zgadywania podziału.
+function kawalkiOze(karta) {
+  const paliwa = Array.isArray(karta.paliwa) ? karta.paliwa : [];
+  const mwKodu = new Map(paliwa.filter((p) => typeof p.mw === 'number').map((p) => [p.kod_pse, p.mw]));
+  const komplet = PODZIAL_OZE.every((r) => r.kody.every((k) => mwKodu.has(k))) && karta.produkcja_mw > 0;
+  if (!komplet) return [{ grupa: 'oze', nazwa: 'OZE', udzial: karta.grupy.oze.udzial, tekst: procent1(karta.grupy.oze.udzial) }];
+  return PODZIAL_OZE.map(({ grupa, nazwa, kody }) => {
+    const udzial = kody.reduce((s, k) => s + mwKodu.get(k), 0) / karta.produkcja_mw;
+    return { grupa, nazwa, udzial, tekst: procent1(udzial) };
+  });
 }
 
 // karta – obiekt z karta.json albo null (plik się nie wczytał); rce – obiekt z rce.json albo null; teraz – ms.
@@ -90,7 +116,11 @@ export function tekstyKarty(karta, rce, teraz = Date.now()) {
   };
 
   const publikacja = Date.parse(karta.kwadrans.publikacja_utc);
-  const podpis = `z produkcji w Polsce · stan na ${stan}` + (Number.isFinite(publikacja) ? ` · PSE opublikowało ${chwila(publikacja, teraz)}` : '');
+  const stanIPublikacja = `stan na ${stan}` + (Number.isFinite(publikacja) ? ` · PSE opublikowało ${chwila(publikacja, teraz)}` : '');
+  const podpis = `z produkcji w Polsce · ${stanIPublikacja}`;
+
+  const pasek = PASEK.map(({ grupa, nazwa }) => ({ grupa, nazwa, udzial: karta.grupy[grupa].udzial, tekst: procent1(karta.grupy[grupa].udzial) }));
+  const co2 = { wartosc: `ok. ${karta.co2.g_kwh_ok} g/kWh`, opis: 'szacunek OSIRIS' };
 
   return {
     ok: true,
@@ -98,9 +128,23 @@ export function tekstyKarty(karta, rce, teraz = Date.now()) {
     skrot: `${bohater.procent} ${bohater.krotko} · stan na ${stan}`,
     bohater,
     podpis,
-    pasek: PASEK.map(({ grupa, nazwa }) => ({ grupa, nazwa, udzial: karta.grupy[grupa].udzial, tekst: procent1(karta.grupy[grupa].udzial) })),
+    pasek,
     cena,
-    co2: { wartosc: `ok. ${karta.co2.g_kwh_ok} g/kWh`, opis: 'szacunek OSIRIS' },
+    co2,
+    // Okienko Polski (po najechaniu na liczbę-bohatera): pierścień = to samo, co liczba-bohater.
+    okienko: {
+      naglowek: `Polska · prąd ${bohater.krotko}`,
+      stan: stanIPublikacja,
+      kawalki: oze ? kawalkiOze(karta) : pasek.filter((p) => p.grupa === 'kamienny' || p.grupa === 'brunatny'),
+      // „razem” z całości (nie z sumy zaokrąglonych kawałków), z jednym miejscem po przecinku.
+      razem: procent1(oze ? karta.oze_udzial : karta.wegiel_udzial),
+      co2: {
+        wartosc: co2.wartosc,
+        tekst: `tu jesteśmy: ${co2.wartosc} – szacunek OSIRIS wg IPCC`,
+        polozenie: Math.min(1, Math.max(0, karta.co2.g_kwh_ok / CO2_SKALA_MAX)),
+      },
+      zdanie: 'z produkcji w Polsce · dane PSE co 15 min',
+    },
     wymiana: tekstWymiany(karta.wymiana.saldo_mw),
     pobrano,
     metodologia: {
