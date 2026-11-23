@@ -682,3 +682,64 @@ body.tytulowa {
     transition: none;
   }
 }
+
+/* ── Duży napis „PRĄD W POLSCE” / „ELECTRICITY IN POLAND” zamiast „OSIRIS” (wersja 3, decyzja Ani 23.11.2026).
+   Hasło pod napisem usunięte ze strony. W słowniku zwykła pisownia – wielkie litery robi CSS; rozstrzelenie 0,2 em
+   (padding-left równoważy odstęp po ostatniej literze). Jedna linia także w węższych oknach (rozmiar zależy od szerokości
+   okna, dłuższy angielski napis zawsze mieści się w kolumnie).
+   Miejsce w układzie jak w wersji 1 (dół całego napisu tam, gdzie był dół OSIRIS – przycisk i kafelki na miejscu);
+   linia liter w Inter leży 13,8% rozmiaru nad dołem linii (line-height 1). Błysk co 4 s – bez zmian. */
+.bohater .tytul__nazwa {
+  --stary: clamp(3.85rem, 11vw, 8.8rem); /* rozmiar OSIRIS */
+  --rozmiar: clamp(2.2rem, 4.5vw, 4.1rem); /* trochę większy (prośba Ani 23.11.2026); angielski dalej w jednej linii */
+  margin-top: calc(18px + (var(--stary) - var(--rozmiar)) * 0.862);
+  padding-bottom: calc((var(--stary) - var(--rozmiar)) * 0.138);
+  /* Wysokość napisu między logo OSIRIS a szczytem kuli (prośby Ani 23.11.2026): --polozenie 0 = tuż pod logo,
+     0,5 = równo pośrodku, 1 = na szczycie kuli; mierzony jest środek wielkich liter. Przesunięcie tylko wizualne
+     (position: relative) – miejsce w układzie zostaje, więc przycisk i kafelki się nie ruszają.
+     Szczyt kuli: 35,58% wysokości okna (kula 116 vh od 15 vh, promień 0,6451 × połowa); dół logo: 35 px.
+     Środek liter leży 49,85% rozmiaru pod górą napisu, a góra napisu (bez przesunięcia) = 54 px (pasek)
+     + odstęp bloku .tytul (37,77 vh − 206 px) + margin-top. */
+  --polozenie: 0.75;
+  position: relative;
+  top: calc(
+    35px * (1 - var(--polozenie)) + 134px + 35.584vh * var(--polozenie) - 37.77vh - var(--stary) * 0.862 +
+      var(--rozmiar) * 0.3635
+  );
+  padding-left: 0.2em;
+  font-size: var(--rozmiar);
+  line-height: 1;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Wersja angielska – mniejsze litery niż polska (prośba Ani 23.11.2026). */
+.bohater .tytul__nazwa:lang(en) {
+  --rozmiar: clamp(2rem, 4vw, 3.6rem);
+}
+
+/* ── Małe logo „OSIRIS” na środku górnego paska (wersja 3, decyzja Ani 23.11.2026). Krój jak dawny duży napis (Inter,
+   wielkie litery, szerokie rozstrzelenie), trochę większy od zegara. Stoi na środku okna niezależnie od szerokości
+   lewego i prawego rogu; środek wysokości – na środku linii zegara. ── */
+.gora__logo {
+  position: absolute;
+  top: 21px; /* środek liter na wysokości środka linii zegara (pomiar 23.11.2026) */
+  left: 50%;
+  transform: translateX(-50%);
+  padding-left: 0.4em; /* równoważy odstęp po ostatniej literze */
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: 0.4em;
+  color: var(--tekst);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Hasło usunięte ze strony – przycisk zostaje tam, gdzie był: jego odstęp = dawny odstęp hasła (9,5 vh + 20 px)
+   + wysokość linii hasła (19 px, pomiar 23.11.2026) + dawny odstęp przycisku (30 px). */
+.bohater .przycisk--glowny {
+  margin-top: calc(9.5vh + 20px + 19px + 30px);
+}

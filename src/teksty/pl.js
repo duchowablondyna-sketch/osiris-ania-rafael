@@ -30,6 +30,8 @@ export default {
   'tytulowa.opis':
     'Zobacz w jednym miejscu, skąd Polska bierze prąd i ile on kosztuje. Elektrownie, farmy wiatrowe na lądzie i na Bałtyku, linie najwyższych napięć, produkcja z wiatru i cena energii godzina po godzinie. Wszystko z oficjalnych, publicznych źródeł, z datą przy każdej liczbie. Dla zarządów i inwestorów, którzy pytają: gdzie i jak zdobyć więcej prądu?',
   'tytulowa.czas_warszawa': 'CZAS WARSZAWA',
+  // Duży napis na stronie tytułowej (wersja 3, decyzja Ani 23.11.2026) – zwykła pisownia; wielkie litery robi CSS.
+  'tytulowa.nazwa': 'Prąd w Polsce',
   'tytulowa.haslo': 'SERCE DANYCH O POLSKIM PRĄDZIE.',
   'tytulowa.otworz_mape': 'OTWÓRZ MAPĘ →',
   'tytulowa.wegiel_nazwa': 'ELEKTROWNIE WĘGLOWE',

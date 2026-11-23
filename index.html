@@ -55,6 +55,8 @@
             <p>{{tytulowa.opis}}</p>
           </div>
         </div>
+        <!-- Małe logo na środku paska (wersja 3, decyzja Ani 23.11.2026) – nazwa, w obu językach taka sama. -->
+        <span class="gora__logo">OSIRIS</span>
         <!-- Prawy górny róg: zegar i obok przełącznik PL | EN (decyzja Ani 23.11.2026). -->
         <div class="gora__prawa">
           <span class="zegar" role="timer" aria-live="off"><span class="zegar__kropka" aria-hidden="true">●</span> {{tytulowa.czas_warszawa}} <span id="zegar">--:--:--</span></span>
@@ -63,8 +65,7 @@
       </header>
 
       <div class="tytul">
-        <h1 class="tytul__nazwa">OSIRIS</h1>
-        <p class="tytul__podtytul">{{tytulowa.haslo}}</p>
+        <h1 class="tytul__nazwa">{{tytulowa.nazwa}}</h1>
         <a class="przycisk przycisk--glowny" href="{{@adres:mapa}}">{{tytulowa.otworz_mape}}</a>
       </div>
 
