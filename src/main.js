@@ -3,6 +3,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url';
 import { odmiana, formatMocy, zbierzElektrownie, podsumujLadowe, podsumujElektrownie, podsumujMorskie } from './liczniki.js';
 import { dodajWarstweMocy } from './moce.js';
+import { utworzOkienka } from './okienko.js';
 import { uruchomKarte } from './karta.js';
 import './czcionki.css';
 import './style.css';
@@ -170,7 +171,6 @@ const map = new maplibregl.Map({
   attributionControl: false,
   // Polskie podpisy przycisków MapLibre (czytnik ekranu, podpowiedzi).
   locale: {
-    'Popup.Close': 'Zamknij okienko',
     'NavigationControl.ZoomIn': 'Przybliż',
     'NavigationControl.ZoomOut': 'Oddal',
     'AttributionControl.ToggleAttribution': 'Pokaż lub ukryj podpis źródeł',
@@ -346,8 +346,9 @@ function filtrElektrowni() {
 }
 
 map.on('load', () => {
-  // Okienko stacji z wolną mocą (src/moce.js) ma pierwszeństwo przed okienkami elektrowni i farm w tym samym miejscu.
-  const podZnaczkiemMocy = (e) => Boolean(map.getLayer('moce')) && map.queryRenderedFeatures(e.point, { layers: ['moce'] }).length > 0;
+  // Okienka wzoru C (src/okienko.js): pierwszeństwo ma obiekt narysowany najwyżej – stacje z wolną mocą (src/moce.js)
+  // wygrywają z elektrowniami i farmami w tym samym miejscu, a kropki – z liniami.
+  const okienka = utworzOkienka(map);
 
   for (const przycisk of document.querySelectorAll('.przelacznik button')) {
     przycisk.addEventListener('click', () => {
@@ -360,8 +361,12 @@ map.on('load', () => {
   map.addSource('linie-nn', {
     type: 'geojson',
     data: `${import.meta.env.BASE_URL}data/linie-nn.geojson`,
+    // Numery odcinków nadaje MapLibre (plik ich nie ma) – potrzebne do podświetlenia odcinka pod kursorem.
+    generateId: true,
     attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>',
   });
+  // Odcinek pod kursorem: grubszy o 2 px, w tym samym złotym kolorze (znak, że linię można kliknąć).
+  const PODSWIETLENIE_LINII = ['case', ['boolean', ['feature-state', 'podswietlona'], false], 2, 0];
   // Ciemna obwódka pod złotymi liniami (o 2 px szersza): światła miast na nocnym tle są bursztynowe,
   // prawie w kolorze złota – ciemna krawędź oddziela linię od świateł. Działa w obu trybach.
   map.addLayer({
@@ -369,14 +374,14 @@ map.on('load', () => {
     type: 'line',
     source: 'linie-nn',
     layout: { 'line-cap': 'round', 'line-join': 'round' },
-    paint: { 'line-color': KOLORY.kosmos, 'line-width': ['match', ['get', 'napiecie'], 400, 4.5, 3.2] },
+    paint: { 'line-color': KOLORY.kosmos, 'line-width': ['+', ['match', ['get', 'napiecie'], 400, 4.5, 3.2], PODSWIETLENIE_LINII] },
   });
   map.addLayer({
     id: 'linie-nn',
     type: 'line',
     source: 'linie-nn',
     layout: { 'line-cap': 'round', 'line-join': 'round' },
-    paint: { 'line-color': KOLORY.linie, 'line-width': ['match', ['get', 'napiecie'], 400, 2.5, 1.2] },
+    paint: { 'line-color': KOLORY.linie, 'line-width': ['+', ['match', ['get', 'napiecie'], 400, 2.5, 1.2], PODSWIETLENIE_LINII] },
   });
   // Niewidoczny, szeroki pas wzdłuż linii – tylko po to, żeby cienką linię dało się wygodnie kliknąć.
   map.addLayer({
@@ -452,9 +457,8 @@ map.on('load', () => {
     })
     .catch(() => ustawLicznik('morskie', 'brak danych', true));
 
-  map.on('click', 'elektrownie', (e) => {
-    if (podZnaczkiemMocy(e)) return;
-    const p = e.features[0].properties;
+  okienka.dodaj({ id: 'elektrownie', warstwy: ['elektrownie'], tresc: (obiekty) => {
+    const p = obiekty[0].properties;
     const el = document.createElement('div');
     const tytul = document.createElement('strong');
     tytul.textContent = p.nazwa;
@@ -483,8 +487,8 @@ map.on('load', () => {
     linia('moc zainstalowana – nie bieżąca produkcja');
     linia(p.dokladnosc === 'exact' ? 'lokalizacja: dokładna' : 'lokalizacja: przybliżona (np. najbliższa miejscowość)');
     el.append(linijkaZrodla('GEM', 'dane', DANE_ELEKTROWNI[p.rodzaj]));
-    new maplibregl.Popup().setLngLat(e.features[0].geometry.coordinates).setDOMContent(el).addTo(map);
-  });
+    return { el, lngLat: obiekty[0].geometry.coordinates };
+  } });
 
   // Legenda: pola włączające i wyłączające warstwy (zwykłe pola wyboru – Tab, Spacja).
   const WARSTWY_LEGENDY = {
@@ -560,10 +564,9 @@ map.on('load', () => {
     return `${faza.replace(/[()]/g, '').trim()}: `;
   };
   const STATUS_PL = { operating: 'działa', construction: 'w budowie – jeszcze nie produkuje albo produkuje częściowo' };
-  map.on('click', ['farmy-lad-dziala', 'farmy-lad-budowa'], (e) => {
-    if (podZnaczkiemMocy(e)) return;
-    const lokalizacja = e.features[0].properties.gem_location_id;
-    const fazy = e.features.filter((f) => f.properties.gem_location_id === lokalizacja);
+  okienka.dodaj({ id: 'farmy-lad', warstwy: ['farmy-lad-dziala', 'farmy-lad-budowa'], tresc: (obiekty) => {
+    const lokalizacja = obiekty[0].properties.gem_location_id;
+    const fazy = obiekty.filter((f) => f.properties.gem_location_id === lokalizacja);
     const unikalne = [...new Map(fazy.map((f) => [f.properties.gem_unit_id, f.properties])).values()];
     const p = unikalne[0];
     const el = document.createElement('div');
@@ -587,8 +590,8 @@ map.on('load', () => {
         : 'lokalizacja: przybliżona (np. najbliższa miejscowość)',
     );
     el.append(linijkaZrodla('GEM', 'dane', 'luty 2026')); // dane wiatrowe: Global Wind Power Tracker
-    new maplibregl.Popup().setLngLat(e.features[0].geometry.coordinates).setDOMContent(el).addTo(map);
-  });
+    return { el, lngLat: obiekty[0].geometry.coordinates };
+  } });
 
   // Morskie farmy wiatrowe na polskim Bałtyku (EMODnet, CC BY 4.0)
   // Dwie warstwy: pełne kropki (farmy z listy MKiŚ) pod spodem, puste (prawdopodobne duplikaty i farmy
@@ -622,9 +625,8 @@ map.on('load', () => {
     },
   });
 
-  map.on('click', ['farmy-pelne', 'farmy-puste'], (e) => {
-    if (podZnaczkiemMocy(e)) return;
-    const { nazwa, status, moc_mw, weryfikacja, weryfikacja_opis } = e.features[0].properties;
+  okienka.dodaj({ id: 'farmy-morskie', warstwy: ['farmy-pelne', 'farmy-puste'], tresc: (obiekty) => {
+    const { nazwa, status, moc_mw, weryfikacja, weryfikacja_opis } = obiekty[0].properties;
     const el = document.createElement('div');
     const tytul = document.createElement('strong');
     tytul.textContent = nazwa;
@@ -640,26 +642,35 @@ map.on('load', () => {
     if (korekta) el.append(document.createElement('br'), linia(korekta.tekst));
     el.append(linijkaZrodla('EMODnet', 'dane', '10.07.2026'));
     if (korekta) el.append(linijkaZrodla(korekta.zrodlo, 'stan', korekta.stan));
-    new maplibregl.Popup().setLngLat(e.features[0].geometry.coordinates).setDOMContent(el).addTo(map);
-  });
+    return { el, lngLat: obiekty[0].geometry.coordinates };
+  } });
 
   // Okienko linii 220/400 kV: nazwa z OSM, napięcie, źródło. Linie są cienkie – klikamy w szerszy, niewidoczny pas
-  // (warstwa „linie-nn-klik”). Gdy w tym samym miejscu jest farma albo elektrownia, wygrywa jej okienko.
+  // (warstwa „linie-nn-klik”). Gdy w tym samym miejscu jest farma albo elektrownia, wygrywa jej okienko
+  // (leży wyżej na mapie). Tylko po kliknięciu – linie są wszędzie, okienko migałoby przy każdym ruchu myszy.
   const KROPKI_I_ZNACZKI = ['elektrownie', 'farmy-lad-dziala', 'farmy-lad-budowa', 'farmy-pelne', 'farmy-puste', 'moce'];
-  map.on('click', 'linie-nn-klik', (e) => {
-    if (map.queryRenderedFeatures(e.point, { layers: KROPKI_I_ZNACZKI.filter((id) => map.getLayer(id)) }).length) return;
-    const p = e.features[0].properties;
-    const el = document.createElement('div');
-    const tytul = document.createElement('strong');
-    tytul.textContent = p.nazwa && p.nazwa !== 'null' ? p.nazwa : 'Linia bez nazwy w OpenStreetMap';
-    const napiecie = document.createElement('span');
-    napiecie.textContent = `linia najwyższego napięcia: ${p.napiecie} kV`;
-    el.append(tytul, document.createElement('br'), napiecie, linijkaZrodla('OpenStreetMap', 'stan', '19.11.2026'));
-    new maplibregl.Popup().setLngLat(e.lngLat).setDOMContent(el).addTo(map);
+  // Żeby było wiadomo, że linię można kliknąć: odcinek pod kursorem się podświetla, a po ok. 0,4 s bez ruchu
+  // pojawia się podpowiedź (decyzja Ani 23.11.2026); w legendzie – dopisek o kliknięciu.
+  okienka.dodaj({
+    id: 'linie',
+    warstwy: ['linie-nn-klik'],
+    najechanie: false,
+    podpowiedz: 'kliknij – szczegóły linii',
+    podswietl: (id, wlacz) => map.setFeatureState({ source: 'linie-nn', id }, { podswietlona: wlacz }),
+    tresc: (obiekty, e) => {
+      const p = obiekty[0].properties;
+      const el = document.createElement('div');
+      const tytul = document.createElement('strong');
+      tytul.textContent = p.nazwa && p.nazwa !== 'null' ? p.nazwa : 'Linia bez nazwy w OpenStreetMap';
+      const napiecie = document.createElement('span');
+      napiecie.textContent = `linia najwyższego napięcia: ${p.napiecie} kV`;
+      el.append(tytul, document.createElement('br'), napiecie, linijkaZrodla('OpenStreetMap', 'stan', '19.11.2026'));
+      return { el, lngLat: e.lngLat };
+    },
   });
 
   // Wolna moc dla odbiorców (PSE): na samym wierzchu, bo to najważniejsza warstwa dla pytania „gdzie się podłączyć” (src/moce.js).
-  dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, odmiana });
+  dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, odmiana, okienka });
 
   // Kursor „rączka” nad wszystkim, co da się kliknąć.
   for (const id of ['linie-nn-klik', ...KROPKI_I_ZNACZKI]) {
