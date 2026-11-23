@@ -25,6 +25,12 @@ Cel: „Karta Polski”.
 - Podpis „stan na HH:MM · PSE opublikowało HH:MM” zamiast „teraz”.
 - Źródło miksu: PSE API `his-gen-pal-sire`; przy każdym pobraniu sprawdzian zgodności z `his-wlk-cal` (wiatr i PV).
 
+Teraz: wersja angielska (decyzja Ani 23.11.2026 – wchodzi przed operatorami OSD), trzy PR-y:
+e1 mechanizm + strona tytułowa (/en/), e2 mapa (/en/map/), e3 metodologia, źródła i angielski og-obraz.
+Jeden szablon strony, dwa słowniki (src/teksty/pl.js i en.js, słowniczek pojęć na górze en.js), wtyczka scripts/jezyki.mjs,
+test: node --test scripts/testy-jezyki.mjs (lista przejściowa w teście ma być pusta po e3).
+Robot OSIRIS, jego issue i PR-y oraz ZRODLA.md zostają po polsku.
+
 Następne w kolejce: operatorzy OSD (Stoen, potem PGE, Energa).
 
 W tle (nie blokują celu): Otwarte punkty Robota OSIRIS: patrz BEZPIECZENSTWO.md → Do zrobienia.
@@ -49,6 +55,7 @@ Strona z mapą pokazującą, jak i gdzie Polska może uzyskać więcej prądu. R
 - Wszystkie okienka na mapie korzystają z jednego wzoru C (`src/okienko.js`): najechanie – obok kursora, kliknięcie – przypięte, Esc zamyka, okienko nad panelami, źródło przyklejone na dole. Nowe okienka nie używają `maplibregl.Popup` (23.11.2026).
 - Każdy znak „?” na stronie (znaczek niepewności przy liczbie) jest klikalny i otwiera wyjaśnienie we wzorze C (`okienka.podlacz`, dostępny z klawiatury: Tab + Enter). Treść okienka = to samo wyjaśnienie, które stoi na stronie (jedno źródło tekstu, bez kopiowania) + linijka źródła (23.11.2026).
 - Każde miejsce na stronie, które się przewija, od razu (bez klikania) pokazuje ten sam sygnał co okienko C: zanikanie u dołu + klikalny przycisk „↓ więcej poniżej”, który przewija w dół i znika po dojechaniu do końca. Jeden wspólny kod: `src/wiecej-ponizej.js` (bez kopiowania); „ogranicz ruch” – bez animacji. Nagłówki paneli stoją, przewija się tylko treść. Wyjątek: okienko PSE (lewa góra) (23.11.2026).
+- Przełącznik PL | EN na obu stronach, prowadzi do tej samej strony w drugim języku (/ ↔ /en/, /mapa/ ↔ /en/map/), bez przekierowania po języku przeglądarki. Strona tytułowa: prawy górny róg, obok „CZAS WARSZAWA” / „WARSAW TIME”. Mapa (od e2): prawy górny róg, obok przełącznika DZIEŃ | NOC, w tym samym stylu (para), bez zasłaniania przycisków + / − (23.11.2026).
 
 ## Jak ze mną pracować
 - Odpowiadaj po polsku, prostymi słowami.

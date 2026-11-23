@@ -49,6 +49,42 @@ body.tytulowa {
   color: var(--zloto);
 }
 
+/* ── Przełącznik PL | EN obok zegara (decyzja Ani 23.11.2026; wstawia go scripts/jezyki.mjs). Ta sama czcionka co
+   zegar; bieżący język złoty, drugi przygaszony – rozjaśnia się po najechaniu i przy fokusie z klawiatury. ── */
+.gora__prawa {
+  display: flex;
+  align-items: center;
+  gap: 32px; /* odrobinę dalej od zegara (decyzja Ani 23.11.2026) */
+}
+
+.jezyki {
+  display: flex;
+  align-items: center;
+  gap: 0.55em;
+  /* Odrobinę w prawo (decyzja Ani 23.11.2026): razem z większym odstępem (32 px) zegar zostaje na miejscu,
+     a PL | EN przesuwa się o 10 px w prawo, za prawą krawędź kolumny. */
+  margin-right: -10px;
+  color: var(--tekst-pomocniczy);
+}
+
+.jezyki__link {
+  color: var(--tekst-pomocniczy);
+  text-decoration: none;
+}
+
+.jezyki__link:hover,
+.jezyki__link:focus-visible {
+  color: var(--tekst);
+}
+
+.jezyki__link[aria-current='page'] {
+  color: var(--zloto);
+}
+
+.jezyki__kreska {
+  opacity: 0.5;
+}
+
 /* ── Część główna ── */
 .tytul {
   position: relative;

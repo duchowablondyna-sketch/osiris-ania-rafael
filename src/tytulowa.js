@@ -5,6 +5,7 @@ import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url';
 import { formatMocy } from './liczniki.js';
+import { t, LOCALE, formatCzasu, formatKrotki, formatDoby } from './jezyk.js';
 import { wiecejPonizej } from './wiecej-ponizej.js';
 import './czcionki.css';
 import './style.css';
@@ -24,9 +25,9 @@ opisPrzycisk.addEventListener('click', () => {
   opisPanel.hidden = otwarty;
 });
 
-// ── Zegar „CZAS WARSZAWA” (strefa Europe/Warsaw, niezależnie od strefy komputera) ──
+// ── Zegar „CZAS WARSZAWA” / „WARSAW TIME” (strefa Europe/Warsaw, niezależnie od strefy komputera) ──
 const zegar = document.getElementById('zegar');
-const formatZegara = new Intl.DateTimeFormat('pl-PL', {
+const formatZegara = new Intl.DateTimeFormat(LOCALE, {
   timeZone: 'Europe/Warsaw',
   hour: '2-digit',
   minute: '2-digit',
@@ -36,11 +37,9 @@ const tyknij = () => (zegar.textContent = formatZegara.format(new Date()));
 tyknij();
 setInterval(tyknij, 1000);
 
-// ── Liczby z danych (liczone przy budowaniu – scripts/podsumowanie.mjs) ──
-const formatCzasu = (iso) =>
-  new Date(iso).toLocaleString('pl-PL', { timeZone: 'Europe/Warsaw', dateStyle: 'short', timeStyle: 'short' });
-const formatKrotki = (iso) =>
-  new Date(iso).toLocaleString('pl-PL', { timeZone: 'Europe/Warsaw', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+// ── Liczby z danych (liczone przy budowaniu – scripts/podsumowanie.mjs); formaty dat i liczb wg języka strony ──
+const moc = (mw) => formatMocy(mw, LOCALE);
+const BRAK = t('wspolne.brak_danych');
 function wpisz(id, tekst, brak = false) {
   const el = document.getElementById(id);
   el.textContent = tekst;
@@ -49,25 +48,25 @@ function wpisz(id, tekst, brak = false) {
 fetch('/data/podsumowanie.json', { cache: 'no-store' })
   .then((odp) => (odp.ok ? odp.json() : Promise.reject(new Error('brak pliku'))))
   .then((d) => {
-    if (d.wegiel) wpisz('liczba-wegiel', `${d.wegiel.liczba} · ${formatMocy(d.wegiel.mocMw)}`);
-    else wpisz('liczba-wegiel', 'brak danych', true);
-    if (d.ladowe) wpisz('liczba-ladowe', `${d.ladowe.farmy} · ${formatMocy(d.ladowe.mocMw)}`);
-    else wpisz('liczba-ladowe', 'brak danych', true);
-    if (d.morskie) wpisz('liczba-baltyk', String(d.morskie.projekty));
-    else wpisz('liczba-baltyk', 'brak danych', true);
-    if (d.pse?.pobrano) wpisz('liczba-pse', `ostatnie pobranie: ${formatKrotki(d.pse.pobrano)}`);
-    else wpisz('liczba-pse', 'brak danych PSE', true);
+    if (d.wegiel) wpisz('liczba-wegiel', `${d.wegiel.liczba.toLocaleString(LOCALE)} · ${moc(d.wegiel.mocMw)}`);
+    else wpisz('liczba-wegiel', BRAK, true);
+    if (d.ladowe) wpisz('liczba-ladowe', `${d.ladowe.farmy.toLocaleString(LOCALE)} · ${moc(d.ladowe.mocMw)}`);
+    else wpisz('liczba-ladowe', BRAK, true);
+    if (d.morskie) wpisz('liczba-baltyk', d.morskie.projekty.toLocaleString(LOCALE));
+    else wpisz('liczba-baltyk', BRAK, true);
+    if (d.pse?.pobrano) wpisz('liczba-pse', t('tytulowa.pse_pobranie', formatKrotki(d.pse.pobrano)));
+    else wpisz('liczba-pse', t('tytulowa.brak_danych_pse'), true);
     // Stopka „Źródła i licencje” – te same pola co na mapie.
     if (d.pse?.wiatrPobrano) document.getElementById('wiatr-pobrano').textContent = formatCzasu(d.pse.wiatrPobrano);
     if (d.pse?.rcePobrano) document.getElementById('rce-pobrano').textContent = formatCzasu(d.pse.rcePobrano);
     if (d.pse?.kartaPobrano) document.getElementById('karta-pobrano').textContent = formatCzasu(d.pse.kartaPobrano);
     if (d.pse?.dobaOdtworzenia) {
-      document.getElementById('odtw-zrodlo-doba').textContent = d.pse.dobaOdtworzenia.split('-').reverse().join('.');
+      document.getElementById('odtw-zrodlo-doba').textContent = formatDoby(d.pse.dobaOdtworzenia);
     }
   })
   .catch(() => {
-    for (const id of ['liczba-wegiel', 'liczba-ladowe', 'liczba-baltyk']) wpisz(id, 'brak danych', true);
-    wpisz('liczba-pse', 'brak danych PSE', true);
+    for (const id of ['liczba-wegiel', 'liczba-ladowe', 'liczba-baltyk']) wpisz(id, BRAK, true);
+    wpisz('liczba-pse', t('tytulowa.brak_danych_pse'), true);
   });
 // ── Przycisk „ŹRÓDŁA I LICENCJE”: przewija do stopki i ją rozwija ──
 function otworzZrodla() {
