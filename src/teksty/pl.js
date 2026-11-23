@@ -6,13 +6,14 @@
 
 export default {
   // ── <head>: tytuł karty i opisy do udostępniania ──
-  'meta.tytul': 'OSIRIS – mapa prądu Polski',
+  'meta.tytul': 'OSIRIS – prąd w Polsce',
   'meta.opis':
     'Zobacz w jednym miejscu, skąd Polska bierze prąd i ile on kosztuje. Elektrownie, farmy wiatrowe, linie najwyższych napięć, produkcja z wiatru i cena energii – z oficjalnych, publicznych źródeł.',
-  'meta.og_tytul': 'OSIRIS – serce danych o polskim prądzie',
+  'meta.og_tytul': 'OSIRIS – prąd w Polsce',
   'meta.og_opis':
     'Skąd Polska bierze prąd i ile on kosztuje – elektrownie, farmy wiatrowe, sieć najwyższych napięć, wiatr i cena energii. Z oficjalnych, publicznych źródeł, z datą przy każdej liczbie.',
-  'meta.og_obraz_alt': 'OSIRIS – mapa prądu Polski: tytuł i nocny globus z zaznaczoną Polską',
+  'meta.og_obraz_alt':
+    'OSIRIS: napis „Prąd w Polsce” nad nocnym globusem z zaznaczoną Polską oraz liczby elektrowni i farm wiatrowych',
   'meta.og_locale': 'pl_PL',
   // Obrazek do udostępniania (zrzut strony tytułowej w tym języku – sposób w ZRODLA.md).
   'meta.og_obraz': 'https://osiris-ania-rafael.pages.dev/og-obraz.png',
@@ -71,7 +72,7 @@ export default {
   'cytat.bez_tlumaczenia': 'tekst PSE, jeszcze bez tłumaczenia',
 
   // ── <head>, mapa, przyciski ──
-  'mapa.meta.tytul': 'OSIRIS – mapa',
+  'mapa.meta.tytul': 'Mapa · OSIRIS – prąd w Polsce',
   'mapa.meta.opis':
     'Mapa źródeł prądu w Polsce: elektrownie, farmy wiatrowe na lądzie i na Bałtyku, linie najwyższych napięć, wolna moc przyłączeniowa dla odbiorców w sieci PSE, produkcja z wiatru i cena energii – z oficjalnych, publicznych źródeł.',
   'mapa.meta.og_opis': 'Skąd Polska bierze prąd i ile on kosztuje – z oficjalnych, publicznych źródeł, z datą przy każdej liczbie.',
