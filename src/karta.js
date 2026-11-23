@@ -3,6 +3,7 @@
 // i rce.json (ten sam plik co w okienku PSE – przekazywany z src/main.js, bez drugiego pobrania).
 import { tekstyKarty, formatCzasu, CO2_SKALA_MAX } from './karta-teksty.js';
 import { wiecejPonizej, wysokoscPrzycisku } from './wiecej-ponizej.js';
+import { TELEFON } from './zwijanie.js';
 import { t, liczba } from './jezyk.js';
 
 const $ = (id) => document.getElementById(id);
@@ -199,7 +200,8 @@ function pilnujWysokosci() {
   const dopasuj = () => {
     const gora = okno ? okno.offsetTop + okno.offsetHeight + 12 : 16;
     const dol = parseFloat(getComputedStyle(karta).bottom) || 0; // odstęp od dołu z CSS (nad „← OSIRIS”)
-    const panel = Math.max(NAJMNIEJ_PX, main.clientHeight - gora - dol);
+    // Telefon: rozwinięta Karta to panel od dołu, najwyżej 70% wysokości ekranu (src/style.css).
+    const panel = TELEFON.matches ? Math.round(window.innerHeight * 0.7) : Math.max(NAJMNIEJ_PX, main.clientHeight - gora - dol);
     const ramka = karta.offsetHeight - karta.clientHeight; // górna + dolna krawędź panelu
     // Stałe części panelu + miejsce na „↓ więcej poniżej” pod treścią (src/wiecej-ponizej.js).
     const stale = naglowek.offsetHeight + zakladki.offsetHeight + ramka + wysokoscPrzycisku();
