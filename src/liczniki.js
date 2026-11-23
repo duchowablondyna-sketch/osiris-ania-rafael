@@ -8,11 +8,12 @@ export function odmiana(n, [jeden, kilka, wiele]) {
   return [2, 3, 4].includes(n % 10) && ![12, 13, 14].includes(n % 100) ? `${liczba} ${kilka}` : `${liczba} ${wiele}`;
 }
 
-// Moc: od 1000 MW w GW z jednym miejscem po przecinku, poniżej w MW.
-export const formatMocy = (mw) =>
+// Moc: od 1000 MW w GW z jednym miejscem po przecinku, poniżej w MW. Format liczby wg języka strony
+// (locale: 'pl-PL' → 8,3 GW, 'en-GB' → 8.3 GW; domyślnie polski – tak liczy też scripts/podsumowanie.mjs).
+export const formatMocy = (mw, locale = 'pl-PL') =>
   mw >= 1000
-    ? `${(mw / 1000).toLocaleString('pl-PL', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} GW`
-    : `${Math.round(mw).toLocaleString('pl-PL')} MW`;
+    ? `${(mw / 1000).toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} GW`
+    : `${Math.round(mw).toLocaleString(locale)} MW`;
 
 // Bloki z wyciągu GEM zsumowane do jednej lokalizacji i rodzaju (jeden znaczek = jedna elektrownia).
 // Tylko status „operating”. Szczytowo-pompowe: technologia GEM zawierająca „pumped storage”.

@@ -4,6 +4,7 @@
 // Używają go: okienko C (src/okienko.js), zakładki Karty Polski, legenda „Co oznaczają znaczki”, stopka „Źródła i licencje”.
 // Mac ukrywa paski przewijania – bez tego sygnału widz nie wie, że coś jest niżej.
 // Wygląd: .przewijane--wiecej (zanikanie) i .wiecej-ponizej (przycisk) w src/style.css.
+import { t } from './jezyk.js';
 
 const MIN_PRZEWINIECIE_PX = 40;
 const ZAPAS_PX = 32; // tyle zostaje z poprzedniego widoku po przewinięciu (oko nie gubi miejsca)
@@ -14,7 +15,7 @@ export function wiecejPonizej(obszar) {
   const przycisk = document.createElement('button');
   przycisk.type = 'button';
   przycisk.className = 'wiecej-ponizej';
-  przycisk.textContent = '↓ więcej poniżej';
+  przycisk.textContent = t('wspolne.wiecej_ponizej');
   przycisk.hidden = true;
   obszar.after(przycisk);
   // Obszar bez własnego tabindex dostaje go tylko na czas przewijania (Tab, potem strzałki);

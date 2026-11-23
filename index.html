@@ -1,5 +1,7 @@
 <!doctype html>
 <html lang="pl">
+  <!-- Szablon strony tytułowej: teksty w podwójnych klamrach pochodzą ze słowników src/teksty/pl.js i en.js (scripts/jezyki.mjs).
+       Z tego jednego pliku powstają / (PL) i /en/ (EN). -->
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -18,19 +20,23 @@
       @view-transition { navigation: auto; }
       @media (prefers-reduced-motion: reduce) { @view-transition { navigation: none; } }
     </style>
-    <title>OSIRIS – mapa prądu Polski</title>
+    <title>{{meta.tytul}}</title>
     <!-- Plakat kuli (tytulowa.css) – pobierany od razu, żeby był widoczny od pierwszej klatki. -->
     <link rel="preload" as="image" href="/obrazy/globus-plakat.webp" type="image/webp" fetchpriority="high" />
-    <meta name="description" content="Zobacz w jednym miejscu, skąd Polska bierze prąd i ile on kosztuje. Elektrownie, farmy wiatrowe, linie najwyższych napięć, produkcja z wiatru i cena energii – z oficjalnych, publicznych źródeł." />
+    <meta name="description" content="{{meta.opis}}" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="OSIRIS – serce danych o polskim prądzie" />
-    <meta property="og:description" content="Skąd Polska bierze prąd i ile on kosztuje – elektrownie, farmy wiatrowe, sieć najwyższych napięć, wiatr i cena energii. Z oficjalnych, publicznych źródeł, z datą przy każdej liczbie." />
-    <meta property="og:url" content="https://osiris-ania-rafael.pages.dev/" />
+    <meta property="og:title" content="{{meta.og_tytul}}" />
+    <meta property="og:description" content="{{meta.og_opis}}" />
+    <meta property="og:url" content="{{@adres-pelny}}" />
     <meta property="og:image" content="https://osiris-ania-rafael.pages.dev/og-obraz.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="OSIRIS – mapa prądu Polski: tytuł i nocny globus z zaznaczoną Polską" />
-    <meta property="og:locale" content="pl_PL" />
+    <meta property="og:image:alt" content="{{meta.og_obraz_alt}}" />
+    <meta property="og:locale" content="{{meta.og_locale}}" />
+    <!-- Wersje językowe tej strony (PL i EN – scripts/jezyki.mjs). -->
+    <link rel="alternate" hreflang="pl" href="https://osiris-ania-rafael.pages.dev/" />
+    <link rel="alternate" hreflang="en" href="https://osiris-ania-rafael.pages.dev/en/" />
+    <link rel="alternate" hreflang="x-default" href="https://osiris-ania-rafael.pages.dev/" />
     <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body class="tytulowa">
@@ -38,29 +44,28 @@
       <!-- Globus „zawieszony w kosmosie”: tło całej pierwszej odsłony; nie łapie kliknięć ani przewijania. -->
       <!-- Plakat: nieruchomy obraz tej samej kuli, widoczny, zanim prawdziwy globus (MapLibre) narysuje pierwszą pełną klatkę. -->
       <div class="globus-plakat" aria-hidden="true"></div>
-      <div id="globus" role="img" aria-label="Obracający się globus z nocnym zdjęciem Ziemi (NASA), Polska zaznaczona złotym punktem"></div>
+      <div id="globus" role="img" aria-label="{{tytulowa.globus_opis}}"></div>
       <div class="bohater__przyciemnienie" aria-hidden="true"></div>
 
       <header class="gora">
         <div class="rog rog--lewy">
-          <a class="rog__link" href="#zrodla" id="przycisk-zrodla">ŹRÓDŁA I LICENCJE</a>
-          <button class="rog__link rog__opis" type="button" id="opis-przycisk" aria-expanded="false" aria-controls="opis-panel">OPIS <span aria-hidden="true">▾</span></button>
+          <a class="rog__link" href="#zrodla" id="przycisk-zrodla">{{tytulowa.zrodla_i_licencje}}</a>
+          <button class="rog__link rog__opis" type="button" id="opis-przycisk" aria-expanded="false" aria-controls="opis-panel">{{tytulowa.opis_przycisk}} <span aria-hidden="true">▾</span></button>
           <div class="opis-panel" id="opis-panel" hidden>
-            <p>
-              Zobacz w jednym miejscu, skąd Polska bierze prąd i ile on kosztuje. Elektrownie, farmy wiatrowe na lądzie
-              i na Bałtyku, linie najwyższych napięć, produkcja z wiatru i cena energii godzina po godzinie. Wszystko
-              z oficjalnych, publicznych źródeł, z datą przy każdej liczbie. Dla zarządów i inwestorów, którzy pytają:
-              gdzie i jak zdobyć więcej prądu?
-            </p>
+            <p>{{tytulowa.opis}}</p>
           </div>
         </div>
-        <span class="zegar" role="timer" aria-live="off"><span class="zegar__kropka" aria-hidden="true">●</span> CZAS WARSZAWA <span id="zegar">--:--:--</span></span>
+        <!-- Prawy górny róg: zegar i obok przełącznik PL | EN (decyzja Ani 23.11.2026). -->
+        <div class="gora__prawa">
+          <span class="zegar" role="timer" aria-live="off"><span class="zegar__kropka" aria-hidden="true">●</span> {{tytulowa.czas_warszawa}} <span id="zegar">--:--:--</span></span>
+          <!-- JEZYKI -->
+        </div>
       </header>
 
       <div class="tytul">
         <h1 class="tytul__nazwa">OSIRIS</h1>
-        <p class="tytul__podtytul">SERCE DANYCH O POLSKIM PRĄDZIE.</p>
-        <a class="przycisk przycisk--glowny" href="/mapa/">OTWÓRZ MAPĘ →</a>
+        <p class="tytul__podtytul">{{tytulowa.haslo}}</p>
+        <a class="przycisk przycisk--glowny" href="{{@adres:mapa}}">{{tytulowa.otworz_mape}}</a>
       </div>
 
       <div class="bohater__dol">
@@ -68,49 +73,49 @@
         <ul class="liczby">
           <li class="liczba">
             <span class="liczba__wartosc" id="liczba-wegiel">…</span>
-            <span class="liczba__nazwa">ELEKTROWNIE WĘGLOWE</span>
-            <span class="liczba__zrodlo">GEM · dane: lipiec 2026 · działające</span>
+            <span class="liczba__nazwa">{{tytulowa.wegiel_nazwa}}</span>
+            <span class="liczba__zrodlo">{{tytulowa.wegiel_zrodlo}}</span>
           </li>
           <li class="liczba">
             <span class="liczba__wartosc" id="liczba-ladowe">…</span>
-            <span class="liczba__nazwa">LĄDOWE FARMY WIATROWE</span>
-            <span class="liczba__zrodlo">GEM · dane: luty 2026 · od 10 MW, działające</span>
+            <span class="liczba__nazwa">{{tytulowa.ladowe_nazwa}}</span>
+            <span class="liczba__zrodlo">{{tytulowa.ladowe_zrodlo}}</span>
           </li>
           <li class="liczba">
             <span class="liczba__wartosc" id="liczba-baltyk">…</span>
-            <span class="liczba__nazwa">PROJEKTY NA BAŁTYKU</span>
-            <span class="liczba__zrodlo">EMODnet · bez prawdopodobnych duplikatów</span>
+            <span class="liczba__nazwa">{{tytulowa.baltyk_nazwa}}</span>
+            <span class="liczba__zrodlo">{{tytulowa.baltyk_zrodlo}}</span>
           </li>
           <li class="liczba">
-            <span class="liczba__wartosc liczba__wartosc--tekst">DANE PSE · ODŚWIEŻANE ZWYKLE CO 4 H</span>
-            <span class="liczba__zrodlo" id="liczba-pse">ostatnie pobranie: …</span>
+            <span class="liczba__wartosc liczba__wartosc--tekst">{{tytulowa.pse_tekst}}</span>
+            <span class="liczba__zrodlo" id="liczba-pse">{{tytulowa.pse_pobranie_czeka}}</span>
           </li>
         </ul>
 
-        <p class="bohater__nasa">Tło: NASA Black Marble 2016 (GIBS)</p>
+        <p class="bohater__nasa">{{tytulowa.tlo_nasa}}</p>
       </div>
     </section>
 
     <main class="tytul-dalej">
       <section class="karty" aria-labelledby="karty-tytul">
-        <h2 class="etykieta" id="karty-tytul">CO ZNAJDZIESZ</h2>
+        <h2 class="etykieta" id="karty-tytul">{{tytulowa.co_znajdziesz}}</h2>
         <div class="karty__siatka">
           <article class="karta">
-            <h3 class="karta__tytul">Mapa źródeł prądu</h3>
-            <p>Elektrownie i farmy wiatrowe na tle sieci najwyższych napięć.</p>
+            <h3 class="karta__tytul">{{tytulowa.karta_mapa_tytul}}</h3>
+            <p>{{tytulowa.karta_mapa_tekst}}</p>
           </article>
           <article class="karta">
-            <h3 class="karta__tytul">Wiatr na żywo</h3>
-            <p>Ile prądu dają teraz polskie wiatraki i kiedy PSE ostatnio kazało ograniczyć ich pracę.</p>
+            <h3 class="karta__tytul">{{tytulowa.karta_wiatr_tytul}}</h3>
+            <p>{{tytulowa.karta_wiatr_tekst}}</p>
           </article>
           <article class="karta">
-            <h3 class="karta__tytul">Cena prądu</h3>
-            <p>Godzina po godzinie, z odtwarzaniem całej doby.</p>
+            <h3 class="karta__tytul">{{tytulowa.karta_cena_tytul}}</h3>
+            <p>{{tytulowa.karta_cena_tekst}}</p>
           </article>
           <article class="karta karta--wkrotce">
-            <span class="karta__znaczek">ZAPOWIEDŹ</span>
-            <h3 class="karta__tytul">Wkrótce: gdzie jeszcze da się podłączyć</h3>
-            <p>Wolne moce przyłączeniowe w całej Polsce.</p>
+            <span class="karta__znaczek">{{tytulowa.zapowiedz}}</span>
+            <h3 class="karta__tytul">{{tytulowa.wkrotce_tytul}}</h3>
+            <p>{{tytulowa.wkrotce_tekst}}</p>
           </article>
         </div>
       </section>
