@@ -1,5 +1,8 @@
-// Adres „/mapa” bez ukośnika: serwer może pokazać tu stronę tytułową (zamiast błędu) – przechodzimy od razu na mapę.
-if (location.pathname === '/mapa') location.replace(`/mapa/${location.search}${location.hash}`);
+// Adres „/mapa” (albo „/en/map”) bez ukośnika: serwer może pokazać tu stronę tytułową (zamiast błędu) – przechodzimy
+// od razu na mapę.
+if (location.pathname === '/mapa' || location.pathname === '/en/map') {
+  location.replace(`${location.pathname}/${location.search}${location.hash}`);
+}
 
 import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';

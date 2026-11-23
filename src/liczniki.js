@@ -1,12 +1,9 @@
 // Wspólne funkcje liczące – używa ich mapa (legenda) i skrypt scripts/podsumowanie.mjs (liczby na stronie tytułowej),
 // żeby liczby w obu miejscach zawsze się zgadzały. Bez DOM i bez MapLibre – działa też w Node.
 
-// Odmiana liczebników: 1 elektrownia, 2–4 elektrownie (także 22–24…), 5+ i 12–14 elektrowni.
-export function odmiana(n, [jeden, kilka, wiele]) {
-  if (n === 1) return `1 ${jeden}`;
-  const liczba = n.toLocaleString('pl-PL');
-  return [2, 3, 4].includes(n % 10) && ![12, 13, 14].includes(n % 100) ? `${liczba} ${kilka}` : `${liczba} ${wiele}`;
-}
+import { tekstPl } from './jezyk.js';
+
+// Odmiana liczebników (1 elektrownia, 2 elektrownie, 5 elektrowni; EN: 1 power plant, 2 power plants) – tn() z src/jezyk.js.
 
 // Moc: od 1000 MW w GW z jednym miejscem po przecinku, poniżej w MW. Format liczby wg języka strony
 // (locale: 'pl-PL' → 8,3 GW, 'en-GB' → 8.3 GW; domyślnie polski – tak liczy też scripts/podsumowanie.mjs).
@@ -89,6 +86,7 @@ export function podsumujMorskie(geo) {
     rekordy: p.length,
     wBudowie: p.filter((x) => x.status === 'Construction').length,
     planowane: p.filter((x) => x.status === 'Planned').length,
-    projekty: p.filter((x) => !String(x.weryfikacja ?? '').startsWith('prawdopodobny duplikat')).length,
+    // „prawdopodobny duplikat: …” – wartość z danych (po polsku), ta sama co w słowniku.
+    projekty: p.filter((x) => !String(x.weryfikacja ?? '').startsWith(tekstPl('farmy.weryfikacja.duplikat'))).length,
   };
 }

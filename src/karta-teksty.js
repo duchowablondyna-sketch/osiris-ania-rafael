@@ -1,7 +1,9 @@
 // Karta Polski – wszystkie napisy panelu „Ile i jak czysto” z karta.json i rce.json.
 // Bez DOM i bez sieci, żeby dało się to sprawdzić w Node: node --test scripts/karta/testy-panel.mjs
 // Panel (src/karta.js) tylko wstawia te napisy na stronę – liczby nie są liczone drugi raz gdzie indziej.
+// Teksty: słowniki src/teksty/pl.js i en.js (t() z src/jezyk.js); liczby i daty wg języka strony.
 import { wygladaJakKarta } from '../scripts/karta/licz.mjs';
+import { t, liczba, zDanych, LOCALE, formatCzasu as formatCzasuJezyka, formatDnia, formatDoby } from './jezyk.js';
 
 // Dane starsze niż tyle godzin dostają plakietkę (decyzja Ani 21.11.2026): strona przebudowuje się co 4 h,
 // PSE publikuje miks z opóźnieniem ok. 30–45 min, więc zwykle dane mają do ok. 5 h.
@@ -12,38 +14,37 @@ const STREFA = 'Europe/Warsaw';
 
 // Wszystkie daty i godziny – wg czasu polskiego, niezależnie od strefy komputera widza.
 const dobaPL = (ms) => new Date(ms).toLocaleDateString('sv-SE', { timeZone: STREFA }); // RRRR-MM-DD
-const godzinaPL = (ms) => new Date(ms).toLocaleTimeString('pl-PL', { timeZone: STREFA, hour: '2-digit', minute: '2-digit' });
-const dzienPL = (ms) => {
-  const [, m, d] = dobaPL(ms).split('-');
-  return `${d}.${m}`;
-};
-export const formatCzasu = (iso) =>
-  new Date(iso).toLocaleString('pl-PL', { timeZone: STREFA, dateStyle: 'short', timeStyle: 'short' });
+const godzinaPL = (ms) => new Date(ms).toLocaleTimeString(LOCALE, { timeZone: STREFA, hour: '2-digit', minute: '2-digit' });
+const dzienPL = (ms) => formatDnia(dobaPL(ms)); // „20.11” / „20 Nov”
+export const formatCzasu = (iso) => formatCzasuJezyka(iso);
 
-// „17:30”, a gdy to nie dziś – „20.11, 23:45”.
+// „17:30”, a gdy to nie dziś – „20.11, 23:45” (EN: „20 Nov, 23:45”).
 function chwila(ms, teraz, zawszeZData = false) {
   return zawszeZData || dobaPL(ms) !== dobaPL(teraz) ? `${dzienPL(ms)}, ${godzinaPL(ms)}` : godzinaPL(ms);
 }
 
-const procent1 = (u) => `${(u * 100).toLocaleString('pl-PL', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`;
-const zl = (c) => c.toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const procent1 = (u) => `${liczba(u * 100, 1)}%`;
+const zl = (c) => liczba(c, 2);
+
+// Nazwa ze słownika liczona w chwili użycia (getter) – działa w języku strony, także gdy test przełączy język.
+const nazwana = (klucz, reszta) => Object.defineProperty({ ...reszta }, 'nazwa', { get: () => t(klucz), enumerable: true });
 
 // Kolejność i nazwy na pasku (grupy z scripts/karta/licz.mjs).
 export const PASEK = [
-  { grupa: 'kamienny', nazwa: 'węgiel kamienny' },
-  { grupa: 'brunatny', nazwa: 'węgiel brunatny' },
-  { grupa: 'gaz_i_inne', nazwa: 'gaz i inne' },
-  { grupa: 'oze', nazwa: 'OZE' },
+  nazwana('karta.grupa.kamienny', { grupa: 'kamienny' }),
+  nazwana('karta.grupa.brunatny', { grupa: 'brunatny' }),
+  nazwana('karta.grupa.gaz_i_inne', { grupa: 'gaz_i_inne' }),
+  nazwana('karta.grupa.oze', { grupa: 'oze' }),
 ];
 
 // Okienko Polski, przypadek OZE: podział OZE na rodzaje (kody PSE z scripts/karta/licz.mjs).
 // Biomasa i „inne OZE” razem – żeby kawałki składały się na całe OZE (decyzja Ani 23.11.2026).
 export const PODZIAL_OZE = [
-  { grupa: 'wiatr_lad', nazwa: 'wiatr na lądzie', kody: ['WI'] },
-  { grupa: 'wiatr_morze', nazwa: 'wiatr na morzu', kody: ['WM'] },
-  { grupa: 'slonce', nazwa: 'słońce', kody: ['ES'] },
-  { grupa: 'woda', nazwa: 'woda', kody: ['WP', 'WZ'] },
-  { grupa: 'biomasa', nazwa: 'biomasa i inne OZE', kody: ['BM', 'BG'] },
+  nazwana('karta.oze.wiatr_lad', { grupa: 'wiatr_lad', kody: ['WI'] }),
+  nazwana('karta.oze.wiatr_morze', { grupa: 'wiatr_morze', kody: ['WM'] }),
+  nazwana('karta.oze.slonce', { grupa: 'slonce', kody: ['ES'] }),
+  nazwana('karta.oze.woda', { grupa: 'woda', kody: ['WP', 'WZ'] }),
+  nazwana('karta.oze.biomasa', { grupa: 'biomasa', kody: ['BM', 'BG'] }),
 ];
 
 // Paski „Ile pracuje z tego, co mamy”: produkcja teraz (kody PSE z karta.json) na tle mocy zainstalowanej
@@ -52,21 +53,21 @@ export const PODZIAL_OZE = [
 // gaz = tylko gaz ziemny (GZ), jeden pasek kreskowany z „?” dla wiatru, słońca i innych OZE (raport ich nie rozdziela).
 // Olej, odpady, „inne” i gaz z węgla – bez paska (brak wiersza mocy).
 export const PASKI_MOCY = [
-  { klucz: 'kamienny', nazwa: 'węgiel kamienny', kody: ['WK'], wiersz: 'wegiel_kamienny' },
-  { klucz: 'brunatny', nazwa: 'węgiel brunatny', kody: ['WB'], wiersz: 'wegiel_brunatny' },
-  { klucz: 'gaz', nazwa: 'gaz ziemny', kody: ['GZ'], wiersz: 'gazowe' },
-  { klucz: 'oze', nazwa: 'wiatr, słońce i inne OZE', kody: ['WI', 'WM', 'ES', 'BM', 'BG'], wiersz: 'wiatrowe_i_inne_odnawialne', niepewny: true },
+  nazwana('karta.grupa.kamienny', { klucz: 'kamienny', kody: ['WK'], wiersz: 'wegiel_kamienny' }),
+  nazwana('karta.grupa.brunatny', { klucz: 'brunatny', kody: ['WB'], wiersz: 'wegiel_brunatny' }),
+  nazwana('karta.moc.gaz', { klucz: 'gaz', kody: ['GZ'], wiersz: 'gazowe' }),
+  nazwana('karta.moc.oze', { klucz: 'oze', kody: ['WI', 'WM', 'ES', 'BM', 'BG'], wiersz: 'wiatrowe_i_inne_odnawialne', niepewny: true }),
 ];
 
-const gw = (mw) => (mw / 1000).toLocaleString('pl-PL', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const gw = (mw) => liczba(mw / 1000, 1);
 
 // karta – karta.json (z polem moc_zainstalowana); stan – „13:45” albo „22.11, 13:45” (ten sam co w podpisie panelu).
 export function tekstyMocy(karta, stan) {
-  const brak = { ok: false, tekst: 'brak danych o mocy zainstalowanej' };
+  const brak = { ok: false, tekst: t('karta.moc_brak') };
   const moc = karta?.moc_zainstalowana;
   const data = /^(\d{4})-(\d{2})-(\d{2})$/.exec(moc?.stan_na ?? '');
   if (!moc?.wiersze || !data || !Array.isArray(karta.paliwa)) return brak;
-  const stanMocy = `${data[3]}.${data[2]}.${data[1]}`;
+  const stanMocy = formatDoby(moc.stan_na); // „31.12.2025” / „31 Dec 2025”
   const mwKodu = new Map(karta.paliwa.filter((p) => typeof p.mw === 'number').map((p) => [p.kod_pse, p.mw]));
   const paski = [];
   for (const { klucz, nazwa, kody, wiersz, niepewny = false } of PASKI_MOCY) {
@@ -82,19 +83,19 @@ export function tekstyMocy(karta, stan) {
       moc_mw: mocMw,
       udzial: Math.min(1, produkcjaMw / mocMw), // szerokość kolorowego paska; nigdy ponad 100%
       ponad,
-      tekst: `${gw(produkcjaMw)} z ${gw(mocMw)} GW`,
-      dopisek: ponad ? `więcej niż moc z raportu PSE (stan ${stanMocy}) – od tego czasu mogły przybyć nowe elektrownie` : null,
+      tekst: t('karta.moc_tekst', gw(produkcjaMw), gw(mocMw)),
+      dopisek: ponad ? t('karta.moc_ponad', stanMocy) : null,
     });
   }
   return {
     ok: true,
-    podpis: `produkcja: stan na ${stan} · moc w całej Polsce: PSE, stan ${stanMocy}`,
+    podpis: t('karta.moc_podpis', stan, stanMocy),
     paski,
-    zrodlo: `PSE, Raport 2025 KSE, Tabela 1.1 · stan ${stanMocy}`,
+    zrodlo: t('karta.moc_zrodlo', stanMocy),
   };
 }
 
-// Skala paska CO2 w okienku Polski: 0–1500 g/kWh.
+// Skala paska CO2 w okienku Polski: 0–1500 g CO₂eq/kWh.
 export const CO2_SKALA_MAX = 1500;
 
 // Cena RCE w bieżącym kwadransie (ta sama zasada co w okienku PSE: tylko doba dzisiejsza wg czasu polskiego).
@@ -104,14 +105,15 @@ export function tekstCeny(rce, teraz) {
     const k = Date.parse(p.koniec_utc);
     return teraz >= k - MS_KWADRANS && teraz < k;
   });
-  if (!biezacy) return { ok: false, wartosc: rce ? 'brak danych na dziś' : 'brak danych PSE', opis: '' };
-  return { ok: true, wartosc: `${zl(biezacy.cena)} zł/MWh`, opis: biezacy.okres.replace(' - ', '–') };
+  if (!biezacy) return { ok: false, wartosc: t(rce ? 'karta.cena_brak_dzis' : 'wspolne.brak_danych_pse'), opis: '' };
+  return { ok: true, wartosc: `${zl(biezacy.cena)} ${t('jednostka.zl_mwh')}`, opis: biezacy.okres.replace(' - ', '–') };
 }
 
 function tekstWymiany(saldo) {
   const mw = Math.round(Math.abs(saldo) / 10) * 10;
-  if (mw === 0) return { wartosc: 'ok. 0 MW', opis: 'planowo, prawie bez wymiany' };
-  return { wartosc: `${saldo > 0 ? 'kupuje' : 'sprzedaje'} ok. ${mw.toLocaleString('pl-PL')} MW`, opis: 'planowo' };
+  if (mw === 0) return { wartosc: t('karta.wymiana_zero'), opis: t('karta.wymiana_zero_opis') };
+  // Plus – prąd płynie do Polski („kupuje” / „importing”), minus – z Polski („sprzedaje” / „exporting”).
+  return { wartosc: t(saldo > 0 ? 'karta.wymiana_kupuje' : 'karta.wymiana_sprzedaje', liczba(mw)), opis: t('karta.wymiana_planowo') };
 }
 
 // Kawałki OZE z listy paliw w karta.json; udział = suma MW rodzaju / cała produkcja (jak udziały grup w licz.mjs).
@@ -120,12 +122,15 @@ function kawalkiOze(karta) {
   const paliwa = Array.isArray(karta.paliwa) ? karta.paliwa : [];
   const mwKodu = new Map(paliwa.filter((p) => typeof p.mw === 'number').map((p) => [p.kod_pse, p.mw]));
   const komplet = PODZIAL_OZE.every((r) => r.kody.every((k) => mwKodu.has(k))) && karta.produkcja_mw > 0;
-  if (!komplet) return [{ grupa: 'oze', nazwa: 'OZE', udzial: karta.grupy.oze.udzial, tekst: procent1(karta.grupy.oze.udzial) }];
+  if (!komplet) return [{ grupa: 'oze', nazwa: t('karta.grupa.oze'), udzial: karta.grupy.oze.udzial, tekst: procent1(karta.grupy.oze.udzial) }];
   return PODZIAL_OZE.map(({ grupa, nazwa, kody }) => {
     const udzial = kody.reduce((s, k) => s + mwKodu.get(k), 0) / karta.produkcja_mw;
     return { grupa, nazwa, udzial, tekst: procent1(udzial) };
   });
 }
+
+// Powód plakietki z karta.json (po polsku, scripts/karta/pobierz.mjs) → tekst w języku strony.
+const powodPlakietki = (powod) => zDanych(powod, 'karta.powod.');
 
 // karta – obiekt z karta.json albo null (plik się nie wczytał); rce – obiekt z rce.json albo null; teraz – ms.
 export function tekstyKarty(karta, rce, teraz = Date.now()) {
@@ -136,11 +141,11 @@ export function tekstyKarty(karta, rce, teraz = Date.now()) {
     const powod = typeof karta?.plakietka === 'string' ? karta.plakietka : null;
     return {
       ok: false,
-      plakietka: powod ? `Brak danych o miksie: ${powod}.` : 'Brak danych PSE o miksie.',
-      skrot: 'brak danych PSE',
+      plakietka: powod ? t('karta.plakietka_brak_powod', powodPlakietki(powod)) : t('karta.plakietka_brak'),
+      skrot: t('wspolne.brak_danych_pse'),
       cena,
       pobrano: null, // czas_pobrania przy braku danych to tylko czas nieudanej próby
-      moc: { ok: false, tekst: 'brak danych o mocy zainstalowanej' },
+      moc: { ok: false, tekst: t('karta.moc_brak') },
     };
   }
 
@@ -150,9 +155,9 @@ export function tekstyKarty(karta, rce, teraz = Date.now()) {
 
   let plakietka = null;
   if (typeof karta.plakietka === 'string' && karta.plakietka) {
-    plakietka = `Dane nie są najnowsze: ${karta.plakietka}. Pokazujemy stan na ${stanZData}.`;
+    plakietka = t('karta.plakietka_nie_najnowsze', powodPlakietki(karta.plakietka), stanZData);
   } else if (teraz - koniec > PROG_STARYCH_H * 3_600_000) {
-    plakietka = `Dane sprzed ponad ${PROG_STARYCH_H} godzin. Pokazujemy stan na ${stanZData}.`;
+    plakietka = t('karta.plakietka_stare', PROG_STARYCH_H, stanZData);
   }
 
   // Liczba-bohater: tego, czego więcej – węgla (razem) albo OZE; przy remisie węgiel (decyzja Ani 21.11.2026).
@@ -160,21 +165,21 @@ export function tekstyKarty(karta, rce, teraz = Date.now()) {
   const bohater = {
     grupa: oze ? 'oze' : 'wegiel',
     procent: `${Math.round((oze ? karta.oze_udzial : karta.wegiel_udzial) * 100)}%`,
-    zdanie: oze ? 'prądu w Polsce pochodzi z OZE (źródeł odnawialnych)' : 'prądu w Polsce pochodzi z węgla',
-    krotko: oze ? 'z OZE' : 'z węgla',
+    zdanie: t(oze ? 'karta.bohater_oze' : 'karta.bohater_wegiel'),
+    krotko: t(oze ? 'karta.krotko_oze' : 'karta.krotko_wegiel'),
   };
 
   const publikacja = Date.parse(karta.kwadrans.publikacja_utc);
-  const stanIPublikacja = `stan na ${stan}` + (Number.isFinite(publikacja) ? ` · PSE opublikowało ${chwila(publikacja, teraz)}` : '');
-  const podpis = `z produkcji w Polsce · ${stanIPublikacja}`;
+  const stanIPublikacja = t('karta.stan', stan) + (Number.isFinite(publikacja) ? t('karta.opublikowalo', chwila(publikacja, teraz)) : '');
+  const podpis = t('karta.podpis', stanIPublikacja);
 
   const pasek = PASEK.map(({ grupa, nazwa }) => ({ grupa, nazwa, udzial: karta.grupy[grupa].udzial, tekst: procent1(karta.grupy[grupa].udzial) }));
-  const co2 = { wartosc: `ok. ${karta.co2.g_kwh_ok} g/kWh`, opis: 'szacunek OSIRIS' };
+  const co2 = { wartosc: t('karta.co2_wartosc', liczba(karta.co2.g_kwh_ok)), opis: t('karta.co2_opis') };
 
   return {
     ok: true,
     plakietka,
-    skrot: `${bohater.procent} ${bohater.krotko} · stan na ${stan}`,
+    skrot: `${bohater.procent} ${bohater.krotko} · ${t('karta.stan', stan)}`,
     bohater,
     podpis,
     pasek,
@@ -183,24 +188,24 @@ export function tekstyKarty(karta, rce, teraz = Date.now()) {
     co2,
     // Okienko Polski (po najechaniu na liczbę-bohatera): pierścień = to samo, co liczba-bohater.
     okienko: {
-      naglowek: `Polska · prąd ${bohater.krotko}`,
+      naglowek: t('okienko_polski.naglowek', bohater.krotko),
       stan: stanIPublikacja,
       kawalki: oze ? kawalkiOze(karta) : pasek.filter((p) => p.grupa === 'kamienny' || p.grupa === 'brunatny'),
       // „razem” z całości (nie z sumy zaokrąglonych kawałków), z jednym miejscem po przecinku.
       razem: procent1(oze ? karta.oze_udzial : karta.wegiel_udzial),
       co2: {
         wartosc: co2.wartosc,
-        tekst: `tu jesteśmy: ${co2.wartosc} – szacunek OSIRIS wg IPCC`,
+        tekst: t('okienko_polski.tu', co2.wartosc),
         polozenie: Math.min(1, Math.max(0, karta.co2.g_kwh_ok / CO2_SKALA_MAX)),
       },
-      zdanie: 'z produkcji w Polsce · dane PSE co 15 min',
+      zdanie: t('okienko_polski.zdanie'),
     },
     wymiana: tekstWymiany(karta.wymiana.saldo_mw),
     pobrano,
     metodologia: {
-      co2: `${karta.co2.g_kwh.toLocaleString('pl-PL', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} g/kWh`,
+      co2: t('karta.co2_dokladnie', liczba(karta.co2.g_kwh, 1)),
       sprawdzian: karta.sprawdzian
-        ? `${karta.sprawdzian.porownane_kwadranse} wspólnych kwadransów, największa różnica ${karta.sprawdzian.maks_roznica_mw.toLocaleString('pl-PL')} MW`
+        ? t('karta.sprawdzian', karta.sprawdzian.porownane_kwadranse, liczba(karta.sprawdzian.maks_roznica_mw))
         : null,
     },
   };

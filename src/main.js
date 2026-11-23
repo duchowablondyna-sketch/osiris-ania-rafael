@@ -1,7 +1,8 @@
 import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url';
-import { odmiana, formatMocy, zbierzElektrownie, podsumujLadowe, podsumujElektrownie, podsumujMorskie } from './liczniki.js';
+import { formatMocy, zbierzElektrownie, podsumujLadowe, podsumujElektrownie, podsumujMorskie } from './liczniki.js';
+import { t, tn, liczba, zDanych, tekstPl, LOCALE, formatCzasu, formatDoby, formatMiesiaca } from './jezyk.js';
 import { dodajWarstweMocy } from './moce.js';
 import { utworzOkienka } from './okienko.js';
 import { uruchomKarte, podlaczOkienkoPolski } from './karta.js';
@@ -48,9 +49,10 @@ function linijkaZrodla(nazwa, rodzajDaty, data) {
   p.className = 'zrodlo';
   const etykieta = document.createElement('span');
   etykieta.className = 'zrodlo__etykieta';
-  etykieta.textContent = 'Źródło';
+  etykieta.textContent = t('wspolne.zrodlo');
   // Spacja po etykiecie – żeby czytnik ekranu nie czytał „ŹródłoGEM” jako jednego słowa.
-  p.append(etykieta, document.createTextNode(` ${nazwa} · ${rodzajDaty}: ${data}`));
+  // rodzajDaty: 'pobrano' | 'dane' | 'stan' – napis wg języka strony (słownik: zrodlo.…; PL „stan: 31.10.2026”, EN „as of 31 Oct 2026”).
+  p.append(etykieta, document.createTextNode(` ${nazwa} · ${t(`zrodlo.${rodzajDaty}`, data)}`));
   return p;
 }
 
@@ -77,22 +79,22 @@ const KOLORY = {
 };
 
 // Statusy farm morskich z EMODnet – tłumaczenie tylko wyświetlanego tekstu (dane źródłowe bez zmian),
-// spójne z farmami lądowymi. W danych z 10.07.2026 występują tylko Planned i Construction; nieznana wartość
-// pokaże się w oryginale.
-const STATUS_MORSKIE_PL = { Planned: 'planowana', Construction: 'w budowie', Production: 'działa' };
+// spójne z farmami lądowymi (słownik: farmy.morskie.…). W danych z 10.07.2026 występują tylko Planned i Construction;
+// nieznana wartość pokaże się w oryginale.
+const statusMorskiej = (status) => (tekstPl(`farmy.morskie.${status}`) ? t(`farmy.morskie.${status}`) : status);
 
 // Uzupełnienie statusu farm morskich z nowszego źródła (dane EMODnet zostają bez zmian; opis w ZRODLA.md).
+// Tekst w słowniku (farmy.korekta.…), data stanu: RRRR-MM-DD.
 const KOREKTY_STATUSU = {
-  'Baltic Power': {
-    tekst:
-      'stan wg balticpower.pl: w rozruchu – pierwsza energia do sieci 10.07.2026 (odbiór potwierdziły PSE), ' +
-      'wszystkie 76 turbin zainstalowane (7.10.2026), każda po podłączeniu przechodzi 240-godzinną próbę; ' +
-      'jeszcze bez koncesji na wytwarzanie, etap przed eksploatacją komercyjną (daty nie podano). ' +
-      'W danych EMODnet (10.07.2026) i GEM (dane wiatrowe z lutego 2026): w budowie.',
-    zrodlo: 'balticpower.pl',
-    stan: '7.10.2026',
-  },
+  'Baltic Power': { klucz: 'farmy.korekta.baltic_power', zrodlo: 'balticpower.pl', stan: '2026-10-07' },
 };
+
+// Weryfikacja farmy morskiej z danych (po polsku: „na liście MKiŚ”, „prawdopodobny duplikat: X”…) → tekst w języku strony.
+function weryfikacjaFarmy(tekst) {
+  const duplikat = tekstPl('farmy.weryfikacja.duplikat');
+  if (tekst.startsWith(duplikat)) return t('farmy.weryfikacja.duplikat') + tekst.slice(duplikat.length);
+  return zDanych(tekst, 'farmy.weryfikacja.');
+}
 
 // Przybliżony prostokąt obejmujący Polskę i farmy na Bałtyku (do 55,56°N): [zachód, południe], [wschód, północ].
 const GRANICE_POLSKI = [
@@ -170,11 +172,11 @@ const map = new maplibregl.Map({
   // Własny przycisk atrybucji (niżej): rozwinięty od razu, żeby „© OpenStreetMap contributors” był stale widoczny
   // także przy zwiniętej stopce „Źródła i licencje” (wymóg licencji ODbL dla linii z OSM).
   attributionControl: false,
-  // Polskie podpisy przycisków MapLibre (czytnik ekranu, podpowiedzi).
+  // Podpisy przycisków MapLibre w języku strony (czytnik ekranu, podpowiedzi).
   locale: {
-    'NavigationControl.ZoomIn': 'Przybliż',
-    'NavigationControl.ZoomOut': 'Oddal',
-    'AttributionControl.ToggleAttribution': 'Pokaż lub ukryj podpis źródeł',
+    'NavigationControl.ZoomIn': t('mapa.przybliz'),
+    'NavigationControl.ZoomOut': t('mapa.oddal'),
+    'AttributionControl.ToggleAttribution': t('mapa.atrybucja'),
   },
   bounds: GRANICE_POLSKI,
   fitBoundsOptions: { padding: odstepKadru() },
@@ -312,34 +314,20 @@ function znaczekSdf(ksztalt) {
 }
 
 
-const RODZAJ_ELEKTROWNI_PL = {
-  wegiel: 'elektrownia węglowa',
-  gaz: 'elektrownia gazowa lub olejowa',
-  woda: 'elektrownia wodna',
-  pompowa: 'elektrownia szczytowo-pompowa (magazyn energii)',
-};
-const PALIWO_PL = {
-  'coal: bituminous': 'węgiel kamienny',
-  'coal: lignite': 'węgiel brunatny',
-  'coal: unknown': 'węgiel (rodzaj nieznany)',
-  'fossil gas: natural gas': 'gaz ziemny',
-  'industrial by-product: coke oven gas': 'gaz koksowniczy',
-  'fossil liquids: heavy fuel oil': 'ciężki olej opałowy',
-  'fossil liquids: fuel oil': 'olej opałowy',
-};
-const TECHNOLOGIA_WODNA_PL = {
-  'run-of-river': 'przepływowa',
-  'conventional storage': 'zbiornikowa',
-  'pumped storage': 'szczytowo-pompowa',
-};
-// Daty danych poszczególnych trackerów GEM wg arkusza About (kolumna „Latest release”).
+// Rodzaj elektrowni, paliwa i technologie wodne GEM – napisy w słowniku (elektrownia.…, gem.paliwo.…,
+// gem.technologia.…); dane GEM zostają bez zmian. Nieznana kategoria pokaże się w oryginale.
+const kategoriaGem = (klucz, wartosc) => (tekstPl(`${klucz}${wartosc}`) ? t(`${klucz}${wartosc}`) : wartosc);
+// Daty danych poszczególnych trackerów GEM wg arkusza About (kolumna „Latest release”), RRRR-MM.
 // (węgiel: Global Coal Plant Tracker; gaz i olej: Global Oil and Gas Plant Tracker; woda: Global Hydropower Tracker)
 const DANE_ELEKTROWNI = {
-  wegiel: 'lipiec 2026',
-  gaz: 'sierpień 2026',
-  woda: 'marzec 2026',
-  pompowa: 'marzec 2026',
+  wegiel: '2026-07',
+  gaz: '2026-08',
+  woda: '2026-03',
+  pompowa: '2026-03',
 };
+const DANE_WIATR_GEM = '2026-02'; // Global Wind Power Tracker (lądowe farmy wiatrowe)
+const STAN_OSM = '2026-11-19'; // linie 220/400 kV z OpenStreetMap
+const DANE_EMODNET = '2026-07-10'; // farmy morskie
 // Rodzaje elektrowni widoczne na mapie (pola w legendzie).
 const widoczneElektrownie = new Set(['wegiel', 'gaz', 'woda', 'pompowa']);
 function filtrElektrowni() {
@@ -427,37 +415,31 @@ map.on('load', () => {
       map.getSource('elektrownie').setData(elektrownie);
       // Liczniki – wspólne funkcje z src/liczniki.js (te same co liczby na stronie tytułowej).
       for (const rodzaj of ['wegiel', 'gaz', 'woda', 'pompowa']) {
-        const { liczba, mocMw } = podsumujElektrownie(elektrownie, rodzaj);
-        ustawLicznik(rodzaj, `${odmiana(liczba, ['elektrownia', 'elektrownie', 'elektrowni'])} · ${formatMocy(mocMw)}`);
+        const { liczba: ile, mocMw } = podsumujElektrownie(elektrownie, rodzaj);
+        ustawLicznik(rodzaj, `${tn('liczba.elektrownia', ile)} · ${formatMocy(mocMw, LOCALE)}`);
       }
       const lad = podsumujLadowe(geo);
-      ustawLicznik(
-        'ladowe',
-        `${odmiana(lad.farmy, ['farma działa', 'farmy działają', 'farm działa'])} · ${formatMocy(lad.mocMw)} · ${lad.wBudowie} w budowie`,
-      );
+      ustawLicznik('ladowe', t('licznik.ladowe', tn('liczba.farma_dziala', lad.farmy), formatMocy(lad.mocMw, LOCALE), lad.wBudowie));
     })
     .catch(() => {
-      for (const w of ['ladowe', 'wegiel', 'gaz', 'woda', 'pompowa']) ustawLicznik(w, 'brak danych', true);
+      for (const w of ['ladowe', 'wegiel', 'gaz', 'woda', 'pompowa']) ustawLicznik(w, t('wspolne.brak_danych'), true);
     });
   // Liczniki linii i farm morskich – z tych samych plików, które wczytuje mapa.
   fetch(`${import.meta.env.BASE_URL}data/linie-nn.geojson`)
     .then((odp) => (odp.ok ? odp.json() : null))
     .then((geo) => {
       if (!geo?.features) throw new Error('brak pliku');
-      ustawLicznik('linie', `${odmiana(geo.features.length, ['odcinek', 'odcinki', 'odcinków'])} · OSM 19.11.2026`);
+      ustawLicznik('linie', t('licznik.linie', tn('liczba.odcinek', geo.features.length), formatDoby(STAN_OSM)));
     })
-    .catch(() => ustawLicznik('linie', 'brak danych', true));
+    .catch(() => ustawLicznik('linie', t('wspolne.brak_danych'), true));
   fetch(`${import.meta.env.BASE_URL}data/farmy-baltyk.geojson`)
     .then((odp) => (odp.ok ? odp.json() : null))
     .then((geo) => {
       if (!geo?.features) throw new Error('brak pliku');
       const m = podsumujMorskie(geo);
-      ustawLicznik(
-        'morskie',
-        `${odmiana(m.rekordy, ['farma', 'farmy', 'farm'])} · ${m.wBudowie} w budowie, ${odmiana(m.planowane, ['planowana', 'planowane', 'planowanych'])}`,
-      );
+      ustawLicznik('morskie', t('licznik.morskie', tn('liczba.farma', m.rekordy), m.wBudowie, tn('liczba.planowana', m.planowane)));
     })
-    .catch(() => ustawLicznik('morskie', 'brak danych', true));
+    .catch(() => ustawLicznik('morskie', t('wspolne.brak_danych'), true));
 
   okienka.dodaj({ id: 'elektrownie', warstwy: ['elektrownie'], tresc: (obiekty) => {
     const p = obiekty[0].properties;
@@ -471,24 +453,20 @@ map.on('load', () => {
       span.textContent = tekst;
       el.append(span);
     };
-    linia(RODZAJ_ELEKTROWNI_PL[p.rodzaj]);
-    if (p.rodzaj === 'pompowa') {
-      linia('pompuje wodę w górę, gdy prądu jest dużo, i oddaje go, gdy brakuje – to magazyn, a nie źródło energii');
-    }
-    const paliwa = (p.paliwa ?? '').split(';').filter(Boolean).map((x) => PALIWO_PL[x] ?? x);
-    if (p.rodzaj === 'wegiel' && paliwa.length) linia(`rodzaj: ${paliwa.join(', ')}`);
-    if (p.rodzaj === 'gaz' && paliwa.length) linia(`paliwo: ${paliwa.join(', ')}`);
+    linia(t(`elektrownia.${p.rodzaj}`));
+    if (p.rodzaj === 'pompowa') linia(t('elektrownia.pompowa_opis'));
+    const paliwa = (p.paliwa ?? '').split(';').filter(Boolean).map((x) => kategoriaGem('gem.paliwo.', x));
+    if (p.rodzaj === 'wegiel' && paliwa.length) linia(t('elektrownia.rodzaj_wegla', paliwa.join(', ')));
+    if (p.rodzaj === 'gaz' && paliwa.length) linia(t('elektrownia.paliwo', paliwa.join(', ')));
     if (p.rodzaj === 'woda' || p.rodzaj === 'pompowa') {
-      const t = (p.technologie ?? '').split(';').filter(Boolean).map((x) => TECHNOLOGIA_WODNA_PL[x] ?? x);
-      if (t.length) linia(`typ: ${t.join(', ')}`);
+      const typy = (p.technologie ?? '').split(';').filter(Boolean).map((x) => kategoriaGem('gem.technologia.', x));
+      if (typy.length) linia(t('elektrownia.typ', typy.join(', ')));
     }
-    // Odmiana: 1 blok; 2–4, 22–24… bloki (ale 12–14 bloków); pozostałe bloków.
-    const n = p.bloki;
-    const bloki = n === 1 ? '1 blok' : [2, 3, 4].includes(n % 10) && ![12, 13, 14].includes(n % 100) ? `${n} bloki` : `${n} bloków`;
-    linia(`moc: ${p.moc.toLocaleString('pl-PL')} MW (${bloki} w danych)`);
-    linia('moc zainstalowana – nie bieżąca produkcja');
-    linia(p.dokladnosc === 'exact' ? 'lokalizacja: dokładna' : 'lokalizacja: przybliżona (np. najbliższa miejscowość)');
-    el.append(linijkaZrodla('GEM', 'dane', DANE_ELEKTROWNI[p.rodzaj]));
+    // Odmiana: 1 blok; 2–4, 22–24… bloki (ale 12–14 bloków); pozostałe bloków (EN: 1 unit, 2 units) – tn().
+    linia(t('elektrownia.moc', liczba(p.moc), tn('liczba.blok', p.bloki)));
+    linia(t('elektrownia.moc_zainstalowana'));
+    linia(t(p.dokladnosc === 'exact' ? 'lokalizacja.dokladna' : 'lokalizacja.przyblizona'));
+    el.append(linijkaZrodla('GEM', 'dane', formatMiesiaca(DANE_ELEKTROWNI[p.rodzaj])));
     return { el, lngLat: obiekty[0].geometry.coordinates };
   } });
 
@@ -562,10 +540,10 @@ map.on('load', () => {
   // brak fazy → nic.
   const opisFazy = (faza) => {
     if (!faza || faza === 'null') return '';
-    if (/^\d+[a-z]?$/i.test(faza)) return `faza ${faza}: `;
+    if (/^\d+[a-z]?$/i.test(faza)) return t('farmy.faza', faza);
     return `${faza.replace(/[()]/g, '').trim()}: `;
   };
-  const STATUS_PL = { operating: 'działa', construction: 'w budowie – jeszcze nie produkuje albo produkuje częściowo' };
+  const statusLadowej = (status) => (tekstPl(`farmy.lad.${status}`) ? t(`farmy.lad.${status}`) : status);
   okienka.dodaj({ id: 'farmy-lad', warstwy: ['farmy-lad-dziala', 'farmy-lad-budowa'], tresc: (obiekty) => {
     const lokalizacja = obiekty[0].properties.gem_location_id;
     const fazy = obiekty.filter((f) => f.properties.gem_location_id === lokalizacja);
@@ -582,23 +560,19 @@ map.on('load', () => {
       el.append(span);
     };
     for (const f of unikalne) {
-      const moc = typeof f.moc_mw === 'number' ? `${f.moc_mw.toLocaleString('pl-PL')} MW` : 'moc: brak danych';
-      const rok = f.rok_uruchomienia ? `, uruchomienie: ${f.rok_uruchomienia}` : '';
-      linia(`${opisFazy(f.faza)}${moc}, ${STATUS_PL[f.status] ?? f.status}${rok}`);
+      const moc = typeof f.moc_mw === 'number' ? `${liczba(f.moc_mw)} MW` : t('farmy.moc_brak');
+      const rok = f.rok_uruchomienia ? t('farmy.uruchomienie', f.rok_uruchomienia) : '';
+      linia(`${opisFazy(f.faza)}${moc}, ${statusLadowej(f.status)}${rok}`);
     }
-    linia(
-      p.dokladnosc_lokalizacji === 'exact'
-        ? 'lokalizacja: dokładna'
-        : 'lokalizacja: przybliżona (np. najbliższa miejscowość)',
-    );
-    el.append(linijkaZrodla('GEM', 'dane', 'luty 2026')); // dane wiatrowe: Global Wind Power Tracker
+    linia(t(p.dokladnosc_lokalizacji === 'exact' ? 'lokalizacja.dokladna' : 'lokalizacja.przyblizona'));
+    el.append(linijkaZrodla('GEM', 'dane', formatMiesiaca(DANE_WIATR_GEM))); // dane wiatrowe: Global Wind Power Tracker
     return { el, lngLat: obiekty[0].geometry.coordinates };
   } });
 
   // Morskie farmy wiatrowe na polskim Bałtyku (EMODnet, CC BY 4.0)
   // Dwie warstwy: pełne kropki (farmy z listy MKiŚ) pod spodem, puste (prawdopodobne duplikaty i farmy
   // spoza listy) na wierzchu z grubszą obwódką – żeby duplikat był widoczny obok swojej pary.
-  const NA_LISCIE = ['==', ['get', 'weryfikacja'], 'na liście MKiŚ'];
+  const NA_LISCIE = ['==', ['get', 'weryfikacja'], tekstPl('farmy.weryfikacja.na_liscie')];
   // Promień zależny od przybliżenia: małe z daleka, ok. 6 px przy kadrze Polski (przybliżenie ok. 5), większe bliżej.
   const PROMIEN_FARMY = ['interpolate', ['linear'], ['zoom'], 2, 2, 5, 6, 9, 12];
   map.addSource('farmy', { type: 'geojson', data: `${import.meta.env.BASE_URL}data/farmy-baltyk.geojson` });
@@ -637,13 +611,13 @@ map.on('load', () => {
       span.textContent = tekst;
       return span;
     };
-    const moc = typeof moc_mw === 'number' ? `${moc_mw.toLocaleString('pl-PL')} MW` : 'brak danych';
-    el.append(tytul, document.createElement('br'), linia(`status: ${STATUS_MORSKIE_PL[status] ?? status}`), document.createElement('br'), linia(`moc: ${moc}`));
-    if (weryfikacja) el.append(document.createElement('br'), linia(`weryfikacja: ${weryfikacja_opis ?? weryfikacja}`));
+    const moc = typeof moc_mw === 'number' ? `${liczba(moc_mw)} MW` : t('wspolne.brak_danych');
+    el.append(tytul, document.createElement('br'), linia(t('farmy.status', statusMorskiej(status))), document.createElement('br'), linia(t('farmy.moc', moc)));
+    if (weryfikacja) el.append(document.createElement('br'), linia(t('farmy.weryfikacja', weryfikacjaFarmy(weryfikacja_opis ?? weryfikacja))));
     const korekta = KOREKTY_STATUSU[nazwa];
-    if (korekta) el.append(document.createElement('br'), linia(korekta.tekst));
-    el.append(linijkaZrodla('EMODnet', 'dane', '10.07.2026'));
-    if (korekta) el.append(linijkaZrodla(korekta.zrodlo, 'stan', korekta.stan));
+    if (korekta) el.append(document.createElement('br'), linia(t(korekta.klucz)));
+    el.append(linijkaZrodla('EMODnet', 'dane', formatDoby(DANE_EMODNET)));
+    if (korekta) el.append(linijkaZrodla(korekta.zrodlo, 'stan', formatDoby(korekta.stan)));
     return { el, lngLat: obiekty[0].geometry.coordinates };
   } });
 
@@ -657,22 +631,22 @@ map.on('load', () => {
     id: 'linie',
     warstwy: ['linie-nn-klik'],
     najechanie: false,
-    podpowiedz: 'kliknij – szczegóły linii',
+    podpowiedz: t('linie.podpowiedz'),
     podswietl: (id, wlacz) => map.setFeatureState({ source: 'linie-nn', id }, { podswietlona: wlacz }),
     tresc: (obiekty, e) => {
       const p = obiekty[0].properties;
       const el = document.createElement('div');
       const tytul = document.createElement('strong');
-      tytul.textContent = p.nazwa && p.nazwa !== 'null' ? p.nazwa : 'Linia bez nazwy w OpenStreetMap';
+      tytul.textContent = p.nazwa && p.nazwa !== 'null' ? p.nazwa : t('linie.bez_nazwy');
       const napiecie = document.createElement('span');
-      napiecie.textContent = `linia najwyższego napięcia: ${p.napiecie} kV`;
-      el.append(tytul, document.createElement('br'), napiecie, linijkaZrodla('OpenStreetMap', 'stan', '19.11.2026'));
+      napiecie.textContent = t('linie.napiecie', p.napiecie);
+      el.append(tytul, document.createElement('br'), napiecie, linijkaZrodla('OpenStreetMap', 'stan', formatDoby(STAN_OSM)));
       return { el, lngLat: e.lngLat };
     },
   });
 
   // Wolna moc dla odbiorców (PSE): na samym wierzchu, bo to najważniejsza warstwa dla pytania „gdzie się podłączyć” (src/moce.js).
-  dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, odmiana, okienka });
+  dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, okienka });
 
   // Kursor „rączka” nad wszystkim, co da się kliknąć.
   for (const id of ['linie-nn-klik', ...KROPKI_I_ZNACZKI]) {
@@ -682,9 +656,7 @@ map.on('load', () => {
 });
 
 // Produkcja z wiatru: plik wiatr.json powstaje przy budowaniu (scripts/pobierz-pse.mjs).
-const formatCzasu = (iso) =>
-  new Date(iso).toLocaleString('pl-PL', { timeZone: 'Europe/Warsaw', dateStyle: 'short', timeStyle: 'short' });
-const formatDoby = (rrrrMmDd) => rrrrMmDd.split('-').reverse().join('.');
+// Formaty dat (formatCzasu, formatDoby) – wg języka strony, z src/jezyk.js.
 
 // Pomocnicze do wykresów SVG (bez bibliotek): elementy przez createElementNS, tekst przez textContent.
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -702,7 +674,7 @@ const podpis = (tekst, atrybuty) => {
 // Mały wykres liniowy produkcji z wiatru z bieżącej doby.
 // seria: [{ okres: 'HH:MM - HH:MM', mw }], kolejne kwadranse od 00:00.
 // znacznik (opcjonalnie): numer kwadransu, na którym stoi kreska (odtwarzanie doby), etykieta: podpis kreski.
-function rysujWykres(kontener, seria, { znacznik = null, etykieta = '', opisDoby = 'w bieżącej dobie' } = {}) {
+function rysujWykres(kontener, seria, { znacznik = null, etykieta = '', opisDoby = t('wykres.biezaca_doba') } = {}) {
   const punkty = (seria ?? []).filter((p) => typeof p.mw === 'number' && typeof p.okres === 'string');
   if (punkty.length < 2) {
     kontener.replaceChildren();
@@ -717,7 +689,7 @@ function rysujWykres(kontener, seria, { znacznik = null, etykieta = '', opisDoby
 
   const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
   const opis = el('title', {});
-  opis.textContent = `Produkcja z wiatru ${opisDoby}, co 15 minut, w MW`;
+  opis.textContent = t('wykres.wiatr_opis', opisDoby);
   svg.append(
     opis,
     el('line', { x1: 0, y1: DOL, x2: W, y2: DOL, stroke: KOLORY.os, 'stroke-width': 1 }),
@@ -728,7 +700,7 @@ function rysujWykres(kontener, seria, { znacznik = null, etykieta = '', opisDoby
       'stroke-width': 1.5,
       'stroke-linejoin': 'round',
     }),
-    podpis(`maks. ${Math.round(maks).toLocaleString('pl-PL')} MW`, { x: 0, y: 10 }),
+    podpis(t('wykres.maks', `${liczba(Math.round(maks))} MW`), { x: 0, y: 10 }),
     podpis(punkty[0].okres.split(' - ')[0], { x: 0, y: H - 2 }),
     podpis(punkty.at(-1).okres.split(' - ')[1] ?? '', { x: W, y: H - 2, 'text-anchor': 'end' }),
   );
@@ -745,10 +717,11 @@ function rysujWykres(kontener, seria, { znacznik = null, etykieta = '', opisDoby
 // Bieżącą dobę i kwadrans wybieramy wg czasu Europe/Warsaw (koniec_utc to chwila absolutna, więc strefa
 // komputera nie ma znaczenia). Nigdy nie pokazujemy ceny z innej doby jako aktualnej.
 const MS_KWADRANS = 15 * 60_000;
-const formatCeny = (c) => c.toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const formatCeny = (c) => liczba(c, 2);
+const ZL_MWH = t('jednostka.zl_mwh');
 const dzisPL = () => new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Warsaw' });
 
-function rysujWykresCeny(kontener, seria, teraz, { etykieta = 'teraz', opisDoby = 'w bieżącej dobie' } = {}) {
+function rysujWykresCeny(kontener, seria, teraz, { etykieta = t('wykres.teraz'), opisDoby = t('wykres.biezaca_doba') } = {}) {
   const W = 240, H = 84, GORA = 26, DOL = 70; // obszar linii: od GORA do DOL
   const ceny = seria.map((p) => p.cena);
   const maks = Math.max(...ceny);
@@ -761,7 +734,7 @@ function rysujWykresCeny(kontener, seria, teraz, { etykieta = 'teraz', opisDoby 
 
   const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
   const opis = el('title', {});
-  opis.textContent = `Cena prądu RCE ${opisDoby}, co 15 minut, w zł/MWh`;
+  opis.textContent = t('wykres.cena_opis', opisDoby);
   svg.append(opis, el('line', { x1: 0, y1: DOL, x2: W, y2: DOL, stroke: KOLORY.os, 'stroke-width': 1 }));
   if (min < 0) {
     svg.append(el('line', { x1: 0, y1: y(0), x2: W, y2: y(0), stroke: KOLORY.tekstPomocniczy, 'stroke-width': 1, 'stroke-dasharray': '3 3' }));
@@ -775,8 +748,8 @@ function rysujWykresCeny(kontener, seria, teraz, { etykieta = 'teraz', opisDoby 
       'stroke-linejoin': 'round',
     }),
     el('line', { x1: x(teraz), y1: GORA - 4, x2: x(teraz), y2: DOL, stroke: KOLORY.teraz, 'stroke-width': 1.5 }),
-    podpis(`maks. ${formatCeny(maks)} zł/MWh`, { x: 0, y: 10 }),
-    podpis(`min. ${formatCeny(min)} zł/MWh`, { x: 0, y: 21 }),
+    podpis(t('wykres.maks', `${formatCeny(maks)} ${ZL_MWH}`), { x: 0, y: 10 }),
+    podpis(t('wykres.min', `${formatCeny(min)} ${ZL_MWH}`), { x: 0, y: 21 }),
     podpis(etykieta, { x: W, y: 21, 'text-anchor': 'end', fill: KOLORY.teraz }),
     podpis(seria[0].okres.split(' - ')[0], { x: 0, y: H - 2 }),
     podpis(seria.at(-1).okres.split(' - ')[1] ?? '', { x: W, y: H - 2, 'text-anchor': 'end' }),
@@ -795,7 +768,7 @@ function pokazCene(rce) {
     return teraz >= k - MS_KWADRANS && teraz < k;
   });
   if (!biezacy) {
-    tekst.textContent = rce ? 'Cena prądu (RCE): brak danych na dziś' : 'Cena prądu (RCE): brak danych PSE';
+    tekst.textContent = t(rce ? 'mapa.cena_brak_dzis' : 'mapa.cena_brak_pse');
     tekst.classList.add('brak-danych');
     wykres.replaceChildren();
     return;
@@ -803,7 +776,7 @@ function pokazCene(rce) {
   tekst.classList.remove('brak-danych');
   // Cena „teraz” (liczba) jest w Karcie Polski – tu tylko podpis wykresu, żeby nie pokazywać jej dwa razy
   // (decyzja Ani 21.11.2026). Odtwarzanie doby nadal wpisuje tu cenę odtwarzanego kwadransu.
-  tekst.textContent = 'Cena prądu (RCE) w bieżącej dobie:';
+  tekst.textContent = t('mapa.cena_biezaca');
   if (seria.length >= 2) rysujWykresCeny(wykres, seria, teraz);
 }
 
@@ -856,25 +829,25 @@ if (trescStopki) wiecejPonizej(trescStopki);
 // Widok „teraz” wiatru w okienku (wywoływany po wczytaniu i po zakończeniu odtwarzania doby).
 let daneWiatr = null;
 function pokazWiatr(d) {
-  document.getElementById('wiatr-etykieta').textContent = 'Produkcja z wiatru (ostatni dostępny pomiar):';
+  document.getElementById('wiatr-etykieta').textContent = t('mapa.wiatr_etykieta');
   const ogr = d?.ograniczenie;
   const ograniczenie = document.getElementById('wiatr-ograniczenie');
   ograniczenie.hidden = false;
   if (ogr && typeof ogr.mwh === 'number' && ogr.doba) {
-    ograniczenie.textContent = `Ostatnie polecenie PSE ograniczenia wiatru: ${formatDoby(ogr.doba)} – ok. ${ogr.mwh.toLocaleString('pl-PL')} MWh`;
+    ograniczenie.textContent = t('mapa.ograniczenie', formatDoby(ogr.doba), liczba(ogr.mwh));
   } else {
-    ograniczenie.textContent = 'Ostatnie polecenie PSE ograniczenia wiatru: brak danych PSE';
+    ograniczenie.textContent = t('mapa.ograniczenie_brak');
   }
   const wartosc = document.getElementById('wiatr-teraz');
   wartosc.classList.toggle('brak-danych', typeof d?.wartosc !== 'number');
   if (typeof d?.wartosc !== 'number') {
-    wartosc.textContent = 'brak danych PSE';
+    wartosc.textContent = t('wspolne.brak_danych_pse');
     document.getElementById('wiatr-stan').textContent = '';
     document.getElementById('wiatr-wykres').replaceChildren();
     return;
   }
-  document.getElementById('wiatr-teraz').textContent = `${Math.round(d.wartosc).toLocaleString('pl-PL')} ${d.jednostka}`;
-  document.getElementById('wiatr-stan').textContent = `stan na: ${formatDoby(d.doba)}, ${d.okres}`;
+  document.getElementById('wiatr-teraz').textContent = `${liczba(Math.round(d.wartosc))} ${d.jednostka}`;
+  document.getElementById('wiatr-stan').textContent = t('mapa.wiatr_stan', formatDoby(d.doba), d.okres);
   rysujWykres(document.getElementById('wiatr-wykres'), d.seria);
 }
 
@@ -895,13 +868,13 @@ const wiatrGotowy = fetch(`${import.meta.env.BASE_URL}data/wiatr.json`, { cache:
 Promise.allSettled([wiatrGotowy, cenaGotowa]).then(() => {
   const tekst = document.getElementById('pse-zrodlo-tekst');
   const pobrano = daneWiatr?.czas_pobrania ?? daneRce?.czas_pobrania;
-  const braki = [!daneWiatr && 'wiatr', !daneRce && 'cena'].filter(Boolean);
+  const braki = [!daneWiatr && t('mapa.brak_wiatr'), !daneRce && t('mapa.brak_cena')].filter(Boolean);
   if (!pobrano) {
-    tekst.textContent = 'brak danych PSE';
+    tekst.textContent = t('wspolne.brak_danych_pse');
     tekst.classList.add('brak-danych');
     return;
   }
-  tekst.textContent = `PSE · pobrano: ${formatCzasu(pobrano)}${braki.length ? ` · brak danych: ${braki.join(', ')}` : ''}`;
+  tekst.textContent = t('mapa.pse_pobrano', formatCzasu(pobrano)) + (braki.length ? t('mapa.pse_braki', braki.join(', ')) : '');
   tekst.classList.toggle('brak-danych', braki.length > 0);
 });
 
@@ -922,12 +895,12 @@ function pokazKwadrans(i) {
   const k = daneDoby.kwadranse;
   const p = k[i];
   const godzina = p.okres.split(' - ')[0];
-  const opisDoby = `w dobie ${formatDoby(daneDoby.doba)}`;
+  const opisDoby = t('wykres.w_dobie', formatDoby(daneDoby.doba));
   document.getElementById('odtw-zegar').textContent = godzina;
-  document.getElementById('wiatr-teraz').textContent = `${Math.round(p.mw).toLocaleString('pl-PL')} MW`;
-  document.getElementById('wiatr-stan').textContent = `kwadrans ${p.okres}`;
+  document.getElementById('wiatr-teraz').textContent = `${liczba(Math.round(p.mw))} MW`;
+  document.getElementById('wiatr-stan').textContent = t('odtw.kwadrans', p.okres);
   rysujWykres(document.getElementById('wiatr-wykres'), k, { znacznik: i, etykieta: godzina, opisDoby });
-  document.getElementById('rce-teraz').textContent = `Cena prądu (RCE): ${formatCeny(p.cena)} zł/MWh, ${p.okres}`;
+  document.getElementById('rce-teraz').textContent = t('mapa.cena_kwadrans', formatCeny(p.cena), p.okres);
   rysujWykresCeny(document.getElementById('rce-wykres'), k, Date.parse(p.koniec_utc) - MS_KWADRANS / 2, { etykieta: godzina, opisDoby });
 }
 
@@ -936,7 +909,7 @@ function klatka(teraz) {
   let i = Math.floor(uplyw / MS_NA_KWADRANS);
   if (BEZ_RUCHU) i -= i % 4; // raz na godzinę
   if (i >= daneDoby.kwadranse.length) {
-    wrocDoTeraz('Koniec odtworzenia doby. Pokazuję dane bieżące.');
+    wrocDoTeraz(t('odtw.ogl_koniec'));
     return;
   }
   if (i !== odtwarzanie.i) {
@@ -952,35 +925,35 @@ function startLubPauza() {
     odtwarzanie = { uplyw: 0, start: performance.now(), raf: 0, i: -1 };
     okienko.setAttribute('aria-live', 'off');
     document.getElementById('odtw-naglowek').hidden = false;
-    document.getElementById('odtw-data').textContent = `Odtworzenie doby: ${formatDoby(daneDoby.doba)}`;
-    document.getElementById('wiatr-etykieta').textContent = 'Produkcja z wiatru:';
+    document.getElementById('odtw-data').textContent = t('odtw.data', formatDoby(daneDoby.doba));
+    document.getElementById('wiatr-etykieta').textContent = t('odtw.wiatr_etykieta');
     document.getElementById('wiatr-ograniczenie').hidden = true;
     przyciskTeraz.hidden = false;
-    przyciskStart.textContent = '❚❚ Pauza';
-    ogloszenie(`Odtwarzanie doby ${formatDoby(daneDoby.doba)}, 1 sekunda to 1 godzina.`);
+    przyciskStart.textContent = t('odtw.pauza');
+    ogloszenie(t('odtw.ogl_start', formatDoby(daneDoby.doba)));
     odtwarzanie.raf = requestAnimationFrame(klatka);
   } else if (odtwarzanie.raf) {
     // Pauza
     cancelAnimationFrame(odtwarzanie.raf);
     odtwarzanie.uplyw += performance.now() - odtwarzanie.start;
     odtwarzanie.raf = 0;
-    przyciskStart.textContent = '▶ Wznów';
-    ogloszenie(`Pauza, godzina ${document.getElementById('odtw-zegar').textContent}.`);
+    przyciskStart.textContent = t('odtw.wznow');
+    ogloszenie(t('odtw.ogl_pauza', document.getElementById('odtw-zegar').textContent));
   } else {
     // Wznowienie
     odtwarzanie.start = performance.now();
-    przyciskStart.textContent = '❚❚ Pauza';
-    ogloszenie('Wznowiono odtwarzanie.');
+    przyciskStart.textContent = t('odtw.pauza');
+    ogloszenie(t('odtw.ogl_wznow'));
     odtwarzanie.raf = requestAnimationFrame(klatka);
   }
 }
 
-function wrocDoTeraz(komunikat = 'Pokazuję dane bieżące.') {
+function wrocDoTeraz(komunikat = t('odtw.ogl_teraz')) {
   if (odtwarzanie?.raf) cancelAnimationFrame(odtwarzanie.raf);
   odtwarzanie = null;
   document.getElementById('odtw-naglowek').hidden = true;
   przyciskTeraz.hidden = true;
-  przyciskStart.textContent = '▶ Odtwórz dobę';
+  przyciskStart.textContent = t('odtw.start');
   // Fokus był na „Wróć do teraz”, który znika – przenosimy go na przycisk odtwarzania.
   if (document.activeElement === przyciskTeraz || document.activeElement === document.body) przyciskStart.focus();
   pokazWiatr(daneWiatr);
@@ -1002,7 +975,7 @@ const dobaGotowa = fetch(`${import.meta.env.BASE_URL}data/doba.json`, { cache: '
   .then((d) => {
     const pelna = d?.doba && Array.isArray(d.kwadranse) && d.kwadranse.length >= 2;
     if (!pelna) {
-      document.getElementById('odtw-stan').textContent = 'Odtworzenie doby: brak pełnych danych';
+      document.getElementById('odtw-stan').textContent = t('odtw.brak');
       return;
     }
     daneDoby = d;

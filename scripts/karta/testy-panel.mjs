@@ -6,6 +6,8 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { zbudujKarte } from './licz.mjs';
 import { tekstyKarty, tekstCeny, PROG_STARYCH_H, PODZIAL_OZE, PASKI_MOCY } from '../../src/karta-teksty.js';
+import { ustawJezyk } from '../../src/jezyk.js';
+import { wypelnij } from '../jezyki.mjs';
 
 const PROBKA = JSON.parse(readFileSync(new URL('./testy/pse-2026-11-20-1200.json', import.meta.url), 'utf-8'));
 const karta = () => zbudujKarte(structuredClone(PROBKA['his-gen-pal-sire']), structuredClone(PROBKA['his-wlk-cal']), '2026-11-20T12:30:00.000Z');
@@ -66,12 +68,33 @@ test('pasek: 4 grupy w kolejności, 1 miejsce po przecinku, liczby = karta.json'
   assert.ok(Math.abs(t.pasek.reduce((s, p) => s + p.udzial, 0) - 1) < 0.001);
 });
 
-test('ślad CO2: „ok. … g/kWh” z dziesiątek; dokładnie tylko w Metodologii', () => {
+// W ekwiwalencie CO2 (CO₂eq) – mediany IPCC są w ekwiwalencie (decyzja Ani 23.11.2026).
+test('ślad CO2: „ok. … g CO₂eq/kWh” z dziesiątek; dokładnie tylko w Metodologii', () => {
   const k = karta();
   const t = tekstyKarty(k, RCE, terazPo(k, 1));
-  assert.equal(t.co2.wartosc, `ok. ${k.co2.g_kwh_ok} g/kWh`);
+  assert.equal(t.co2.wartosc, `ok. ${k.co2.g_kwh_ok} g CO₂eq/kWh`);
   assert.equal(t.co2.opis, 'szacunek OSIRIS');
-  assert.equal(t.metodologia.co2, `${k.co2.g_kwh.toFixed(1).replace('.', ',')} g/kWh`);
+  assert.equal(t.metodologia.co2, `${k.co2.g_kwh.toFixed(1).replace('.', ',')} g CO₂eq/kWh`);
+});
+
+// Wersja angielska (/en/map/): te same liczby, słowniczek z src/teksty/en.js, formaty en-GB.
+test('wersja EN: liczba-bohater, ślad CO2, wymiana planowa i podpis – po angielsku, z tymi samymi liczbami', () => {
+  ustawJezyk('en');
+  try {
+    const k = karta();
+    const t = tekstyKarty(k, RCE, terazPo(k, 1));
+    assert.equal(t.bohater.zdanie, "of Poland's electricity comes from coal");
+    assert.equal(t.co2.wartosc, `approx. ${k.co2.g_kwh_ok} g CO₂eq/kWh`);
+    assert.equal(t.co2.opis, 'OSIRIS estimate');
+    assert.equal(t.metodologia.co2, `${k.co2.g_kwh.toFixed(1)} g CO₂eq/kWh`);
+    assert.match(t.wymiana.wartosc, /^(importing|exporting) approx\. [\d,]+ MW$|^approx\. 0 MW$/);
+    assert.match(t.wymiana.opis, /^scheduled/);
+    assert.match(t.podpis, /^of generation in Poland · as of 12:30 · published by PSE at 21 Nov, 02:52$/);
+    assert.deepEqual(PODZIAL_OZE.map((r) => r.nazwa), ['onshore wind', 'offshore wind', 'solar', 'hydro', 'biomass and other renewables']);
+    for (const p of t.pasek) assert.match(p.tekst, /^\d+\.\d%$/);
+  } finally {
+    ustawJezyk('pl');
+  }
 });
 
 test('wymiana: znak z opisu PSE (+ kupuje, − sprzedaje), zaokrąglenie do dziesiątek, „planowo”', () => {
@@ -287,12 +310,22 @@ test('paski mocy: brak pliku mocy, zły plik albo brak danych o miksie – „br
   assert.deepEqual(tekstyKarty(null, RCE, Date.parse('2026-11-20T12:05:00Z')).moc, brak);
 });
 
-test('paski mocy: napisy na stronie bez słów sugerujących marnowanie', () => {
-  const html = readFileSync(new URL('../../mapa/index.html', import.meta.url), 'utf-8');
-  const sekcja = html.slice(html.indexOf('id="karta-moce"'), html.indexOf('</details>', html.indexOf('id="karta-moce"')));
-  assert.ok(sekcja.includes('Moc zainstalowana to nie moc dostępna'));
-  assert.ok(sekcja.includes('a nie awaria'));
-  assert.doesNotMatch(sekcja.toLowerCase(), /marnow|traci|stoi bezczynn|niewykorzyst|zmarnowan/);
+test('paski mocy: napisy na stronie bez słów sugerujących marnowanie (PL i EN)', () => {
+  // Teksty stoją w słownikach – sprawdzamy gotową stronę z szablonu (ta sama funkcja co przy budowaniu).
+  const szablon = readFileSync(new URL('../../mapa/index.html', import.meta.url), 'utf-8');
+  const sekcja = (jezyk) => {
+    const html = wypelnij(szablon, jezyk, 'mapa');
+    return html.slice(html.indexOf('id="karta-moce"'), html.indexOf('</details>', html.indexOf('id="karta-moce"')));
+  };
+  const pl = sekcja('pl');
+  assert.ok(pl.includes('Moc zainstalowana to nie moc dostępna'));
+  assert.ok(pl.includes('a nie awaria'));
+  assert.doesNotMatch(pl.toLowerCase(), /marnow|traci|stoi bezczynn|niewykorzyst|zmarnowan/);
+  const en = sekcja('en');
+  assert.ok(en.includes('Installed capacity is not available capacity'));
+  assert.ok(en.includes('not a breakdown'));
+  // „waste” bez końcówki to paliwo (odpady) – zakazane są „wasted / wasting”.
+  assert.doesNotMatch(en.toLowerCase(), /wasted|wasting|\bidle\b|unused|\blost\b|squander/);
   // Wyjaśnienie „?” – jedno źródło tekstu dla listy i okienka C (src/karta.js czyta je po id).
-  assert.equal(html.split('id="karta-moce-niepewnosc"').length - 1, 1);
+  assert.equal(szablon.split('id="karta-moce-niepewnosc"').length - 1, 1);
 });

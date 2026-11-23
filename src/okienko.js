@@ -7,6 +7,7 @@
 // – linijki „ŹRÓDŁO …” przyklejone do dołu, zawsze widoczne w całości;
 // – bez animacji (także przy „ogranicz ruch” nic się nie rusza).
 // Okienko jest własne (nie MapLibre Popup): Popup jest częścią mapy, więc chował się pod panelami.
+import { t } from './jezyk.js';
 import { wybierzPozycje } from './okienko-pozycja.js';
 import { wiecejPonizej } from './wiecej-ponizej.js';
 
@@ -25,7 +26,7 @@ export function utworzOkienka(map) {
   const krzyzyk = document.createElement('button');
   krzyzyk.type = 'button';
   krzyzyk.className = 'okienko__zamknij';
-  krzyzyk.setAttribute('aria-label', 'Zamknij okienko');
+  krzyzyk.setAttribute('aria-label', t('okienko.zamknij'));
   krzyzyk.textContent = '×';
   const tresc = document.createElement('div');
   tresc.className = 'okienko__tresc';

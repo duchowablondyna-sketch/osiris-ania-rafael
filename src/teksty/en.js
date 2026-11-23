@@ -18,7 +18,8 @@
 //   gaz i inne                          → gas and other
 //   wymiana z zagranicą                 → scheduled cross-border exchange (import / export) – PLANOWA, nie zmierzona
 //   linie najwyższych napięć 220/400 kV → extra-high-voltage lines (220/400 kV)
-//   rozdzielnia                         → substation
+//   stacja                              → substation
+//   rozdzielnia                         → switchyard (część stacji, np. „rozdzielnia 110 kV tej stacji”; decyzja Ani 23.11.2026)
 //   lądowa / morska farma wiatrowa      → onshore / offshore wind farm
 //   ograniczenia wiatru przez PSE       → wind curtailment by PSE
 //   odtwarzanie doby                    → replay the day
@@ -32,10 +33,12 @@
 //   Wkrótce                             → Coming soon
 //   SKĄD / GDZIE / ILE I JAK CZYSTO / CO SIĘ ZMIENI → WHERE FROM / WHERE TO CONNECT / HOW MUCH & HOW CLEAN / WHAT'S NEXT
 //   Karta Polski                        → Poland at a glance
-//   Robot OSIRIS                        → Robot OSIRIS (nazwa, bez tłumaczenia)
+//   Robot OSIRIS                        → w zdaniu: „the OSIRIS robot” (np. „checked by the OSIRIS robot: …”, decyzja Ani 23.11.2026)
+//   kafelek śladu CO2                   → Life-cycle carbon intensity: approx. N g CO₂eq/kWh · OSIRIS estimate
+//   kupuje / sprzedaje (wymiana)        → importing / exporting
 // Nazwy instytucji bez tłumaczenia (PSE, KOBiZE, GEM, OSM, EMODnet, NASA GIBS); krótkie wyjaśnienie po angielsku
 // przy pierwszym użyciu, np. „PSE (Poland's transmission system operator)”.
-// Cytaty z PSE: nasze tłumaczenie, pod nim mniejszym drukiem oryginał po polsku.
+// Cytaty z PSE: nasze tłumaczenie, pod nim mniejszym drukiem oryginał po polsku (tłumaczenia: src/teksty/cytaty-pse.js).
 
 export default {
   // ── <head> ──
@@ -61,8 +64,7 @@ export default {
     'See in one place where Poland gets its electricity and what it costs. Power plants, onshore and Baltic offshore wind farms, extra-high-voltage lines, wind generation and the energy price hour by hour. Everything from official, public sources, with a date next to every number. For boards and investors who ask: where and how can we get more power?',
   'tytulowa.czas_warszawa': 'WARSAW TIME',
   'tytulowa.haslo': "THE HEART OF POLAND'S POWER DATA.",
-  // e1: angielskiej mapy jeszcze nie ma – przycisk prowadzi do polskiej i mówi to wprost (w e2: „OPEN MAP →”).
-  'tytulowa.otworz_mape': 'OPEN MAP · IN POLISH FOR NOW →',
+  'tytulowa.otworz_mape': 'OPEN MAP →',
   'tytulowa.wegiel_nazwa': 'COAL POWER PLANTS',
   'tytulowa.wegiel_zrodlo': 'GEM · data: July 2026 · operating',
   'tytulowa.ladowe_nazwa': 'ONSHORE WIND FARMS',
@@ -85,4 +87,312 @@ export default {
   'tytulowa.zapowiedz': 'COMING SOON',
   'tytulowa.wkrotce_tytul': 'Coming soon: where you can still connect',
   'tytulowa.wkrotce_tekst': 'Available connection capacity across Poland.',
+
+  // ══ Mapa (/en/map/) – e2 ══
+  // ── Wspólne ──
+  'wspolne.wczytywanie': 'loading…',
+  'wspolne.zrodlo': 'Source',
+  'wspolne.brak_danych_pse': 'no PSE data',
+  'wspolne.po_polsku': '(in Polish)',
+  'zrodlo.pobrano': (data) => `retrieved: ${data}`,
+  'zrodlo.dane': (data) => `data: ${data}`,
+  'zrodlo.stan': (data) => `as of ${data}`,
+  'jednostka.zl_mwh': 'PLN/MWh',
+  'cytat.oryginal': (tekst) => `PSE original, in Polish: „${tekst}”`,
+  'cytat.bez_tlumaczenia': 'PSE wording, not yet translated',
+
+  // ── <head>, mapa, przyciski ──
+  'mapa.meta.tytul': "OSIRIS – Poland's power map",
+  'mapa.meta.opis':
+    "Map of Poland's power sources: power plants, onshore and Baltic offshore wind farms, extra-high-voltage lines, available connection capacity for large consumers on the PSE grid, wind generation and the energy price – from official, public sources.",
+  'mapa.meta.og_opis': 'Where Poland gets its electricity and what it costs – from official, public sources, with a date next to every number.',
+  'mapa.aria_mapa': 'Map of Poland',
+  'mapa.przybliz': 'Zoom in',
+  'mapa.oddal': 'Zoom out',
+  'mapa.atrybucja': 'Show or hide source credits',
+  'mapa.tlo_aria': 'Map background',
+  'mapa.dzien': 'Day',
+  'mapa.noc': 'Night',
+  'mapa.noc_opis':
+    'Night lights (2016 image) approximate activity and lighting – mainly street and building lights – not a measurement of electricity use.',
+  'mapa.powrot_aria': 'OSIRIS home page',
+
+  // ── Okienko PSE ──
+  'mapa.wiatr_etykieta': 'Wind generation (latest available measurement):',
+  'mapa.wiatr_stan': (doba, okres) => `as of: ${doba}, ${okres}`,
+  'mapa.ograniczenie_etykieta': 'Latest PSE order to curtail wind:',
+  'mapa.ograniczenie': (doba, mwh) => `Latest PSE order to curtail wind: ${doba} – approx. ${mwh} MWh`,
+  'mapa.ograniczenie_brak': 'Latest PSE order to curtail wind: no PSE data',
+  'mapa.rce_etykieta': 'Electricity price (RCE):',
+  'mapa.cena_biezaca': 'Electricity price (RCE) today:',
+  'mapa.cena_brak_dzis': 'Electricity price (RCE): no data for today',
+  'mapa.cena_brak_pse': 'Electricity price (RCE): no PSE data',
+  'mapa.cena_kwadrans': (cena, okres) => `Electricity price (RCE): ${cena} PLN/MWh, ${okres}`,
+  // Pierwsze PSE na mapie – krótkie wyjaśnienie, kim jest PSE.
+  'mapa.pse_pobrano': (kiedy) => `PSE (Poland's transmission system operator) · retrieved: ${kiedy}`,
+  'mapa.pse_braki': (lista) => ` · no data: ${lista}`,
+  'mapa.brak_wiatr': 'wind',
+  'mapa.brak_cena': 'price',
+  'wykres.wiatr_opis': (doba) => `Wind generation ${doba}, every 15 minutes, in MW`,
+  'wykres.cena_opis': (doba) => `RCE electricity price ${doba}, every 15 minutes, in PLN/MWh`,
+  'wykres.biezaca_doba': 'today',
+  'wykres.w_dobie': (doba) => `on ${doba}`,
+  'wykres.maks': (x) => `max ${x}`,
+  'wykres.min': (x) => `min ${x}`,
+  'wykres.teraz': 'now',
+  'odtw.start': '▶ Replay the day',
+  'odtw.wroc': 'Back to now',
+  'odtw.pauza': '❚❚ Pause',
+  'odtw.wznow': '▶ Resume',
+  'odtw.data': (doba) => `Day replay: ${doba}`,
+  'odtw.wiatr_etykieta': 'Wind generation:',
+  'odtw.kwadrans': (okres) => `quarter-hour ${okres}`,
+  'odtw.ogl_start': (doba) => `Replaying ${doba}, 1 second is 1 hour.`,
+  'odtw.ogl_pauza': (godzina) => `Paused at ${godzina}.`,
+  'odtw.ogl_wznow': 'Replay resumed.',
+  'odtw.ogl_teraz': 'Showing current data.',
+  'odtw.ogl_koniec': 'End of the day replay. Showing current data.',
+  'odtw.brak': 'Day replay: no complete data',
+
+  // ── Legenda ──
+  'leg.tytul': 'What the markers mean',
+  'leg.moce': 'Available connection capacity for large consumers (PSE)',
+  'leg.moce_opis': '– extra-high-voltage grid (220/400 kV), for the largest consumers; hexagon: planned substation with available capacity;',
+  'leg.moce_kolo': 'circle: approximate location;',
+  'leg.moce_pusty': 'empty hexagon: according to the PSE list, applications for the 220/400 kV switchyard are currently not being processed',
+  'leg.linie': 'Extra-high-voltage lines',
+  'leg.linie_opis': '– 220 and 400 kV (thicker line: 400 kV); click a line on the map to see details',
+  'leg.morskie': 'Offshore wind farms',
+  'leg.morskie_opis': '– empty circle: likely duplicate, or not on the MKiŚ list (Polish Ministry of Climate and Environment)',
+  'leg.ladowe': 'Onshore wind farms of 10 MW and above',
+  'leg.ladowe_opis': '– filled dot: operating; ring with a dot: under construction',
+  'leg.wegiel': 'Coal power plants',
+  'leg.gaz': 'Gas and oil power plants',
+  'leg.woda': 'Hydropower plants',
+  'leg.pompowa': 'Pumped-storage power plants',
+  'leg.kwadrat': '– square: plant that burns fuel',
+  'leg.pompowa_opis': '– energy storage: they pump water uphill when power is plentiful and give it back when it runs short',
+  'leg.elektrownie_uwaga': 'Power plants: operating and large ones only (thresholds in “Sources and licences”)',
+  'leg.rozmiar': 'Marker size = installed capacity, not current generation',
+  'leg.skala_1000': '1,000 MW',
+  'leg.skala_5000': '5,000 MW',
+  'leg.wzorce': 'Size examples: 100 MW – small square, 1,000 MW – medium, 5,000 MW – large.',
+  'liczba.elektrownia': { one: 'power plant', other: 'power plants' },
+  'liczba.farma_dziala': { one: 'farm operating', other: 'farms operating' },
+  'liczba.farma': { one: 'farm', other: 'farms' },
+  'liczba.planowana': { one: 'planned', other: 'planned' },
+  'liczba.odcinek': { one: 'segment', other: 'segments' },
+  'liczba.blok': { one: 'unit', other: 'units' },
+  'liczba.stacja': { one: 'substation', other: 'substations' },
+  'liczba.stacja_ma': { one: 'substation has', other: 'substations have' },
+  'liczba.stacja_planowana': { one: 'planned substation', other: 'planned substations' },
+  'licznik.ladowe': (farmy, moc, wBudowie) => `${farmy} · ${moc} · ${wBudowie} under construction`,
+  'licznik.linie': (odcinki, data) => `${odcinki} · OSM ${data}`,
+  'licznik.morskie': (farmy, wBudowie, planowane) => `${farmy} · ${wBudowie} under construction, ${planowane}`,
+
+  // ── Okienka elektrowni, farm i linii ──
+  'elektrownia.wegiel': 'coal power plant',
+  'elektrownia.gaz': 'gas or oil power plant',
+  'elektrownia.woda': 'hydropower plant',
+  'elektrownia.pompowa': 'pumped-storage power plant (energy storage)',
+  'elektrownia.pompowa_opis': 'pumps water uphill when power is plentiful and gives it back when it runs short – it is storage, not a source of energy',
+  'elektrownia.rodzaj_wegla': (lista) => `type: ${lista}`,
+  'elektrownia.paliwo': (lista) => `fuel: ${lista}`,
+  'elektrownia.typ': (lista) => `type: ${lista}`,
+  'elektrownia.moc': (moc, bloki) => `capacity: ${moc} MW (${bloki} in the data)`,
+  'elektrownia.moc_zainstalowana': 'installed capacity – not current generation',
+  'lokalizacja.dokladna': 'location: exact',
+  'lokalizacja.przyblizona': 'location: approximate (e.g. nearest town)',
+  'gem.paliwo.coal: bituminous': 'hard coal',
+  'gem.paliwo.coal: lignite': 'lignite',
+  'gem.paliwo.coal: unknown': 'coal (type unknown)',
+  'gem.paliwo.fossil gas: natural gas': 'natural gas',
+  'gem.paliwo.industrial by-product: coke oven gas': 'coke oven gas',
+  'gem.paliwo.fossil liquids: heavy fuel oil': 'heavy fuel oil',
+  'gem.paliwo.fossil liquids: fuel oil': 'fuel oil',
+  'gem.technologia.run-of-river': 'run-of-river',
+  'gem.technologia.conventional storage': 'reservoir',
+  'gem.technologia.pumped storage': 'pumped storage',
+  'farmy.faza': (faza) => `phase ${faza}: `,
+  'farmy.lad.operating': 'operating',
+  'farmy.lad.construction': 'under construction – not producing yet, or only partly',
+  'farmy.moc_brak': 'capacity: no data',
+  'farmy.uruchomienie': (rok) => `, commissioned: ${rok}`,
+  'farmy.morskie.Planned': 'planned',
+  'farmy.morskie.Construction': 'under construction',
+  'farmy.morskie.Production': 'operating',
+  'farmy.status': (status) => `status: ${status}`,
+  'farmy.moc': (moc) => `capacity: ${moc}`,
+  'farmy.weryfikacja': (opis) => `verification: ${opis}`,
+  'farmy.weryfikacja.na_liscie': 'on the MKiŚ list',
+  'farmy.weryfikacja.brak_na_liscie': 'not on the MKiŚ list',
+  'farmy.weryfikacja.duplikat': 'likely duplicate: ',
+  'farmy.weryfikacja.opis_baltyk1': 'on the MKiŚ list, part of the MFW Bałtyk I project',
+  'farmy.weryfikacja.opis_baltic_east': 'on the MKiŚ list as Orlen Neptun 46.E.1 (company Orlen Neptun VIII)',
+  'farmy.korekta.baltic_power':
+    'status per balticpower.pl: commissioning – first power to the grid on 10 Jul 2026 (acceptance confirmed by PSE), ' +
+    'all 76 turbines installed (7 Oct 2026), each goes through a 240-hour test after connection; ' +
+    'no generation licence yet, stage before commercial operation (no date given). ' +
+    'In EMODnet data (10 Jul 2026) and GEM (wind data from February 2026): under construction.',
+  'linie.podpowiedz': 'click – line details',
+  'linie.bez_nazwy': 'Line with no name in OpenStreetMap',
+  'linie.napiecie': (kv) => `extra-high-voltage line: ${kv} kV`,
+  'okienko.zamknij': 'Close',
+
+  // ── Poland at a glance: nagłówek, zakładki, WHERE FROM ──
+  'karta.tytul': 'Poland at a glance',
+  'karta.zakladka_skad': 'Where from',
+  'karta.zakladka_gdzie': 'Where to connect',
+  'karta.zakladka_ile': 'How much & how clean',
+  'karta.zakladka_zmiany': "What's next",
+  'karta.skad_wstep': 'Power sources on the map – choose what to show:',
+  'karta.prog_bloki_30': 'on the map · units of 30 MW and above (GEM)',
+  'karta.prog_bloki_20': 'on the map · units of 20 MW and above (GEM)',
+  'karta.prog_30': 'on the map · 30 MW and above (GEM)',
+  'karta.skad_uwaga': 'Marker size = installed capacity, not current generation. All markers are explained in the legend on the right.',
+  'karta.klodka': 'Site card – coming soon',
+  'karta.wkrotce': 'Coming soon.',
+
+  // ── WHERE TO CONNECT ──
+  'moce.tytul': 'Available connection capacity for large consumers · PSE 220/400 kV',
+  'moce.wazne':
+    "Extra-high-voltage grid (220/400 kV) – for the largest consumers, such as factories and data centres. Smaller businesses connect to the networks of distribution system operators (DSOs) – the next stage of OSIRIS.",
+  'moce.istniejace': 'For existing substations PSE gives 0 MW – only planned substations have available capacity. Capacity is given for 2031; some substations will be built later.',
+  'moce.lista1': 'Substations for new consumers',
+  'moce.lista2': 'Substations built mainly for the grid and new generators – according to PSE they can also supply consumers',
+  'moce.szacunek':
+    "The operator's estimate, not a guarantee of connection. Using capacity at one substation may reduce it at neighbouring ones – so we do not add up their capacities.",
+  'moce.zrodla_etykieta': 'Capacity for new generators:',
+  'moce.stan_etykieta': 'as of:',
+  'moce.zrodla_zero': 'PSE: 0 MW for new generators on the extra-high-voltage grid – across Poland (2026 and 2031)',
+  'moce.zrodla': (a, b) => `PSE: ${a} (2026) and ${b} (2031) for new generators on the extra-high-voltage grid – across Poland`,
+  'moce.zrodla_brak': 'Capacity for new generators: no data',
+  'moce.lok_okolica': (rejon, miejsce, km) =>
+    `Approximate location – PSE gives only »${rejon}«; OSIRIS chose the centre of the circle (${miejsce}, radius ${km} km).`,
+  'moce.lok_osm': (nazwa) => `Location: planned substation in OpenStreetMap (“${nazwa}”) – uncertain match.`,
+  'moce.lok_brak': "Not on the map – PSE gives no town, or it can't be identified without guessing.",
+  'moce.w_tym_miejscu': (stacje) => `${stacje} at this location`,
+  'moce.moc': (mw) => `available connection capacity for large consumers: ${mw} (year 2031)`,
+  'moce.tabela2': 'substation built mainly for the grid and new generators – according to PSE it can also supply consumers',
+  'moce.uwaga_pusty': (data) =>
+    `Note: according to the PSE list (as of ${data}), connection applications for this substation are currently not being processed.`,
+  'moce.uwaga_110': (data) =>
+    `Note: according to the PSE list (as of ${data}), applications for this substation's 110 kV switchyard are currently not being processed; the list says nothing about its 220/400 kV switchyards.`,
+  'moce.lista_pse': (tytul, rozdzielnie) => `PSE list: “${tytul}”; switchyards in the list: ${rozdzielnie}.`,
+  'moce.daty_rozne': (wykaz, moce, sprawdzone) =>
+    `The dates differ: the switchyard list is as of ${wykaz}, the capacities as of ${moce}. PSE has not published a newer list (checked ${sprawdzone}).`,
+  'moce.wykaz_brak': "PSE switchyard list (substations where applications are not processed): no data – we don't know whether applications are being processed.",
+  'moce.kazda_osobno': "Each substation has its own capacity – we don't add them up.",
+  'moce.siec_nn': 'Extra-high-voltage grid (220/400 kV) – for the largest consumers.',
+  'moce.szacunek_okienko': (data) =>
+    `Operator's estimate (PSE), as of ${data}. Planned substation, capacity given for 2031. Using capacity at one substation may reduce capacity at neighbouring ones. This is not a guarantee of connection.`,
+  'moce.zrodlo_wykaz': 'PSE – switchyard list',
+  'moce.zrodlo_osm': 'OpenStreetMap (location)',
+  'moce.podpis_przyblizona': 'approximate location',
+  'moce.lok_krotko.okolica': 'approximate location',
+  'moce.lok_krotko.stacja-osm': 'uncertain match (OSM)',
+  'moce.lok_krotko.brak': 'not on the map',
+  'moce.wstrzymane_pusty': ' · applications not processed',
+  'moce.wstrzymane_110': ' · 110 kV – not processed',
+  'moce.podsumowanie': (ile, pelne, napiecia, tylko110, dataWykazu, dataMocy) =>
+    `${ile} capacity for consumers. At ${pelne} of them PSE is currently not processing applications (${napiecia} switchyard); ` +
+    `for ${tylko110} more, the list covers only the 110 kV switchyard (switchyard list as of ${dataWykazu}; capacities as of ${dataMocy}).`,
+  'moce.podsumowanie_bez_wykazu': (ile) => `${ile} capacity for consumers. PSE switchyard list (where applications are not processed): no data.`,
+  'moce.sprawdzono_robot': (data) => `checked by the OSIRIS robot: ${data}`,
+  'moce.sprawdzono': (data) => `checked: ${data} (date the data was accepted)`,
+  'moce.stan': (data, sprawdzono) => `as of: ${data} · ${sprawdzono}`,
+  'moce.licznik': (planowane, naMapie, stan, wykaz) => `${planowane} · ${naMapie} on the map · as of ${stan} · ${wykaz}`,
+  'moce.licznik_wykaz': (pelne, napiecia, tylko110, data) =>
+    `at ${pelne}, applications are not being processed (${napiecia}); at ${tylko110} – only 110 kV (list as of ${data})`,
+  'moce.licznik_wykaz_brak': 'switchyard list: no data',
+  'moce.brak': 'PSE available capacity: no data',
+
+  // ── HOW MUCH & HOW CLEAN ──
+  'karta.miks_aria': 'Generation mix in Poland',
+  'karta.moce_tytul': 'How much of what we have is running',
+  'karta.moce_aria': 'Current generation against installed capacity',
+  'karta.uwaga_dostepna': 'Installed capacity is not available capacity: some units are under maintenance or in reserve.',
+  'karta.uwaga_pogoda': 'Wind and solar run when the wind blows and the sun shines – a short bar means weather or time of day, not a breakdown.',
+  'karta.pytajnik_znak': '“?” –',
+  'karta.niepewnosc':
+    "In its report PSE gives a single capacity for wind (onshore and offshore), solar and other renewables – with no breakdown. We also don't know whether it counts rooftop panels. Hydro is not included here.",
+  'karta.uwaga_bez_paska': 'No bar: hydro, oil, waste and “other” – the PSE report gives no capacity for them that can be compared with generation.',
+  'karta.uwaga_mapa': 'The map shows only larger power plants, so the capacity total on the map (“Where from” tab) is smaller.',
+  'karta.raport_kse': 'PSE, KSE Report 2025 (Polish power system), Table 1.1',
+  'karta.cena_rce': 'RCE price',
+  'karta.slad_co2': 'Life-cycle carbon intensity',
+  'karta.wymiana': 'Scheduled cross-border exchange',
+  'karta.przetworzenie': 'processing and carbon intensity: OSIRIS',
+  'karta.pytajnik_aria': 'Why the question mark? – explanation',
+  'karta.pytajnik_tytul': 'Why the question mark?',
+  'karta.skrot_stare': (skrot) => `${skrot} · ⚠ data not the latest`,
+  'karta.zrodlo_pobrano': (kiedy) => `PSE · retrieved: ${kiedy}`,
+  'karta.zrodlo_brak': 'PSE · no data',
+  'karta.brak_miksu': 'no PSE data on the mix',
+  'karta.procent_aria': (procent, krotko) => `${procent} ${krotko} – details`,
+  'karta.grupa.kamienny': 'hard coal',
+  'karta.grupa.brunatny': 'lignite',
+  'karta.grupa.gaz_i_inne': 'gas and other',
+  'karta.grupa.oze': 'renewables',
+  'karta.oze.wiatr_lad': 'onshore wind',
+  'karta.oze.wiatr_morze': 'offshore wind',
+  'karta.oze.slonce': 'solar',
+  'karta.oze.woda': 'hydro',
+  'karta.oze.biomasa': 'biomass and other renewables',
+  'karta.moc.gaz': 'natural gas',
+  'karta.moc.oze': 'wind, solar and other renewables',
+  'karta.moc_brak': 'no data on installed capacity',
+  'karta.moc_tekst': (produkcja, moc) => `${produkcja} of ${moc} GW`,
+  'karta.moc_ponad': (stan) => `more than the capacity in the PSE report (as of ${stan}) – new power plants may have been added since`,
+  'karta.moc_podpis': (stan, stanMocy) => `generation: as of ${stan} · capacity across Poland: PSE, as of ${stanMocy}`,
+  'karta.moc_zrodlo': (stanMocy) => `PSE, KSE Report 2025 (Polish power system), Table 1.1 · as of ${stanMocy}`,
+  'karta.cena_brak_dzis': 'no data for today',
+  'karta.wymiana_zero': 'approx. 0 MW',
+  'karta.wymiana_zero_opis': 'scheduled, almost no exchange',
+  'karta.wymiana_kupuje': (mw) => `importing approx. ${mw} MW`,
+  'karta.wymiana_sprzedaje': (mw) => `exporting approx. ${mw} MW`,
+  'karta.wymiana_planowo': 'scheduled',
+  'karta.plakietka_brak_powod': (powod) => `No data on the mix: ${powod}.`,
+  'karta.plakietka_brak': 'No PSE data on the mix.',
+  'karta.plakietka_nie_najnowsze': (powod, stan) => `Data is not the latest: ${powod}. Showing the state as of ${stan}.`,
+  'karta.plakietka_stare': (godzin, stan) => `Data older than ${godzin} hours. Showing the state as of ${stan}.`,
+  'karta.powod.sprawdzian': 'new data failed the cross-check',
+  'karta.powod.pobranie': 'new PSE data could not be retrieved',
+  'karta.bohater_oze': "of Poland's electricity comes from renewables",
+  'karta.bohater_wegiel': "of Poland's electricity comes from coal",
+  'karta.krotko_oze': 'from renewables',
+  'karta.krotko_wegiel': 'from coal',
+  'karta.stan': (stan) => `as of ${stan}`,
+  'karta.opublikowalo': (kiedy) => ` · published by PSE at ${kiedy}`,
+  'karta.podpis': (stan) => `of generation in Poland · ${stan}`,
+  'karta.co2_wartosc': (g) => `approx. ${g} g CO₂eq/kWh`,
+  'karta.co2_opis': 'OSIRIS estimate',
+  'karta.co2_dokladnie': (x) => `${x} g CO₂eq/kWh`,
+  'karta.sprawdzian': (kwadranse, mw) => `${kwadranse} matching quarter-hours, largest difference ${mw} MW`,
+  'okienko_polski.naglowek': (krotko) => `Poland · power ${krotko}`,
+  'okienko_polski.tu': (wartosc) => `we are here: ${wartosc} – OSIRIS estimate based on IPCC`,
+  'okienko_polski.zdanie': 'of generation in Poland · PSE data every 15 min',
+  'okienko_polski.razem': '= total',
+  'okienko_polski.co2_tytul': 'Life-cycle carbon intensity',
+  'okienko_polski.wiecej': 'More',
+  'okienko_polski.wiecej_aria': 'More – Methodology in the Poland at a glance panel',
+
+  // ── Methodology ──
+  'met.tytul': 'Methodology',
+  'met.skad':
+    "<strong>Data source:</strong> PSE, report “his-gen-pal-sire” – electricity generation in Poland by fuel, every 15 minutes. PSE usually publishes it 30–45 minutes late, and the site retrieves data every 4 hours.",
+  'met.sprawdzian':
+    "<strong>Cross-check:</strong> at every retrieval, wind and solar from this report must match (within 1 MW) a second PSE report (“his-wlk-cal”). If they don't, the previous data stays, with a badge. Last time:",
+  'met.udzialy':
+    '<strong>Shares:</strong> calculated from generation in Poland. We leave out pumped-storage plants – they store energy, they are not a source. Waste is not counted as renewable.',
+  'met.co2':
+    '<strong>Life-cycle carbon intensity (g CO₂eq/kWh), OSIRIS estimate based on IPCC:</strong> generation from each fuel × typical life-cycle emissions ' +
+    'of a power plant, in CO₂ equivalent (CO₂eq) – IPCC medians, AR5 report, 2014. For fuels IPCC doesn\'t cover ' +
+    '(lignite, oil, coal-derived gas, waste, “other”, “other renewables”), we made our own assumptions based on factors from KOBiZE ' +
+    '(Polish National Centre for Emissions Management). In the quarter-hour we checked (20 Nov 2026, 12:00–12:15), the extreme variants ' +
+    'of these assumptions – excluding lignite – changed the result by less than 3%. Electricity bought abroad is not included. Exactly now:',
+  'met.kobize':
+    "<strong>KOBiZE's 553 kg CO<sub>2</sub>/MWh (2024)</strong> is a different measure: combustion emissions only, averaged over the whole year. We do not compare it directly with our estimate.",
+  'met.wymiana':
+    '<strong>Scheduled cross-border exchange:</strong> scheduled exchange according to PSE (sum of two balances: swm_p + swm_np), not measured. “Importing” – power flows into Poland, “exporting” – out of Poland.',
 };
