@@ -435,7 +435,7 @@ export default {
   'stopka.tlo_noc':
     'Night-time background: Black Marble (2016), Suomi NPP / VIIRS, NASA Earth Observatory.',
   'stopka.tla':
-    'Backgrounds processed so the data is easier to see: daytime darkened and desaturated, night-time desaturated (not darkened).',
+    'Backgrounds processed so the data is easier to see: daytime darkened and desaturated, night-time desaturated and dimmed by 30%.',
   'stopka.moce':
     'Available connection capacity for large consumers (hexagons, circles) and the sentence on capacity for new generators: PSE S.A., <a href="https://www.pse.pl/obszary-dzialalnosci/krajowy-system-elektroenergetyczny/informacja-o-dostepnosci-mocy-przylaczeniowej" target="_blank" rel="noopener">“Informacja o dostępności mocy przyłączeniowej do sieci przesyłowej”</a> (information on available connection capacity in the transmission grid), as of 31 Oct 2026, document retrieved 21 Nov 2026, processed (extract of the tables; we do not add up substation capacities). The operator\'s estimate, not a guarantee of connection.',
   'stopka.wykaz':

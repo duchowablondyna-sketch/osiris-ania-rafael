@@ -41,10 +41,11 @@ const GIBS_BLACK_MARBLE =
 const KAFELKI_NOC_U_NAS = `${location.origin}/kafelki/black-marble-2016/{z}/{y}/{x}.png`;
 
 // Tło satelitarne przetworzone, żeby dane mocniej się wyróżniały – opis w ZRODLA.md. Zmienia tylko obraz NASA,
-// nie kolory danych. Noc: tylko odbarwienie, bez przyciemniania – pomiar 20.11.2026: przyciemnione środki miast
-// stawały się szare i zbliżone jasnością do znaczków danych (niższy kontrast). Dzień: przyciemnione i odbarwione.
+// nie kolory danych. Noc: odbarwienie i światła przygaszone o 30% (jasność najwyżej 0,7 – wariant A, decyzja Ani
+// 23.11.2026: pełne światła konkurowały ze znaczkami; 20.11.2026 przyciemnianie było wyłączone, bo środki miast
+// zbliżały się jasnością do znaczków – przy 0,7 znaczki zostają wyraźnie jaśniejsze). Dzień: przyciemnione i odbarwione.
 const TLO_PRZETWORZENIE = {
-  noc: { 'raster-saturation': -0.3, 'raster-brightness-max': 1, 'raster-contrast': 0 },
+  noc: { 'raster-saturation': -0.3, 'raster-brightness-max': 0.7, 'raster-contrast': 0 },
   dzien: { 'raster-saturation': -0.5, 'raster-brightness-max': 0.7, 'raster-contrast': -0.1 },
 };
 
@@ -151,6 +152,10 @@ function odstepKadru() {
 // Kadr Polski: Polska w środku wolnej części ekranu (obok okienka), dokładnie „dopasuj do Polski”
 // (kulę pokazuje już lot na starcie). Odstęp zostaje zapamiętany w mapie, więc środek widoku to środek wolnej części ekranu.
 const ODDALENIE = 0;
+// Środek Polski lekko na prawo od środka okna – o tę część szerokości mapy, tak samo w PL i EN (decyzja Ani 23.11.2026;
+// wcześniej środek wolnej części ekranu: 6–8% w PL, 8–12% w EN). Wielkość Polski – jak dotąd (przybliżenie z odstępów
+// od okienek, odstepKadru). Sprawdzone 1920×1080, 1440×900, 1280×720: okna i legenda nie zasłaniają konturu Polski.
+const PRZESUNIECIE_KADRU = 0.05;
 const SRODEK_POLSKI = new maplibregl.LngLatBounds(GRANICE_POLSKI).getCenter();
 function kameraPolski() {
   const padding = odstepKadru();
@@ -160,7 +165,10 @@ function kameraPolski() {
   // o odstęp, więc bierzemy środek prostokąta Polski – a odstęp ustawia go w środku wolnej części ekranu.
   const kamera = map.cameraForBounds(GRANICE_POLSKI, { padding });
   if (!kamera) return null;
-  return { center: SRODEK_POLSKI, zoom: kamera.zoom - ODDALENIE, padding };
+  // Odstęp tylko z lewej, równy 2 × przesunięcie: środek wolnej części = środek okna + przesunięcie.
+  const szerokosc = document.getElementById('mapa').clientWidth;
+  const przesuniecie = { top: padding.top, bottom: padding.bottom, left: Math.round(2 * PRZESUNIECIE_KADRU * szerokosc), right: 0 };
+  return { center: SRODEK_POLSKI, zoom: kamera.zoom - ODDALENIE, padding: przesuniecie };
 }
 function ustawKadr() {
   const k = kameraPolski();
