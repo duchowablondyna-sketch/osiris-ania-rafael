@@ -407,7 +407,7 @@ export default {
   'stopka.tlo_noc':
     'Tło nocne: Black Marble (2016), Suomi NPP / VIIRS, NASA Earth Observatory.',
   'stopka.tla':
-    'Tła przetworzone, żeby dane były lepiej widoczne: dzienne przyciemnione i mniej nasycone, nocne mniej nasycone (bez przyciemniania).',
+    'Tła przetworzone, żeby dane były lepiej widoczne: dzienne przyciemnione i mniej nasycone, nocne mniej nasycone i przygaszone o 30%.',
   'stopka.moce':
     'Wolna moc dla odbiorców (sześciokąty, koła) i zdanie o mocy dla nowych źródeł: PSE S.A., <a href="https://www.pse.pl/obszary-dzialalnosci/krajowy-system-elektroenergetyczny/informacja-o-dostepnosci-mocy-przylaczeniowej" target="_blank" rel="noopener">„Informacja o dostępności mocy przyłączeniowej do sieci przesyłowej”</a>, stan na 31.10.2026, dokument pobrany 21.11.2026, przetworzone (wyciąg tabel; mocy stacji nie sumujemy). Szacunek operatora, nie gwarancja przyłączenia.',
   'stopka.wykaz':
