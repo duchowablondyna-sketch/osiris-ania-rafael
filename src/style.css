@@ -29,6 +29,10 @@
   --szklo-tlo-okienka: rgba(11, 18, 32, 0.86);
   --szklo-ramka: rgba(232, 238, 247, 0.12);
   --szklo-rozmycie: blur(14px) saturate(1.2);
+  /* Wysokość przycisku „↓ więcej poniżej” – czyta ją też JS (miejsce na przycisk pod treścią Karty i legendy). */
+  --wiecej-ponizej-wys: 22px;
+  /* Odstęp legendy od dołu mapy (miejsce na podpis atrybucji MapLibre) – czyta go też src/main.js. */
+  --legenda-od-dolu: 48px;
 }
 
 /* Odsłonięcie treści ukrytej przez styl w <head> (mapa/index.html) – dopiero gdy ten CSS jest wczytany.
@@ -234,9 +238,19 @@ main {
 
 .stopka__tresc {
   margin-top: 4px;
-  /* Rozwinięta treść nie zabiera całej strony – przewija się w stopce. */
+  /* Rozwinięta treść nie zabiera całej strony – przewija się w stopce (pod nią „↓ więcej poniżej”). */
   max-height: 40vh;
   overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.stopka__tresc:focus-visible {
+  outline: 2px solid var(--fokus);
+  outline-offset: -2px;
+}
+
+.stopka .wiecej-ponizej {
+  padding-left: 0;
 }
 
 .stopka a {
@@ -334,13 +348,29 @@ main {
   top: 80px;
   right: 10px;
   width: 300px;
-  /* Od góry 80 px (przełącznik, +/−), od dołu miejsce na podpis atrybucji MapLibre. */
-  max-height: calc(100% - 80px - 48px);
-  overflow: auto;
+  /* Od góry 80 px (przełącznik, +/−), od dołu miejsce na podpis atrybucji MapLibre.
+     Nagłówek stoi; przewija się tylko .legenda__tresc (wysokość ustawia src/main.js), pod nią „↓ więcej poniżej”. */
+  max-height: calc(100% - 80px - var(--legenda-od-dolu));
+  overflow: hidden;
   padding: 8px 12px;
   font-size: 0.8125rem;
   line-height: 1.35;
   border-radius: 10px;
+}
+
+.legenda__tresc {
+  max-height: var(--legenda-tresc-max, 50vh);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.legenda__tresc:focus-visible {
+  outline: 2px solid var(--fokus);
+  outline-offset: -2px;
+}
+
+.legenda .wiecej-ponizej {
+  padding-left: 0;
 }
 
 .legenda summary {
@@ -428,6 +458,46 @@ main {
   white-space: nowrap;
 }
 
+/* ── „↓ więcej poniżej” (src/wiecej-ponizej.js) – jeden sygnał dla każdego przewijanego miejsca na stronie:
+   okienko C, zakładki Karty Polski, legenda, stopka. Treść się nie mieści → od razu zanikanie u dołu i przycisk
+   pod spodem (Mac ukrywa paski przewijania). Bez animacji poza samym przewinięciem (przy „ogranicz ruch” – od razu). ── */
+.przewijane--wiecej {
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 32px), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 32px), transparent);
+}
+
+.wiecej-ponizej {
+  display: block;
+  box-sizing: border-box;
+  height: var(--wiecej-ponizej-wys);
+  margin: 0;
+  padding: 2px 12px 0;
+  font: inherit;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--zloto);
+  text-align: left;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.wiecej-ponizej[hidden] {
+  display: none;
+}
+
+.wiecej-ponizej:hover {
+  text-decoration: underline;
+}
+
+.wiecej-ponizej:focus-visible {
+  outline: 2px solid var(--fokus);
+  outline-offset: 1px;
+  border-radius: 3px;
+}
+
 /* ── Okienko C (src/okienko.js): jeden wzór dla całej mapy. Ciemne szkło, jasny tekst, złote narożniki.
    Zawsze na wierzchu (nad okienkiem PSE, Kartą Polski i legendą); środek przewija się, źródła przyklejone do dołu. ── */
 .okienko {
@@ -494,38 +564,9 @@ main {
   outline-offset: -2px;
 }
 
-/* Treść się nie mieści: zanikanie u dołu i napis – widoczne od razu (Mac ukrywa paski przewijania). */
-.okienko--wiecej .okienko__tresc {
-  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 32px), transparent);
-  mask-image: linear-gradient(to bottom, #000 calc(100% - 32px), transparent);
-}
-
-.okienko__wiecej {
-  display: none;
-  margin: 0;
-  padding: 2px 14px 0;
-  font: inherit;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--zloto);
-  text-align: left;
-  background: transparent;
-  border: 0;
-  cursor: pointer;
-}
-
-.okienko--wiecej .okienko__wiecej {
-  display: block;
-}
-
-.okienko__wiecej:hover {
-  text-decoration: underline;
-}
-
-.okienko__wiecej:focus-visible {
-  outline: 2px solid var(--fokus);
-  outline-offset: 1px;
-  border-radius: 3px;
+/* „↓ więcej poniżej” w okienku C: wyrównany do tekstu okienka. */
+.okienko .wiecej-ponizej {
+  padding-left: 14px;
 }
 
 /* Podpowiedź przy kursorze (np. „kliknij – szczegóły linii”): jedna linijka, nad wszystkim, nie łapie myszy. */
@@ -632,25 +673,21 @@ main {
   bottom: 56px;
   width: 420px;
   max-width: calc(100% - 32px);
-  /* Wysokość ustawia src/karta.js: rozwinięty panel kończy się pod okienkiem PSE (nie zasłania „Odtwórz dobę”). */
-  max-height: 40vh;
-  overflow: auto;
+  /* Nagłówek i zakładki stoją na stałe; przewija się tylko treść zakładki (.karta__tresc). Jej wysokość ustawia
+     src/karta.js: rozwinięty panel kończy się pod okienkiem PSE (nie zasłania „Odtwórz dobę”). */
+  overflow: hidden;
   font-size: 0.8125rem;
   line-height: 1.4;
   border-radius: 10px;
 }
 
 .karta__naglowek {
-  position: sticky;
-  top: 0;
-  z-index: 1;
   display: flex;
   gap: 10px;
   align-items: baseline;
   padding: 8px 12px;
   cursor: pointer;
   list-style: none;
-  background: inherit;
 }
 
 .karta__naglowek::-webkit-details-marker {
@@ -727,6 +764,9 @@ main {
 }
 
 .karta__tresc {
+  max-height: var(--karta-tresc-max, 30vh);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 8px 12px 10px;
 }
 
@@ -759,6 +799,29 @@ main {
   font-size: 2.5rem;
   font-weight: 600;
   line-height: 1;
+}
+
+/* Liczba-bohater to przycisk: najechanie / Tab – okienko Polski, kliknięcie – przypięte (src/karta.js). */
+button.karta__procent {
+  padding: 0;
+  font-family: var(--font-mono);
+  color: inherit;
+  background: none;
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: underline dotted 2px;
+  text-decoration-color: var(--szklo-ramka);
+  text-underline-offset: 6px;
+}
+
+button.karta__procent:hover {
+  text-decoration-color: currentColor;
+}
+
+button.karta__procent:disabled {
+  cursor: default;
+  text-decoration: none;
 }
 
 .karta__procent--wegiel {
@@ -1070,4 +1133,180 @@ button.panel-moce__nazwa:hover {
   @view-transition {
     navigation: none;
   }
+}
+
+/* ── Okienko Polski (src/karta.js): po najechaniu na dużą liczbę w Karcie Polski. Kolory jak w pasku panelu. ── */
+.okienko:has(.okienko-polski) {
+  max-width: min(300px, calc(100vw - 16px));
+}
+
+.okienko-polski__stan {
+  margin-top: 2px;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--tekst-pomocniczy);
+}
+
+.okienko-polski__plakietka {
+  margin: 8px 0 0;
+  font-size: 0.75rem;
+}
+
+/* Kolory kawałków: węgiel jak pasek panelu; OZE – odcienie zieleni (decyzja Ani 23.11.2026), każdy z podpisem. */
+.okienko-polski__kolor--kamienny { --k: var(--kolor-wegiel); }
+.okienko-polski__kolor--brunatny { --k: var(--kolor-brunatny); }
+.okienko-polski__kolor--oze { --k: var(--kolor-oze); }
+.okienko-polski__kolor--wiatr_lad { --k: var(--kolor-oze); }
+.okienko-polski__kolor--wiatr_morze { --k: #a7f3d0; }
+.okienko-polski__kolor--slonce { --k: #d9f99d; }
+.okienko-polski__kolor--woda { --k: #22c55e; }
+.okienko-polski__kolor--biomasa { --k: #15803d; }
+
+.karta__kolor[class*='okienko-polski__kolor--'] {
+  background: var(--k);
+}
+
+.okienko-polski__miks {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.okienko-polski__pierscien {
+  flex: none;
+  width: 84px;
+  height: 84px;
+}
+
+.okienko-polski__tor,
+.okienko-polski__luk {
+  fill: none;
+  stroke-width: 5;
+}
+
+.okienko-polski__tor {
+  stroke: rgba(232, 238, 247, 0.12);
+}
+
+.okienko-polski__luk {
+  stroke: var(--k);
+}
+
+.okienko-polski__srodek {
+  font-family: var(--font-mono);
+  font-size: 6.2px;
+  font-weight: 600;
+  fill: var(--tekst);
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.okienko-polski__lista {
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.75rem;
+}
+
+.okienko-polski__lista li {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.okienko-polski__lista li + li {
+  margin-top: 2px;
+}
+
+.okienko-polski__lista .karta__kolor {
+  flex: none;
+  margin-right: 0;
+}
+
+.okienko-polski__nazwa {
+  flex: 1;
+}
+
+.okienko-polski__razem {
+  padding-top: 3px;
+  margin-top: 4px !important;
+  font-weight: 600;
+  border-top: 1px solid var(--szklo-ramka);
+}
+
+.okienko-polski__razem .okienko-polski__nazwa {
+  padding-left: 16px;
+}
+
+.okienko-polski__co2 {
+  margin-top: 12px;
+}
+
+.okienko-polski__co2-tytul {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Pasek CO2 0–1500 g/kWh: od zieleni OZE do czerwieni węgla; kropka biała z ciemną obwódką – widoczna na każdym kolorze. */
+.okienko-polski__skala {
+  position: relative;
+  height: 8px;
+  margin: 8px 6px 0;
+  border-radius: 4px;
+  background: linear-gradient(to right, var(--kolor-oze), var(--kolor-wegiel));
+}
+
+.okienko-polski__kropka {
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  background: #fff;
+  border: 3px solid var(--tlo);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px #fff;
+  transform: translate(-50%, -50%);
+}
+
+.okienko-polski__krance {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+  font-size: 0.625rem;
+  color: var(--tekst-pomocniczy);
+}
+
+.okienko-polski__tu {
+  margin-top: 2px;
+  font-size: 0.75rem;
+}
+
+.okienko-polski__zdanie {
+  margin-top: 10px;
+  font-size: 0.6875rem;
+  color: var(--tekst-pomocniczy);
+}
+
+.okienko-polski__wiecej {
+  margin-top: 8px;
+  padding: 3px 10px;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--zloto);
+  background: transparent;
+  border: 1px solid var(--zloto);
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.okienko-polski__wiecej:hover {
+  background: rgba(242, 193, 78, 0.12);
+}
+
+.okienko-polski__wiecej:focus-visible {
+  outline: 2px solid var(--fokus);
+  outline-offset: 2px;
 }
