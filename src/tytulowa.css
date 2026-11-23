@@ -676,3 +676,116 @@ body.tytulowa {
 .bohater {
   min-height: calc(100vh - (0.8125rem * 1.4 + 17px));
 }
+
+/* ════ Telefon (do 640 px; decyzje Ani 23.11.2026) – komputer bez zmian ════
+   Pasek w dwóch rzędach: OSIRIS na środku, pod nim „Źródła i licencje” / „Opis ▾” z lewej i „PL | EN” z prawej; zegar
+   ukryty. Duży napis: pełna biel, grubsze litery, bez błysku; PL w jednej linii, EN w dwóch („ELECTRICITY” / „IN POLAND”).
+   Napis tuż pod paskiem, kula tuż pod napisem (mniej pustego nieba). Wysokość: dvh – na iPhonie pasek adresu Safari
+   nie zasłania dołu strony. Przyciski i linki co najmniej 44 px wysokości (wygodne dla palca). */
+.tytul__lamanie {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .gora {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    padding: 16px 16px 0;
+  }
+
+  .gora__logo {
+    position: static;
+    order: -1;
+    flex: 0 0 100%;
+    transform: none;
+    margin-bottom: 4px;
+    text-align: center;
+  }
+
+  .zegar {
+    display: none;
+  }
+
+  .rog {
+    gap: 0;
+  }
+
+  /* 44 px dla palca: 16 px linii + 2 × 14 px odstępu (inline-block – spacja w „OPIS ▾” zostaje). */
+  .rog__link,
+  .jezyki__link {
+    display: inline-block;
+    padding-top: 14px;
+    padding-bottom: 14px;
+    line-height: 16px;
+  }
+
+  .opis-panel {
+    width: calc(100vw - 32px);
+  }
+
+  .tytul {
+    padding: 8px 16px 0;
+  }
+
+  .bohater .tytul__nazwa {
+    top: 0;
+    margin-top: 12px;
+    padding-bottom: 0;
+    font-size: 7.4vw;
+    font-weight: 300;
+    line-height: 1.15;
+    letter-spacing: 0.14em;
+    padding-left: 0.14em;
+    white-space: normal;
+    animation: none;
+    color: var(--tekst);
+    background: none;
+  }
+
+  .bohater .tytul__nazwa:lang(en) {
+    font-size: 8.4vw;
+  }
+
+  .tytul__lamanie {
+    display: inline;
+  }
+
+  /* Kula wyżej: szczyt kuli = góra kontenera + 20,58 vh (kula 116 vh, promień 0,6451 × połowa) – ustawiamy go na
+     --szczyt-kuli od góry ekranu; poświata (środek kuli = góra kontenera + 58 vh) i plakat idą razem z nią. */
+  .bohater {
+    --szczyt-kuli: 215px;
+    min-height: calc(100dvh - (0.8125rem * 1.4 + 17px));
+    background:
+      radial-gradient(
+        circle farthest-side at 50% calc(var(--szczyt-kuli) + 37.42vh),
+        rgba(0, 212, 255, 0.42) 0,
+        rgba(0, 200, 250, 0.3) 40%,
+        rgba(0, 160, 230, 0.12) 56%,
+        rgba(0, 120, 200, 0.03) 70%,
+        rgba(5, 7, 13, 0) 86%
+      ),
+      var(--tlo);
+  }
+
+  .bohater:lang(en) {
+    --szczyt-kuli: 250px; /* napis w dwóch liniach */
+  }
+
+  #globus,
+  .globus-plakat {
+    top: calc(var(--szczyt-kuli) - 20.58vh);
+  }
+
+  /* Przycisk pod złotą kropką Polski (kropka ok. 90 px pod szczytem kuli), co najmniej 44 px wysokości. */
+  .bohater .przycisk--glowny {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin-top: 172px;
+  }
+
+  .bohater:lang(en) .przycisk--glowny {
+    margin-top: 166px;
+  }
+}
+
