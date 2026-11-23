@@ -7,12 +7,18 @@ import { dodajWarstweMocy } from './moce.js';
 import { utworzOkienka } from './okienko.js';
 import { uruchomKarte, podlaczOkienkoPolski } from './karta.js';
 import { wiecejPonizej, wysokoscPrzycisku } from './wiecej-ponizej.js';
+import { pamietajRozwiniecie, czytajRozwiniecie, zapiszRozwiniecie } from './zwijanie.js';
 import './czcionki.css';
 import './style.css';
 
 // Vite przepakowuje bibliotekę i gubi jej plik workera, więc podajemy adres wprost.
 // ?url sprawia, że Vite skopiuje ten plik do gotowej strony i zwróci jego adres.
 maplibregl.setWorkerUrl(workerUrl);
+
+// Tryb spokojny (decyzja Ani 23.11.2026): okienko PSE i Karta Polski startują zwinięte; rozwinięcie pamiętane tylko
+// w tej karcie przeglądarki (src/zwijanie.js). Legenda – „więcej ▸” niżej (pilnujLegendy).
+pamietajRozwiniecie(document.getElementById('okienko-pse'), 'okienko-pse');
+pamietajRozwiniecie(document.getElementById('karta'), 'karta');
 
 // Kontur Polski leży w public/data/ i jest serwowany razem ze stroną.
 const KONTUR_URL = `${import.meta.env.BASE_URL}data/polska-kontur.geojson`;
@@ -113,6 +119,17 @@ const GRANICE_POLSKI = [
 // żeby żadna farma ani linia nie była pod okienkiem. Na wąskim ekranie, gdzie to się
 // nie mieści, zostaje zwykły odstęp.
 const MARGINES = 24;
+// Okienko PSE liczymy zawsze w rozwiniętej szerokości – zwinięta linijka jest węższa, a kadr Polski ma być ten sam
+// co przed trybem spokojnym (mapa bez zmian, decyzja Ani 23.11.2026). Na chwilę pomiaru rozwijamy je i od razu zwijamy –
+// w tym samym kroku, bez rysowania, więc widz nic nie widzi.
+function krawedzRozwinietego(okno, prawaKrawedz) {
+  if (!okno || okno.open) return prawaKrawedz(okno);
+  okno.open = true;
+  const krawedz = prawaKrawedz(okno);
+  okno.open = false;
+  return krawedz;
+}
+
 // Z prawej: legenda (.legenda) – kadr Polski nie wchodzi pod nią.
 // Z lewej: szersze z dwóch – okienko PSE (góra) albo Karta Polski (dół); zwinięcie Karty nie rusza mapy.
 function odstepKadru() {
@@ -121,7 +138,7 @@ function odstepKadru() {
   const legenda = document.querySelector('.legenda');
   const szerokoscMapy = document.getElementById('mapa').clientWidth;
   const prawaKrawedz = (e) => (e ? e.offsetLeft + e.offsetWidth : 0);
-  const lewy = Math.max(prawaKrawedz(okno), prawaKrawedz(karta)) + MARGINES;
+  const lewy = Math.max(krawedzRozwinietego(okno, prawaKrawedz), prawaKrawedz(karta)) + MARGINES;
   const prawy = legenda ? szerokoscMapy - legenda.offsetLeft + MARGINES : MARGINES;
   if (lewy + prawy + 200 > szerokoscMapy) {
     // Za wąsko na oba odstępy: najpierw rezygnujemy z odstępu na legendę, potem na okienko.
@@ -827,6 +844,21 @@ function pilnujLegendy() {
   obserwator.observe(naglowek);
   dopasuj();
   wiecejPonizej(tresc);
+
+  // Tryb spokojny (wariant 3B): krótko – kolor i nazwa warstwy; „więcej ▸” dokłada liczniki, opisy, uwagi i skalę.
+  const przycisk = document.getElementById('legenda-wiecej');
+  if (!przycisk) return;
+  const ustaw = (pelna) => {
+    legenda.classList.toggle('legenda--pelna', pelna);
+    przycisk.setAttribute('aria-expanded', String(pelna));
+    przycisk.textContent = t(pelna ? 'leg.mniej' : 'leg.wiecej');
+  };
+  ustaw(czytajRozwiniecie('legenda-wiecej'));
+  przycisk.addEventListener('click', () => {
+    const pelna = !legenda.classList.contains('legenda--pelna');
+    ustaw(pelna);
+    zapiszRozwiniecie('legenda-wiecej', pelna);
+  });
 }
 pilnujLegendy();
 
@@ -847,8 +879,11 @@ function pokazWiatr(d) {
     ograniczenie.textContent = t('mapa.ograniczenie_brak');
   }
   const wartosc = document.getElementById('wiatr-teraz');
+  const skrot = document.getElementById('pse-skrot');
   wartosc.classList.toggle('brak-danych', typeof d?.wartosc !== 'number');
+  skrot.classList.toggle('brak-danych', typeof d?.wartosc !== 'number');
   if (typeof d?.wartosc !== 'number') {
+    skrot.textContent = t('mapa.pse_skrot_brak');
     wartosc.textContent = t('wspolne.brak_danych_pse');
     document.getElementById('wiatr-stan').textContent = '';
     document.getElementById('wiatr-wykres').replaceChildren();
@@ -856,6 +891,9 @@ function pokazWiatr(d) {
   }
   document.getElementById('wiatr-teraz').textContent = `${liczba(Math.round(d.wartosc))} ${d.jednostka}`;
   document.getElementById('wiatr-stan').textContent = t('mapa.wiatr_stan', formatDoby(d.doba), d.okres);
+  // Zwinięta linijka: tylko wiatr i jego własny kwadrans (data – gdy pomiar nie jest z dziś).
+  const okres = String(d.okres ?? '').replace(' - ', '–');
+  skrot.textContent = t('mapa.pse_skrot', `${liczba(Math.round(d.wartosc))} ${d.jednostka}`, d.doba === dzisPL() ? okres : `${formatDoby(d.doba)}, ${okres}`);
   rysujWykres(document.getElementById('wiatr-wykres'), d.seria);
 }
 
@@ -980,6 +1018,10 @@ document.addEventListener('visibilitychange', () => {
   if (document.hidden && odtwarzanie?.raf) startLubPauza();
 });
 przyciskTeraz.addEventListener('click', () => wrocDoTeraz());
+// Zwinięcie okienka w trakcie odtwarzania doby kończy je i wraca do „teraz” (decyzja Ani 23.11.2026).
+okienko.addEventListener('toggle', () => {
+  if (!okienko.open && odtwarzanie) wrocDoTeraz();
+});
 
 const dobaGotowa = fetch(`${import.meta.env.BASE_URL}data/doba.json`, { cache: 'no-store' })
   .then((odp) => (odp.ok ? odp.json() : null))

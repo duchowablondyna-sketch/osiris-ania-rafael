@@ -143,6 +143,65 @@ main {
   border-radius: 10px;
 }
 
+/* Tryb spokojny (decyzja Ani 23.11.2026): okienko startuje zwinięte do jednej linijki
+   „WIATR I CENA PRĄDU  Wiatr … · stan na … · PSE ▸” (złoty tytuł jak „KARTA POLSKI”; cała linijka klikalna, Enter /
+   spacja z klawiatury); rozwinięte – jak dotąd, z nagłówkiem „WIATR I CENA PRĄDU ▾”. Ten sam wzór co nagłówek Karty. */
+.wskaznik:not([open]) {
+  padding: 8px 12px;
+}
+
+.wskaznik__naglowek {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  cursor: pointer;
+  list-style: none;
+}
+
+.wskaznik[open] > .wskaznik__naglowek {
+  margin-bottom: 6px;
+}
+
+.wskaznik__naglowek::-webkit-details-marker {
+  display: none;
+}
+
+.wskaznik__naglowek::after {
+  margin-left: auto;
+  content: '▸';
+  color: var(--zloto); /* złota strzałka – od razu widać, że okno się rozwija (decyzja Ani 23.11.2026) */
+}
+
+.wskaznik[open] > .wskaznik__naglowek::after {
+  content: '▾';
+}
+
+.wskaznik__naglowek:focus-visible {
+  outline: 2px solid var(--fokus);
+  outline-offset: 3px;
+}
+
+.wskaznik__tytul {
+  flex-shrink: 0;
+  white-space: nowrap;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--zloto);
+}
+
+.wskaznik__skrot {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.75rem;
+  color: var(--tekst);
+}
+
+.wskaznik[open] .wskaznik__skrot {
+  display: none;
+}
+
 /* Atrybut hidden ma wygrać z display: block (np. ograniczenie wiatru ukryte w trakcie odtwarzania doby). */
 .wskaznik [hidden] {
   display: none;
@@ -460,6 +519,47 @@ main {
   color: var(--tekst-pomocniczy);
 }
 
+/* Tryb spokojny (decyzja Ani 23.11.2026, wariant 3B): na starcie tylko pole wyboru, znaczek i nazwa warstwy + linijka
+   źródeł; „więcej ▸” (klasa legenda--pelna, src/main.js) pokazuje liczniki, opisy, uwagi i skalę – jak dotąd. */
+.legenda:not(.legenda--pelna) .legenda__licznik,
+.legenda:not(.legenda--pelna) .legenda__opis,
+.legenda:not(.legenda--pelna) .legenda__uwaga:not(.legenda__zrodla),
+.legenda:not(.legenda--pelna) .legenda__skala,
+.legenda:not(.legenda--pelna) .legenda__tresc > .tylko-czytnik,
+.legenda--pelna .legenda__zrodla {
+  display: none;
+}
+
+.legenda__wiecej {
+  display: block;
+  margin: 8px 0 0;
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  color: var(--zloto); /* „więcej ▸” na złoto – od razu widać, że jest co rozwinąć (decyzja Ani 23.11.2026) */
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.legenda__wiecej::after {
+  content: ' ▸';
+}
+
+.legenda__wiecej[aria-expanded='true']::after {
+  content: ' ▾';
+}
+
+.legenda__wiecej:hover {
+  color: var(--tekst);
+}
+
+.legenda__wiecej:focus-visible {
+  outline: 2px solid var(--fokus);
+  outline-offset: 2px;
+}
+
 .legenda__skala {
   display: flex;
   align-items: center;
@@ -721,7 +821,7 @@ main {
 .karta__naglowek::after {
   margin-left: auto;
   content: '▸';
-  color: var(--tekst-pomocniczy);
+  color: var(--zloto); /* złota strzałka – od razu widać, że okno się rozwija (decyzja Ani 23.11.2026) */
 }
 
 .karta[open] > .karta__naglowek::after {
@@ -729,6 +829,8 @@ main {
 }
 
 .karta__tytul {
+  flex-shrink: 0; /* zwinięta linijka z długim skrótem: łamie się skrót, nie „KARTA POLSKI” (23.11.2026) */
+  white-space: nowrap;
   font-size: 0.6875rem;
   font-weight: 600;
   letter-spacing: 0.1em;

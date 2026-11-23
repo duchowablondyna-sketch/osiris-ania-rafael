@@ -40,7 +40,13 @@
     <main>
       <div id="mapa" aria-label="{{mapa.aria_mapa}}"></div>
 
-      <section class="wskaznik" aria-live="polite">
+      <!-- Okienko PSE – tryb spokojny (decyzja Ani 23.11.2026): startuje zwinięte do jednej linijki (wiatr, stan na, PSE);
+           po rozwinięciu – jak dotąd, z nagłówkiem do zwijania. Pamiętanie rozwinięcia: src/zwijanie.js. -->
+      <details class="wskaznik" id="okienko-pse" aria-live="polite">
+        <summary class="wskaznik__naglowek">
+          <span class="wskaznik__tytul">{{mapa.pse_tytul}}</span>
+          <span class="wskaznik__skrot" id="pse-skrot">{{wspolne.wczytywanie}}</span>
+        </summary>
         <div id="odtw-naglowek" hidden>
           <span class="odtw-data" id="odtw-data"></span>
           <span class="odtw-zegar" id="odtw-zegar"></span>
@@ -58,7 +64,7 @@
         </div>
         <span class="wskaznik__etykieta" id="odtw-stan"></span>
         <p class="zrodlo" id="pse-zrodlo"><span class="zrodlo__etykieta">{{wspolne.zrodlo}}</span> <span id="pse-zrodlo-tekst">PSE · {{wspolne.wczytywanie}}</span></p>
-      </section>
+      </details>
       <!-- Ogłoszenia odtwarzania dla czytnika ekranu (start, pauza, koniec) – okienko na ten czas milknie. -->
       <span id="odtw-ogloszenie" class="tylko-czytnik" aria-live="polite"></span>
 
@@ -79,28 +85,28 @@
         <ul>
           <li><label><input type="checkbox" data-warstwa="moce" checked />
             <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><polygon points="12,0.7 18.3,4.35 18.3,11.65 12,15.3 5.7,11.65 5.7,4.35" fill="none" stroke="#05070d" stroke-width="2.6" /><polygon points="12,0.7 18.3,4.35 18.3,11.65 12,15.3 5.7,11.65 5.7,4.35" fill="none" stroke="#2dd4bf" stroke-width="1.3" stroke-dasharray="1.8 1.3" /><polygon points="12,3.6 15.8,5.8 15.8,10.2 12,12.4 8.2,10.2 8.2,5.8" fill="#2dd4bf" stroke="#05070d" stroke-width="1" /></svg>
-            <span><strong>{{leg.moce}}</strong> <span class="legenda__licznik" data-licznik="moce">{{wspolne.wczytywanie}}</span> {{leg.moce_opis}} <svg class="znak-maly" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="rgba(45,212,191,0.18)" stroke="#2dd4bf" stroke-width="1.2" stroke-dasharray="2.5 1.6" /></svg> {{leg.moce_kolo}} <svg class="znak-maly" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><polygon points="8,1.5 13.6,4.75 13.6,11.25 8,14.5 2.4,11.25 2.4,4.75" fill="#05070d" stroke="rgba(45,212,191,0.9)" stroke-width="1.4" /></svg> {{leg.moce_pusty}}</span></label></li>
+            <span><strong>{{leg.moce}}</strong> <span class="legenda__licznik" data-licznik="moce">{{wspolne.wczytywanie}}</span> <span class="legenda__opis">{{leg.moce_opis}} <svg class="znak-maly" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="rgba(45,212,191,0.18)" stroke="#2dd4bf" stroke-width="1.2" stroke-dasharray="2.5 1.6" /></svg> {{leg.moce_kolo}} <svg class="znak-maly" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><polygon points="8,1.5 13.6,4.75 13.6,11.25 8,14.5 2.4,11.25 2.4,4.75" fill="#05070d" stroke="rgba(45,212,191,0.9)" stroke-width="1.4" /></svg> {{leg.moce_pusty}}</span></span></label></li>
           <li><label><input type="checkbox" data-warstwa="linie" checked />
             <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><line x1="1" y1="8" x2="23" y2="8" stroke="#05070d" stroke-width="5" /><line x1="1" y1="8" x2="23" y2="8" stroke="#f2c14e" stroke-width="3" /></svg>
-            <span><strong>{{leg.linie}}</strong> <span class="legenda__licznik" data-licznik="linie">{{wspolne.wczytywanie}}</span> {{leg.linie_opis}}</span></label></li>
+            <span><strong>{{leg.linie}}</strong> <span class="legenda__licznik" data-licznik="linie">{{wspolne.wczytywanie}}</span> <span class="legenda__opis">{{leg.linie_opis}}</span></span></label></li>
           <li><label><input type="checkbox" data-warstwa="morskie" checked />
             <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><circle cx="7" cy="8" r="5" fill="#5cc8ff" stroke="#05070d" stroke-width="1.5" /><circle cx="18" cy="8" r="4.5" fill="none" stroke="#5cc8ff" stroke-width="2" /></svg>
-            <span><strong>{{leg.morskie}}</strong> <span class="legenda__licznik" data-licznik="morskie">{{wspolne.wczytywanie}}</span> {{leg.morskie_opis}}</span></label></li>
+            <span><strong>{{leg.morskie}}</strong> <span class="legenda__licznik" data-licznik="morskie">{{wspolne.wczytywanie}}</span> <span class="legenda__opis">{{leg.morskie_opis}}</span></span></label></li>
           <li><label><input type="checkbox" data-warstwa="ladowe" checked />
             <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><circle cx="7" cy="8" r="4" fill="#4ade80" stroke="#05070d" stroke-width="1.5" /><circle cx="18" cy="8" r="4.5" fill="#05070d" stroke="#4ade80" stroke-width="2" /><circle cx="18" cy="8" r="1.5" fill="#4ade80" /></svg>
-            <span><strong>{{leg.ladowe}}</strong> <span class="legenda__licznik" data-licznik="ladowe">{{wspolne.wczytywanie}}</span> {{leg.ladowe_opis}}</span></label></li>
+            <span><strong>{{leg.ladowe}}</strong> <span class="legenda__licznik" data-licznik="ladowe">{{wspolne.wczytywanie}}</span> <span class="legenda__opis">{{leg.ladowe_opis}}</span></span></label></li>
           <li><label><input type="checkbox" data-warstwa="wegiel" checked />
             <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><rect x="6" y="2" width="12" height="12" style="fill: var(--kolor-wegiel)" stroke="#05070d" stroke-width="1.5" /></svg>
-            <span><strong>{{leg.wegiel}}</strong> <span class="legenda__licznik" data-licznik="wegiel">{{wspolne.wczytywanie}}</span> {{leg.kwadrat}}</span></label></li>
+            <span><strong>{{leg.wegiel}}</strong> <span class="legenda__licznik" data-licznik="wegiel">{{wspolne.wczytywanie}}</span> <span class="legenda__opis">{{leg.kwadrat}}</span></span></label></li>
           <li><label><input type="checkbox" data-warstwa="gaz" checked />
             <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><rect x="6" y="2" width="12" height="12" style="fill: var(--kolor-gaz)" stroke="#05070d" stroke-width="1.5" /></svg>
-            <span><strong>{{leg.gaz}}</strong> <span class="legenda__licznik" data-licznik="gaz">{{wspolne.wczytywanie}}</span> {{leg.kwadrat}}</span></label></li>
+            <span><strong>{{leg.gaz}}</strong> <span class="legenda__licznik" data-licznik="gaz">{{wspolne.wczytywanie}}</span> <span class="legenda__opis">{{leg.kwadrat}}</span></span></label></li>
           <li><label><input type="checkbox" data-warstwa="woda" checked />
             <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><circle cx="12" cy="8" r="6" style="fill: var(--kolor-woda)" stroke="#05070d" stroke-width="1.5" /></svg>
             <span><strong>{{leg.woda}}</strong> <span class="legenda__licznik" data-licznik="woda">{{wspolne.wczytywanie}}</span></span></label></li>
           <li><label><input type="checkbox" data-warstwa="pompowa" checked />
             <svg class="znak" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true"><polygon points="12,1 19,8 12,15 5,8" style="fill: var(--kolor-woda)" stroke="#05070d" stroke-width="1.5" /></svg>
-            <span><strong>{{leg.pompowa}}</strong> <span class="legenda__licznik" data-licznik="pompowa">{{wspolne.wczytywanie}}</span> {{leg.pompowa_opis}}</span></label></li>
+            <span><strong>{{leg.pompowa}}</strong> <span class="legenda__licznik" data-licznik="pompowa">{{wspolne.wczytywanie}}</span> <span class="legenda__opis">{{leg.pompowa_opis}}</span></span></label></li>
         </ul>
         <p class="legenda__uwaga legenda__uwaga--moce" id="legenda-moce-zrodla">{{moce.zrodla_etykieta}} {{wspolne.wczytywanie}}</p>
         <p class="legenda__uwaga">{{leg.elektrownie_uwaga}}</p>
@@ -112,12 +118,17 @@
           <svg viewBox="0 0 28 28" width="28" height="28"><rect x="1.65" y="1.65" width="24.7" height="24.7" fill="#a9b7cc" stroke="#05070d" stroke-width="1" /></svg><span>{{leg.skala_5000}}</span>
         </div>
         <p class="tylko-czytnik">{{leg.wzorce}}</p>
+        <!-- Tryb spokojny (decyzja Ani 23.11.2026, wariant 3B): od razu kolor i nazwa warstwy (pola wyboru działają);
+             liczniki, opisy, uwagi i skala – po „więcej ▸” (src/main.js, klasa legenda--pelna). -->
+        <p class="legenda__uwaga legenda__zrodla">{{leg.zrodla}}</p>
+        <button type="button" class="legenda__wiecej" id="legenda-wiecej" aria-expanded="false">{{leg.wiecej}}</button>
         </div>
       </details>
 
-      <!-- Karta Polski (panel B, wariant B – decyzja Ani 21.11.2026): lewy dolny róg, nad „← OSIRIS”, zwijany,
-           rozwinięty na starcie. 4 zakładki; na starcie „Ile i jak czysto” (src/karta.js, napisy: src/karta-teksty.js). -->
-      <details class="karta" id="karta" open>
+      <!-- Karta Polski (panel B, wariant B – decyzja Ani 21.11.2026): lewy dolny róg, nad „← OSIRIS”, zwijany;
+           tryb spokojny (decyzja Ani 23.11.2026): zwinięty na starcie do linijki „XX% z … · PSE, stan na …”.
+           4 zakładki; po rozwinięciu „Ile i jak czysto” (src/karta.js, napisy: src/karta-teksty.js). -->
+      <details class="karta" id="karta">
         <summary class="karta__naglowek">
           <span class="karta__tytul">{{karta.tytul}}</span>
           <span class="karta__skrot" id="karta-skrot">{{wspolne.wczytywanie}}</span>

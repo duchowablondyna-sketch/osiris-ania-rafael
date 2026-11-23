@@ -114,6 +114,9 @@ export default {
   // ── Okienko PSE ──
   'mapa.wiatr_etykieta': 'Wind generation (latest available measurement):',
   'mapa.wiatr_stan': (doba, okres) => `as of: ${doba}, ${okres}`,
+  'mapa.pse_tytul': 'Wind and electricity price',
+  'mapa.pse_skrot': (mw, kiedy) => `Wind ${mw} · as of ${kiedy} · PSE`,
+  'mapa.pse_skrot_brak': 'Wind: no PSE data',
   'mapa.ograniczenie_etykieta': 'Latest PSE order to curtail wind:',
   'mapa.ograniczenie': (doba, mwh) => `Latest PSE order to curtail wind: ${doba} – approx. ${mwh} MWh`,
   'mapa.ograniczenie_brak': 'Latest PSE order to curtail wind: no PSE data',
@@ -150,6 +153,9 @@ export default {
 
   // ── Legenda ──
   'leg.tytul': 'What the markers mean',
+  'leg.zrodla': 'Sources: GEM · OpenStreetMap · EMODnet · PSE',
+  'leg.wiecej': 'more',
+  'leg.mniej': 'less',
   'leg.moce': 'Available connection capacity for large consumers (PSE)',
   'leg.moce_opis': '– extra-high-voltage grid (220/400 kV), for the largest consumers; hexagon: planned substation with available capacity;',
   'leg.moce_kolo': 'circle: approximate location;',
@@ -357,6 +363,7 @@ export default {
   'karta.krotko_oze': 'from renewables',
   'karta.krotko_wegiel': 'from coal',
   'karta.stan': (stan) => `as of ${stan}`,
+  'karta.skrot': (co, stan) => `${co} · PSE, as of ${stan}`,
   'karta.opublikowalo': (kiedy) => ` · published by PSE at ${kiedy}`,
   'karta.podpis': (stan) => `of generation in Poland · ${stan}`,
   'karta.co2_wartosc': (g) => `approx. ${g} g CO₂eq/kWh`,

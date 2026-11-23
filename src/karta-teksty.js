@@ -179,7 +179,7 @@ export function tekstyKarty(karta, rce, teraz = Date.now()) {
   return {
     ok: true,
     plakietka,
-    skrot: `${bohater.procent} ${bohater.krotko} · ${t('karta.stan', stan)}`,
+    skrot: t('karta.skrot', `${bohater.procent} ${bohater.krotko}`, stan),
     bohater,
     podpis,
     pasek,
