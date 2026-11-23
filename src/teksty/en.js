@@ -65,6 +65,8 @@ export default {
   'tytulowa.opis':
     'See in one place where Poland gets its electricity and what it costs. Power plants, onshore and Baltic offshore wind farms, extra-high-voltage lines, wind generation and the energy price hour by hour. Everything from official, public sources, with a date next to every number. For boards and investors who ask: where and how can we get more power?',
   'tytulowa.czas_warszawa': 'WARSAW TIME',
+  // Duży napis (wersja 3, decyzja Ani 23.11.2026) – zwykła pisownia; wielkie litery robi CSS.
+  'tytulowa.nazwa': 'Electricity in Poland',
   'tytulowa.haslo': "THE HEART OF POLAND'S POWER DATA.",
   'tytulowa.otworz_mape': 'OPEN MAP →',
   'tytulowa.wegiel_nazwa': 'COAL POWER PLANTS',
