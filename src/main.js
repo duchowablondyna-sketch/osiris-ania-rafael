@@ -7,7 +7,7 @@ import { dodajWarstweMocy } from './moce.js';
 import { utworzOkienka } from './okienko.js';
 import { uruchomKarte, podlaczOkienkoPolski } from './karta.js';
 import { wiecejPonizej, wysokoscPrzycisku } from './wiecej-ponizej.js';
-import { pamietajRozwiniecie, czytajRozwiniecie, zapiszRozwiniecie } from './zwijanie.js';
+import { pamietajRozwiniecie, czytajRozwiniecie, zapiszRozwiniecie, TELEFON } from './zwijanie.js';
 import './czcionki.css';
 import './style.css';
 
@@ -19,6 +19,25 @@ maplibregl.setWorkerUrl(workerUrl);
 // w tej karcie przeglądarki (src/zwijanie.js). Legenda – „więcej ▸” niżej (pilnujLegendy).
 pamietajRozwiniecie(document.getElementById('okienko-pse'), 'okienko-pse');
 pamietajRozwiniecie(document.getElementById('karta'), 'karta');
+
+// Telefon (decyzje Ani 23.11.2026): okienko PSE, Karta i legenda to przyciski przy lewej krawędzi; na starcie wszystko
+// zwinięte (także legenda, która na komputerze stoi otwarta); rozwinięte – panel od dołu (src/style.css), tylko jeden
+// naraz; Esc zwija otwarty panel.
+const OKNA_TELEFONU = ['okienko-pse', 'karta'].map((id) => document.getElementById(id)).concat(document.querySelector('.legenda'));
+if (TELEFON.matches) {
+  const legenda = document.querySelector('.legenda');
+  if (legenda) legenda.open = false;
+}
+for (const okno of OKNA_TELEFONU) {
+  okno?.addEventListener('toggle', () => {
+    if (!TELEFON.matches || !okno.open) return;
+    for (const inne of OKNA_TELEFONU) if (inne && inne !== okno && inne.open) inne.open = false;
+  });
+}
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Escape' || !TELEFON.matches) return;
+  for (const okno of OKNA_TELEFONU) if (okno?.open) okno.open = false;
+});
 
 // Kontur Polski leży w public/data/ i jest serwowany razem ze stroną.
 const KONTUR_URL = `${import.meta.env.BASE_URL}data/polska-kontur.geojson`;
@@ -134,6 +153,15 @@ function krawedzRozwinietego(okno, prawaKrawedz) {
 // Z prawej: legenda (.legenda) – kadr Polski nie wchodzi pod nią.
 // Z lewej: szersze z dwóch – okienko PSE (góra) albo Karta Polski (dół); zwinięcie Karty nie rusza mapy.
 function odstepKadru() {
+  // Telefon: Polska na środku między przyciskami okien (lewa góra) a „← OSIRIS” (dół), bez przesunięcia w prawo.
+  if (TELEFON.matches) {
+    const mapa = document.getElementById('mapa');
+    const przyciski = OKNA_TELEFONU.filter(Boolean).map((e) => e.getBoundingClientRect().bottom);
+    const gora = Math.max(...przyciski) - mapa.getBoundingClientRect().top + 16;
+    const powrot = document.querySelector('.powrot');
+    const dol = powrot ? mapa.getBoundingClientRect().bottom - powrot.getBoundingClientRect().top + 12 : MARGINES;
+    return { top: Math.round(gora), right: 12, bottom: Math.round(dol), left: 12 };
+  }
   const okno = document.querySelector('.wskaznik');
   const karta = document.querySelector('.karta');
   const legenda = document.querySelector('.legenda');
@@ -167,6 +195,7 @@ function kameraPolski() {
   if (!kamera) return null;
   // Odstęp tylko z lewej, równy 2 × przesunięcie: środek wolnej części = środek okna + przesunięcie.
   const szerokosc = document.getElementById('mapa').clientWidth;
+  if (TELEFON.matches) return { center: SRODEK_POLSKI, zoom: kamera.zoom - ODDALENIE, padding }; // telefon – na środku
   const przesuniecie = { top: padding.top, bottom: padding.bottom, left: Math.round(2 * PRZESUNIECIE_KADRU * szerokosc), right: 0 };
   return { center: SRODEK_POLSKI, zoom: kamera.zoom - ODDALENIE, padding: przesuniecie };
 }
@@ -844,7 +873,10 @@ function pilnujLegendy() {
     const odDolu = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--legenda-od-dolu')) || 0;
     const odstepy = parseFloat(styl.paddingTop) + parseFloat(styl.paddingBottom) + parseFloat(styl.borderTopWidth) + parseFloat(styl.borderBottomWidth);
     const marginesTresci = parseFloat(getComputedStyle(tresc).marginTop) || 0;
-    const miejsce = main.clientHeight - legenda.offsetTop - odDolu - odstepy - naglowek.offsetHeight - marginesTresci - wysokoscPrzycisku();
+    // Telefon: panel od dołu ma najwyżej 70% wysokości ekranu (src/style.css) – treść przewija się w nim.
+    const miejsce = TELEFON.matches
+      ? Math.round(window.innerHeight * 0.7) - odstepy - naglowek.offsetHeight - marginesTresci - wysokoscPrzycisku()
+      : main.clientHeight - legenda.offsetTop - odDolu - odstepy - naglowek.offsetHeight - marginesTresci - wysokoscPrzycisku();
     legenda.style.setProperty('--legenda-tresc-max', `${Math.max(60, miejsce)}px`);
   };
   const obserwator = new ResizeObserver(dopasuj);
@@ -901,7 +933,8 @@ function pokazWiatr(d) {
   document.getElementById('wiatr-stan').textContent = t('mapa.wiatr_stan', formatDoby(d.doba), d.okres);
   // Zwinięta linijka: tylko wiatr i jego własny kwadrans (data – gdy pomiar nie jest z dziś).
   const okres = String(d.okres ?? '').replace(' - ', '–');
-  skrot.textContent = t('mapa.pse_skrot', `${liczba(Math.round(d.wartosc))} ${d.jednostka}`, d.doba === dzisPL() ? okres : `${formatDoby(d.doba)}, ${okres}`);
+  const kiedy = d.doba === dzisPL() ? okres : `${formatDoby(d.doba)}, ${okres}`;
+  skrot.textContent = t('mapa.pse_skrot', `${liczba(Math.round(d.wartosc))} ${d.jednostka}`, kiedy);
   rysujWykres(document.getElementById('wiatr-wykres'), d.seria);
 }
 

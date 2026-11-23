@@ -5,6 +5,10 @@
 // Gdy przeglądarka nie pozwala zapisywać (tryb prywatny, blokada) – zawsze start zwinięty, bez błędu.
 const PREFIKS = 'osiris.mapa.';
 
+// Telefon (do 640 px – ta sama granica co @media w src/style.css): okna są przyciskami przy lewej krawędzi, a rozwinięte
+// – panelem od dołu, jeden naraz; na starcie zawsze wszystko zwinięte (decyzja Ani 23.11.2026).
+export const TELEFON = window.matchMedia('(max-width: 640px)');
+
 export function czytajRozwiniecie(klucz) {
   try {
     return window.sessionStorage.getItem(PREFIKS + klucz) === '1';
@@ -21,10 +25,10 @@ export function zapiszRozwiniecie(klucz, otwarte) {
   }
 }
 
-// <details> bez atrybutu open w szablonie (start zwinięty); tu: otwarcie, jeśli widz rozwinął je wcześniej w tej karcie,
-// i zapamiętywanie każdej zmiany (kliknięcie, Enter, spacja na nagłówku).
+// <details> bez atrybutu open w szablonie (start zwinięty); tu: otwarcie, jeśli widz rozwinął je wcześniej w tej karcie
+// (tylko na komputerze – telefon zawsze startuje zwinięty), i zapamiętywanie każdej zmiany (kliknięcie, Enter, spacja).
 export function pamietajRozwiniecie(details, klucz) {
   if (!details) return;
-  details.open = czytajRozwiniecie(klucz);
+  details.open = !TELEFON.matches && czytajRozwiniecie(klucz);
   details.addEventListener('toggle', () => zapiszRozwiniecie(klucz, details.open));
 }

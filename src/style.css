@@ -1557,3 +1557,208 @@ button.panel-moce__nazwa:hover {
   outline: 2px solid var(--fokus);
   outline-offset: 2px;
 }
+
+/* ════ Mapa na telefonie (do 640 px; decyzje Ani 23.11.2026) – komputer bez zmian ════
+   Na starcie wszystko zwinięte, cała Polska na środku. Okienko PSE, Karta Polski i legenda to przyciski przy lewej
+   krawędzi (ich własne nagłówki – sam złoty podpis i ▸, wariant A; min. 44 px); dotknięcie otwiera panel od dołu (max 70% ekranu, ▾ do zamknięcia,
+   treść przewija się w środku, jeden panel naraz – src/main.js). PL | EN i DZIEŃ | NOC u góry po prawej, + / − ukryte
+   (przybliżanie palcami). Kadr: src/main.js (odstepKadru). */
+@media (max-width: 640px) {
+  :root {
+    --przycisk-okna: 44px;
+  }
+
+  .mapa-gora {
+    top: 10px;
+    right: 12px;
+  }
+
+  .maplibregl-ctrl-top-right {
+    display: none;
+  }
+
+  .mapa-gora .przelacznik button,
+  .mapa-gora .przelacznik__opcja {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  /* ── Przyciski przy lewej krawędzi (okna zwinięte) ── */
+  .wskaznik:not([open]),
+  .karta:not([open]),
+  .legenda:not([open]) {
+    position: absolute;
+    right: auto;
+    bottom: auto;
+    left: 12px;
+    width: max-content;
+    max-width: calc(100% - 24px);
+    max-height: none;
+    padding: 0;
+    border-radius: 10px;
+  }
+
+  .wskaznik:not([open]) {
+    top: 70px;
+  }
+
+  .karta:not([open]) {
+    top: calc(70px + var(--przycisk-okna) + 8px);
+  }
+
+  .legenda:not([open]) {
+    top: calc(70px + 2 * (var(--przycisk-okna) + 8px));
+  }
+
+  /* Nagłówki okien: złoty tytuł, strzałka po prawej. */
+  .wskaznik__naglowek,
+  .karta__naglowek,
+  .legenda > summary {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    column-gap: 12px;
+    align-content: center;
+    box-sizing: border-box;
+    min-height: var(--przycisk-okna);
+    padding: 0 12px;
+  }
+
+  .wskaznik__naglowek::after,
+  .karta__naglowek::after,
+  .legenda > summary::after {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+    margin-left: 0;
+  }
+
+
+  .wskaznik__skrot,
+  .karta__skrot {
+    display: none;
+  }
+
+  .legenda > summary {
+    list-style: none;
+    font-weight: 600;
+    color: var(--zloto);
+  }
+
+  .legenda > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .legenda > summary::after {
+    content: '▸';
+    color: var(--zloto);
+  }
+
+  .legenda[open] > summary::after {
+    content: '▾';
+  }
+
+  /* ── Panel od dołu (okno rozwinięte) ── */
+  .wskaznik[open],
+  .karta[open],
+  .legenda[open] {
+    position: fixed;
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 25;
+    width: auto;
+    max-width: none;
+    max-height: 70dvh;
+    border-bottom: 0;
+    border-radius: 14px 14px 0 0;
+  }
+
+  .wskaznik[open] {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 0 16px calc(16px + env(safe-area-inset-bottom));
+  }
+
+  /* Nagłówek panelu PSE stoi przy przewijaniu (pełne tło – treść nie prześwituje). */
+  .wskaznik[open] > .wskaznik__naglowek {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    margin: 0 -16px 6px;
+    padding: 0 16px;
+    background: rgba(11, 18, 32, 0.97);
+  }
+
+  .karta[open] {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .legenda[open] {
+    padding: 0 12px calc(8px + env(safe-area-inset-bottom));
+  }
+
+  .legenda__wiecej {
+    min-height: 44px;
+  }
+
+  /* Pod palec w panelach: wszystko, co się klika, co najmniej 44 px wysokości. */
+  .legenda li label {
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .odtw-przyciski button,
+  .karta__zakladki button,
+  .karta__procent,
+  .karta[open] details > summary,
+  .wiecej-ponizej {
+    box-sizing: border-box;
+    min-height: 44px;
+  }
+
+  .karta[open] details > summary {
+    display: flex;
+    align-items: center;
+  }
+
+  .karta__zakladki button,
+  .wiecej-ponizej {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* „?” stoi w zdaniu, ✕ w rogu okienka – zamiast je powiększać, dostają niewidoczne pole dotyku 44 × 44 px. */
+  .karta__moc-pytajnik {
+    position: relative;
+  }
+
+  .okienko__zamknij::before {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    content: '';
+    transform: translate(-50%, -50%);
+  }
+
+  .karta__moc-pytajnik::before {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    content: '';
+    transform: translate(-50%, -50%);
+  }
+
+  .powrot {
+    display: inline-flex;
+    align-items: center;
+    box-sizing: border-box;
+    min-height: 44px;
+    padding: 0 16px 0 14px;
+  }
+}
