@@ -46,16 +46,6 @@ export default {
   'tytulowa.pse_pobranie': (kiedy) => `ostatnie pobranie: ${kiedy}`,
   'tytulowa.brak_danych_pse': 'brak danych PSE',
   'tytulowa.tlo_nasa': 'Tło: NASA Black Marble 2016 (GIBS)',
-  'tytulowa.co_znajdziesz': 'CO ZNAJDZIESZ',
-  'tytulowa.karta_mapa_tytul': 'Mapa źródeł prądu',
-  'tytulowa.karta_mapa_tekst': 'Elektrownie i farmy wiatrowe na tle sieci najwyższych napięć.',
-  'tytulowa.karta_wiatr_tytul': 'Wiatr na żywo',
-  'tytulowa.karta_wiatr_tekst': 'Ile prądu dają teraz polskie wiatraki i kiedy PSE ostatnio kazało ograniczyć ich pracę.',
-  'tytulowa.karta_cena_tytul': 'Cena prądu',
-  'tytulowa.karta_cena_tekst': 'Godzina po godzinie, z odtwarzaniem całej doby.',
-  'tytulowa.zapowiedz': 'ZAPOWIEDŹ',
-  'tytulowa.wkrotce_tytul': 'Wkrótce: gdzie jeszcze da się podłączyć',
-  'tytulowa.wkrotce_tekst': 'Wolne moce przyłączeniowe w całej Polsce.',
 
   // ══ Mapa (/mapa/) – e2 ══
   // ── Wspólne ──

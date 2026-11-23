@@ -128,3 +128,4 @@
 - [x] Warstwa VIIRS_Black_Marble (nocne światła miast, NASA GIBS) – zrobione w etapie „Prąd nocą” (20.11.2026).
 - [x] Kula na stronie tytułowej i na obrazkach pokazuje głównie Afrykę, Polska jest na krawędzi – rozważyć obrót, żeby Europa była bliżej środka. Zrobione 23.11.2026: środek widoku 37° na południe od Polski (wariant B), nowy plakat kuli.
 - [ ] Po wdrożeniu wersji 3 strony tytułowej (nowe og-obraz.png / og-obraz-en.png, tytuły podglądu) odświeżyć podgląd linków w LinkedIn Post Inspector (https://www.linkedin.com/post-inspector/) – dla /, /en/, /mapa/ i /en/map/.
+- [ ] Zmienić nazwę klasy panelu na mapie (np. karta-polski), żeby style mapy nie działały na karty strony tytułowej – naprawa u źródła.

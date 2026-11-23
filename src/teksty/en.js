@@ -81,17 +81,6 @@ export default {
   'tytulowa.pse_pobranie': (kiedy) => `last retrieved: ${kiedy}`,
   'tytulowa.brak_danych_pse': 'no PSE data',
   'tytulowa.tlo_nasa': 'Background: NASA Black Marble 2016 (GIBS)',
-  'tytulowa.co_znajdziesz': "WHAT YOU'LL FIND",
-  'tytulowa.karta_mapa_tytul': 'Map of power sources',
-  'tytulowa.karta_mapa_tekst': 'Power plants and wind farms against the extra-high-voltage grid.',
-  'tytulowa.karta_wiatr_tytul': 'Wind live',
-  'tytulowa.karta_wiatr_tekst':
-    "How much power Polish wind turbines are producing now, and when PSE (Poland's transmission system operator) last ordered them to cut output.",
-  'tytulowa.karta_cena_tytul': 'Electricity price',
-  'tytulowa.karta_cena_tekst': 'Hour by hour, with a replay of the whole day.',
-  'tytulowa.zapowiedz': 'COMING SOON',
-  'tytulowa.wkrotce_tytul': 'Coming soon: where you can still connect',
-  'tytulowa.wkrotce_tekst': 'Available connection capacity across Poland.',
 
   // ══ Mapa (/en/map/) – e2 ══
   // ── Wspólne ──

@@ -253,22 +253,25 @@ Metoda dla paliw kopalnych: 820 g/kWh (IPCC, węgiel) × (wskaźnik KOBiZE paliw
 ### Obrazki do udostępniania (og:image) – PL i EN (zrzut strony tytułowej)
 
 - **Co:** `public/og-obraz.png` (strony PL: `/`, `/mapa/`) i `public/og-obraz-en.png` (strony EN: `/en/`, `/en/map/`) – zrzut
-  strony tytułowej w danym języku, pokazywany przy udostępnianiu linku. PNG 1200 × 630 px: PL **276 691 B**, SHA-256
-  `56eb243384153b91547faa76591b1de319adfa254011d01edcdd05f396fc2fde`; EN **276 255 B**, SHA-256
-  `3cc7b2416b8aed8e519c797232fe4934271f5a581697e64b1a81370629914043`. Adres obrazka w stronie: klucz `meta.og_obraz`
+  strony tytułowej w danym języku, pokazywany przy udostępnianiu linku. PNG 1200 × 630 px: PL **260 636 B**, SHA-256
+  `5647ed3fdce63a5acdadd2bdf454211a86f1541e2fe58dbbd1cc4d53e4521376`; EN **260 256 B**, SHA-256
+  `f87cc2a71f408bad9cfe817f39226441b83fbd3e36300b6f767dbd6069cbd884`. Adres obrazka w stronie: klucz `meta.og_obraz`
   w słownikach `src/teksty/pl.js` / `en.js`.
 - **Jak powstały (23.11.2026, wersja 3 strony tytułowej – napis „PRĄD W POLSCE” / „ELECTRICITY IN POLAND”, małe logo
-  OSIRIS w pasku, kula po obrocie; oba tą samą metodą – decyzja Ani):** zbudowana strona (`npx vite build`, podgląd
+  OSIRIS w pasku, kula po obrocie, jeden ekran bez sekcji „Co znajdziesz” – stopka na dole ekranu; oba tą samą metodą –
+  decyzja Ani):** zbudowana strona (`npx vite build`, podgląd
   127.0.0.1:4173), przeglądarka agent-browser (Chrome) na komputerze Ani – bez pakietów w projekcie; okno 1200 × 630 przy
   gęstości pikseli 1, ciemny motyw i „ogranicz ruch” (duży napis w pełnej jasności, kula w pozycji startowej obrotu);
   czekanie, aż kula się narysuje (`#globus.globus--gotowy`) i wczytają się liczby, potem 1,2 s; na czas zrzutu ukryte
   (`visibility: hidden`, układ bez zmian) tylko to, co by się zestarzało: linijka „ostatnie pobranie / last retrieved”
   (`#liczba-pse`) i zegar „CZAS WARSZAWA / WARSAW TIME” (`.zegar`), a także rogi paska: „Źródła i licencje”, „Opis ▾”
-  (`.rog--lewy`) i przełącznik „PL | EN” (`.gora .jezyki`) – decyzje Ani 23.11.2026; logo OSIRIS i podpis NASA zostają;
+  (`.rog--lewy`), przełącznik „PL | EN” (`.gora .jezyki`) i napis stopki „Źródła i licencje ▸” (`.stopka__zrodla summary`;
+  zostaje cienka linia stopki) – decyzje Ani 23.11.2026; logo OSIRIS i podpis NASA zostają;
   zrzut całego okna. Liczby na obrazku: stan danych z dnia zrzutu (40 · 27,3 GW, 233 · 9,0 GW, 23).
 - **Wcześniej:** polski obrazek z 20.11.2026 (commit 2ac509f) – sposób powstania nie był zapisany; pokazywał starszy wygląd
   strony i datę „ostatnie pobranie: 20.11, 15:50”. Zastąpiony 23.11.2026. Obrazki z 23.11.2026 z dużym napisem OSIRIS
-  (PL 275 119 B, SHA-256 `602df1ab…`; EN 276 027 B, SHA-256 `bf80e8ad…`) – zastąpione tego samego dnia wersją 3.
+  (PL 275 119 B, SHA-256 `602df1ab…`; EN 276 027 B, SHA-256 `bf80e8ad…`) – zastąpione tego samego dnia wersją 3. Pierwsze obrazki wersji 3 (PL 276 691 B, SHA-256 `56eb2433…`; EN 276 255 B,
+  SHA-256 `3cc7b241…`) – jeszcze z kafelkami nad sekcją „Co znajdziesz”; zastąpione tego samego dnia (jeden ekran).
 - **Kiedy wygenerować od nowa:** po zmianie wyglądu strony tytułowej, haseł, liczb (np. nowe dane GEM/EMODnet) albo tła.
 - **Warunki i podpis:** na obrazku widać tło NASA Black Marble 2016 – warunki jak przy kafelkach wyżej; podpis
   „Tło: NASA Black Marble 2016 (GIBS)” / „Background: NASA Black Marble 2016 (GIBS)” jest na obrazku.
