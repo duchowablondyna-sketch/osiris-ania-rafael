@@ -54,6 +54,7 @@
 
 ### Ruleset „ochrona-main” (Active, gałąź domyślna)
 - Wymagany pull request (0 zatwierdzeń do czasu dołączenia Rafaela).
+- Wymagany sprawdzian: „Sprawdzian strony” (workflow „Sprawdzian PR”) – od 25.11.2026; PR Robota – procedura w sekcji „Robot OSIRIS”.
 - Zakaz usuwania gałęzi.
 - Zakaz force push.
 - Bypass: Repository admin, tylko dla pull requestów.
@@ -75,6 +76,14 @@
 - **Kiedy:** co środę o 05:17 UTC (06:17 zimą, 07:17 latem czasu polskiego) oraz ręcznie (Actions → „Robot OSIRIS – wolne moce PSE” → Run workflow; tryby `normalny`, `proba`, `wymus-pr`, `wymus-problem`). Przebieg z harmonogramu zawsze w trybie `normalny`. Testy etapu A zaliczone 21.11.2026: `proba` → bez zmian, `wymus-pr` → PR #19/#20 i e-mail z prośbą o przegląd, `wymus-problem` → issue #21; testowe PR i issue zamknięte, gałęzie `robot-osiris/test-*` usunięte.
 - **Kto dostaje powiadomienia:** PR robota – prośba o przegląd do właścicielki repo (`duchowablondyna-sketch`, e-mail z GitHuba). Issue robota – **zawsze do Ani, niezależnie od „Watch”** (repo ma Watch 0): robot przypisuje issue do `duchowablondyna-sketch` (assignee) i wspomina `@duchowablondyna-sketch` na górze treści – według dokumentacji GitHuba przypisanie i wzmianka zapisują do wątku automatycznie. Przypisanie przy tworzeniu wymaga prawa push (dokumentacja REST API: inaczej „Assignees are silently dropped”) – zadanie „Zgłoś” ma `contents: write`, a robot po utworzeniu sprawdza przypisanie i w razie potrzeby dopisuje je ponownie (`gh issue edit --add-assignee`); `issues: write` samo by nie wystarczyło. Przebiegi z harmonogramu, które się nie udadzą – według dokumentacji GitHuba osoba, która ostatnia zmieniła linijkę `cron` w pliku workflow (dziś: konto `duchowablondyna-sketch`). Udany przebieg bez zmian nie wysyła nic.
 - **Co robić z PR robota** („[Robot OSIRIS] Nowe dane PSE – stan na …” albo „… Nowy plik PSE, te same dane …”): przeczytać opis zmian, porównać kilka liczb z PDF (link w opisie), podnieść poziom weryfikacji w ZRODLA.md po sprawdzeniu, dopiero potem scalić. Nowe stacje bez miejsca na mapie – uzupełnić `scripts/pse-moce/lokalizacje.json`. PR z „[TEST]” i „SYMULACJA – NIE SCALAĆ” – tylko zamknąć (bez scalania) i usunąć gałąź `robot-osiris/test-…`.
+- **Procedura dla każdego PR robota (od 25.11.2026 – „Sprawdzian strony” jest wymaganym sprawdzianem):** PR otwarty przez robota (`github-actions[bot]`) uruchamia workflow „Sprawdzian PR”, ale GitHub zatrzymuje go w stanie `action_required` – bez zatwierdzenia sprawdzian się nie wykona, a scalenie jest zablokowane (`BLOCKED`).
+  1. **Files changed** – przejrzeć zmiany (przed uruchomieniem czegokolwiek na kodzie z PR).
+  2. **„Approve workflows to run”** (na dole PR, przy sprawdzianach).
+  3. Poczekać na zielony **„Sprawdzian strony”** (ok. 1 min).
+  4. Dopiero wtedy decyzja o scaleniu (dla danych – po porównaniu liczb z PDF, jak wyżej).
+  - Zapasowo, gdyby przycisku nie było: **Close pull request → Reopen pull request** (ponowne otwarcie przez człowieka uruchamia sprawdzian).
+  - **Nigdy nie używać „Merge without waiting for requirements to be met (bypass)” dla danych** – sprawdzian jest po to, żeby zepsuta strona nie trafiła na main.
+  - Sprawdzone 25.11.2026 na PR #50 (`wymus-pr`): przed zatwierdzeniem `BLOCKED`, po „Approve workflows to run” „Sprawdzian strony” zielony (57 s) i PR odblokowany; PR zamknięty bez scalania, gałąź `robot-osiris/test-45583009389` usunięta, main bez zmian (9090ace).
 - **Co robić z issue robota** („[Robot OSIRIS] Problem z danymi PSE – …”): na stronie nic się nie zmieniło. Otworzyć PDF, porównać z opisem problemu i zdecydować: poprawić odczyt (`scripts/pse-moce/`, testy) albo PSE zmieniło układ/znaczenie danych. Issue z „[TEST]” – zamknąć.
 
 - Workflow `.github/workflows/robot-osiris-pse.yml`. Każdy PR, issue i commit robota ma w tytule „[Robot OSIRIS]”. Robot **nigdy nie scala** – nie ma takiego kroku; scala tylko Ania po przeglądzie.
@@ -90,7 +99,7 @@
 - Od etapu „Wygląd 1” (19.11.2026) przeglądarka widza pobiera kafelki tła satelitarnego z serwera NASA GIBS (`gibs.earthdata.nasa.gov`), więc NASA widzi adres IP odwiedzającego. Od etapu „Prąd nocą” (20.11.2026) dotyczy to obu teł: Blue Marble (Dzień) i VIIRS_Black_Marble (Noc). Od etapu „Strona tytułowa” (20.11.2026) do 21.11.2026 także strona tytułowa (/) pobierała kafelki Black Marble do globusa z NASA. **Od 21.11.2026 globus na stronie tytułowej korzysta z naszej kopii kafelków** (`public/kafelki/black-marble-2016`, przybliżenia 0–3, sumy SHA-256 obok) – strona tytułowa nie łączy już widza z NASA; połączenie z NASA zaczyna się dopiero na /mapa/. Dane PSE nadal są pobierane tylko przy budowaniu strony.
 
 ### Do zrobienia
-- [ ] Robot Playwright jako wymagany test. Test jest od 25.11.2026 (workflow „Sprawdzian PR”, zadanie „Sprawdzian strony”, `scripts/testy-przegladarka.mjs`, playwright-core 1.65.0); zostało: dodać „Sprawdzian strony” jako wymagany sprawdzian w rulesecie „ochrona-main” (Ania, po pierwszym przebiegu) i sprawdzić na PR „[TEST]” z trybu `wymus-pr`, że po zamknięciu i ponownym otwarciu PR Robota sprawdzian rusza.
+- [x] Robot Playwright jako wymagany test – zrobione 25.11.2026: workflow „Sprawdzian PR”, zadanie „Sprawdzian strony” (`scripts/testy-przegladarka.mjs`, playwright-core 1.65.0), wymagany w rulesecie „ochrona-main” (Ania, 25.11.2026 9:47); próba z PR Robota (#50) udana – procedura w sekcji „Robot OSIRIS”.
 - [x] Testy karty uruchamiane automatycznie na GitHubie (Actions) – zrobione 25.11.2026: `npm run sprawdz` w workflow „Sprawdzian PR” (razem z testami słowników, okienka i Robota).
 - [x] Kafelki NASA u nas – globus na stronie tytułowej: 85 kafelków Black Marble 2016 (przybliżenia 0–3, 1 901 156 B), `scripts/pobierz-kafelki-globusa.mjs`, sumy SHA-256, warunki NASA w ZRODLA.md – zrobione 21.11.2026. Mapa /mapa/ nadal korzysta z NASA bezpośrednio (punkt niżej o kafelkach tła dla Polski).
 - [ ] Ślad CO2: policzyć wpływ założenia dla węgla brunatnego (957 g/kWh, ok. 17% produkcji) – zakres przy wartościach ze źródeł, do Metodologii i ZRODLA.md.
@@ -120,7 +129,7 @@
 - [ ] Na później: przy niskim oknie komputera (poniżej ok. 625 px wysokości) linijka źródła w rozwiniętym okienku PSE jest widoczna dopiero po przewinięciu (25.11.2026).
 - [ ] Na później: pełny widok poziomy telefonu i tablety 641–1023 px (dziś działa tam wygląd komputerowy; po obróceniu telefonu okna zajmują dużą część ekranu) (25.11.2026).
 - [ ] Na później: okienko Polski mogłoby się pokazywać także po najechaniu na obrys Polski (Natural Earth – dane już są na mapie) (decyzja Ani 23.11.2026).
-- [ ] Harmonogram GitHub Actions bywa opóźniany lub pomijany (20.11.2026: zamiast 5 uruchomień były 2, z opóźnieniem 2–3 h) – jeśli się powtarza, rozważyć Cloudflare Cron Triggers.
+- [ ] Harmonogram GitHub Actions bywa opóźniany lub pomijany (20.11.2026: zamiast 5 uruchomień były 2, z opóźnieniem 2–3 h) – jeśli się powtarza, rozważyć Cloudflare Cron Triggers. 25.11.2026: pierwszy środowy przebieg Robota OSIRIS z harmonogramu (06:17) do 10:30 się nie odbył (w historii tylko ręczne przebiegi z 21.11) – sprawdzić ok. 13:00.
 - [ ] Pulsowanie farm wiatrowych w rytm produkcji krajowej – dopiero po dodaniu farm lądowych; skala względem mocy zainstalowanej, nie maksimum doby.
 - [ ] Okienko farmy zasłania kropki, a kropki blisko siebie nachodzą na siebie (np. Baltic Power pod pustą kropką Orlen Neptun VIII, 2,5 km – ten przypadek rozwiązany 25.11.2026: możliwe duplikaty widoczne dopiero od przybliżenia 9) – okienko powinno pokazywać wszystkie farmy w klikniętym miejscu, nie tylko tę z wierzchu.
 - [ ] Przy zmianie domeny poprawić pełne adresy w meta Open Graph (`og:url`, `og:image` w `index.html` i `mapa/index.html` – dziś `https://osiris-ania-rafael.pages.dev/`) i odświeżyć podgląd linku w LinkedIn Post Inspector.
