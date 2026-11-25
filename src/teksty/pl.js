@@ -279,6 +279,26 @@ export default {
   'slownik.aria': (termin) => `Co znaczy „${termin}”? – wyjaśnienie`,
   // Podpis w okienku zamiast linijki źródła (to nasze wyjaśnienie, nie dane).
   'slownik.objasnienie': 'objaśnienie OSIRIS',
+  // Etap C2 – objaśnienia w Karcie (F1). Nazwy KOBiZE i IPCC: ZRODLA.md.
+  'slownik.mw_termin': 'MW, GW',
+  'slownik.mw': 'megawat – miara mocy, czyli ile prądu płynie w danej chwili; 1 GW = 1 000 MW',
+  'slownik.mwh_termin': 'MWh, kWh',
+  'slownik.mwh': 'megawatogodzina – ilość energii: moc 1 MW przez godzinę; 1 MWh = 1 000 kWh. Na rachunku za prąd stoją kWh',
+  'slownik.saldo_termin': 'saldo',
+  'slownik.saldo_w_zdaniu': 'sald',
+  'slownik.saldo': 'różnica między prądem, który według planu przypływa z zagranicy, a tym, który wypływa; plus – Polska kupuje, minus – sprzedaje',
+  'slownik.oze_termin': 'OZE',
+  'slownik.oze_w_zdaniu': 'OZE',
+  'slownik.oze': 'odnawialne źródła energii – w OSIRIS: wiatr, słońce, woda, biomasa i biogaz (bez odpadów)',
+  'slownik.kobize_termin': 'KOBiZE',
+  'slownik.kobize': 'Krajowy Ośrodek Bilansowania i Zarządzania Emisjami, działający w Instytucie Ochrony Środowiska – Państwowym Instytucie Badawczym; publikuje m.in. wskaźniki emisyjności dla energii elektrycznej',
+  'slownik.ipcc_termin': 'IPCC',
+  'slownik.ipcc': 'Międzyrządowy Zespół do spraw Zmian Klimatu (IPCC); jego raport AR5 (2014) podaje typowy ślad CO₂ źródeł prądu w całym cyklu życia',
+  'slownik.rce_termin': 'RCE',
+  // RCE – tylko to, co podaje PSE (decyzja Ani 25.11.2026: bez „netto” i „prosumentów”); zdanie OSIRIS osobno, z podpisem.
+  'slownik.rce': 'Rynkowa cena energii elektrycznej dla okresu rozliczenia niezbilansowania – publikowana przez PSE.',
+  'slownik.rce_zrodlo': 'źródło: PSE (pse.pl, OIRE → Rynkowe ceny energii)',
+  'slownik.rce_osiris': 'To cena hurtowa, nie cena z faktury firmy.',
   // Analogia przy „nie sumujemy” (Etap C1, wariant Y).
   'moce.szacunek_analogia': 'Jak parkingi przy jednej drodze dojazdowej: im więcej aut wjedzie na jeden, tym trudniej dojechać do drugiego.',
   // Zdanie-wniosek na górze zakładki (Etap C1, wariant B, decyzje Ani 25.11.2026): liczby, daty, „0 MW” i rok z danych
@@ -342,8 +362,9 @@ export default {
   'karta.uwaga_mapa': 'Mapa pokazuje tylko większe elektrownie, dlatego suma mocy na mapie (zakładka „Skąd”) jest mniejsza.',
   'karta.raport_kse': 'PSE, Raport 2025 KSE, Tabela 1.1',
   'karta.cena_rce': 'Cena RCE',
-  'karta.slad_co2': 'Ślad CO<sub>2</sub>',
-  'karta.wymiana': 'Wymiana z zagranicą',
+  // Etap C2: jedno znaczenie w PL i EN (decyzja Ani 25.11.2026).
+  'karta.slad_co2': 'Ślad CO<sub>2</sub> w cyklu życia',
+  'karta.wymiana': 'Wymiana z zagranicą (planowa)',
   'karta.przetworzenie': 'przetworzenie i ślad CO2: OSIRIS',
   'karta.pytajnik_aria': 'Dlaczego znak zapytania? – wyjaśnienie',
   'karta.pytajnik_tytul': 'Dlaczego znak zapytania?',
@@ -369,10 +390,12 @@ export default {
   'karta.moc_podpis': (stan, stanMocy) => `produkcja: stan na ${stan} · moc w całej Polsce: PSE, stan ${stanMocy}`,
   'karta.moc_zrodlo': (stanMocy) => `PSE, Raport 2025 KSE, Tabela 1.1 · stan ${stanMocy}`,
   'karta.cena_brak_dzis': 'brak danych na dziś',
-  'karta.wymiana_zero': 'ok. 0 MW',
-  'karta.wymiana_zero_opis': 'planowo, prawie bez wymiany',
-  'karta.wymiana_kupuje': (mw) => `kupuje ok. ${mw} MW`,
-  'karta.wymiana_sprzedaje': (mw) => `sprzedaje ok. ${mw} MW`,
+  'karta.wymiana_zero': 'ok. 0\u00a0GW',
+  'karta.wymiana_zero_opis': 'prawie bez wymiany',
+  // Etap C2 (odbiór 25.11.2026): wymiana w GW z jednym miejscem po przecinku – jak produkcja.
+  // Twarda spacja – liczba i „GW” zawsze w jednym wierszu (wąski kafelek).
+  'karta.wymiana_kupuje': (gw) => `kupuje ok. ${gw}\u00a0GW`,
+  'karta.wymiana_sprzedaje': (gw) => `sprzedaje ok. ${gw}\u00a0GW`,
   'karta.wymiana_planowo': 'planowo',
   'karta.plakietka_brak_powod': (powod) => `Brak danych o miksie: ${powod}.`,
   'karta.plakietka_brak': 'Brak danych PSE o miksie.',
@@ -381,15 +404,47 @@ export default {
   // Powody plakietki z karta.json (scripts/karta/pobierz.mjs) – dokładnie te teksty (pilnuje test).
   'karta.powod.sprawdzian': 'nowe dane nie przeszły sprawdzianu',
   'karta.powod.pobranie': 'nie udało się pobrać nowych danych PSE',
-  'karta.bohater_oze': 'prądu w Polsce pochodzi z OZE (źródeł odnawialnych)',
-  'karta.bohater_wegiel': 'prądu w Polsce pochodzi z węgla',
+  // Czas przeszły – liczba dotyczy kwadransu z danych (odbiór C2, 25.11.2026).
+  'karta.bohater_oze': 'prądu w Polsce pochodziło z OZE (źródeł odnawialnych)',
+  'karta.bohater_wegiel': 'prądu w Polsce pochodziło z węgla',
   'karta.krotko_oze': 'z OZE',
   'karta.krotko_wegiel': 'z węgla',
   'karta.stan': (stan) => `stan na ${stan}`,
   // Zwinięta linijka Karty (tryb spokojny, wariant 1A): „56% z węgla · PSE, stan na 08:15”.
   'karta.skrot': (co, stan) => `${co} · PSE, stan na ${stan}`,
+  // ── Etap C2 (decyzje Ani 25.11.2026): pierwszy ekran P1 – zwinięta Karta: jedna linijka = jedno pytanie (odbiór 25.11.2026):
+  // 1. udziały i produkcja, 2. cena RCE, 3. wolna moc PSE, 4. „PSE, stan na …”; na telefonie kafelki 2×2;
+  // każda linijka otwiera Kartę na swojej zakładce. Liczby z danych (src/karta-teksty.js, testy w scripts/karta/testy-panel.mjs).
+  'karta.skrot_produkcja': (gw) => `produkcja ${gw} GW`,
+  'karta.skrot_oze': (p) => `OZE ${p}`,
+  'karta.skrot_wegiel': (p) => `węgiel ${p}`,
+  'karta.skrot_rce': (cena) => `RCE ${cena} zł/MWh`,
+  // Wolna moc: liczba stacji planowanych i rok z danych (nie sugeruje mocy „dziś”). Twarda spacja – nawias „(na 2031)” się nie rozdziela.
+  'karta.skrot_moce': (stacje, rok) => `wolna moc PSE: ${stacje} (na\u00a0${rok})`,
+  'karta.skrot_stan': (stan) => `PSE, stan na ${stan}`,
+  'karta.kafel_udzial': 'z produkcji',
+  'karta.kafel_rce': 'cena RCE',
+  'karta.kafel_moce': (rok) => `wolna moc PSE (na ${rok})`,
+  'karta.kafel_aria': (co) => `${co} – otwiera Kartę Polski`,
+  // Krótki wniosek pierwszego ekranu (czas przeszły, kwadrans z danych). K1 – z liczbami.
+  // Wariant K2: sam wniosek, bez powtarzania liczb z nagłówka. „większość” przy ≥ 50%, „najwięcej” – gdy ta grupa ma najwięcej.
+  'karta.wniosek_krotki': (okres, wiekszosc, k1) =>
+    wiekszosc ? `W kwadransie ${okres} większość prądu wyprodukowanego w Polsce pochodziła ${k1}.` : `W kwadransie ${okres} najwięcej prądu wyprodukowanego w Polsce pochodziło ${k1}.`,
+  // Pełniejszy wniosek – zakładka „Ile i jak czysto”. „w większości” tylko przy udziale ≥ 50%.
+  'karta.wn_produkcja': (okres, gw) => `W kwadransie ${okres} Polska produkowała ${gw} GW`,
+  // Poniżej 50%: ten sam styl (odbiór C2) – „najwięcej” tylko, gdy ta grupa ma najwięcej (jak w krótkim wniosku); inaczej sama liczba.
+  'karta.wn_udzialy': (wiekszosc, k1, p1, k2, p2, najwiecej) =>
+    wiekszosc ? ` – w większości ${k1} (${p1}), a ${p2} ${k2}.` : najwiecej ? ` – najwięcej ${k1} (${p1}), a ${p2} ${k2}.` : ` – ${p1} ${k1}, a ${p2} ${k2}.`,
+  'karta.wn_kupuje': (gw) => ` Według planu PSE kupowała za granicą ok. ${gw} GW.`,
+  'karta.wn_sprzedaje': (gw) => ` Według planu PSE sprzedawała za granicę ok. ${gw} GW.`,
+  'karta.wn_co2': (g) => ` Szacunek OSIRIS dla tego kwadransa: ok. ${g} g CO₂eq na każdą kWh, licząc cały cykl życia elektrowni.`,
+  // „Ile pracuje z tego, co mamy”: zapotrzebowanie PSE (pole demand) i wiatr + słońce – procent od produkcji w Polsce.
+  // Wymiana – tylko saldo PSE (swm_p + swm_np), nie różnica zapotrzebowanie − produkcja (ZRODLA.md).
+  'karta.zapotrzebowanie': (zap, prod, wymiana) => `Zapotrzebowanie (PSE): ${zap} GW · produkcja w Polsce: ${prod} GW · wymiana: ${wymiana}`,
+  'karta.wiatr_slonce_z': (x, y, p) => `Wiatr i słońce dały ${x} GW z ${y} GW produkcji (${p}).`,
+  'karta.cena_kwh': (x) => `= ${x} zł/kWh`,
   'karta.opublikowalo': (kiedy) => ` · PSE opublikowało ${kiedy}`,
-  'karta.podpis': (stan) => `z produkcji w Polsce · ${stan}`,
+  'karta.podpis': (okres, stan) => `w kwadransie ${okres} · z produkcji w Polsce · ${stan}`,
   // Ślad CO2 w ekwiwalencie (CO₂eq) – mediany IPCC są w ekwiwalencie (decyzja Ani 23.11.2026, obie wersje mówią to samo).
   'karta.co2_wartosc': (g) => `ok. ${g} g CO₂eq/kWh`,
   'karta.co2_opis': 'szacunek OSIRIS',
@@ -399,7 +454,7 @@ export default {
   'okienko_polski.tu': (wartosc) => `tu jesteśmy: ${wartosc} – szacunek OSIRIS wg IPCC`,
   'okienko_polski.zdanie': 'z produkcji w Polsce · dane PSE co 15 min',
   'okienko_polski.razem': '= razem',
-  'okienko_polski.co2_tytul': 'Ślad CO<sub>2</sub>',
+  'okienko_polski.co2_tytul': 'Ślad CO<sub>2</sub> w cyklu życia',
   'okienko_polski.wiecej': 'Więcej',
   'okienko_polski.wiecej_aria': 'Więcej – Metodologia w panelu Karty Polski',
 

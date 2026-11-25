@@ -5,6 +5,7 @@ import { tekstyKarty, formatCzasu, CO2_SKALA_MAX } from './karta-teksty.js';
 import { wiecejPonizej, wysokoscPrzycisku } from './wiecej-ponizej.js';
 import { TELEFON } from './zwijanie.js';
 import { t, liczba } from './jezyk.js';
+import { oznaczTerminy, objasnienie } from './terminy.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -88,6 +89,67 @@ function pokazMoce(m) {
   );
 }
 
+const pokazTekst = (id, tekst) => {
+  $(id).textContent = tekst ?? '';
+  $(id).hidden = !tekst;
+};
+
+// Etap C2 (P1): zwinięta Karta (komputer) i kafelki 2×2 (telefon) – te same napisy z tekstyKarty(). Wolna moc – src/moce.js.
+function pokazSkrot(k) {
+  const c = k.ok ? k.skrotCzesci : null;
+  const stan = c ? (k.plakietka ? t('karta.skrot_stare', c.stan) : c.stan) : null;
+  pokazTekst('skrot-produkcja', c ? c.produkcja : k.skrot);
+  pokazTekst('skrot-bohater', c?.bohater);
+  pokazTekst('skrot-drugi', c?.drugi);
+  pokazTekst('skrot-rce', c?.rce);
+  pokazTekst('skrot-stan', stan);
+  pokazTekst('skrot-wniosek', k.wnioski?.krotki);
+  $('kafel-bohater').textContent = k.ok ? k.kafle.bohater : '–';
+  $('kafel-drugi').textContent = k.ok ? k.kafle.drugi : '–';
+  $('kafel-rce').textContent = k.kafle?.rce ?? '–';
+  $('kafel-stan').textContent = stan ?? k.skrot;
+  pokazTekst('kafel-wniosek', k.wnioski?.krotki);
+}
+
+// Kawałek zwiniętej Karty albo kafelek → Karta otwarta na zakładce z data-zakladka (P1, Etap C2).
+function otwieraniePoZakladce() {
+  const karta = $('karta');
+  const naZakladce = (z) => document.getElementById(`zakladka-${z}`)?.click();
+  karta.querySelector('.karta__naglowek').addEventListener('click', (e) => {
+    const z = e.target.closest('[data-zakladka]')?.dataset.zakladka;
+    if (z && !karta.open) setTimeout(() => naZakladce(z)); // po przełączeniu <details>
+  });
+  for (const kafel of document.querySelectorAll('#kafelki-polski [data-zakladka]')) {
+    kafel.setAttribute('aria-label', t('karta.kafel_aria', kafel.textContent.trim()));
+    kafel.addEventListener('click', () => {
+      karta.open = true;
+      naZakladce(kafel.dataset.zakladka);
+    });
+  }
+}
+
+// Objaśnienia F1 w Karcie (Etap C2): GW, OZE, kWh w pełniejszym wniosku; RCE przy cenie; saldo, KOBiZE, IPCC w Metodologii.
+// Teksty tylko ze słownika (slownik.*); RCE – część PSE ze źródłem i zdanie OSIRIS z podpisem „objaśnienie OSIRIS”.
+let okienkaKarty = null;
+function oznaczKarte() {
+  if (!okienkaKarty) return;
+  const termin = (slowo, klucz) => ({ slowo, tytul: t(`${klucz}_termin`), czesci: objasnienie(klucz) });
+  oznaczTerminy($('karta-wniosek'), [termin('GW', 'slownik.mw'), termin(t('slownik.oze_w_zdaniu'), 'slownik.oze'), termin('kWh', 'slownik.mwh')], okienkaKarty);
+}
+function oznaczStaleTerminy() {
+  const termin = (slowo, klucz) => ({ slowo, tytul: t(`${klucz}_termin`), czesci: objasnienie(klucz) });
+  oznaczTerminy(
+    $('karta-cena-etykieta'),
+    [{ slowo: 'RCE', tytul: t('slownik.rce_termin'), czesci: [{ tekst: t('slownik.rce'), podpis: t('slownik.rce_zrodlo') }, ...objasnienie('slownik.rce_osiris')] }],
+    okienkaKarty,
+  );
+  oznaczTerminy(
+    document.querySelector('#karta-ile .karta__metodologia ul'),
+    [termin(t('slownik.saldo_w_zdaniu'), 'slownik.saldo'), termin('KOBiZE', 'slownik.kobize'), termin('IPCC', 'slownik.ipcc')],
+    okienkaKarty,
+  );
+}
+
 // Ostatnie napisy panelu – z nich (i tylko z nich) powstaje okienko Polski.
 let ostatnie = null;
 
@@ -97,10 +159,11 @@ function pokaz(karta, rce) {
 
   $('karta-plakietka').hidden = !k.plakietka;
   $('karta-plakietka-tekst').textContent = k.plakietka ?? '';
-  $('karta-skrot').textContent = k.plakietka ? t('karta.skrot_stare', k.skrot) : k.skrot;
+  pokazSkrot(k);
   $('karta-skrot').classList.toggle('brak-danych', Boolean(k.plakietka));
 
   ustaw('karta-cena', k.cena.wartosc, !k.cena.ok);
+  $('karta-cena-kwh').textContent = k.cena.kwh ?? '';
   $('karta-cena-opis').textContent = k.cena.opis;
   ustaw('karta-zrodlo', k.pobrano ? t('karta.zrodlo_pobrano', k.pobrano) : t('karta.zrodlo_brak'), !k.pobrano);
   pokazMoce(k.moc);
@@ -114,6 +177,7 @@ function pokaz(karta, rce) {
     procent.className = 'karta__procent liczby';
     procent.removeAttribute('aria-label');
     ustaw('karta-zdanie', t('karta.brak_miksu'), true);
+    for (const id of ['karta-wniosek', 'karta-zapotrzebowanie', 'karta-wiatr-slonce']) pokazTekst(id, null);
     $('karta-podpis').textContent = '';
     $('karta-pasek').replaceChildren();
     $('karta-legenda-paska').replaceChildren();
@@ -129,6 +193,11 @@ function pokaz(karta, rce) {
   procent.setAttribute('aria-label', t('karta.procent_aria', k.bohater.procent, k.bohater.krotko));
   ustaw('karta-zdanie', k.bohater.zdanie);
   $('karta-podpis').textContent = k.podpis;
+  // Etap C2: pełniejszy wniosek i „Ile pracuje” – zapotrzebowanie PSE, wiatr i słońce (bez danych – ukryte).
+  pokazTekst('karta-wniosek', k.wnioski?.pelny);
+  pokazTekst('karta-zapotrzebowanie', k.zapotrzebowanie?.linijka);
+  pokazTekst('karta-wiatr-slonce', k.zapotrzebowanie?.wiatrSlonce);
+  oznaczKarte();
 
   // Pasek: szerokość odcinka = udział; kolory jak na mapie (zmienne CSS, zmieniają się z Dzień/Noc).
   // Dla czytnika ekranu i bez kolorów – legenda pod paskiem z nazwami i procentami.
@@ -322,6 +391,9 @@ function trescOkienka(k, wiecej) {
 
 // Wołane z src/main.js po wczytaniu mapy (wtedy powstają okienka).
 export function podlaczOkienkoPolski(okienka) {
+  okienkaKarty = okienka;
+  oznaczStaleTerminy();
+  oznaczKarte();
   // „Więcej”: okienko się zamyka, w zakładce ILE I JAK CZYSTO rozwija się Metodologia, fokus na jej nagłówek.
   const wiecej = () => {
     okienka.zamknij();
@@ -337,6 +409,7 @@ export function podlaczOkienkoPolski(okienka) {
 // rceGotowe: obietnica z obiektem rce.json albo null (src/main.js).
 export function uruchomKarte(rceGotowe) {
   zakladki();
+  otwieraniePoZakladce();
   pilnujWysokosci();
   // Każda zakładka, która się nie mieści: zanikanie u dołu i „↓ więcej poniżej” (jak w okienku C).
   for (const tresc of document.querySelectorAll('.karta__tresc')) wiecejPonizej(tresc);

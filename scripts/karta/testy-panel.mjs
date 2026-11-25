@@ -5,7 +5,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { zbudujKarte } from './licz.mjs';
-import { tekstyKarty, tekstCeny, PROG_STARYCH_H, PODZIAL_OZE, PASKI_MOCY } from '../../src/karta-teksty.js';
+import { tekstyKarty, tekstCeny, PROG_STARYCH_H, PODZIAL_OZE, PASKI_MOCY, procent0, wiatrISlonce, tekstZapotrzebowania } from '../../src/karta-teksty.js';
 import { ustawJezyk } from '../../src/jezyk.js';
 import { wypelnij } from '../jezyki.mjs';
 
@@ -37,9 +37,9 @@ test('liczba-bohater = węgiel razem, pełny procent; zdanie i podpis', () => {
   assert.equal(t.ok, true);
   assert.equal(t.bohater.grupa, 'wegiel');
   assert.equal(t.bohater.procent, `${Math.round(k.wegiel_udzial * 100)}%`);
-  assert.equal(t.bohater.zdanie, 'prądu w Polsce pochodzi z węgla');
+  assert.equal(t.bohater.zdanie, 'prądu w Polsce pochodziło z węgla'); // czas przeszły (odbiór C2)
   // Próbka: doba 20.11 uzupełniona przez PSE w nocy – publikacja 21.11, 02:52 (ZRODLA.md), więc z datą.
-  assert.equal(t.podpis, 'z produkcji w Polsce · stan na 12:30 · PSE opublikowało 21.11, 02:52');
+  assert.equal(t.podpis, 'w kwadransie 12:15–12:30 · z produkcji w Polsce · stan na 12:30 · PSE opublikowało 21.11, 02:52');
   assert.equal(t.plakietka, null);
 });
 
@@ -50,7 +50,7 @@ test('liczba-bohater = OZE, gdy OZE więcej niż węgla; przy remisie węgiel', 
   const t = tekstyKarty(k, RCE, terazPo(k, 1));
   assert.equal(t.bohater.grupa, 'oze');
   assert.equal(t.bohater.procent, '52%');
-  assert.equal(t.bohater.zdanie, 'prądu w Polsce pochodzi z OZE (źródeł odnawialnych)');
+  assert.equal(t.bohater.zdanie, 'prądu w Polsce pochodziło z OZE (źródeł odnawialnych)');
   assert.match(t.skrot, /^52% z OZE · PSE, stan na 12:30$/);
   k.oze_udzial = k.wegiel_udzial;
   assert.equal(tekstyKarty(k, RCE, terazPo(k, 1)).bohater.grupa, 'wegiel');
@@ -83,13 +83,14 @@ test('wersja EN: liczba-bohater, ślad CO2, wymiana planowa i podpis – po angi
   try {
     const k = karta();
     const t = tekstyKarty(k, RCE, terazPo(k, 1));
-    assert.equal(t.bohater.zdanie, "of Poland's electricity comes from coal");
+    assert.equal(t.bohater.zdanie, "of Poland's electricity came from coal");
     assert.equal(t.co2.wartosc, `approx. ${k.co2.g_kwh_ok} g CO₂eq/kWh`);
     assert.equal(t.co2.opis, 'OSIRIS estimate');
     assert.equal(t.metodologia.co2, `${k.co2.g_kwh.toFixed(1)} g CO₂eq/kWh`);
-    assert.match(t.wymiana.wartosc, /^(importing|exporting) approx\. [\d,]+ MW$|^approx\. 0 MW$/);
-    assert.match(t.wymiana.opis, /^scheduled/);
-    assert.match(t.podpis, /^of generation in Poland · as of 12:30 · published by PSE at 21 Nov, 02:52$/);
+    assert.match(t.wymiana.wartosc, /^(importing|exporting) approx\. \d+\.\d\u00a0GW$|^approx\. 0\u00a0GW$/);
+    // Etap C2: „scheduled” stoi w nagłówku kafelka – pod liczbą już nie.
+    assert.ok(/scheduled/.test(en['karta.wymiana']) && !/scheduled/.test(t.wymiana.opis), t.wymiana.opis);
+    assert.match(t.podpis, /^in the quarter-hour 12:15–12:30 · of generation in Poland · as of 12:30 · published by PSE at 21 Nov, 02:52$/);
     assert.deepEqual(PODZIAL_OZE.map((r) => r.nazwa), ['onshore wind', 'offshore wind', 'solar', 'hydro', 'biomass and other renewables']);
     for (const p of t.pasek) assert.match(p.tekst, /^\d+\.\d%$/);
   } finally {
@@ -97,19 +98,23 @@ test('wersja EN: liczba-bohater, ślad CO2, wymiana planowa i podpis – po angi
   }
 });
 
-test('wymiana: znak z opisu PSE (+ kupuje, − sprzedaje), zaokrąglenie do dziesiątek, „planowo”', () => {
+test('wymiana: znak z opisu PSE (+ kupuje, − sprzedaje), w GW z jednym miejscem po przecinku (jak produkcja)', () => {
   const k = karta();
   k.wymiana.saldo_mw = -585.6;
-  assert.deepEqual(tekstyKarty(k, RCE, terazPo(k, 1)).wymiana, { wartosc: 'sprzedaje ok. 590 MW', opis: 'planowo' });
-  k.wymiana.saldo_mw = 1225.1;
-  assert.deepEqual(tekstyKarty(k, RCE, terazPo(k, 1)).wymiana, { wartosc: 'kupuje ok. 1230 MW', opis: 'planowo' });
-  k.wymiana.saldo_mw = 3.9;
-  assert.equal(tekstyKarty(k, RCE, terazPo(k, 1)).wymiana.wartosc, 'ok. 0 MW');
+  assert.deepEqual(tekstyKarty(k, RCE, terazPo(k, 1)).wymiana, { wartosc: 'sprzedaje ok. 0,6\u00a0GW', opis: '' });
+  k.wymiana.saldo_mw = 1557.9;
+  assert.deepEqual(tekstyKarty(k, RCE, terazPo(k, 1)).wymiana, { wartosc: 'kupuje ok. 1,6\u00a0GW', opis: '' });
+  // Poniżej 50 MW po zaokrągleniu wychodzi 0,0 GW – „ok. 0 GW”, „prawie bez wymiany”.
+  for (const saldo of [3.9, -49.9]) {
+    assert.deepEqual(tekstyKarty({ ...k, wymiana: { ...k.wymiana, saldo_mw: saldo } }, RCE, terazPo(k, 1)).wymiana, { wartosc: 'ok. 0\u00a0GW', opis: 'prawie bez wymiany' });
+  }
+  k.wymiana.saldo_mw = 50;
+  assert.equal(tekstyKarty(k, RCE, terazPo(k, 1)).wymiana.wartosc, 'kupuje ok. 0,1\u00a0GW');
 });
 
 test('cena RCE: bieżący kwadrans z własną godziną; poza dobą – brak danych, nigdy zero', () => {
   const t = Date.parse('2026-11-20T12:05:00Z'); // 13:05 czasu polskiego
-  assert.deepEqual(tekstCeny(RCE, t), { ok: true, wartosc: '612,40 zł/MWh', opis: '13:00–13:15' });
+  assert.deepEqual(tekstCeny(RCE, t), { ok: true, wartosc: '612,40 zł/MWh', opis: '13:00–13:15', kwh: '= 0,61 zł/kWh', zl: '612,40' });
   assert.equal(tekstCeny(RCE, Date.parse('2026-11-20T12:20:00Z')).wartosc, '-5,00 zł/MWh');
   assert.equal(tekstCeny(RCE, Date.parse('2026-11-21T12:05:00Z')).wartosc, 'brak danych na dziś');
   assert.equal(tekstCeny(null, t).wartosc, 'brak danych PSE');
@@ -178,7 +183,7 @@ test('okienko, węgiel: pierścień = kamienny + brunatny z paska, razem = liczb
   const o = t.okienko;
   assert.equal(o.naglowek, 'Polska · prąd z węgla');
   assert.equal(o.stan, 'stan na 12:30 · PSE opublikowało 21.11, 02:52');
-  assert.equal(t.podpis, `z produkcji w Polsce · ${o.stan}`);
+  assert.equal(t.podpis, `w kwadransie 12:15–12:30 · z produkcji w Polsce · ${o.stan}`);
   // Procenty w pierścieniu = procenty paska (te same napisy).
   const zPaska = t.pasek.filter((p) => p.grupa === 'kamienny' || p.grupa === 'brunatny');
   assert.deepEqual(o.kawalki, zPaska);
@@ -328,4 +333,200 @@ test('paski mocy: napisy na stronie bez słów sugerujących marnowanie (PL i EN
   assert.doesNotMatch(en.toLowerCase(), /wasted|wasting|\bidle\b|unused|\blost\b|squander/);
   // Wyjaśnienie „?” – jedno źródło tekstu dla listy i okienka C (src/karta.js czyta je po id).
   assert.equal(szablon.split('id="karta-moce-niepewnosc"').length - 1, 1);
+});
+
+// ── Etap C2 (decyzje Ani 25.11.2026): pierwszy ekran P1, wnioski z danych, zapotrzebowanie, zł/kWh, nagłówki ──
+import pl from '../../src/teksty/pl.js';
+import en from '../../src/teksty/en.js';
+
+test('C2: ten sam procent OZE w nagłówku, kafelku i obu wnioskach (jedna funkcja, podstawa – produkcja w Polsce)', () => {
+  for (const jez of ['pl', 'en']) {
+    ustawJezyk(jez);
+    const k = karta();
+    const t = tekstyKarty(k, RCE, terazPo(k, 1));
+    const oze = procent0(k.oze_udzial);
+    for (const tekst of [t.skrotCzesci.drugi, t.kafle.drugi, t.wnioski.pelny]) assert.ok(tekst.includes(oze), `${jez}: brak ${oze} w: ${tekst}`);
+    assert.ok(!/\d+%/.test(t.wnioski.krotki), `K2 bez liczb: ${t.wnioski.krotki}`);
+  }
+  ustawJezyk('pl');
+});
+
+test('C2: ten sam procent węgla w kafelku (telefon), nagłówku Karty i zakładce „Ile i jak czysto” (liczba-bohater)', () => {
+  for (const jez of ['pl', 'en']) {
+    ustawJezyk(jez);
+    // Węgiel jest bohaterem: kafelek 1, kawałek nagłówka i liczba w zakładce – ta sama liczba.
+    const k = karta();
+    assert.ok(k.wegiel_udzial >= k.oze_udzial, 'próbka: węgiel ma być bohaterem');
+    const t = tekstyKarty(k, RCE, terazPo(k, 1));
+    const wegiel = procent0(k.wegiel_udzial);
+    assert.equal(t.bohater.grupa, 'wegiel');
+    assert.equal(t.bohater.procent, wegiel); // zakładka: #karta-procent = bohater.procent
+    assert.equal(t.kafle.bohater, t.skrotCzesci.bohater, `${jez}: kafelek ≠ nagłówek`);
+    assert.ok(t.kafle.bohater.startsWith(`${wegiel} `), `${jez}: ${t.kafle.bohater}`);
+    assert.ok(t.skrot.includes(wegiel), `${jez}: ${t.skrot}`);
+    // OZE jest bohaterem: węgiel w drugim kawałku i drugim kafelku – nadal ten sam procent.
+    const o = kartaOze();
+    const to = tekstyKarty(o, RCE, terazPo(o, 1));
+    const wegielO = procent0(o.wegiel_udzial);
+    assert.equal(to.bohater.grupa, 'oze');
+    assert.equal(to.kafle.drugi, to.skrotCzesci.drugi);
+    assert.ok(to.kafle.drugi.includes(wegielO), `${jez}: brak ${wegielO} w: ${to.kafle.drugi}`);
+  }
+  ustawJezyk('pl');
+});
+
+test('C2: „w większości” / „mostly” tylko przy udziale ≥ 50% (49,9 / 50,0 / 50,1)', () => {
+  for (const [u, oczekiwane] of [[0.499, false], [0.5, true], [0.501, true]]) {
+    for (const [jez, slowo] of [['pl', 'w większości'], ['en', 'mostly']]) {
+      ustawJezyk(jez);
+      const k = karta();
+      k.wegiel_udzial = u;
+      k.oze_udzial = 0.3;
+      const t = tekstyKarty(k, RCE, terazPo(k, 1));
+      assert.equal(t.wnioski.pelny.includes(slowo), oczekiwane, `${jez} ${u}: ${t.wnioski.pelny}`);
+    }
+  }
+  ustawJezyk('pl');
+});
+
+test('C2: wnioski w czasie przeszłym, z kwadransem z danych; przy starych danych (plakietka) – brak zdań', () => {
+  const k = karta();
+  const t = tekstyKarty(k, RCE, terazPo(k, 1));
+  const okres = k.kwadrans.okres.replace(' - ', '–');
+  assert.ok(t.wnioski.krotki.startsWith(`W kwadransie ${okres}`) && /pochodził[ao]/.test(t.wnioski.krotki), t.wnioski.krotki);
+  assert.ok(/produkowała/.test(t.wnioski.pelny) && !/\bteraz\b/i.test(t.wnioski.pelny), t.wnioski.pelny);
+  const stare = tekstyKarty(k, RCE, terazPo(k, PROG_STARYCH_H + 1));
+  assert.ok(stare.plakietka);
+  assert.equal(stare.wnioski.krotki, null);
+  assert.equal(stare.wnioski.pelny, null);
+});
+
+test('C2: wymiana we wniosku i w linijce zapotrzebowania – tylko saldo PSE (swm_p + swm_np), nie różnica zapotrzebowanie − produkcja', () => {
+  const k = karta();
+  const t = tekstyKarty(k, RCE, terazPo(k, 1));
+  // Ta sama liczba GW (jedno miejsce po przecinku) we wniosku, w kafelku wymiany i w linijce zapotrzebowania.
+  const saldoGw = (Math.abs(k.wymiana.saldo_mw) / 1000).toLocaleString('pl-PL', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  assert.ok(t.wnioski.pelny.includes(`ok. ${saldoGw} GW`), t.wnioski.pelny);
+  assert.ok(t.wymiana.wartosc.endsWith(`ok. ${saldoGw}\u00a0GW`), t.wymiana.wartosc); // twarda spacja – jeden wiersz
+  assert.ok(!/\bMW\b/.test(t.wymiana.wartosc) && !/granic\S* ok\. [\d ]+ MW/.test(t.wnioski.pelny), 'wymiana w MW');
+  assert.ok(t.zapotrzebowanie.linijka.includes(t.wymiana.wartosc) && t.zapotrzebowanie.linijka.includes('(planowo)'), t.zapotrzebowanie.linijka);
+  // W próbce saldo i różnica zapotrzebowanie − produkcja dają po zaokrągleniu tę samą liczbę GW – ustawiamy saldo inne
+  // niż różnica (o 0,7 GW), żeby sprawdzić, że w linijce i we wniosku stoi saldo, a nie różnica.
+  const roznica = k.bilans.zapotrzebowanie_mw - k.produkcja_mw;
+  const naGw = (mw) => (mw / 1000).toLocaleString('pl-PL', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  const ks = { ...k, wymiana: { ...k.wymiana, saldo_mw: roznica - 700 } };
+  const ts = tekstyKarty(ks, RCE, terazPo(ks, 1));
+  assert.ok(ts.zapotrzebowanie.linijka.includes(`ok. ${naGw(Math.abs(roznica - 700))}\u00a0GW`), ts.zapotrzebowanie.linijka);
+  assert.ok(!ts.zapotrzebowanie.linijka.includes(`ok. ${naGw(roznica)}\u00a0GW`) && !ts.wnioski.pelny.includes(`ok. ${naGw(roznica)} GW`), `różnica zamiast salda: ${ts.wnioski.pelny}`);
+  // Mała wymiana (0,0 GW po zaokrągleniu) – bez tej części; znak → kupuje / sprzedaje.
+  k.wymiana.saldo_mw = 30;
+  assert.ok(!/granic/.test(tekstyKarty(k, RCE, terazPo(k, 1)).wnioski.pelny));
+  k.wymiana.saldo_mw = -800;
+  assert.ok(/sprzedawała za granicę ok\. 0,8 GW\./.test(tekstyKarty(k, RCE, terazPo(k, 1)).wnioski.pelny));
+});
+
+test('C2: wiatr i słońce – GW i procent od produkcji w Polsce; brak zapotrzebowania → brak linijki', () => {
+  const k = karta();
+  const ws = wiatrISlonce(k);
+  const kody = new Map(k.paliwa.map((p) => [p.kod_pse, p.mw]));
+  assert.equal(ws.mw, kody.get('WI') + kody.get('WM') + kody.get('ES'));
+  const z = tekstZapotrzebowania(k);
+  assert.ok(z.wiatrSlonce.includes(`(${procent0(ws.mw / k.produkcja_mw)})`) && z.wiatrSlonce.includes(`${(k.produkcja_mw / 1000).toLocaleString('pl-PL', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} GW produkcji`), z.wiatrSlonce);
+  delete k.bilans;
+  assert.equal(tekstZapotrzebowania(k).linijka, null);
+});
+
+test('C2: RCE w zł/kWh = zł/MWh ÷ 1000 (dwa miejsca, ujemna cena zostaje ujemna)', () => {
+  const k = karta();
+  const teraz = Date.parse('2026-11-20T12:10:00Z'); // kwadrans 13:00–13:15, 612,40 zł/MWh
+  assert.equal(tekstCeny(RCE, teraz).kwh, '= 0,61 zł/kWh');
+  assert.equal(tekstCeny(RCE, Date.parse('2026-11-20T12:20:00Z')).kwh, '= -0,01 zł/kWh');
+});
+
+test('C2: nagłówki – to samo znaczenie w PL i EN (planowa / scheduled, cykl życia / life-cycle)', () => {
+  assert.ok(/planowa/.test(pl['karta.wymiana']) && /scheduled/.test(en['karta.wymiana']));
+  for (const k of ['karta.slad_co2', 'okienko_polski.co2_tytul']) assert.ok(/cyklu życia/.test(pl[k]) && /Life-cycle/.test(en[k]), k);
+});
+
+test('C2: nagłówek Karty – jedna godzina; cena RCE z kwadransu miksu, a bez niej – bez ceny w nagłówku i kafelku', () => {
+  const k = karta();
+  const teraz = terazPo(k, 1);
+  // Próbka RCE nie ma kwadransu miksu (12:00–12:15) – w nagłówku i kafelku bez ceny (zakładka ma swoją cenę z godziną).
+  const bez = tekstyKarty(k, RCE, teraz);
+  assert.equal(bez.skrotCzesci.rce, null);
+  assert.equal(bez.kafle.rce, null);
+  // Z ceną dla kwadransu miksu (koniec 11:15 UTC = 12:15 czasu polskiego) – ta cena, nie bieżąca.
+  const rce = structuredClone(RCE);
+  rce.doby['2026-11-20'].unshift({ okres: '12:00 - 12:15', koniec_utc: k.kwadrans.koniec_utc.replace('.000Z', 'Z'), cena: 500 });
+  const z = tekstyKarty(k, rce, teraz);
+  assert.equal(z.skrotCzesci.rce, 'RCE 500,00 zł/MWh');
+  assert.equal(z.kafle.rce, '500,00 zł/MWh');
+  const linijka = Object.values(z.skrotCzesci).filter(Boolean).join(' · ');
+  assert.equal((linijka.match(/\d{1,2}:\d{2}/g) ?? []).length, 1, linijka);
+});
+
+test('C2 (odbiór): zdanie-wniosek PL „w większości z węgla (X%), a Y% z OZE.”, EN bez zmian; nagłówek w czasie przeszłym; podpis od kwadransu', () => {
+  const k = karta();
+  const wegiel = procent0(k.wegiel_udzial), oze = procent0(k.oze_udzial);
+  const okres = k.kwadrans.okres.replace(' - ', '–');
+  ustawJezyk('pl');
+  let t = tekstyKarty(k, RCE, terazPo(k, 1));
+  assert.ok(t.wnioski.pelny.includes(` – w większości z węgla (${wegiel}), a ${oze} z OZE.`), t.wnioski.pelny);
+  assert.equal(`${t.bohater.procent} ${t.bohater.zdanie}`, `${wegiel} prądu w Polsce pochodziło z węgla`);
+  assert.ok(t.podpis.startsWith(`w kwadransie ${okres} · `), t.podpis);
+  ustawJezyk('en');
+  t = tekstyKarty(k, RCE, terazPo(k, 1));
+  assert.ok(t.wnioski.pelny.includes(` – mostly from coal (${wegiel}), ${oze} from renewables.`), t.wnioski.pelny);
+  assert.equal(`${t.bohater.procent} ${t.bohater.zdanie}`, `${wegiel} of Poland's electricity came from coal`);
+  assert.ok(t.podpis.startsWith(`in the quarter-hour ${okres} · `), t.podpis);
+  ustawJezyk('pl');
+});
+
+test('C2 (odbiór): linijka 1 nagłówka – „72% z węgla · OZE 13% · produkcja 20,8 GW” (kolejność w mapa/index.html, liczby z danych)', () => {
+  const html = readFileSync(new URL('../../mapa/index.html', import.meta.url), 'utf-8');
+  const linia = html.match(/<span class="karta__skrot-linia" data-zakladka="ile">([\s\S]*?)<\/span>\s*<span class="karta__skrot-linia" id="skrot-rce"/)[1];
+  assert.deepEqual([...linia.matchAll(/id="(skrot-[a-z]+)"/g)].map((m) => m[1]), ['skrot-bohater', 'skrot-drugi', 'skrot-produkcja']);
+  // Kolejne linijki: RCE (Ile), wolna moc (Gdzie), stan – każda osobno; „·” tylko między kawałkami pierwszej linijki.
+  assert.match(html, /id="skrot-rce" data-zakladka="ile"[\s\S]*id="skrot-moce" data-zakladka="gdzie"[\s\S]*class="karta__skrot-linia karta__skrot-stan" id="skrot-stan"/);
+  const k = karta();
+  const oczekiwane = {
+    pl: [`${procent0(k.wegiel_udzial)} z węgla`, `OZE ${procent0(k.oze_udzial)}`, `produkcja ${(k.produkcja_mw / 1000).toLocaleString('pl-PL', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} GW`],
+    en: [`${procent0(k.wegiel_udzial)} from coal`, `renewables ${procent0(k.oze_udzial)}`, `generation ${(k.produkcja_mw / 1000).toLocaleString('en-GB', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} GW`],
+  };
+  for (const jez of ['pl', 'en']) {
+    ustawJezyk(jez);
+    const c = tekstyKarty(k, RCE, terazPo(k, 1)).skrotCzesci;
+    assert.deepEqual([c.bohater, c.drugi, c.produkcja], oczekiwane[jez], jez);
+  }
+  ustawJezyk('pl');
+});
+
+test('C2 (odbiór 2): wniosek PL w tym samym stylu przy ≥ 50% i < 50% („…, a X% z OZE.”); EN bez zmian', () => {
+  const przypadki = [
+    // [węgiel, OZE, gaz i inne] → oczekiwany fragment PL / EN
+    [0.72, 0.13, 0.15, ' – w większości z węgla (72%), a 13% z OZE.', ' – mostly from coal (72%), 13% from renewables.'],
+    [0.45, 0.38, 0.17, ' – najwięcej z węgla (45%), a 38% z OZE.', ' – 45% from coal, 38% from renewables.'],
+    // Gaz i inne mają więcej niż węgiel – bez „najwięcej” (nieprawda), sama liczba w tym samym stylu.
+    [0.4, 0.15, 0.45, ' – 40% z węgla, a 15% z OZE.', ' – 40% from coal, 15% from renewables.'],
+  ];
+  for (const [w, o, g, pl, en] of przypadki) {
+    const k = karta();
+    Object.assign(k, { wegiel_udzial: w, oze_udzial: o });
+    k.grupy.gaz_i_inne.udzial = g;
+    for (const [jez, f] of [['pl', pl], ['en', en]]) {
+      ustawJezyk(jez);
+      const t = tekstyKarty(k, RCE, terazPo(k, 1));
+      assert.ok(t.wnioski.pelny.includes(f), `${jez} ${w}: ${t.wnioski.pelny}`);
+    }
+  }
+  ustawJezyk('pl');
+});
+
+test('C2 (odbiór 2): kafelek wymiany – twarda spacja między liczbą a „GW” (PL i EN)', () => {
+  for (const [jez, wzor] of [['pl', /^(kupuje|sprzedaje) ok\. \d+,\d GW$/], ['en', /^(importing|exporting) approx\. \d+\.\d GW$/]]) {
+    ustawJezyk(jez);
+    const k = karta();
+    assert.match(tekstyKarty(k, RCE, terazPo(k, 1)).wymiana.wartosc, wzor);
+  }
+  ustawJezyk('pl');
 });

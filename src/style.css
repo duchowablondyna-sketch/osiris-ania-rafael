@@ -936,6 +936,82 @@ main {
   display: none;
 }
 
+/* Etap C2 (P1, odbiór 25.11.2026): zwinięta Karta – jedna linijka = jedno pytanie, potem „stan na” i krótki wniosek.
+   Kawałki pierwszej linijki oddzielone „ · ” (pusty kawałek ukryty); pusta linijka ukryta. */
+.karta__skrot-linia {
+  display: block;
+}
+
+.karta__skrot-linia[hidden],
+.karta__kawalek[hidden] {
+  display: none;
+}
+
+/* „Stan na …” – mniejsza, szara linijka pod liczbami (odbiór C2). */
+.karta__skrot-stan {
+  margin-top: 2px;
+  font-size: 0.6875rem;
+  color: var(--tekst-pomocniczy);
+}
+
+/* „·” na KOŃCU kawałka (gdy po nim jest widoczny kawałek TEJ SAMEJ linijki) – linia nigdy nie zaczyna się ani nie kończy na „·”. */
+.karta__kawalek:not([hidden]):has(~ .karta__kawalek:not([hidden]))::after {
+  content: " ·";
+  color: var(--tekst-pomocniczy);
+}
+
+/* Zwinięta Karta (komputer): tytuł i strzałka w pierwszym rzędzie, liczby pod nimi na całej szerokości – nic nie jest ucięte. */
+.karta:not([open]) > .karta__naglowek {
+  flex-wrap: wrap;
+  row-gap: 4px;
+}
+
+.karta:not([open]) > .karta__naglowek::after {
+  order: 2;
+}
+
+.karta:not([open]) .karta__skrot {
+  order: 3;
+  flex-basis: 100%;
+}
+
+.karta__skrot-linia[data-zakladka] {
+  cursor: pointer;
+}
+
+/* Kawałek nie łamie się w środku („OZE 13%”) – linijka łamie się tylko między kawałkami. */
+.karta__kawalek {
+  white-space: nowrap;
+}
+
+.karta__skrot-wniosek {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--font-sans, inherit);
+  color: var(--tekst-pomocniczy);
+  white-space: normal;
+}
+
+.karta__skrot-wniosek[hidden] {
+  display: none;
+}
+
+/* Kafelki 2×2 – tylko telefon (blok @media niżej); na komputerze liczby są w zwiniętej Karcie. */
+.kafelki-polski {
+  display: none;
+}
+
+/* Pełniejszy wniosek w „Ile i jak czysto” i linijki „Ile pracuje” (Etap C2). */
+.karta__wniosek {
+  color: var(--tekst);
+}
+
+.karta__zapotrzebowanie,
+.karta__wiatr-slonce {
+  margin: 6px 0 0;
+  color: var(--tekst);
+}
+
 .karta summary:focus-visible,
 .karta button:focus-visible,
 .karta__tresc:focus-visible,
@@ -1775,6 +1851,68 @@ button.panel-moce__nazwa:hover {
 
   .wskaznik__skrot,
   .karta__skrot {
+    display: none;
+  }
+
+  /* Etap C2 (decyzja Ani 25.11.2026): kafelki 2×2 pod trzema przyciskami okien; znikają, gdy okno jest rozwinięte. */
+  .kafelki-polski {
+    position: absolute;
+    top: calc(70px + 3 * (var(--przycisk-okna) + 8px));
+    left: 12px;
+    right: 12px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  main:has(.wskaznik[open], .karta[open], .legenda[open]) .kafelki-polski {
+    display: none;
+  }
+
+  .kafel {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    min-height: 44px;
+    padding: 6px 10px;
+    border: 1px solid var(--szklo-ramka);
+    border-radius: 10px;
+    background: var(--szklo-tlo);
+    -webkit-backdrop-filter: var(--szklo-rozmycie);
+    backdrop-filter: var(--szklo-rozmycie);
+    color: var(--tekst);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .kafel:focus-visible {
+    outline: 2px solid var(--fokus);
+    outline-offset: 2px;
+  }
+
+  .kafel__liczba {
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+
+  .kafel__opis {
+    font-size: 0.75rem;
+    color: var(--tekst-pomocniczy);
+  }
+
+  .kafelki-polski__stan,
+  .kafelki-polski__wniosek {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 0 4px;
+    font-size: 0.75rem;
+    color: var(--tekst-pomocniczy);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+  }
+
+  .kafelki-polski__wniosek[hidden] {
     display: none;
   }
 

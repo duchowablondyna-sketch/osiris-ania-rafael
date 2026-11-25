@@ -271,3 +271,19 @@ test('Etap C1: nowe klucze zakładki „Gdzie” mają PL i EN, bez „obecnie�
     assert.ok(!/obecnie/.test(tekst(pl[k])) && !/currently/.test(tekst(en[k])), `„obecnie”/„currently” w ${k}`);
   }
 });
+
+// Etap C2 (25.11.2026): nowe klucze pierwszego ekranu, Karty i objaśnień – każdy w PL i EN, ten sam rodzaj.
+const KLUCZE_C2 = [
+  'karta.skrot_produkcja', 'karta.skrot_oze', 'karta.skrot_wegiel', 'karta.skrot_rce', 'karta.skrot_moce', 'karta.skrot_stan',
+  'karta.kafel_udzial', 'karta.kafel_rce', 'karta.kafel_moce', 'karta.kafel_aria',
+  'karta.wniosek_krotki', 'karta.wn_produkcja', 'karta.wn_udzialy', 'karta.wn_kupuje', 'karta.wn_sprzedaje', 'karta.wn_co2',
+  'karta.zapotrzebowanie', 'karta.wiatr_slonce_z', 'karta.cena_kwh',
+  'slownik.mw', 'slownik.mwh', 'slownik.saldo', 'slownik.oze', 'slownik.kobize', 'slownik.ipcc', 'slownik.rce', 'slownik.rce_zrodlo', 'slownik.rce_osiris',
+];
+test('Etap C2: nowe klucze mają PL i EN, ten sam rodzaj; RCE bez „netto” i „prosument”', () => {
+  for (const k of KLUCZE_C2) {
+    assert.ok(k in pl && k in en, `brak ${k}`);
+    assert.equal(typeof pl[k], typeof en[k], k);
+  }
+  for (const k of ['slownik.rce', 'slownik.rce_osiris']) assert.ok(!/netto|prosument|net of|prosumer/i.test(pl[k] + en[k]), k);
+});

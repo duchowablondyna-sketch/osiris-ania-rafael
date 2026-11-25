@@ -81,6 +81,8 @@ Poziomy weryfikacji:
   - ceny do 13.06.2024: https://www.pse.pl/dane-systemowe/funkcjonowanie-rb/raporty-dobowe-z-funkcjonowania-rb/podstawowe-wskazniki-cenowe-i-kosztowe/rynkowa-cena-energii-elektrycznej-rce
   - opis pól: https://api.raporty.pse.pl/EndpointsMap.pdf (fragment o RCE): `rce_pln` (RCE), `dtime`, `dtime_utc`, `period` (OREB), `period_utc`, `business_date`, `publication_ts`, `publication_ts_utc`.
 - **Jednostka:** zł/MWh – **z podpisów na stronie raporty.pse.pl** (oś wykresu „PLN/MWh”, kolumna „Rynkowa cena energii [PLN]”), nie z opisu pola (PDF nie podaje jednostki przy `rce_pln`). Poziom 1.
+- **Nazwa i wydawca – źródło wskazane przez Anię (25.11.2026):** pse.pl, zakładka OIRE → Rynkowe ceny energii – „Rynkowa cena energii elektrycznej dla okresu rozliczenia niezbilansowania”, publikowana przez PSE. Na stronie (objaśnienie F1 przy „RCE”, od Etapu C2) tylko to; **bez** „netto” i „rozliczania prosumentów” (brak źródła w repo). Zdanie „To cena hurtowa, nie cena z faktury firmy.” jest **objaśnieniem OSIRIS** (podpis na stronie), nie cytatem PSE. Strony OIRE Claude nie czytał w tym etapie (bez połączeń z PSE).
+- **zł/kWh (od Etapu C2):** na stronie także „= X zł/kWh” – ta sama cena ÷ 1000, dwa miejsca po przecinku.
 - **Okres:** OREB – „okres rozliczenia energii bilansującej” (strona PSE; długości nie podaje). Obserwacja: kwadranse 15-minutowe, 96 na zwykłą dobę; ceny różnią się w obrębie godziny (19.11.2026: 24 z 24 godzin).
 - **Publikacja (obserwacje, nie dokumentacja):** cena na dobę D pojawia się w dobie D−1 między ok. 13:34 a 14:14, jednorazowo (32 doby 20.10–20.11.2026, bez poprawek). Przed tą godziną jutrzejszej doby jeszcze nie ma.
 - **Ceny ujemne:** występują – w 2026 r. 1339 kwadransów w 80 dobach, najniższa −1457,59 zł/MWh (1.05.2026, 14:15–14:30); stan 19.11.2026.
@@ -149,6 +151,17 @@ Pliki źródłowe (PDF) pobrane 21.11.2026 leżą poza repo: `~/Projekty/_dane/k
 - **Data sprawdzenia:** 21.11.2026
 - **Poziom weryfikacji:** 3 (Ania, 21.11.2026, porównanie z raporty.pse.pl: kwadrans 17:15–17:30 – `swm_p` −791,200, `swm_np` 205,606 zgodne z `karta.json`)
 
+### PSE: zapotrzebowanie (his-wlk-cal, pole demand) – od Etapu C2 (25.11.2026)
+
+- **Co:** `demand` – „Zapotrzebowanie na moc” / „KSE power demand” (EndpointsMap.pdf, str. 6, plik w `~/Projekty/_dane/karta/pse-endpointsmap-pobrano-2026-11-21.pdf`, odczyt PDFKit 25.11.2026). Ten sam raport i ten sam kwadrans co miks Karty.
+- **Używamy w:** `public/data/karta.json` → `bilans.zapotrzebowanie_mw` (`scripts/karta/licz.mjs`); na stronie od Etapu C2: Karta Polski → „Ile pracuje z tego, co mamy” – linijka „Zapotrzebowanie (PSE): … GW · produkcja w Polsce: … GW · wymiana: …” (`src/karta-teksty.js`, `tekstZapotrzebowania`).
+- **Jednostka:** MW – **wniosek, nie opis PSE** (PDF nie podaje jednostki): produkcja + szczytowo-pompowe + saldo ≈ `demand` (20.11.2026 12:00–12:15: różnica 12,6 MW; 25.11.2026 06:30–06:45: 38,5 MW).
+- **Dlaczego przy wymianie pokazujemy saldo PSE, a nie różnicę zapotrzebowanie − produkcja (decyzja Ani 25.11.2026):** saldo (`swm_p` + `swm_np`) to wartość podana wprost przez PSE (wymiana planowa). Różnica zapotrzebowanie − produkcja nie jest tym samym: produkcja na stronie nie wlicza elektrowni szczytowo-pompowych (WS), a bilans PSE w danym kwadransie nie zamyka się co do MW (powyżej). Tej różnicy nie liczymy i nie wyjaśniamy na stronie.
+- **Procenty na stronie** (OZE, węgiel, wiatr i słońce) – zawsze od produkcji w Polsce (`produkcja_mw`), nie od zapotrzebowania.
+- **Licencja:** jak wyżej (warunki PSE).
+- **Data sprawdzenia:** 25.11.2026
+- **Poziom weryfikacji:** 1
+
 ### ENTSO-E: znaczenia kodów źródeł (B01–B20)
 
 - **Źródło:** ENTSO-E, „ENTSO-E Code Lists”, wersja 36, wydanie 0 (2015-06-09), lista typów zasobów (B01–B20): https://www.entsoe.eu/Documents/EDI/Library/Core/entso-e-code-list-v36r0.pdf – SHA-256 `46c24a92f04c578594b0c175f295e48c9f1e52de4f151a1403884121dfb624eb`. Nowszych wersji listy nie sprawdzaliśmy.
@@ -175,6 +188,11 @@ Pliki źródłowe (PDF) pobrane 21.11.2026 leżą poza repo: `~/Projekty/_dane/k
 - **Nieznane:** co dokładnie PSE wlicza do BG („inne OZE”) i IN („inne”) – brak opisu u PSE.
 - **Data sprawdzenia:** 21.11.2026
 - **Poziom weryfikacji:** 1
+
+### Nazwy instytucji w objaśnieniach F1 (Etap C2, 25.11.2026)
+
+- **IPCC:** angielska nazwa „Intergovernmental Panel on Climate Change” – z PDF IPCC AR5 Annex III (`~/Projekty/_dane/karta/`, odczyt PDFKit 25.11.2026). Polska nazwa „Międzyrządowy Zespół do spraw Zmian Klimatu (IPCC)” – źródło wskazane przez Anię: Protokół z Kioto, Dz.U. 2005 nr 203 poz. 1684 (**dokumentu Claude nie czytał**).
+- **KOBiZE:** „Krajowy Ośrodek Bilansowania i Zarządzania Emisjami (KOBiZE) funkcjonujący w Instytucie Ochrony Środowiska – Państwowym Instytucie Badawczym” – z PDF KOBiZE „Wskaźniki emisyjności … 2024” (`~/Projekty/_dane/karta/`, odczyt PDFKit 25.11.2026). Nazwa angielska na stronie EN – tłumaczenie OSIRIS.
 
 ### IPCC AR5: ślad CO2 źródeł prądu (cykl życia)
 

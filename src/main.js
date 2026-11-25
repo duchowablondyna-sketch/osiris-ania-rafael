@@ -200,7 +200,9 @@ function odstepKadru() {
   // Telefon: Polska na środku między przyciskami okien (lewa góra) a „← OSIRIS” (dół), bez przesunięcia w prawo.
   if (TELEFON.matches) {
     const mapa = document.getElementById('mapa');
-    const przyciski = OKNA_TELEFONU.filter(Boolean).map((e) => e.getBoundingClientRect().bottom);
+    // Etap C2: kafelki 2×2 pod przyciskami okien – Polska pod nimi (gdy widoczne).
+    const kafelki = document.getElementById('kafelki-polski');
+    const przyciski = [...OKNA_TELEFONU, kafelki?.offsetParent ? kafelki : null].filter(Boolean).map((e) => e.getBoundingClientRect().bottom);
     const gora = Math.max(...przyciski) - mapa.getBoundingClientRect().top + 16;
     const powrot = document.querySelector('.powrot');
     const dol = powrot ? mapa.getBoundingClientRect().bottom - powrot.getBoundingClientRect().top + 12 : MARGINES;
@@ -235,7 +237,11 @@ function kameraPolski() {
   map.setPadding({ top: 0, right: 0, bottom: 0, left: 0 });
   // cameraForBounds daje przybliżenie dopasowane do wolnej części ekranu. Jego środek jest już przesunięty
   // o odstęp, więc bierzemy środek prostokąta Polski – a odstęp ustawia go w środku wolnej części ekranu.
-  const kamera = map.cameraForBounds(GRANICE_POLSKI, { padding });
+  // Kula (globe): przy dużym odstępie tylko od góry (kafelki na telefonie, Etap C2) MapLibre zaniża przybliżenie
+  // (25.11.2026: 2,15 zamiast ok. 4,6 – widać całą kulę). Przybliżenie liczymy z tym samym wolnym miejscem rozłożonym
+  // po równo na górę i dół; środek Polski i tak ustawia prawdziwy odstęp (padding niżej). Komputer: odstępy góra = dół.
+  const polowa = (padding.top + padding.bottom) / 2;
+  const kamera = map.cameraForBounds(GRANICE_POLSKI, { padding: TELEFON.matches ? { ...padding, top: polowa, bottom: polowa } : padding });
   if (!kamera) return null;
   // Odstęp tylko z lewej, równy 2 × przesunięcie: środek wolnej części = środek okna + przesunięcie.
   const szerokosc = document.getElementById('mapa').clientWidth;
@@ -958,7 +964,10 @@ const cenaGotowa = fetch(`${import.meta.env.BASE_URL}data/rce.json`, { cache: 'n
   });
 
 // Karta Polski (panel w lewym dolnym rogu) – cena z tego samego rce.json, bez drugiego pobrania.
-uruchomKarte(cenaGotowa.then(() => daneRce));
+// Telefon: kafelki dostały liczby (mogły urosnąć) – kadr Polski jeszcze raz, jeśli widz nie ruszał mapy i lot już był (Etap C2).
+uruchomKarte(cenaGotowa.then(() => daneRce)).then(() => {
+  if (TELEFON.matches && !uzytkownikRuszylMape && lotRuszyl && map.loaded()) ustawKadr();
+});
 
 // Legenda „Co oznaczają znaczki”: nagłówek stoi, przewija się tylko treść (.legenda__tresc), pod nią
 // „↓ więcej poniżej” (src/wiecej-ponizej.js). Wysokość treści = miejsce od góry legendy do odstępu od dołu
