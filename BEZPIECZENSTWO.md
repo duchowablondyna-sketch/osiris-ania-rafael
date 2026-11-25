@@ -114,6 +114,8 @@
 - [ ] Na później: podświetlanie całej linii 220/400 kV od stacji do stacji (łączenie odcinków OSM po nazwie) – dziś najechanie podświetla tylko jeden odcinek z OSM (decyzja Ani 23.11.2026).
 - [ ] Na później: okienko C otwarte przyciskiem spoza mapy („?” przy pasku OZE, okienko Polski) – po zamknięciu krzyżykiem fokus ma wracać na element, który je otworzył (dziś po kliknięciu myszą wraca na mapę) (23.11.2026).
 - [ ] Na później: po rozwinięciu stopki „Źródła i licencje” panel Karta Polski robi się bardzo niski (za mało miejsca nad stopką) – do poprawy przy układzie strony (23.11.2026).
+- [ ] Na później: przy niskim oknie komputera (poniżej ok. 625 px wysokości) linijka źródła w rozwiniętym okienku PSE jest widoczna dopiero po przewinięciu (25.11.2026).
+- [ ] Na później: pełny widok poziomy telefonu i tablety 641–1023 px (dziś działa tam wygląd komputerowy; po obróceniu telefonu okna zajmują dużą część ekranu) (25.11.2026).
 - [ ] Na później: okienko Polski mogłoby się pokazywać także po najechaniu na obrys Polski (Natural Earth – dane już są na mapie) (decyzja Ani 23.11.2026).
 - [ ] Harmonogram GitHub Actions bywa opóźniany lub pomijany (20.11.2026: zamiast 5 uruchomień były 2, z opóźnieniem 2–3 h) – jeśli się powtarza, rozważyć Cloudflare Cron Triggers.
 - [ ] Pulsowanie farm wiatrowych w rytm produkcji krajowej – dopiero po dodaniu farm lądowych; skala względem mocy zainstalowanej, nie maksimum doby.
