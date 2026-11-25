@@ -1,13 +1,19 @@
 name: Robot OSIRIS – wolne moce PSE
 
-# Etap B (od 21.11.2026): co tydzień w środę rano + ręczne uruchamianie (tryby testowe).
+# Etap B (od 21.11.2026): co tydzień w środę rano, od 25.11.2026 także w czwartek (zapas) + ręczne uruchamianie (tryby testowe).
 # Robot NIGDY nie scala – nie ma takiego kroku. Nowe dane trafiają na stronę tylko przez PR zatwierdzony przez Anię.
 # Powiadomienia o przebiegach z harmonogramu GitHub wysyła osobie, która ostatnia zmieniła linijkę „cron” w tym pliku.
 on:
   schedule:
     # Środa 05:17 UTC = 06:17 czasu polskiego zimą, 07:17 latem. Minuta nieokrągła – GitHub mocniej opóźnia
-    # przebiegi o pełnych godzinach. Raz w tygodniu – nie obciążamy serwera PSE.
+    # przebiegi o pełnych godzinach. Najwyżej dwa razy w tygodniu – nie obciążamy serwera PSE.
     - cron: "17 5 * * 3"
+    # Czwartek 05:47 UTC – zapas (od 25.11.2026): GitHub gubi i spóźnia przebiegi z harmonogramu (środa 25.11: start
+    # 15:36 zamiast 05:17; „Odśwież stronę” 19–25.11: 22 z 37 terminów pominięte – cloudflare/zegar/README.md).
+    # Drugi przebieg przy tym samym dokumencie PSE niczego nie dubluje: ten sam SHA-256 → „bez-zmian”; otwarty PR/issue
+    # z tym SHA-256 albo istniejąca gałąź → nic nie wysyła (scripts/pse-moce/zglos.mjs, test „już zgłoszone”);
+    # concurrency niżej – dwa przebiegi nigdy naraz.
+    - cron: "47 5 * * 4"
   workflow_dispatch:
     inputs:
       tryb:
