@@ -446,4 +446,39 @@ export default {
     'Linie najwyższych napięć: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>, <a href="https://opendatacommons.org/licenses/odbl/" target="_blank" rel="noopener">ODbL</a> (podpis widoczny też stale na mapie, w prawym dolnym rogu).',
   'stopka.czcionki':
     'Czcionki: Inter i JetBrains Mono, SIL Open Font License 1.1 (<a href="/licencje/OFL-Inter.txt" target="_blank" rel="noopener">licencja Inter</a>, <a href="/licencje/OFL-JetBrains-Mono.txt" target="_blank" rel="noopener">licencja JetBrains Mono</a>); pliki czcionek są na naszym serwerze.',
+  // ── Strona „O nas” (/o-nas/) – tekst Ani (25.11.2026) z poprawkami 1–7 przyjętymi przez Anię. Treść w HTML (bez skryptu). ──
+  'onas.meta.tytul': 'O nas · OSIRIS – prąd w Polsce',
+  'onas.meta.opis': 'Kto stoi za OSIRIS i jak powstał: dane z publicznych źródeł, zbudowany z pomocą AI pod kontrolą ludzi i reguł.',
+  'onas.logo_aria': 'OSIRIS – strona główna',
+  'onas.tytul': 'O nas',
+  'onas.projekt_tytul': 'O projekcie',
+  'onas.projekt':
+    'OSIRIS pokazuje w jednym miejscu, skąd Polska bierze prąd, ile on kosztuje i gdzie da się podłączyć nowe inwestycje. ' +
+    'Wszystkie dane pochodzą z publicznych źródeł – m.in. PSE, URE, OpenStreetMap i EMODnet – przy każdej liczbie jest źródło i data.',
+  'onas.kto_tytul': 'Kto za tym stoi',
+  'onas.anna':
+    '<strong>Anna Kołodziejczyk</strong> – twórczyni i prowadząca rozmowy „Anna Kołodziejczyk | AI Revolution” z ludźmi, którzy kształtują sztuczną inteligencję. ' +
+    'Wyznacza kierunek i wygląd OSIRIS i decyduje, co trafia na stronę.',
+  'onas.rafael':
+    '<strong>Rafael Knuth</strong> – doradca i trener. Pomaga zespołom biznesowym i technicznym budować z AI tak, żeby efekt wytrzymał lata: ' +
+    'według wspólnych zasad inżynierskich i reguł, które obowiązują tak samo człowieka, jak agenta AI. Mentor projektu.',
+  'onas.jak_tytul': 'Jak to zbudowaliśmy',
+  'onas.jak':
+    'AI pisze szybko – dlatego o tym, co trafia na stronę, decydują ludzie i reguły. OSIRIS powstał w kilka tygodni z pomocą AI (Claude Code). ' +
+    'Każda zmiana jest najpierw oglądana i sprawdzana, a dopiero potem publikowana. ' +
+    'Robot co tydzień sprawdza, czy PSE opublikowało nowy dokument o wolnej mocy przyłączeniowej; dane o prądzie odświeżamy co 4 godziny. ' +
+    'Kod jest publiczny <a href="https://github.com/duchowablondyna-sketch/osiris-ania-rafael" target="_blank" rel="noopener noreferrer">na GitHubie<span class="tylko-czytnik"> (otwiera się w nowej karcie)</span></a>.',
+  'onas.czym_tytul': 'Czym OSIRIS nie jest',
+  'onas.czym':
+    'To nie jest oficjalny serwis PSE ani operatorów sieci. Wyliczenia własne (np. ślad CO₂) oznaczamy jako „szacunek OSIRIS”. ' +
+    'Wolna moc to szacunek operatora, a nie gwarancja przyłączenia.',
+  'onas.kontakt_tytul': 'Kontakt',
+  'onas.linkedin_anna': 'Anna Kołodziejczyk na LinkedIn',
+  'onas.linkedin_rafael': 'Rafael Knuth na LinkedIn',
+  'onas.nowa_karta': '(otwiera się w nowej karcie)',
+  'onas.dol_aria': 'Dalej',
+  'onas.strona_glowna': 'Strona główna',
+  'onas.mapa': 'Mapa',
+  'onas.zrodla_info': 'Źródła i licencje wszystkich danych – w stopce mapy.',
+  'stopka.o_nas': 'O nas',
 };

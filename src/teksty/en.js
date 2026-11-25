@@ -471,4 +471,39 @@ export default {
     'Extra-high-voltage lines: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>, <a href="https://opendatacommons.org/licenses/odbl/" target="_blank" rel="noopener">ODbL</a> (this credit is also always visible on the map, bottom right).',
   'stopka.czcionki':
     'Fonts: Inter and JetBrains Mono, SIL Open Font License 1.1 (<a href="/licencje/OFL-Inter.txt" target="_blank" rel="noopener">Inter licence</a>, <a href="/licencje/OFL-JetBrains-Mono.txt" target="_blank" rel="noopener">JetBrains Mono licence</a>); the font files are hosted on our server.',
+  // ── About page (/en/about/) ──
+  'onas.meta.tytul': 'About · OSIRIS – electricity in Poland',
+  'onas.meta.opis': 'Who is behind OSIRIS and how it was built: data from public sources, built with AI under the control of people and rules.',
+  'onas.logo_aria': 'OSIRIS – home page',
+  'onas.tytul': 'About',
+  'onas.projekt_tytul': 'About the project',
+  'onas.projekt':
+    'OSIRIS shows in one place where Poland gets its electricity, what it costs and where new investments can connect to the grid. ' +
+    'All data comes from public sources – including PSE (Poland\'s transmission system operator), URE, OpenStreetMap and EMODnet – with the source and date next to every number.',
+  'onas.kto_tytul': 'Who is behind it',
+  'onas.anna':
+    '<strong>Anna Kołodziejczyk</strong> – creator and host of “Anna Kołodziejczyk | AI Revolution”, conversations with people shaping artificial intelligence. ' +
+    'She sets the direction and design of OSIRIS and decides what goes live.',
+  'onas.rafael':
+    '<strong>Rafael Knuth</strong> – consultant and trainer. He helps business and technology teams build with AI in a way that lasts – ' +
+    'using shared engineering principles and rules that apply equally to humans and AI agents. Project mentor.',
+  'onas.jak_tytul': 'How we built it',
+  'onas.jak':
+    'AI writes fast – so people and rules decide what goes live. OSIRIS was built in a few weeks with AI (Claude Code). ' +
+    'Every change is reviewed and checked before it is published. ' +
+    'A robot checks weekly whether PSE has published a new document on available connection capacity; electricity data is refreshed every 4 hours. ' +
+    'The code is public <a href="https://github.com/duchowablondyna-sketch/osiris-ania-rafael" target="_blank" rel="noopener noreferrer">on GitHub<span class="tylko-czytnik"> (opens in a new tab)</span></a>.',
+  'onas.czym_tytul': 'What OSIRIS is not',
+  'onas.czym':
+    'It is not an official service of PSE or grid operators. Our own calculations (e.g. carbon intensity) are labelled “OSIRIS estimate”. ' +
+    'Available connection capacity is the operator\'s estimate, not a guarantee of connection.',
+  'onas.kontakt_tytul': 'Contact',
+  'onas.linkedin_anna': 'Anna Kołodziejczyk on LinkedIn',
+  'onas.linkedin_rafael': 'Rafael Knuth on LinkedIn',
+  'onas.nowa_karta': '(opens in a new tab)',
+  'onas.dol_aria': 'More',
+  'onas.strona_glowna': 'Home',
+  'onas.mapa': 'Map',
+  'onas.zrodla_info': 'Sources and licences for all data – in the map footer.',
+  'stopka.o_nas': 'About',
 };
