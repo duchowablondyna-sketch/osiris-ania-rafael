@@ -62,3 +62,12 @@ export function tekstUwagi(wpis, dataWykazu) {
 export function dopisekListy(wpis) {
   return wpis.pusty ? t('moce.wstrzymane_pusty', napieciaI(napiecia220400([wpis]))) : t('moce.wstrzymane_110');
 }
+
+// Etap C2: wolna moc w zwiniętej Karcie i w kafelku telefonu – „25 stacji planowanych · moc na 2031” (liczba i rok z danych,
+// rok – ze zdania PSE w wyciągu, jak w C1). Bez roku w danych – null (kawałek się nie pokazuje; nie sugerujemy mocy „dziś”).
+export function tekstMocySkrot(dane) {
+  const { rok } = zZdanPse(dane);
+  if (rok === null || !Array.isArray(dane.odbiorcy)) return null;
+  const stacje = tn('liczba.stacja_planowana', dane.odbiorcy.length);
+  return { skrot: t('karta.skrot_moce', stacje, rok), kafelLiczba: stacje, kafelOpis: t('karta.kafel_moce', rok) };
+}

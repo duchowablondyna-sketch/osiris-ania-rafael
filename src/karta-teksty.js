@@ -105,15 +105,44 @@ export function tekstCeny(rce, teraz) {
     const k = Date.parse(p.koniec_utc);
     return teraz >= k - MS_KWADRANS && teraz < k;
   });
-  if (!biezacy) return { ok: false, wartosc: t(rce ? 'karta.cena_brak_dzis' : 'wspolne.brak_danych_pse'), opis: '' };
-  return { ok: true, wartosc: `${zl(biezacy.cena)} ${t('jednostka.zl_mwh')}`, opis: biezacy.okres.replace(' - ', '–') };
+  if (!biezacy) return { ok: false, wartosc: t(rce ? 'karta.cena_brak_dzis' : 'wspolne.brak_danych_pse'), opis: '', kwh: '', zl: null };
+  return {
+    ok: true,
+    wartosc: `${zl(biezacy.cena)} ${t('jednostka.zl_mwh')}`,
+    opis: biezacy.okres.replace(' - ', '–'),
+    // Etap C2: ta sama cena w zł/kWh (÷ 1000, dwa miejsca; ujemna zostaje ujemna).
+    kwh: t('karta.cena_kwh', zl(biezacy.cena / 1000)),
+    zl: zl(biezacy.cena),
+  };
+}
+
+// Etap C2: cena RCE z TEGO SAMEGO kwadransa co miks (koniec kwadransu w UTC) – do nagłówka Karty i kafelków,
+// żeby w linijce była jedna godzina. Brak ceny dla tego kwadransa – null (w nagłówku bez ceny).
+export function cenaKwadransuMiksu(rce, koniecUtc) {
+  const k = Date.parse(koniecUtc);
+  for (const seria of Object.values(rce?.doby ?? {})) {
+    const p = (seria ?? []).find((x) => typeof x.cena === 'number' && Date.parse(x.koniec_utc) === k);
+    if (p) return zl(p.cena);
+  }
+  return null;
+}
+
+// Procent całkowity – ta sama reguła co liczba-bohater (jedna funkcja dla nagłówka, kafelków i zdań – test).
+export const procent0 = (u) => `${Math.round(u * 100)}%`;
+
+// Etap C2 (odbiór 25.11.2026): wymiana w GW z jednym miejscem po przecinku – jak produkcja. Jedna funkcja dla kafelka,
+// wniosku i linijki zapotrzebowania. Saldo, które po zaokrągleniu daje 0,0 GW (poniżej 50 MW) – null („ok. 0 GW”).
+export function wymianaGw(saldo) {
+  if (typeof saldo !== 'number' || Math.round(Math.abs(saldo) / 100) === 0) return null;
+  return gw(Math.abs(saldo));
 }
 
 function tekstWymiany(saldo) {
-  const mw = Math.round(Math.abs(saldo) / 10) * 10;
-  if (mw === 0) return { wartosc: t('karta.wymiana_zero'), opis: t('karta.wymiana_zero_opis') };
+  const ile = wymianaGw(saldo);
+  // Etap C2: „planowo” stoi w nagłówku kafelka („Wymiana z zagranicą (planowa)”) – pod liczbą już bez niego.
+  if (ile === null) return { wartosc: t('karta.wymiana_zero'), opis: t('karta.wymiana_zero_opis') };
   // Plus – prąd płynie do Polski („kupuje” / „importing”), minus – z Polski („sprzedaje” / „exporting”).
-  return { wartosc: t(saldo > 0 ? 'karta.wymiana_kupuje' : 'karta.wymiana_sprzedaje', liczba(mw)), opis: t('karta.wymiana_planowo') };
+  return { wartosc: t(saldo > 0 ? 'karta.wymiana_kupuje' : 'karta.wymiana_sprzedaje', ile), opis: '' };
 }
 
 // Kawałki OZE z listy paliw w karta.json; udział = suma MW rodzaju / cała produkcja (jak udziały grup w licz.mjs).
@@ -133,6 +162,55 @@ function kawalkiOze(karta) {
 const powodPlakietki = (powod) => zDanych(powod, 'karta.powod.');
 
 // karta – obiekt z karta.json albo null (plik się nie wczytał); rce – obiekt z rce.json albo null; teraz – ms.
+// ── Etap C2 (decyzje Ani 25.11.2026): zdania-wnioski z danych. Czas przeszły, kwadrans z danych, bez rad.
+// Wszystkie procenty od jednej podstawy – produkcji w Polsce (karta.produkcja_mw), jak w Karcie.
+const mwKodow = (karta) => new Map((Array.isArray(karta.paliwa) ? karta.paliwa : []).filter((p) => typeof p.mw === 'number').map((p) => [p.kod_pse, p.mw]));
+
+// Kwadrans: „06:30–06:45”; gdy nie z dzisiejszej doby – z dniem: „23:30–23:45 (24.11)”.
+function okresKwadransu(karta, teraz) {
+  const okres = karta.kwadrans.okres.replace(' - ', '–');
+  const koniec = Date.parse(karta.kwadrans.koniec_utc) - 1; // koniec 00:00 należy jeszcze do poprzedniej doby
+  return dobaPL(koniec) === dobaPL(teraz) ? okres : `${okres} (${dzienPL(koniec)})`;
+}
+
+// Wiatr (na lądzie i na morzu) i słońce: kody WI + WM + ES – te same co w pasku OZE. Brak kodu – null.
+export function wiatrISlonce(karta) {
+  const m = mwKodow(karta);
+  if (!['WI', 'WM', 'ES'].every((k) => m.has(k)) || !(karta.produkcja_mw > 0)) return null;
+  const mw = m.get('WI') + m.get('WM') + m.get('ES');
+  return { mw, udzial: mw / karta.produkcja_mw };
+}
+
+function tekstyWnioskow(karta, ozeWiecej, teraz) {
+  const okres = okresKwadransu(karta, teraz);
+  const [u1, k1, u2, k2] = ozeWiecej
+    ? [karta.oze_udzial, t('karta.krotko_oze'), karta.wegiel_udzial, t('karta.krotko_wegiel')]
+    : [karta.wegiel_udzial, t('karta.krotko_wegiel'), karta.oze_udzial, t('karta.krotko_oze')];
+  // K2: bez liczb. Poniżej 50% – „najwięcej” tylko wtedy, gdy ta grupa ma więcej niż „gaz i inne”; inaczej zdania nie ma.
+  const najwiecej = u1 >= 0.5 || u1 > (karta.grupy?.gaz_i_inne?.udzial ?? 1);
+  const krotki = najwiecej ? t('karta.wniosek_krotki', okres, u1 >= 0.5, k1) : null;
+  // „w większości” / „mostly” – tylko gdy udział ≥ 50% (przed zaokrągleniem).
+  let pelny = t('karta.wn_produkcja', okres, gw(karta.produkcja_mw)) + t('karta.wn_udzialy', u1 >= 0.5, k1, procent0(u1), k2, procent0(u2), najwiecej);
+  // Wymiana: tylko saldo PSE (swm_p + swm_np), w GW jak w kafelku (ta sama funkcja); „ok. 0 GW” – bez tej części.
+  const saldo = karta.wymiana?.saldo_mw;
+  const ile = wymianaGw(saldo);
+  if (ile !== null) pelny += t(saldo > 0 ? 'karta.wn_kupuje' : 'karta.wn_sprzedaje', ile);
+  if (typeof karta.co2?.g_kwh_ok === 'number') pelny += t('karta.wn_co2', liczba(karta.co2.g_kwh_ok));
+  return { krotki, pelny };
+}
+
+// „Ile pracuje z tego, co mamy”: zapotrzebowanie PSE (pole demand) + wiatr i słońce (procent od produkcji w Polsce).
+// Brak liczby zapotrzebowania – bez linijki; brak kodów wiatru/słońca – bez zdania.
+export function tekstZapotrzebowania(karta) {
+  const zap = karta.bilans?.zapotrzebowanie_mw;
+  const ws = wiatrISlonce(karta);
+  const w = tekstWymiany(karta.wymiana.saldo_mw);
+  return {
+    linijka: typeof zap === 'number' ? t('karta.zapotrzebowanie', gw(zap), gw(karta.produkcja_mw), `${w.wartosc} (${t('karta.wymiana_planowo')})`) : null,
+    wiatrSlonce: ws ? t('karta.wiatr_slonce_z', gw(ws.mw), gw(karta.produkcja_mw), procent0(ws.udzial)) : null,
+  };
+}
+
 export function tekstyKarty(karta, rce, teraz = Date.now()) {
   const cena = tekstCeny(rce, teraz);
   const pobrano = karta?.czas_pobrania ? formatCzasu(karta.czas_pobrania) : null;
@@ -164,22 +242,42 @@ export function tekstyKarty(karta, rce, teraz = Date.now()) {
   const oze = karta.oze_udzial > karta.wegiel_udzial;
   const bohater = {
     grupa: oze ? 'oze' : 'wegiel',
-    procent: `${Math.round((oze ? karta.oze_udzial : karta.wegiel_udzial) * 100)}%`,
+    procent: procent0(oze ? karta.oze_udzial : karta.wegiel_udzial),
     zdanie: t(oze ? 'karta.bohater_oze' : 'karta.bohater_wegiel'),
     krotko: t(oze ? 'karta.krotko_oze' : 'karta.krotko_wegiel'),
   };
 
   const publikacja = Date.parse(karta.kwadrans.publikacja_utc);
   const stanIPublikacja = t('karta.stan', stan) + (Number.isFinite(publikacja) ? t('karta.opublikowalo', chwila(publikacja, teraz)) : '');
-  const podpis = t('karta.podpis', stanIPublikacja);
+  // Mała linijka pod liczbą-bohaterem: najpierw kwadrans z danych (odbiór C2, 25.11.2026).
+  const podpis = t('karta.podpis', okresKwadransu(karta, teraz), stanIPublikacja);
 
   const pasek = PASEK.map(({ grupa, nazwa }) => ({ grupa, nazwa, udzial: karta.grupy[grupa].udzial, tekst: procent1(karta.grupy[grupa].udzial) }));
   const co2 = { wartosc: t('karta.co2_wartosc', liczba(karta.co2.g_kwh_ok)), opis: t('karta.co2_opis') };
+
+  const cenaMiksu = cenaKwadransuMiksu(rce, karta.kwadrans.koniec_utc);
+  const wnioski = plakietka ? { krotki: null, pelny: null } : tekstyWnioskow(karta, oze, teraz);
 
   return {
     ok: true,
     plakietka,
     skrot: t('karta.skrot', `${bohater.procent} ${bohater.krotko}`, stan),
+    // Etap C2 (P1): kawałki zwiniętej Karty i kafelków telefonu – te same liczby (jedna funkcja procent0).
+    skrotCzesci: {
+      produkcja: t('karta.skrot_produkcja', gw(karta.produkcja_mw)),
+      bohater: `${bohater.procent} ${bohater.krotko}`,
+      drugi: oze ? t('karta.skrot_wegiel', procent0(karta.wegiel_udzial)) : t('karta.skrot_oze', procent0(karta.oze_udzial)),
+      rce: cenaMiksu ? t('karta.skrot_rce', cenaMiksu) : null,
+      stan: t('karta.skrot_stan', stan),
+    },
+    kafle: {
+      // Telefon: ten sam procent co liczba-bohater i nagłówek komputera (decyzja Ani 25.11.2026).
+      bohater: `${bohater.procent} ${bohater.krotko}`,
+      drugi: oze ? t('karta.skrot_wegiel', procent0(karta.wegiel_udzial)) : t('karta.skrot_oze', procent0(karta.oze_udzial)),
+      rce: cenaMiksu ? `${cenaMiksu} ${t('jednostka.zl_mwh')}` : null,
+    },
+    wnioski,
+    zapotrzebowanie: tekstZapotrzebowania(karta),
     bohater,
     podpis,
     pasek,

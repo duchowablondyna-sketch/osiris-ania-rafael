@@ -136,7 +136,21 @@
       <details class="karta" id="karta">
         <summary class="karta__naglowek">
           <span class="karta__tytul">{{karta.tytul}}</span>
-          <span class="karta__skrot" id="karta-skrot">{{wspolne.wczytywanie}}</span>
+          <!-- Etap C2, wariant P1 (decyzja Ani 25.11.2026, odbiór 25.11.2026): zwinięta Karta – jedna linijka = jedno pytanie:
+               1. węgiel/OZE i produkcja, 2. cena RCE, 3. wolna moc PSE, 4. „PSE, stan na …” (mniejsza, szara), potem krótki wniosek.
+               Linijka z data-zakladka otwiera Kartę na tej zakładce (src/karta.js). „·” tylko między kawałkami tej samej linijki.
+               Pusta linijka / kawałek jest ukryty (np. brak ceny). Liczby: src/karta-teksty.js; wolna moc: src/moce.js. -->
+          <span class="karta__skrot" id="karta-skrot">
+            <span class="karta__skrot-linia" data-zakladka="ile">
+              <span class="karta__kawalek" id="skrot-bohater" hidden></span>
+              <span class="karta__kawalek" id="skrot-drugi" hidden></span>
+              <span class="karta__kawalek" id="skrot-produkcja">{{wspolne.wczytywanie}}</span>
+            </span>
+            <span class="karta__skrot-linia" id="skrot-rce" data-zakladka="ile" hidden></span>
+            <span class="karta__skrot-linia" id="skrot-moce" data-zakladka="gdzie" hidden></span>
+            <span class="karta__skrot-linia karta__skrot-stan" id="skrot-stan" hidden></span>
+            <span class="karta__skrot-wniosek" id="skrot-wniosek" hidden></span>
+          </span>
         </summary>
         <div class="karta__zakladki" role="tablist" aria-label="{{karta.tytul}}">
           <button type="button" role="tab" id="zakladka-skad" aria-controls="karta-skad" aria-selected="false" tabindex="-1">{{karta.zakladka_skad}}</button>
@@ -197,6 +211,8 @@
           <p class="karta__plakietka" id="karta-plakietka" hidden><span aria-hidden="true">⚠</span> <span id="karta-plakietka-tekst"></span></p>
           <p class="karta__bohater"><button type="button" class="karta__procent liczby" id="karta-procent" aria-haspopup="dialog" disabled></button> <span id="karta-zdanie">{{wspolne.wczytywanie}}</span></p>
           <p class="karta__podpis" id="karta-podpis"></p>
+          <!-- Pełniejszy wniosek (Etap C2): produkcja, udziały, wymiana planowa PSE, ślad CO₂ – z danych; bez danych ukryty. -->
+          <p class="karta__wniosek" id="karta-wniosek" hidden></p>
           <div class="karta__pasek" id="karta-pasek" aria-hidden="true"></div>
           <ul class="karta__legenda-paska" id="karta-legenda-paska" aria-label="{{karta.miks_aria}}"></ul>
           <!-- Paski „produkcja teraz na tle mocy zainstalowanej” (PR d, decyzje Ani 23.11.2026): zwinięte na starcie.
@@ -204,6 +220,9 @@
           <details class="karta__moce" id="karta-moce">
             <summary>{{karta.moce_tytul}}</summary>
             <p class="karta__podpis" id="karta-moce-podpis"></p>
+            <!-- Etap C2: zapotrzebowanie PSE i wiatr + słońce (procent od produkcji w Polsce) – z karta.json; bez danych ukryte. -->
+            <p class="karta__zapotrzebowanie" id="karta-zapotrzebowanie" hidden></p>
+            <p class="karta__wiatr-slonce" id="karta-wiatr-slonce" hidden></p>
             <ul class="karta__moce-lista" id="karta-moce-lista" aria-label="{{karta.moce_aria}}"></ul>
             <ul class="karta__moce-uwagi">
               <li>{{karta.uwaga_dostepna}}</li>
@@ -217,8 +236,9 @@
           </details>
           <dl class="karta__liczby">
             <div>
-              <dt class="etykieta-mala">{{karta.cena_rce}}</dt>
+              <dt class="etykieta-mala" id="karta-cena-etykieta">{{karta.cena_rce}}</dt>
               <dd class="karta__wartosc liczby" id="karta-cena">{{wspolne.wczytywanie}}</dd>
+              <dd class="karta__opis" id="karta-cena-kwh"></dd>
               <dd class="karta__opis" id="karta-cena-opis"></dd>
             </div>
             <div>
@@ -256,6 +276,18 @@
           <p>{{karta.wkrotce}}</p>
         </section>
       </details>
+
+      <!-- Telefon (do 640 px, Etap C2 – decyzja Ani 25.11.2026): kafelki 2×2 pod przyciskami okien – te same liczby co
+           zwinięta Karta na komputerze (na komputerze ukryte). Kafelek otwiera Kartę na swojej zakładce (src/karta.js).
+           Gdy jakieś okno jest rozwinięte – kafelki znikają (src/style.css). Kadr Polski liczy się pod nimi (src/main.js). -->
+      <div class="kafelki-polski" id="kafelki-polski" role="group" aria-label="{{karta.tytul}}">
+        <button type="button" class="kafel" data-zakladka="ile"><span class="kafel__liczba liczby" id="kafel-bohater">…</span><span class="kafel__opis">{{karta.kafel_udzial}}</span></button>
+        <button type="button" class="kafel" data-zakladka="ile"><span class="kafel__liczba liczby" id="kafel-drugi">…</span><span class="kafel__opis">{{karta.kafel_udzial}}</span></button>
+        <button type="button" class="kafel" data-zakladka="ile"><span class="kafel__liczba liczby" id="kafel-rce">…</span><span class="kafel__opis">{{karta.kafel_rce}}</span></button>
+        <button type="button" class="kafel" data-zakladka="gdzie"><span class="kafel__liczba liczby" id="kafel-moce">…</span><span class="kafel__opis" id="kafel-moce-opis"></span></button>
+        <p class="kafelki-polski__stan" id="kafel-stan"></p>
+        <p class="kafelki-polski__wniosek" id="kafel-wniosek" hidden></p>
+      </div>
 
       <!-- Powrót na stronę tytułową: zwykły link (działa z klawiatury i z przyciskiem „Wstecz” przeglądarki). -->
       <a class="powrot" href="{{@adres:tytulowa}}" aria-label="{{mapa.powrot_aria}}">← OSIRIS</a>

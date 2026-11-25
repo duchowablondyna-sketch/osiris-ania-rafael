@@ -6,7 +6,8 @@
 // – mocy stacji nigdy nie sumujemy (PSE: moc jednej stacji wpływa na moc stacji sąsiednich).
 import { stacjeBezRozpatrzenia, podzialStacji } from './wykaz-rozdzielni.js';
 import { t, tn, liczba, cytatPse, formatDoby } from './jezyk.js';
-import { tekstPodsumowania, tekstUwagi, dopisekListy, napieciaLub, tekstWniosku } from './moce-teksty.js';
+import { oznaczTerminy, objasnienie } from './terminy.js';
+import { tekstPodsumowania, tekstUwagi, dopisekListy, napieciaLub, tekstWniosku, tekstMocySkrot } from './moce-teksty.js';
 
 export const KOLOR_MOCY = '#2DD4BF';
 const KOSMOS = '#05070D';
@@ -297,49 +298,6 @@ export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, okienka }) 
   map.on('mouseleave', 'moce', () => (map.getCanvas().style.cursor = ''));
 
 
-  // Trudne słowa w podsumowaniu (Etap C1, forma F1 – decyzja Ani 25.11.2026): „rozdzielni” i pierwsze „kV” po nim są
-  // podkreślone; okienko C z tym samym tekstem co w słowniku (slownik.*) i podpisem „objaśnienie OSIRIS”.
-  // Działa myszą, dotykiem i z klawiatury (Tab + Enter, Esc) – okienka.podlacz.
-  function oznaczTerminy(el) {
-    const tekstNode = el.firstChild;
-    if (tekstNode?.nodeType !== Node.TEXT_NODE) return;
-    const s = tekstNode.textContent;
-    const slowoR = t('slownik.rozdzielnia_w_zdaniu');
-    const iR = s.indexOf(slowoR);
-    const iK = iR < 0 ? -1 : s.indexOf('kV', iR);
-    if (iR < 0 || iK < 0) return;
-    const termin = (slowo, klucz, tytul) => {
-      const tresc = () => {
-        const d = document.createElement('div');
-        d.className = 'okienko-pytajnik';
-        const n = document.createElement('strong');
-        n.textContent = tytul;
-        const p = document.createElement('p');
-        p.textContent = t(klucz);
-        const podpis = document.createElement('p');
-        podpis.className = 'zrodlo';
-        podpis.textContent = t('slownik.objasnienie');
-        d.append(n, p, podpis);
-        return d;
-      };
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'termin';
-      b.textContent = slowo;
-      b.setAttribute('aria-haspopup', 'dialog');
-      b.setAttribute('aria-label', `${slowo} – ${t('slownik.aria', tytul)}`);
-      okienka.podlacz(b, tresc);
-      return b;
-    };
-    el.replaceChild(document.createTextNode(s.slice(iK + 2)), tekstNode);
-    el.prepend(
-      document.createTextNode(s.slice(0, iR)),
-      termin(slowoR, 'slownik.rozdzielnia', t('slownik.rozdzielnia_termin')),
-      document.createTextNode(s.slice(iR + slowoR.length, iK)),
-      termin('kV', 'slownik.kv', t('slownik.kv_termin')),
-    );
-  }
-
   // Lista w panelu: przycisk otwiera okienko stacji (bez ruchu kamery).
   function wypelnijPanel(sprawdzono) {
     for (const nr of [1, 2]) {
@@ -385,7 +343,15 @@ export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, okienka }) 
     const ile = dane.odbiorcy.length;
     if (wykaz) {
       podsumowanie.textContent = tekstPodsumowania(dane, wykaz, bezRozpatrzenia);
-      oznaczTerminy(podsumowanie);
+      // Trudne słowa w podsumowaniu (F1, Etap C1): „rozdzielni” i „kV” – wspólny kod src/terminy.js.
+      oznaczTerminy(
+        podsumowanie,
+        [
+          { slowo: t('slownik.rozdzielnia_w_zdaniu'), tytul: t('slownik.rozdzielnia_termin'), czesci: objasnienie('slownik.rozdzielnia') },
+          { slowo: 'kV', tytul: t('slownik.kv_termin'), czesci: objasnienie('slownik.kv') },
+        ],
+        okienka,
+      );
       const wniosek = document.getElementById('moce-wniosek');
       wniosek.textContent = tekstWniosku(dane, wykaz, bezRozpatrzenia) ?? '';
       wniosek.hidden = !wniosek.textContent;
@@ -464,6 +430,13 @@ export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, okienka }) 
       );
       // Legenda: opis pustego sześciokąta z datą wykazu z danych (zamiast „obecnie”).
       document.getElementById('legenda-moce-pusty').textContent = t('leg.moce_pusty', wykaz ? formatDaty(wykaz.stan_na) : null);
+      // Etap C2 (P1): liczba stacji z wolną mocą w zwiniętej Karcie i w kafelku telefonu (te same dane).
+      const sm = tekstMocySkrot(d);
+      const skrotMoce = document.getElementById('skrot-moce');
+      skrotMoce.textContent = sm?.skrot ?? '';
+      skrotMoce.hidden = !sm;
+      document.getElementById('kafel-moce').textContent = sm?.kafelLiczba ?? '–';
+      document.getElementById('kafel-moce-opis').textContent = sm?.kafelOpis ?? '';
       wypelnijPanel(await sprawdzonoGotowe);
     })
     .catch(() => {

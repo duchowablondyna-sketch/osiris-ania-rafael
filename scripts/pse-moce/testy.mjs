@@ -363,7 +363,7 @@ test('issue: gdy GitHub po cichu pominie przypisanie – robot dopisuje je jeszc
 // ── Etap C1 (25.11.2026): zdania zakładki „Gdzie” składane z danych – liczby, napięcia i daty zgadzają się z plikami ──
 // Liczone tu niezależnie od src/wykaz-rozdzielni.js: wprost z list 2 i 3 wykazu (kody i nazwy rozdzielni).
 import { podzialStacji } from '../../src/wykaz-rozdzielni.js';
-import { tekstPodsumowania, tekstUwagi, dopisekListy, tekstWniosku } from '../../src/moce-teksty.js';
+import { tekstPodsumowania, tekstUwagi, dopisekListy, tekstWniosku, tekstMocySkrot } from '../../src/moce-teksty.js';
 import { ustawJezyk } from '../../src/jezyk.js';
 const MOCE = JSON.parse(readFileSync(new URL('../../public/data/moce-pse.json', import.meta.url), 'utf-8'));
 function niezaleznie() {
@@ -458,5 +458,29 @@ test('Gdzie: zdanie-wniosek PL i EN – 16 + 9 = 25 z wykazu, daty, „0 MW” i
   }
   // Bez zdań PSE w danych – zdania nie ma (nie zgadujemy).
   assert.equal(tekstWniosku({ ...MOCE, wyciag: { zdania_obecne: [] } }, WYKAZ, stacjeBezRozpatrzenia(WYKAZ)), null);
+  ustawJezyk('pl');
+});
+
+test('C2: linijka Karty „wolna moc PSE: 25 stacji planowanych (na 2031)” i kafelek – liczba i rok z danych; bez roku – brak linijki', () => {
+  const razem = MOCE.odbiorcy.length;
+  const rok = MOCE.wyciag.zdania_obecne.join(' ').match(/podano dla roku (\d{4})/)[1];
+  assert.deepEqual([razem, rok], [25, '2031']); // stan danych 25.11.2026 (moce 31.10.2026)
+  const oczekiwane = {
+    pl: { skrot: `wolna moc PSE: ${razem} stacji planowanych (na\u00a0${rok})`, liczba: `${razem} stacji planowanych`, opis: `wolna moc PSE (na ${rok})` },
+    en: { skrot: `PSE available capacity: ${razem} planned substations (for\u00a0${rok})`, liczba: `${razem} planned substations`, opis: `PSE available capacity (for ${rok})` },
+  };
+  for (const jez of ['pl', 'en']) {
+    ustawJezyk(jez);
+    const s = tekstMocySkrot(MOCE);
+    assert.deepEqual(s, { skrot: oczekiwane[jez].skrot, kafelLiczba: oczekiwane[jez].liczba, kafelOpis: oczekiwane[jez].opis }, jez);
+    // Inna liczba stacji i inny rok w danych → inne liczby w kawałku (nic na sztywno).
+    const inne = { ...MOCE, odbiorcy: MOCE.odbiorcy.slice(0, 3), wyciag: { zdania_obecne: MOCE.wyciag.zdania_obecne.map((z) => z.replace(`roku ${rok}`, 'roku 2033')) } };
+    const si = tekstMocySkrot(inne);
+    assert.ok(/: 3 /.test(si.skrot) && si.skrot.endsWith('2033)'), `${jez}: ${si.skrot}`);
+    // Bez roku w zdaniach PSE – kawałka nie ma (src/moce.js ustawia hidden), nie „moc dziś”.
+    assert.equal(tekstMocySkrot({ ...MOCE, wyciag: { zdania_obecne: [] } }), null);
+    assert.equal(tekstMocySkrot({ ...MOCE, wyciag: undefined }), null);
+    assert.ok(!/dziś|teraz|today|now\b/i.test(s.skrot), s.skrot);
+  }
   ustawJezyk('pl');
 });
