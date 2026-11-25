@@ -224,7 +224,9 @@ for (const zdarzenie of ['mousedown', 'touchstart', 'wheel', 'keydown']) {
   document.getElementById('mapa').addEventListener(zdarzenie, () => (uzytkownikRuszylMape = true), { once: true, passive: true });
 }
 // Przełączenie Dzień/Noc nie uruchamia lotu (decyzja Ani 21.11.2026) – mapa zostaje w miejscu.
+let lotRuszyl = BEZ_RUCHU; // przy „ogranicz ruch” kadr Polski jest od razu, bez lotu
 function lotDoPolski() {
+  lotRuszyl = true;
   if (uzytkownikRuszylMape) return;
   const k = kameraPolski();
   if (k) map.flyTo({ ...k, duration: 3500, essential: false });
@@ -1147,6 +1149,53 @@ const dobaGotowa = fetch(`${import.meta.env.BASE_URL}data/doba.json`, { cache: '
     dataStopki('odtw-zrodlo-doba', formatDoby(d.doba));
     przyciskStart.hidden = false;
   });
+
+// Rozwinięte okienko PSE na komputerze: kończy się 12 px nad zwiniętą linijką Karty Polski (Karta stoi u dołu,
+// nad „← OSIRIS”); przy niskim oknie przewija się (src/style.css, --pse-max). Bez „↓ więcej poniżej” – wyjątek
+// z CLAUDE.md. Klasa .wskaznik--przewijane (stały nagłówek z tłem) tylko wtedy, gdy treść naprawdę się nie mieści.
+function pilnujWysokosciPSE() {
+  const okno = document.querySelector('.wskaznik');
+  const karta = document.getElementById('karta');
+  if (!okno) return;
+  const main = okno.parentElement;
+  const dopasuj = () => {
+    if (karta) {
+      const linijkaKarty = karta.querySelector('.karta__naglowek').offsetHeight + (karta.offsetHeight - karta.clientHeight);
+      const dolKarty = parseFloat(getComputedStyle(karta).bottom) || 0;
+      const max = main.clientHeight - dolKarty - linijkaKarty - 12 - okno.offsetTop;
+      okno.style.setProperty('--pse-max', `${Math.max(160, Math.round(max))}px`);
+    }
+    okno.classList.toggle('wskaznik--przewijane', okno.open && okno.scrollHeight > okno.clientHeight + 1);
+  };
+  const obserwator = new ResizeObserver(dopasuj);
+  obserwator.observe(main);
+  obserwator.observe(okno);
+  for (const dziecko of okno.children) obserwator.observe(dziecko); // treść rośnie (dane, odtwarzanie doby)
+  if (karta) obserwator.observe(karta.querySelector('.karta__naglowek'));
+  okno.addEventListener('toggle', dopasuj);
+  dopasuj();
+}
+pilnujWysokosciPSE();
+
+// Obrót telefonu albo zmiana wielkości okna (wariant A, decyzja Ani 25.11.2026): Polska wraca na środek tak jak
+// na starcie – tylko gdy widz jeszcze nie ruszał mapy i dopiero po locie wprowadzającym (lot sam liczy kadr).
+// Bez animacji (jeden lot – zasada ruchu). Przejście na telefon (≤ 640 px) zwija okna – na telefonie start jest zwinięty.
+let czekaNaKadr = 0;
+function przeliczKadr() {
+  if (uzytkownikRuszylMape || !lotRuszyl) return;
+  if (map.isMoving()) {
+    map.once('moveend', przeliczKadr);
+    return;
+  }
+  ustawKadr();
+}
+window.addEventListener('resize', () => {
+  clearTimeout(czekaNaKadr);
+  czekaNaKadr = setTimeout(przeliczKadr, 200);
+});
+TELEFON.addEventListener('change', (e) => {
+  if (e.matches) for (const okno of OKNA_TELEFONU) if (okno?.open) okno.open = false;
+});
 
 // Okienko mogło się poszerzyć (teksty, wykresy) – po wczytaniu obu plików dopasuj kadr jeszcze raz, bez animacji.
 const daneGotowe = Promise.allSettled([wiatrGotowy, cenaGotowa, dobaGotowa]);

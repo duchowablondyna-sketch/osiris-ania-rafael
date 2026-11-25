@@ -165,6 +165,24 @@ main {
   margin-bottom: 6px;
 }
 
+/* Rozwinięte okienko PSE kończy się nad zwiniętą linijką Karty Polski (--pse-max liczy src/main.js); przy niskim
+   oknie przewija się, a nagłówek stoi. Bez „↓ więcej poniżej” – wyjątek z CLAUDE.md. Tło nagłówka tylko wtedy,
+   gdy okienko naprawdę się przewija (.wskaznik--przewijane) – przy zwykłej wysokości wygląd bez zmian. */
+.wskaznik[open] {
+  max-height: var(--pse-max, none);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.wskaznik--przewijane[open] > .wskaznik__naglowek {
+  position: sticky;
+  top: -12px; /* przeglądarka przykleja do krawędzi treści (12 px pod górą okienka) – nagłówek ma stać przy samej górze */
+  z-index: 1;
+  margin: -12px -16px 0;
+  padding: 12px 16px 6px;
+  background: rgb(11, 18, 32);
+}
+
 .wskaznik__naglowek::-webkit-details-marker {
   display: none;
 }
@@ -1582,6 +1600,9 @@ button.panel-moce__nazwa:hover {
 @media (max-width: 640px) {
   :root {
     --przycisk-okna: 44px;
+    /* Przycisk „↓ więcej poniżej” ma na telefonie min. 44 px (niżej) – tyle samo rezerwuje liczenie wysokości
+       Karty i legendy. Przy 22 px przycisk wystawał za dolną krawędź ekranu (odbiór telefonu 25.11.2026). */
+    --wiecej-ponizej-wys: 44px;
   }
 
   .mapa-gora {
@@ -1758,6 +1779,36 @@ button.panel-moce__nazwa:hover {
     height: 44px;
     content: '';
     transform: translate(-50%, -50%);
+  }
+
+  /* PL / EN (41 i 43 px szerokości), „Źródła i licencje” (15 px wysokości) i link „© OpenStreetMap contributors”
+     w podpisie mapy (14 px) – niewidoczne pole dotyku 44 px; napisy i układ bez zmian. Podpis OSM zostaje ten sam
+     (tekst, miejsce, link do /copyright) – wytyczne OSMF o podpisie nie ograniczają pola dotyku. */
+  .mapa-gora .przelacznik__opcja,
+  .stopka__zrodla summary,
+  .maplibregl-ctrl-attrib a {
+    position: relative;
+  }
+
+  .mapa-gora .przelacznik__opcja::before {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(100%, 44px);
+    height: 44px;
+    content: '';
+    transform: translate(-50%, -50%);
+  }
+
+  .stopka__zrodla summary::before,
+  .maplibregl-ctrl-attrib a::before {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 44px;
+    content: '';
+    transform: translateY(-50%);
   }
 
   .karta__moc-pytajnik::before {
