@@ -4,12 +4,12 @@
     "nazwa": "PSE S.A., „Informacja o dostępności mocy przyłączeniowej do sieci przesyłowej”",
     "url_strony": "https://www.pse.pl/obszary-dzialalnosci/krajowy-system-elektroenergetyczny/informacja-o-dostepnosci-mocy-przylaczeniowej",
     "url_pdf": "https://www.pse.pl/documents/20182/51490/informacja_o_dostepnosci_mocy_przylaczeniowej_do_sieci_przesylowej.pdf/81835e70-c6bb-4ed1-8154-1959a45b44f1?safeargs=646f776e6c6f61643d74727565",
-    "pobrano": "2026-11-21",
+    "pobrano": "2026-11-25",
     "sha256": "e3612af437f862d071f299ff795081d4af15c2eb34b22dc5819e1ff8dd272555",
     "last_modified": "Wed, 04 Nov 2026 14:04:07 GMT"
   },
   "stan_na": "2026-10-31",
-  "przyjeto": "2026-11-21",
+  "przyjeto": "2026-11-25",
   "lokalizacje": {
     "stan_osm": "2026-11-21T07:33:06Z",
     "promien_km": 20,
