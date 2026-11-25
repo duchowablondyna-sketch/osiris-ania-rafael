@@ -1441,6 +1441,44 @@ button.panel-moce__nazwa:hover {
   font-weight: 600;
 }
 
+/* Zdanie-wniosek na górze zakładki „Gdzie” (Etap C1): turkus – kolor wolnej mocy. */
+.panel-moce__wniosek {
+  margin: 0 0 10px;
+  padding-left: 10px;
+  border-left: 3px solid #2dd4bf;
+  color: var(--tekst);
+  font-weight: 600;
+}
+
+/* Trudne słowo z okienkiem (Etap C1, F1): podkreślenie kropkowane na złoto, bez zmiany kroju; na telefonie pole dotyku 44 px. */
+.termin {
+  position: relative;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px dotted var(--zloto);
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: help;
+}
+
+.termin:focus-visible {
+  outline: 2px solid var(--fokus);
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .termin::before {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(100%, 44px);
+    height: 44px;
+    content: '';
+    transform: translate(-50%, -50%);
+  }
+}
+
 .panel-moce__podsumowanie {
   color: var(--tekst);
   font-weight: 600;

@@ -4,8 +4,9 @@
 // – stacje „w rejonie X”: półprzezroczyste koło (promień z pliku) z podpisem „lokalizacja przybliżona”;
 // – moc dla źródeł: bez znaczków, tylko zdanie w legendzie i w panelu;
 // – mocy stacji nigdy nie sumujemy (PSE: moc jednej stacji wpływa na moc stacji sąsiednich).
-import { stacjeBezRozpatrzenia } from './wykaz-rozdzielni.js';
+import { stacjeBezRozpatrzenia, podzialStacji } from './wykaz-rozdzielni.js';
 import { t, tn, liczba, cytatPse, formatDoby } from './jezyk.js';
+import { tekstPodsumowania, tekstUwagi, dopisekListy, napieciaLub, tekstWniosku } from './moce-teksty.js';
 
 export const KOLOR_MOCY = '#2DD4BF';
 const KOSMOS = '#05070D';
@@ -194,10 +195,7 @@ export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, okienka }) 
       const wstrz = bezRozpatrzenia.get(s.kod);
       if (wstrz) {
         el.append(
-          span(
-            t(wstrz.pusty ? 'moce.uwaga_pusty' : 'moce.uwaga_110', formatDaty(wykaz.stan_na)),
-            'okienko-mocy__ostrzezenie',
-          ),
+          span(tekstUwagi(wstrz, wykaz.stan_na), 'okienko-mocy__ostrzezenie'),
           document.createElement('br'),
           span(
             t('moce.lista_pse', cytatPse(wstrz.tytul_listy).tekst, wstrz.rozdzielnie.map((r) => r.replace(/^Rozdzielnia /, '')).join(', ')),
@@ -298,12 +296,48 @@ export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, okienka }) 
   map.on('mouseenter', 'moce', () => (map.getCanvas().style.cursor = 'pointer'));
   map.on('mouseleave', 'moce', () => (map.getCanvas().style.cursor = ''));
 
-  // Liczby do panelu i legendy: pusty sześciokąt (wykaz obejmuje 220/400 kV) i „tylko 110 kV” – osobno, bez sumowania mocy.
-  function liczWstrzymane() {
-    const wpisy = dane.odbiorcy.map((s) => bezRozpatrzenia.get(s.kod)).filter(Boolean);
-    const pelneWpisy = wpisy.filter((w) => w.pusty);
-    const wszystkie400 = pelneWpisy.every((w) => w.rozdzielnie.some((r) => /\b400 kV/.test(r)));
-    return { pelne: pelneWpisy.length, tylko110: wpisy.length - pelneWpisy.length, napiecia: wszystkie400 ? '400 kV' : '220/400 kV' };
+
+  // Trudne słowa w podsumowaniu (Etap C1, forma F1 – decyzja Ani 25.11.2026): „rozdzielni” i pierwsze „kV” po nim są
+  // podkreślone; okienko C z tym samym tekstem co w słowniku (slownik.*) i podpisem „objaśnienie OSIRIS”.
+  // Działa myszą, dotykiem i z klawiatury (Tab + Enter, Esc) – okienka.podlacz.
+  function oznaczTerminy(el) {
+    const tekstNode = el.firstChild;
+    if (tekstNode?.nodeType !== Node.TEXT_NODE) return;
+    const s = tekstNode.textContent;
+    const slowoR = t('slownik.rozdzielnia_w_zdaniu');
+    const iR = s.indexOf(slowoR);
+    const iK = iR < 0 ? -1 : s.indexOf('kV', iR);
+    if (iR < 0 || iK < 0) return;
+    const termin = (slowo, klucz, tytul) => {
+      const tresc = () => {
+        const d = document.createElement('div');
+        d.className = 'okienko-pytajnik';
+        const n = document.createElement('strong');
+        n.textContent = tytul;
+        const p = document.createElement('p');
+        p.textContent = t(klucz);
+        const podpis = document.createElement('p');
+        podpis.className = 'zrodlo';
+        podpis.textContent = t('slownik.objasnienie');
+        d.append(n, p, podpis);
+        return d;
+      };
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'termin';
+      b.textContent = slowo;
+      b.setAttribute('aria-haspopup', 'dialog');
+      b.setAttribute('aria-label', `${slowo} – ${t('slownik.aria', tytul)}`);
+      okienka.podlacz(b, tresc);
+      return b;
+    };
+    el.replaceChild(document.createTextNode(s.slice(iK + 2)), tekstNode);
+    el.prepend(
+      document.createTextNode(s.slice(0, iR)),
+      termin(slowoR, 'slownik.rozdzielnia', t('slownik.rozdzielnia_termin')),
+      document.createTextNode(s.slice(iR + slowoR.length, iK)),
+      termin('kV', 'slownik.kv', t('slownik.kv_termin')),
+    );
   }
 
   // Lista w panelu: przycisk otwiera okienko stacji (bez ruchu kamery).
@@ -336,7 +370,7 @@ export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, okienka }) 
             if (wpis) {
               const w = document.createElement('span');
               w.className = 'panel-moce__wstrzymane';
-              w.textContent = t(wpis.pusty ? 'moce.wstrzymane_pusty' : 'moce.wstrzymane_110');
+              w.textContent = dopisekListy(wpis);
               lok.append(w);
               if (wpis.pusty) li.classList.add('panel-moce__pozycja--wstrzymana');
             }
@@ -350,23 +384,20 @@ export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, okienka }) 
     const podsumowanie = document.getElementById('moce-podsumowanie');
     const ile = dane.odbiorcy.length;
     if (wykaz) {
-      const { pelne, tylko110, napiecia } = liczWstrzymane();
-      podsumowanie.textContent = t(
-        'moce.podsumowanie',
-        tn('liczba.stacja_ma', ile),
-        pelne,
-        napiecia,
-        tylko110,
-        formatDaty(wykaz.stan_na),
-        formatDaty(dane.stan_na),
-      );
+      podsumowanie.textContent = tekstPodsumowania(dane, wykaz, bezRozpatrzenia);
+      oznaczTerminy(podsumowanie);
+      const wniosek = document.getElementById('moce-wniosek');
+      wniosek.textContent = tekstWniosku(dane, wykaz, bezRozpatrzenia) ?? '';
+      wniosek.hidden = !wniosek.textContent;
       podsumowanie.append(linijkaZrodla(t('moce.zrodlo_wykaz'), 'stan', formatDaty(wykaz.stan_na)));
     } else {
       podsumowanie.textContent = t('moce.podsumowanie_bez_wykazu', tn('liczba.stacja_ma', ile));
       podsumowanie.classList.add('brak-danych');
     }
+    // Zdanie o mocy dla nowych źródeł + dopisek, że dotyczy elektrowni, nie odbiorców (Etap C1) – w zakładce i w legendzie.
     const zdanie = zdanieZrodel(dane.zrodla_polska);
-    document.getElementById('moce-zrodla-zdanie').textContent = zdanie ?? t('moce.zrodla_brak');
+    const zdanieZDopiskiem = zdanie ? `${zdanie}. ${t('moce.zrodla_dotyczy')}` : null;
+    document.getElementById('moce-zrodla-zdanie').textContent = zdanieZDopiskiem ?? t('moce.zrodla_brak');
     const sp = sprawdzono?.data
       ? sprawdzono.zrodlo === 'robot'
         ? t('moce.sprawdzono_robot', formatDaty(sprawdzono.data))
@@ -375,7 +406,7 @@ export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, okienka }) 
     document.getElementById('moce-stan').textContent = t('moce.stan', formatDaty(dane.stan_na), sp);
     document.getElementById('moce-zrodlo').replaceChildren(linijkaZrodla('PSE', 'stan', formatDaty(dane.stan_na)));
     const legZdanie = document.getElementById('legenda-moce-zrodla');
-    legZdanie.textContent = zdanie ?? t('moce.zrodla_brak');
+    legZdanie.textContent = zdanieZDopiskiem ?? t('moce.zrodla_brak');
     legZdanie.append(linijkaZrodla('PSE', 'stan', formatDaty(dane.stan_na)));
   }
 
@@ -419,7 +450,7 @@ export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, okienka }) 
           properties: { wstrzymane: wszystkieWstrzymane },
         })),
       });
-      const lw = wykaz ? liczWstrzymane() : null;
+      const lw = wykaz ? podzialStacji(d.odbiorcy, bezRozpatrzenia) : null;
       ustawLicznik(
         'moce',
         t(
@@ -427,14 +458,17 @@ export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, okienka }) 
           tn('liczba.stacja_planowana', d.odbiorcy.length),
           naMapie.length,
           formatDaty(d.stan_na),
-          lw ? t('moce.licznik_wykaz', lw.pelne, lw.napiecia, lw.tylko110, formatDaty(wykaz.stan_na)) : t('moce.licznik_wykaz_brak'),
+          lw ? t('moce.licznik_wykaz', lw.pelne, napieciaLub(lw.napieciaPelnych), lw.tylko110, formatDaty(wykaz.stan_na)) : t('moce.licznik_wykaz_brak'),
         ),
         !wykaz,
       );
+      // Legenda: opis pustego sześciokąta z datą wykazu z danych (zamiast „obecnie”).
+      document.getElementById('legenda-moce-pusty').textContent = t('leg.moce_pusty', wykaz ? formatDaty(wykaz.stan_na) : null);
       wypelnijPanel(await sprawdzonoGotowe);
     })
     .catch(() => {
       ustawLicznik('moce', t('wspolne.brak_danych'), true);
+      document.getElementById('legenda-moce-pusty').textContent = t('leg.moce_pusty', null);
       document.getElementById('moce-stan').textContent = t('moce.brak');
       document.getElementById('moce-stan').classList.add('brak-danych');
       document.getElementById('legenda-moce-zrodla').textContent = t('moce.zrodla_brak');

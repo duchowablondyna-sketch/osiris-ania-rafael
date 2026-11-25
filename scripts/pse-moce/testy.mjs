@@ -359,3 +359,104 @@ test('issue: gdy GitHub po cichu pominie przypisanie – robot dopisuje je jeszc
     assert.equal(wywolania.some((c) => c.includes('--add-assignee duchowablondyna-sketch')), oczekiwanaPoprawka, wywolania.join('\n'));
   }
 });
+
+// ── Etap C1 (25.11.2026): zdania zakładki „Gdzie” składane z danych – liczby, napięcia i daty zgadzają się z plikami ──
+// Liczone tu niezależnie od src/wykaz-rozdzielni.js: wprost z list 2 i 3 wykazu (kody i nazwy rozdzielni).
+import { podzialStacji } from '../../src/wykaz-rozdzielni.js';
+import { tekstPodsumowania, tekstUwagi, dopisekListy, tekstWniosku } from '../../src/moce-teksty.js';
+import { ustawJezyk } from '../../src/jezyk.js';
+const MOCE = JSON.parse(readFileSync(new URL('../../public/data/moce-pse.json', import.meta.url), 'utf-8'));
+function niezaleznie() {
+  const kv = new Map(); // kod → napięcia z list 2 i 3
+  for (const l of WYKAZ.listy.slice(1)) for (const r of l.rozdzielnie) for (const k of r.kody) {
+    kv.set(k, [...(kv.get(k) ?? []), Number(r.rozdzielnia.match(/(\d+) kV/)[1])]);
+  }
+  const pelne = MOCE.odbiorcy.filter((s) => kv.get(s.kod)?.some((x) => x === 220 || x === 400));
+  const tylko110 = MOCE.odbiorcy.filter((s) => kv.has(s.kod) && !pelne.includes(s));
+  const napiecia = [...new Set(pelne.flatMap((s) => kv.get(s.kod).filter((x) => x !== 110)))].sort((a, b) => a - b);
+  return { kv, razem: MOCE.odbiorcy.length, pelne: pelne.length, tylko110: tylko110.length, bez: MOCE.odbiorcy.length - pelne.length - tylko110.length, napiecia };
+}
+
+test('Gdzie: podział stacji z danych = liczenie niezależne (grupy się nie nakładają)', () => {
+  const n = niezaleznie();
+  const p = podzialStacji(MOCE.odbiorcy, stacjeBezRozpatrzenia(WYKAZ));
+  assert.deepEqual(
+    { razem: p.razem, pelne: p.pelne, tylko110: p.tylko110, bez: p.bezZastrzezen, napiecia: p.napieciaPelnych },
+    { razem: n.razem, pelne: n.pelne, tylko110: n.tylko110, bez: n.bez, napiecia: n.napiecia },
+  );
+  assert.equal(p.pelne + p.tylko110 + p.bezZastrzezen, p.razem);
+});
+
+test('Gdzie: podsumowanie PL i EN – liczby, napięcia z wykazu i obie daty z danych', () => {
+  const n = niezaleznie();
+  const oczekiwane = {
+    pl: { napiecia: `${new Intl.ListFormat('pl-PL', { type: 'disjunction' }).format(n.napiecia.map(String))} kV`, wykaz: WYKAZ.stan_na.split('-').reverse().join('.'), moce: MOCE.stan_na.split('-').reverse().join('.') },
+    en: {
+      napiecia: `${new Intl.ListFormat('en-GB', { type: 'disjunction' }).format(n.napiecia.map(String))} kV`,
+      wykaz: new Date(`${WYKAZ.stan_na}T12:00:00Z`).toLocaleDateString('en-GB', { timeZone: 'UTC', day: 'numeric', month: 'short', year: 'numeric' }),
+      moce: new Date(`${MOCE.stan_na}T12:00:00Z`).toLocaleDateString('en-GB', { timeZone: 'UTC', day: 'numeric', month: 'short', year: 'numeric' }),
+    },
+  };
+  for (const jez of ['pl', 'en']) {
+    ustawJezyk(jez);
+    const tekst = tekstPodsumowania(MOCE, WYKAZ, stacjeBezRozpatrzenia(WYKAZ));
+    const o = oczekiwane[jez];
+    assert.ok(tekst.startsWith(`${n.razem} `), `${jez}: ${tekst}`);
+    for (const fragment of [` ${n.pelne} `, ` ${n.tylko110} `, o.napiecia, o.wykaz, o.moce]) assert.ok(tekst.includes(fragment), `${jez}: brak „${fragment}” w: ${tekst}`);
+    // Przy danych z 25.11.2026 wśród 11 stacji są rozdzielnie 220 i 400 kV – nie „400 kV” na sztywno.
+    assert.deepEqual(n.napiecia, [220, 400]);
+    assert.ok(!/obecnie|currently/.test(tekst), `${jez}: „obecnie” zamiast daty: ${tekst}`);
+  }
+  ustawJezyk('pl');
+});
+
+test('Gdzie: uwaga w okienku i dopisek na liście – napięcia tej stacji z wykazu, data wykazu', () => {
+  const n = niezaleznie();
+  const b = stacjeBezRozpatrzenia(WYKAZ);
+  for (const jez of ['pl', 'en']) {
+    ustawJezyk(jez);
+    for (const s of MOCE.odbiorcy.filter((x) => b.has(x.kod))) {
+      const wpis = b.get(s.kod);
+      const kv = n.kv.get(s.kod).filter((x) => x !== 110);
+      const uwaga = tekstUwagi(wpis, WYKAZ.stan_na), dopisek = dopisekListy(wpis);
+      assert.ok(/2026/.test(uwaga), `${jez} ${s.kod}: brak daty wykazu: ${uwaga}`);
+      if (kv.length) {
+        for (const x of kv) assert.ok(uwaga.includes(String(x)) && dopisek.includes(String(x)), `${jez} ${s.kod}: brak ${x} kV`);
+        assert.ok(!dopisek.includes('110'), `${jez} ${s.kod}: ${dopisek}`);
+      } else {
+        assert.ok(dopisek.includes('110 kV') && uwaga.includes('110 kV'), `${jez} ${s.kod}: ${uwaga}`);
+      }
+      assert.ok(!/obecnie|currently/.test(uwaga), `${jez} ${s.kod}: ${uwaga}`);
+    }
+  }
+  ustawJezyk('pl');
+});
+
+test('Gdzie: zdanie-wniosek PL i EN – 16 + 9 = 25 z wykazu, daty, „0 MW” i rok z danych (zdania PSE w wyciągu)', () => {
+  const n = niezaleznie();
+  const zZastrzezeniami = n.pelne + n.tylko110;
+  // Grupy z wykazu (liczone niezależnie) dają razem wszystkie stacje z mocą dla odbiorców.
+  assert.equal(zZastrzezeniami + n.bez, n.razem);
+  assert.deepEqual([zZastrzezeniami, n.bez, n.razem], [16, 9, 25]); // stan danych 25.11.2026 (wykaz 04.02.2026, moce 31.10.2026)
+  const rok = MOCE.wyciag.zdania_obecne.join(' ').match(/podano dla roku (\d{4})/)[1];
+  assert.ok(MOCE.wyciag.zdania_obecne.some((z) => z.includes('zerowe wartości')), 'brak zdania PSE o zerowej mocy istniejących stacji');
+  const en = (d) => new Date(`${d}T12:00:00Z`).toLocaleDateString('en-GB', { timeZone: 'UTC', day: 'numeric', month: 'short', year: 'numeric' });
+  const pl = (d) => d.split('-').reverse().join('.');
+  const fragmenty = {
+    pl: [`tylko ${n.razem} stacji planowanych`, `Przy ${zZastrzezeniami} z nich wykaz PSE z ${pl(WYKAZ.stan_na)}`, `przy ${n.bez} takich zastrzeżeń nie podaje`, `stan na ${pl(MOCE.stan_na)}`, ' 0 MW', `na ${rok} r., nie gwarancja`],
+    en: [`only the ${n.razem} planned substations`, `For ${zZastrzezeniami} of them, the PSE list of ${en(WYKAZ.stan_na)}`, `for ${n.bez}, it lists no such restriction`, `as of ${en(MOCE.stan_na)}`, ' 0 MW', `for ${rok},`],
+  };
+  for (const jez of ['pl', 'en']) {
+    ustawJezyk(jez);
+    const tekst = tekstWniosku(MOCE, WYKAZ, stacjeBezRozpatrzenia(WYKAZ));
+    for (const f of fragmenty[jez]) assert.ok(tekst.includes(f), `${jez}: brak „${f}” w: ${tekst}`);
+    // Bez podwójnego przeczenia („nie ma … nie były”) i bez „lista” po polsku.
+    assert.ok(!/nie ma w wykazie|are not on the PSE list/.test(tekst), tekst);
+    assert.ok(jez === 'en' || !/list[aey]/.test(tekst), tekst);
+    // „r.” po roku tylko po polsku.
+    assert.ok(jez === 'pl' || !tekst.includes(`${rok} r.`), tekst);
+  }
+  // Bez zdań PSE w danych – zdania nie ma (nie zgadujemy).
+  assert.equal(tekstWniosku({ ...MOCE, wyciag: { zdania_obecne: [] } }, WYKAZ, stacjeBezRozpatrzenia(WYKAZ)), null);
+  ustawJezyk('pl');
+});

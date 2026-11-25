@@ -172,7 +172,10 @@ export default {
   'leg.moce': 'Available connection capacity for large consumers (PSE)',
   'leg.moce_opis': '– extra-high-voltage grid (220/400 kV), for the largest consumers; hexagon: planned substation with available capacity;',
   'leg.moce_kolo': 'circle: approximate location;',
-  'leg.moce_pusty': 'empty hexagon: according to the PSE list, applications for the 220/400 kV switchyard are currently not being processed',
+  'leg.moce_pusty': (data) =>
+    `empty hexagon: according to the PSE list${data ? ` of ${data}` : ''}, applications for this substation's 220/400 kV switchyards were not being processed`,
+  'leg.moce_110':
+    "note “110 kV – not processed”: the PSE list includes only this substation's 110 kV switchyard; it says nothing about its 220/400 kV switchyards",
   'leg.linie': 'Extra-high-voltage lines',
   'leg.linie_opis': '– 220 and 400 kV (thicker line: 400 kV); click a line on the map to see details',
   'leg.morskie': 'Offshore wind farms',
@@ -281,16 +284,28 @@ export default {
   'moce.tytul': 'Available connection capacity for large consumers · PSE 220/400 kV',
   'moce.wazne':
     "Extra-high-voltage grid (220/400 kV) – for the largest consumers, such as factories and data centres. Smaller businesses connect to the networks of distribution system operators (DSOs) – the next stage of OSIRIS.",
-  'moce.istniejace': 'For existing substations PSE gives 0 MW – only planned substations have available capacity. Capacity is given for 2031; some substations will be built later.',
   'moce.lista1': 'Substations for new consumers',
   'moce.lista2': 'Substations built mainly for the grid and new generators – according to PSE they can also supply consumers',
   'moce.szacunek':
-    "The operator's estimate, not a guarantee of connection. Using capacity at one substation may reduce it at neighbouring ones – so we do not add up their capacities.",
+    'Using capacity at one substation may reduce it at neighbouring ones – so we do not add up their capacities.',
   'moce.zrodla_etykieta': 'Capacity for new generators:',
   'moce.stan_etykieta': 'as of:',
   'moce.zrodla_zero': 'PSE: 0 MW for new generators on the extra-high-voltage grid – across Poland (2026 and 2031)',
   'moce.zrodla': (a, b) => `PSE: ${a} (2026) and ${b} (2031) for new generators on the extra-high-voltage grid – across Poland`,
   'moce.zrodla_brak': 'Capacity for new generators: no data',
+  'moce.zrodla_dotyczy': 'This applies to new power plants, not to electricity consumers.',
+  'slownik.kv_termin': 'kV',
+  'slownik.kv': 'voltage – the “pressure” in the grid: 400 and 220 kV are the motorways of electricity, 110 kV the main roads',
+  'slownik.rozdzielnia_termin': 'switchyard',
+  'slownik.rozdzielnia': 'the part of a substation working at one voltage level (e.g. 110 kV), from which power branches out along lines – like a motorway junction',
+  'slownik.rozdzielnia_w_zdaniu': 'switchyard',
+  'slownik.aria': (termin) => `What does “${termin}” mean? – explanation`,
+  'slownik.objasnienie': 'OSIRIS explanation',
+  'moce.szacunek_analogia': 'Like car parks on a single access road: the more cars enter one, the harder it is to reach the other.',
+  'moce.wniosek_b': (dataMocy, mocIstniejacych, stacjePlanowane, zZastrzezeniami, dataWykazu, bez, rok) =>
+    `For a large consumer: according to PSE (as of ${dataMocy}), existing substations have ${mocIstniejacych} – only the ${stacjePlanowane} have available capacity. ` +
+    `For ${zZastrzezeniami} of them, the PSE list of ${dataWykazu} states that applications for some switchyards were not being processed; for ${bez}, it lists no such restriction. ` +
+    `This is the operator's estimate for ${rok}, not a guarantee of connection.`,
   'moce.lok_okolica': (rejon, miejsce, km) =>
     `Approximate location – PSE gives only »${rejon}«; OSIRIS chose the centre of the circle (${miejsce}, radius ${km} km).`,
   'moce.lok_osm': (nazwa) => `Location: planned substation in OpenStreetMap (“${nazwa}”) – uncertain match.`,
@@ -298,10 +313,10 @@ export default {
   'moce.w_tym_miejscu': (stacje) => `${stacje} at this location`,
   'moce.moc': (mw) => `available connection capacity for large consumers: ${mw} (year 2031)`,
   'moce.tabela2': 'substation built mainly for the grid and new generators – according to PSE it can also supply consumers',
-  'moce.uwaga_pusty': (data) =>
-    `Note: according to the PSE list (as of ${data}), connection applications for this substation are currently not being processed.`,
+  'moce.uwaga_pusty': (data, napiecia, ile) =>
+    `Note: according to the PSE list of ${data}, applications for this substation's ${napiecia} switchyard${ile > 1 ? 's' : ''} were not being processed.`,
   'moce.uwaga_110': (data) =>
-    `Note: according to the PSE list (as of ${data}), applications for this substation's 110 kV switchyard are currently not being processed; the list says nothing about its 220/400 kV switchyards.`,
+    `Note: according to the PSE list of ${data}, applications for this substation's 110 kV switchyard were not being processed; the list says nothing about its 220/400 kV switchyards.`,
   'moce.lista_pse': (tytul, rozdzielnie) => `PSE list: “${tytul}”; switchyards in the list: ${rozdzielnie}.`,
   'moce.daty_rozne': (wykaz, moce, sprawdzone) =>
     `The dates differ: the switchyard list is as of ${wykaz}, the capacities as of ${moce}. PSE has not published a newer list (checked ${sprawdzone}).`,
@@ -316,11 +331,11 @@ export default {
   'moce.lok_krotko.okolica': 'approximate location',
   'moce.lok_krotko.stacja-osm': 'uncertain match (OSM)',
   'moce.lok_krotko.brak': 'not on the map',
-  'moce.wstrzymane_pusty': ' · applications not processed',
+  'moce.wstrzymane_pusty': (napiecia) => ` · ${napiecia} – not processed`,
   'moce.wstrzymane_110': ' · 110 kV – not processed',
   'moce.podsumowanie': (ile, pelne, napiecia, tylko110, dataWykazu, dataMocy) =>
-    `${ile} capacity for consumers. At ${pelne} of them PSE is currently not processing applications (${napiecia} switchyard); ` +
-    `for ${tylko110} more, the list covers only the 110 kV switchyard (switchyard list as of ${dataWykazu}; capacities as of ${dataMocy}).`,
+    `${ile} capacity for consumers. According to the PSE list of ${dataWykazu}, at ${pelne} of them applications for the ${napiecia} switchyard were not being processed; ` +
+    `for ${tylko110} more, the list covers only the 110 kV switchyard (capacities as of ${dataMocy}).`,
   'moce.podsumowanie_bez_wykazu': (ile) => `${ile} capacity for consumers. PSE switchyard list (where applications are not processed): no data.`,
   'moce.sprawdzono_robot': (data) => `checked by the OSIRIS robot: ${data}`,
   'moce.sprawdzono': (data) => `checked: ${data} (date the data was accepted)`,
@@ -464,7 +479,7 @@ export default {
   'stopka.moce':
     'Available connection capacity for large consumers (hexagons, circles) and the sentence on capacity for new generators: PSE S.A., <a href="https://www.pse.pl/obszary-dzialalnosci/krajowy-system-elektroenergetyczny/informacja-o-dostepnosci-mocy-przylaczeniowej" target="_blank" rel="noopener">“Informacja o dostępności mocy przyłączeniowej do sieci przesyłowej”</a> (information on available connection capacity in the transmission grid), as of 31 Oct 2026, document retrieved 21 Nov 2026, processed (extract of the tables; we do not add up substation capacities). The operator\'s estimate, not a guarantee of connection.',
   'stopka.wykaz':
-    'Substations where applications are currently not being processed (empty hexagon – the list covers the 220/400 kV switchyard; if only 110 kV – filled hexagon and a note in the pop-up): PSE S.A., <a href="https://www.pse.pl/dane-systemowe/praca-kse/informacje-ogolne/wykaz-obiektow-planowanych-do-przylaczenia" target="_blank" rel="noopener">“Wykaz rozdzielni na stacjach bez możliwości przyłączenia nowych obiektów”</a> (list of switchyards at substations where new facilities cannot be connected), as of 4 Feb 2026 (older than the capacities – as of 31 Oct 2026), file retrieved 21 Nov 2026, processed (extract of lists 2 and 3).',
+    'Substations where applications were not being processed according to the list (empty hexagon – the list covers the 220/400 kV switchyard; if only 110 kV – filled hexagon and a note in the pop-up): PSE S.A., <a href="https://www.pse.pl/dane-systemowe/praca-kse/informacje-ogolne/wykaz-obiektow-planowanych-do-przylaczenia" target="_blank" rel="noopener">“Wykaz rozdzielni na stacjach bez możliwości przyłączenia nowych obiektów”</a> (list of switchyards at substations where new facilities cannot be connected), as of 4 Feb 2026 (older than the capacities – as of 31 Oct 2026), file retrieved 21 Nov 2026, processed (extract of lists 2 and 3).',
   'stopka.miejsca':
     'Substation locations: OpenStreetMap (OSM), ODbL – planned substations from OSM, or 20 km circles around the town named by PSE (approximate location, chosen by OSIRIS).',
   'stopka.linie':

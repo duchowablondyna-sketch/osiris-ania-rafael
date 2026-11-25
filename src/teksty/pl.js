@@ -140,7 +140,11 @@ export default {
   'leg.moce': 'Wolna moc dla odbiorców (PSE)',
   'leg.moce_opis': '– sieć najwyższych napięć 220/400 kV, dla największych odbiorców; sześciokąt: stacja planowana z wolną mocą;',
   'leg.moce_kolo': 'koło: lokalizacja przybliżona;',
-  'leg.moce_pusty': 'pusty sześciokąt: według wykazu PSE wnioski do rozdzielni 220/400 kV obecnie bez rozpatrzenia',
+  // Etap C1 (decyzje Ani 25.11.2026): data wykazu z danych zamiast „obecnie”, czas przeszły (wykaz ma swoją datę).
+  'leg.moce_pusty': (data) =>
+    `pusty sześciokąt: według wykazu PSE${data ? ` z ${data}` : ''} wnioski do rozdzielni 220/400 kV tej stacji nie były rozpatrywane`,
+  'leg.moce_110':
+    'dopisek „110 kV – bez rozpatrzenia”: w wykazie PSE jest tylko rozdzielnia 110 kV tej stacji; o rozdzielniach 220/400 kV wykaz nic nie mówi',
   'leg.linie': 'Linie najwyższych napięć',
   'leg.linie_opis': '– 220 i 400 kV (grubsza linia: 400 kV); kliknij linię na mapie, by zobaczyć szczegóły',
   'leg.morskie': 'Morskie farmy wiatrowe',
@@ -255,16 +259,35 @@ export default {
   'moce.tytul': 'Wolna moc dla odbiorców · PSE 220/400 kV',
   'moce.wazne':
     'Sieć najwyższych napięć (220/400 kV) – dla największych odbiorców, np. fabryk i centrów danych. Mniejsze firmy przyłączają się do sieci operatorów dystrybucyjnych (kolejny etap OSIRIS).',
-  'moce.istniejace': 'Dla istniejących stacji PSE podaje 0 MW – wolną moc mają tylko stacje planowane. Moc podana dla roku 2031; niektóre stacje powstaną później.',
   'moce.lista1': 'Stacje dla nowych odbiorców',
   'moce.lista2': 'Stacje budowane głównie dla sieci i nowych źródeł – według PSE mogą też zasilać odbiorców',
   'moce.szacunek':
-    'Szacunek operatora, nie gwarancja przyłączenia. Wykorzystanie mocy w jednej stacji może zmniejszyć moc w stacjach sąsiednich – dlatego mocy stacji nie sumujemy.',
+    'Wykorzystanie mocy w jednej stacji może zmniejszyć moc w sąsiednich – dlatego mocy stacji nie sumujemy.',
   'moce.zrodla_etykieta': 'Moc dla nowych źródeł:',
   'moce.stan_etykieta': 'stan na:',
   'moce.zrodla_zero': 'PSE: 0 MW dla nowych źródeł w sieci najwyższych napięć – w całej Polsce (2026 i 2031)',
   'moce.zrodla': (a, b) => `PSE: ${a} (2026) i ${b} (2031) dla nowych źródeł w sieci najwyższych napięć – w całej Polsce`,
   'moce.zrodla_brak': 'Moc dla nowych źródeł: brak danych',
+  'moce.zrodla_dotyczy': 'Dotyczy nowych elektrowni, nie odbiorców prądu.',
+  // Trudne słowa zakładki „Gdzie” (Etap C1, forma F1: podkreślone słowo z okienkiem C) – jedno źródło tekstu.
+  'slownik.kv_termin': 'kV',
+  'slownik.kv': 'napięcie, czyli „ciśnienie” w sieci: 400 i 220 kV to autostrady prądu, 110 kV – drogi krajowe',
+  'slownik.rozdzielnia_termin': 'rozdzielnia',
+  'slownik.rozdzielnia': 'część stacji pracująca na jednym napięciu (np. 110 kV), z której prąd rozchodzi się liniami dalej – jak węzeł autostradowy',
+  // Słowo w podsumowaniu, które dostaje wyjaśnienie (forma w zdaniu).
+  'slownik.rozdzielnia_w_zdaniu': 'rozdzielni',
+  'slownik.aria': (termin) => `Co znaczy „${termin}”? – wyjaśnienie`,
+  // Podpis w okienku zamiast linijki źródła (to nasze wyjaśnienie, nie dane).
+  'slownik.objasnienie': 'objaśnienie OSIRIS',
+  // Analogia przy „nie sumujemy” (Etap C1, wariant Y).
+  'moce.szacunek_analogia': 'Jak parkingi przy jednej drodze dojazdowej: im więcej aut wjedzie na jeden, tym trudniej dojechać do drugiego.',
+  // Zdanie-wniosek na górze zakładki (Etap C1, wariant B, decyzje Ani 25.11.2026): liczby, daty, „0 MW” i rok z danych
+  // (src/moce-teksty.js; „0 MW” i rok – ze zdań PSE w moce-pse.json → wyciag.zdania_obecne).
+  // Bez podwójnego przeczenia (poprawka Ani 25.11.2026); zZastrzezeniami + bez = wszystkie stacje (test).
+  'moce.wniosek_b': (dataMocy, mocIstniejacych, stacjePlanowane, zZastrzezeniami, dataWykazu, bez, rok) =>
+    `Dla dużego odbiorcy: według PSE (stan na ${dataMocy}) istniejące stacje mają ${mocIstniejacych} – wolną moc mają tylko ${stacjePlanowane}. ` +
+    `Przy ${zZastrzezeniami} z nich wykaz PSE z ${dataWykazu} podaje, że wnioski do części rozdzielni nie były rozpatrywane; przy ${bez} takich zastrzeżeń nie podaje. ` +
+    `To szacunek operatora na ${rok} r., nie gwarancja przyłączenia.`,
   'moce.lok_okolica': (rejon, miejsce, km) =>
     `Lokalizacja przybliżona – PSE podaje tylko »${rejon}«; środek koła wybrał OSIRIS (${miejsce}, promień ${km} km).`,
   'moce.lok_osm': (nazwa) => `Lokalizacja: planowana stacja w OpenStreetMap („${nazwa}”) – dopasowanie niepewne.`,
@@ -272,10 +295,11 @@ export default {
   'moce.w_tym_miejscu': (stacje) => `${stacje} w tym miejscu`,
   'moce.moc': (mw) => `wolna moc dla odbiorców: ${mw} (rok 2031)`,
   'moce.tabela2': 'stacja budowana głównie dla sieci i nowych źródeł – według PSE może też zasilać odbiorców',
-  'moce.uwaga_pusty': (data) =>
-    `Uwaga: według wykazu PSE (stan na ${data}) wnioski o przyłączenie do tej stacji obecnie pozostają bez rozpatrzenia.`,
+  // Jedno brzmienie zgodne z wykazem (wymienia rozdzielnie, nie całe stacje); napięcia tej stacji z wykazu (src/moce-teksty.js).
+  // ile – liczba rozdzielni (tylko EN: switchyard / switchyards); po polsku „rozdzielni” pasuje do obu.
+  'moce.uwaga_pusty': (data, napiecia, ile) => `Uwaga: według wykazu PSE z ${data} wnioski do rozdzielni ${napiecia} tej stacji nie były rozpatrywane.`,
   'moce.uwaga_110': (data) =>
-    `Uwaga: według wykazu PSE (stan na ${data}) wnioski do rozdzielni 110 kV tej stacji obecnie pozostają bez rozpatrzenia; o rozdzielniach 220/400 kV wykaz nie mówi.`,
+    `Uwaga: według wykazu PSE z ${data} wnioski do rozdzielni 110 kV tej stacji nie były rozpatrywane; o rozdzielniach 220/400 kV wykaz nic nie mówi.`,
   'moce.lista_pse': (tytul, rozdzielnie) => `Lista PSE: „${tytul}”; rozdzielnie w wykazie: ${rozdzielnie}.`,
   'moce.daty_rozne': (wykaz, moce, sprawdzone) =>
     `Daty się różnią: wykaz rozdzielni ma stan na ${wykaz}, a moce – stan na ${moce}. Nowszego wykazu PSE nie opublikowało (sprawdzone ${sprawdzone}).`,
@@ -290,11 +314,12 @@ export default {
   'moce.lok_krotko.okolica': 'lokalizacja przybliżona',
   'moce.lok_krotko.stacja-osm': 'dopasowanie niepewne (OSM)',
   'moce.lok_krotko.brak': 'brak na mapie',
-  'moce.wstrzymane_pusty': ' · wnioski bez rozpatrzenia',
+  'moce.wstrzymane_pusty': (napiecia) => ` · ${napiecia} – bez rozpatrzenia`,
   'moce.wstrzymane_110': ' · 110 kV – bez rozpatrzenia',
+  // napiecia – z wykazu dla tych stacji, np. „220 lub 400 kV” (src/moce-teksty.js, test w scripts/pse-moce/testy.mjs).
   'moce.podsumowanie': (ile, pelne, napiecia, tylko110, dataWykazu, dataMocy) =>
-    `${ile} moc dla odbiorców. W ${pelne} z nich PSE obecnie nie rozpatruje wniosków (rozdzielnia ${napiecia}); ` +
-    `przy ${tylko110} kolejnych wykaz dotyczy tylko rozdzielni 110 kV (wykaz rozdzielni, stan na ${dataWykazu}; moce – stan na ${dataMocy}).`,
+    `${ile} moc dla odbiorców. Według wykazu PSE z ${dataWykazu} w ${pelne} z nich wnioski do rozdzielni ${napiecia} nie były rozpatrywane; ` +
+    `przy ${tylko110} kolejnych wykaz dotyczy tylko rozdzielni 110 kV (moce – stan na ${dataMocy}).`,
   'moce.podsumowanie_bez_wykazu': (ile) => `${ile} moc dla odbiorców. Wykaz rozdzielni PSE (gdzie wnioski nie są rozpatrywane): brak danych.`,
   'moce.sprawdzono_robot': (data) => `sprawdzono przez Robota OSIRIS: ${data}`,
   'moce.sprawdzono': (data) => `sprawdzono: ${data} (data przyjęcia danych)`,
@@ -439,7 +464,7 @@ export default {
   'stopka.moce':
     'Wolna moc dla odbiorców (sześciokąty, koła) i zdanie o mocy dla nowych źródeł: PSE S.A., <a href="https://www.pse.pl/obszary-dzialalnosci/krajowy-system-elektroenergetyczny/informacja-o-dostepnosci-mocy-przylaczeniowej" target="_blank" rel="noopener">„Informacja o dostępności mocy przyłączeniowej do sieci przesyłowej”</a>, stan na 31.10.2026, dokument pobrany 21.11.2026, przetworzone (wyciąg tabel; mocy stacji nie sumujemy). Szacunek operatora, nie gwarancja przyłączenia.',
   'stopka.wykaz':
-    'Stacje, do których wnioski obecnie pozostają bez rozpatrzenia (pusty sześciokąt – wykaz obejmuje rozdzielnię 220/400 kV; gdy tylko 110 kV – pełny sześciokąt i uwaga w okienku): PSE S.A., <a href="https://www.pse.pl/dane-systemowe/praca-kse/informacje-ogolne/wykaz-obiektow-planowanych-do-przylaczenia" target="_blank" rel="noopener">„Wykaz rozdzielni na stacjach bez możliwości przyłączenia nowych obiektów”</a>, stan na 04.02.2026 (starszy niż moce – stan na 31.10.2026), plik pobrany 21.11.2026, przetworzone (wyciąg list 2 i 3).',
+    'Stacje, do których wnioski nie były rozpatrywane według wykazu (pusty sześciokąt – wykaz obejmuje rozdzielnię 220/400 kV; gdy tylko 110 kV – pełny sześciokąt i uwaga w okienku): PSE S.A., <a href="https://www.pse.pl/dane-systemowe/praca-kse/informacje-ogolne/wykaz-obiektow-planowanych-do-przylaczenia" target="_blank" rel="noopener">„Wykaz rozdzielni na stacjach bez możliwości przyłączenia nowych obiektów”</a>, stan na 04.02.2026 (starszy niż moce – stan na 31.10.2026), plik pobrany 21.11.2026, przetworzone (wyciąg list 2 i 3).',
   'stopka.miejsca':
     'Miejsca stacji: OpenStreetMap (ODbL) – planowane stacje z OSM albo koła 20 km wokół miejscowości z opisu PSE (lokalizacja przybliżona, wybór OSIRIS).',
   'stopka.linie':
