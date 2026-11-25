@@ -9,7 +9,8 @@
 // Uruchamianie: najpierw vite build, potem node scripts/testy-przegladarka.mjs (albo całość: npm run sprawdz).
 // Przeglądarka: Google Chrome zainstalowany w systemie (na GitHubie jest na ubuntu-24.04) – playwright-core nic nie pobiera.
 import { spawn } from 'node:child_process';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
+import { connect } from 'node:net';
 import { join, resolve } from 'node:path';
 import { chromium } from 'playwright-core';
 
@@ -38,7 +39,25 @@ if (!existsSync(join(KATALOG, 'dist', 'index.html'))) {
   process.exit(1);
 }
 
+// Port zajęty (np. stary podgląd z innej sesji – 25.11.2026 na 4174 wisiał serwer z 23.11 z próbną wersją strony):
+// nasz serwer by nie wystartował, a test sprawdziłby cudzą stronę. Dlatego najpierw: czy ktoś już słucha na porcie.
+function portZajety() {
+  return new Promise((gotowe) => {
+    const gniazdo = connect({ host: '127.0.0.1', port: PORT });
+    gniazdo.setTimeout(1000);
+    gniazdo.once('connect', () => (gniazdo.destroy(), gotowe(true)));
+    gniazdo.once('timeout', () => (gniazdo.destroy(), gotowe(true)));
+    gniazdo.once('error', () => gotowe(false));
+  });
+}
+
 async function uruchomSerwer() {
+  if (await portZajety()) {
+    throw new Error(
+      `port ${PORT} jest zajęty przez inny program – test nie sprawdzi cudzej strony.\n` +
+        `  Sprawdź, co to jest: lsof -nP -iTCP:${PORT} -sTCP:LISTEN (i zatrzymaj, jeśli to stary podgląd).`,
+    );
+  }
   const vite = join(KATALOG, 'node_modules', 'vite', 'bin', 'vite.js');
   const serwer = spawn(process.execPath, [vite, 'preview', '--host', '127.0.0.1', '--port', String(PORT), '--strictPort'], {
     cwd: KATALOG,
@@ -46,10 +65,17 @@ async function uruchomSerwer() {
   });
   for (let i = 0; i < 100; i++) {
     if (serwer.exitCode !== null) throw new Error(`vite preview zakończył się (kod ${serwer.exitCode})`);
+    let odp;
     try {
-      if ((await fetch(BAZA + '/')).ok) return serwer;
+      odp = await fetch(BAZA + '/');
     } catch {
       // serwer jeszcze nie słucha
+    }
+    if (odp?.ok) {
+      // Drugi bezpiecznik: serwer musi podawać dokładnie naszą zbudowaną stronę tytułową.
+      if ((await odp.text()) === readFileSync(join(KATALOG, 'dist', 'index.html'), 'utf-8')) return serwer;
+      serwer.kill();
+      throw new Error(`${BAZA}/ podaje inną stronę niż dist/index.html – to nie jest nasz podgląd.`);
     }
     await new Promise((r) => setTimeout(r, 150));
   }
@@ -113,7 +139,13 @@ async function sprawdzStrone(przegladarka, widok, sciezka) {
   return bledy;
 }
 
-const serwer = await uruchomSerwer();
+let serwer;
+try {
+  serwer = await uruchomSerwer();
+} catch (blad) {
+  console.error(`✗ Serwer podglądu: ${blad.message}`);
+  process.exit(1);
+}
 let przegladarka;
 let czerwone = 0;
 try {
