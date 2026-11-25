@@ -300,12 +300,34 @@ main {
 
 /* ── Stopka ────────────────────────────────────────────────── */
 .stopka {
+  position: relative;
   padding: 8px 16px;
   font-size: 0.8125rem;
   line-height: 1.4;
   color: var(--tekst-pomocniczy);
   background: var(--tlo);
   border-top: 1px solid #2a3550;
+}
+
+/* „O nas” – w wierszu „Źródła i licencje”, przy prawej krawędzi stopki; ten sam krój co „Źródła i licencje”. */
+.stopka a.stopka__o-nas {
+  position: absolute;
+  top: 8px;
+  right: 16px;
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--tekst);
+  text-decoration: none;
+}
+
+.stopka a.stopka__o-nas:hover {
+  color: var(--zloto);
+}
+
+.stopka__o-nas:focus-visible {
+  outline: 2px solid var(--fokus);
+  outline-offset: 2px;
 }
 
 /* Zwinięta: jedna linijka „Źródła i licencje ▸”; rozwinięta: pełna treść (strzałka ▾). */
@@ -1795,6 +1817,17 @@ button.panel-moce__nazwa:hover {
   .stopka__zrodla summary,
   .maplibregl-ctrl-attrib a {
     position: relative;
+  }
+
+  /* „O nas” w stopce – niewidoczne pole dotyku 44 px wysokości (jak „Źródła i licencje”). */
+  .stopka__o-nas::before {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 44px;
+    content: '';
+    transform: translateY(-50%);
   }
 
   .mapa-gora .przelacznik__opcja::before {

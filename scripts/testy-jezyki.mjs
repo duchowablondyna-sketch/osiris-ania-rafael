@@ -23,6 +23,7 @@ const PRZEJSCIOWE = {};
 // i tytuły dokumentów PSE w stopce (w cudzysłowie, a obok nasze tłumaczenie w nawiasie).
 const NAZWY_WLASNE = [
   'MKiŚ',
+  'Kołodziejczyk',
   'MFW Bałtyk I',
   'Nierynkowe redysponowanie źródeł OZE',
   'Rynkowa cena energii elektrycznej',

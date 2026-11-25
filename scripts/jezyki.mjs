@@ -17,6 +17,7 @@ export const ADRES_SERWISU = 'https://osiris-ania-rafael.pages.dev';
 export const STRONY = {
   tytulowa: { plik: 'index.html', pl: '/', en: '/en/', przelacznik: 'tekst' },
   mapa: { plik: 'mapa/index.html', pl: '/mapa/', en: '/en/map/', przelacznik: 'pigulka' },
+  onas: { plik: 'o-nas/index.html', pl: '/o-nas/', en: '/en/about/', przelacznik: 'tekst' },
 };
 
 const adres = (strona, jezyk) => STRONY[strona][jezyk] ?? STRONY[strona].pl;

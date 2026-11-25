@@ -1,0 +1,154 @@
+/* Strona „O nas” (/o-nas/, /en/about/) – sam tekst, bez skryptu. Kolory, czcionki i .tylko-czytnik – z style.css
+   (wspólne zmienne jak na stronie tytułowej i mapie). Tekst główny 18 px, kolumna do ok. 65 znaków, kontrast:
+   tekst #e8eef7 na #05070d ok. 17:1, linki złote #f2c14e ok. 11:1. Bez zdjęć i animacji. */
+@import './czcionki.css';
+@import './style.css';
+
+/* style.css układa stronę pod mapę (kolumna na wysokość okna) – tu zwykła, przewijana strona, jak strona tytułowa. */
+html,
+body.o-nas {
+  height: auto;
+  min-height: 100%;
+}
+
+body.o-nas {
+  display: block;
+  /* Kosmiczne tło: kilka drobnych „gwiazd” z gradientów, bez obrazków; nie przeszkadza w czytaniu (bardzo słabe). */
+  background:
+    radial-gradient(1px 1px at 12% 18%, rgba(232, 238, 247, 0.5), transparent 60%),
+    radial-gradient(1px 1px at 78% 9%, rgba(232, 238, 247, 0.35), transparent 60%),
+    radial-gradient(1px 1px at 63% 42%, rgba(232, 238, 247, 0.3), transparent 60%),
+    radial-gradient(1px 1px at 27% 71%, rgba(232, 238, 247, 0.35), transparent 60%),
+    radial-gradient(1px 1px at 91% 83%, rgba(232, 238, 247, 0.4), transparent 60%),
+    radial-gradient(1200px 600px at 50% -10%, rgba(92, 200, 255, 0.07), transparent 70%),
+    var(--tlo);
+  background-attachment: fixed;
+}
+
+.o-nas__gora {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 20px 20px 0;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.14em;
+}
+
+.o-nas a.o-nas__logo {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--tekst);
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-decoration: none;
+}
+
+/* Przełącznik PL | EN – ten sam wygląd co na stronie tytułowej (klasy z scripts/jezyki.mjs). */
+.o-nas .jezyki {
+  display: flex;
+  align-items: center;
+  gap: 0.55em;
+  color: var(--tekst-pomocniczy);
+}
+
+.o-nas a.jezyki__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  color: var(--tekst-pomocniczy);
+  text-decoration: none;
+}
+
+.o-nas a.jezyki__link[aria-current='page'],
+.o-nas a.jezyki__link:hover {
+  color: var(--zloto);
+}
+
+.o-nas .jezyki__kreska {
+  opacity: 0.5;
+}
+
+.o-nas__tresc {
+  max-width: 65ch;
+  margin: 0 auto;
+  padding: 24px 20px 8px;
+  font-size: 1.125rem;
+  line-height: 1.65;
+}
+
+.o-nas__tresc h1 {
+  margin: 24px 0 8px;
+  font-size: clamp(2rem, 6vw, 2.75rem);
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+.o-nas__tresc h2 {
+  margin: 40px 0 8px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--zloto);
+}
+
+.o-nas__tresc p {
+  margin: 0 0 14px;
+}
+
+.o-nas a {
+  color: var(--zloto);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.o-nas a:hover {
+  color: var(--tekst);
+}
+
+.o-nas a:focus-visible {
+  outline: 2px solid var(--fokus);
+  outline-offset: 3px;
+}
+
+.o-nas__kontakt {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Linki kontaktu – min. 44 px wysokości (telefon). */
+.o-nas__kontakt a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.o-nas__dol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  max-width: 65ch;
+  margin: 32px auto 0;
+  padding: 16px 20px 40px;
+  font-size: 1rem;
+  border-top: 1px solid var(--szklo-ramka);
+}
+
+.o-nas__dol a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.o-nas__dol p {
+  flex-basis: 100%;
+  margin: 0;
+  color: var(--tekst-pomocniczy);
+}
