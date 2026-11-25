@@ -411,7 +411,6 @@ export default {
   'karta.moc_ponad': (stan) => `więcej niż moc z raportu PSE (stan ${stan}) – od tego czasu mogły przybyć nowe elektrownie`,
   'karta.moc_podpis': (stan, stanMocy) => `produkcja: stan na ${stan} · moc w całej Polsce: PSE, stan ${stanMocy}`,
   'karta.moc_zrodlo': (stanMocy) => `PSE, Raport 2025 KSE, Tabela 1.1 · stan ${stanMocy}`,
-  'karta.cena_brak_dzis': 'brak danych na dziś',
   'karta.wymiana_zero': 'ok. 0\u00a0GW',
   'karta.wymiana_zero_opis': 'prawie bez wymiany',
   // Etap C2 (odbiór 25.11.2026): wymiana w GW z jednym miejscem po przecinku – jak produkcja.

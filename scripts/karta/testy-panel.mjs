@@ -5,7 +5,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { zbudujKarte } from './licz.mjs';
-import { tekstyKarty, tekstCeny, PROG_STARYCH_H, PODZIAL_OZE, PASKI_MOCY, procent0, wiatrISlonce, tekstZapotrzebowania } from '../../src/karta-teksty.js';
+import { tekstyKarty, cenaMiksu, PROG_STARYCH_H, PODZIAL_OZE, PASKI_MOCY, procent0, wiatrISlonce, tekstZapotrzebowania } from '../../src/karta-teksty.js';
 import { ustawJezyk } from '../../src/jezyk.js';
 import { wypelnij } from '../jezyki.mjs';
 
@@ -112,12 +112,57 @@ test('wymiana: znak z opisu PSE (+ kupuje, − sprzedaje), w GW z jednym miejsce
   assert.equal(tekstyKarty(k, RCE, terazPo(k, 1)).wymiana.wartosc, 'kupuje ok. 0,1\u00a0GW');
 });
 
-test('cena RCE: bieżący kwadrans z własną godziną; poza dobą – brak danych, nigdy zero', () => {
-  const t = Date.parse('2026-11-20T12:05:00Z'); // 13:05 czasu polskiego
-  assert.deepEqual(tekstCeny(RCE, t), { ok: true, wartosc: '612,40 zł/MWh', opis: '13:00–13:15', kwh: '= 0,61 zł/kWh', zl: '612,40' });
-  assert.equal(tekstCeny(RCE, Date.parse('2026-11-20T12:20:00Z')).wartosc, '-5,00 zł/MWh');
-  assert.equal(tekstCeny(RCE, Date.parse('2026-11-21T12:05:00Z')).wartosc, 'brak danych na dziś');
-  assert.equal(tekstCeny(null, t).wartosc, 'brak danych PSE');
+// D6: RCE z cenami dla kwadransu miksu (500 zł/MWh) i dla kwadransów „teraz” wg zegara (inne ceny) – Karta ma brać tylko tę pierwszą.
+function rceZMiksem(k, cenaMiksuZl = 500) {
+  const rce = structuredClone(RCE);
+  const koniec = Date.parse(k.kwadrans.koniec_utc);
+  const seria = rce.doby['2026-11-20'];
+  seria.unshift({ okres: k.kwadrans.okres, koniec_utc: new Date(koniec).toISOString().replace('.000Z', 'Z'), cena: cenaMiksuZl });
+  // Kolejne kwadranse po miksie – 1,5 h i 5 h później (zegar przeglądarki) – z ceną 1917,88 zł/MWh.
+  for (let i = 1; i <= 24; i++) seria.push({ okres: `+${i}`, koniec_utc: new Date(koniec + i * 15 * 60_000).toISOString().replace('.000Z', 'Z'), cena: 1917.88 });
+  return rce;
+}
+
+test('D6: cena RCE w Karcie – z kwadransu miksu, z jego godziną; brak miksu albo ceny → „–”, nigdy zero', () => {
+  const k = karta();
+  const okres = k.kwadrans.okres.replace(' - ', '–');
+  assert.deepEqual(cenaMiksu(rceZMiksem(k), k, terazPo(k, 1.5)), { ok: true, wartosc: '500,00 zł/MWh', opis: okres, kwh: '= 0,50 zł/kWh', zl: '500,00' });
+  assert.equal(cenaMiksu(rceZMiksem(k, -5), k, terazPo(k, 1.5)).wartosc, '-5,00 zł/MWh');
+  const brak = { ok: false, wartosc: '–', opis: '', kwh: '', zl: null };
+  assert.deepEqual(cenaMiksu(RCE, k, terazPo(k, 1.5)), brak); // próbka RCE nie ma kwadransu miksu
+  assert.deepEqual(cenaMiksu(null, k, terazPo(k, 1.5)), brak);
+  assert.deepEqual(cenaMiksu(rceZMiksem(k), null, terazPo(k, 1.5)), brak);
+});
+
+test('D6: wszystkie miejsca ceny w Karcie – ta sama wartość i ten sam kwadrans co miks, także gdy zegar jest godziny później', () => {
+  const k = karta();
+  const rce = rceZMiksem(k);
+  for (const godziny of [0.25, 1.5, 5]) {
+    const t = tekstyKarty(k, rce, terazPo(k, godziny));
+    assert.equal(t.cena.zl, '500,00', `${godziny} h`);
+    assert.equal(t.cena.wartosc, '500,00 zł/MWh');
+    assert.equal(t.cena.kwh, '= 0,50 zł/kWh');
+    assert.equal(t.skrotCzesci.rce, 'RCE 500,00 zł/MWh');
+    assert.equal(t.kafle.rce, '500,00 zł/MWh');
+    // Godzina przy cenie = kwadrans miksu, ten sam co w małej linijce pod liczbą-bohaterem.
+    assert.equal(t.cena.opis, k.kwadrans.okres.replace(' - ', '–'));
+    assert.ok(t.podpis.startsWith(`w kwadransie ${t.cena.opis} ·`), t.podpis);
+    for (const tekst of [t.cena.wartosc, t.cena.kwh, t.skrotCzesci.rce, t.kafle.rce]) assert.ok(!/1917|1,92/.test(tekst), tekst);
+  }
+  // Następnego dnia przy cenie stoi także data kwadransu miksu (jak w małej linijce).
+  const jutro = tekstyKarty(k, rce, terazPo(k, 12));
+  assert.equal(jutro.cena.zl, '500,00');
+  assert.match(jutro.cena.opis, /\(20\.11\)$/);
+  // EN – ta sama zasada.
+  ustawJezyk('en');
+  try {
+    const en1 = tekstyKarty(k, rce, terazPo(k, 1.5));
+    assert.equal(en1.cena.wartosc, '500.00 PLN/MWh');
+    assert.equal(en1.skrotCzesci.rce, 'RCE 500.00 PLN/MWh');
+    assert.equal(en1.kafle.rce, '500.00 PLN/MWh');
+  } finally {
+    ustawJezyk('pl');
+  }
 });
 
 test(`plakietka: dane starsze niż ${PROG_STARYCH_H} h – tak; młodsze – nie`, () => {
@@ -146,16 +191,16 @@ test('stan z innego dnia ma datę', () => {
   assert.match(t.podpis, /stan na 20\.11, 12:30/);
 });
 
-test('brak danych: plik się nie wczytał, „blad” w karta.json albo zły układ – bez liczb, cena działa dalej', () => {
+test('brak danych: plik się nie wczytał, „blad” w karta.json albo zły układ – bez liczb, bez ceny (D6: „–”)', () => {
   const t = Date.parse('2026-11-20T12:05:00Z');
   const brak = tekstyKarty(null, RCE, t);
   assert.equal(brak.ok, false);
   assert.equal(brak.plakietka, 'Brak danych PSE o miksie.');
-  assert.equal(brak.cena.wartosc, '612,40 zł/MWh');
+  assert.equal(brak.cena.wartosc, '–'); // D6: bez miksu nie ma kwadransu, więc i ceny
   assert.equal(brak.bohater, undefined);
   const blad = tekstyKarty({ wersja: 1, czas_pobrania: '2026-11-20T12:30:00Z', plakietka: 'nie udało się pobrać nowych danych PSE', blad: 'brak danych' }, null, t);
   assert.equal(blad.plakietka, 'Brak danych o miksie: nie udało się pobrać nowych danych PSE.');
-  assert.equal(blad.cena.wartosc, 'brak danych PSE');
+  assert.equal(blad.cena.wartosc, '–');
   assert.equal(tekstyKarty({ wersja: 2 }, RCE, t).ok, false);
 });
 
@@ -438,9 +483,8 @@ test('C2: wiatr i słońce – GW i procent od produkcji w Polsce; brak zapotrze
 
 test('C2: RCE w zł/kWh = zł/MWh ÷ 1000 (dwa miejsca, ujemna cena zostaje ujemna)', () => {
   const k = karta();
-  const teraz = Date.parse('2026-11-20T12:10:00Z'); // kwadrans 13:00–13:15, 612,40 zł/MWh
-  assert.equal(tekstCeny(RCE, teraz).kwh, '= 0,61 zł/kWh');
-  assert.equal(tekstCeny(RCE, Date.parse('2026-11-20T12:20:00Z')).kwh, '= -0,01 zł/kWh');
+  assert.equal(cenaMiksu(rceZMiksem(k, 612.4), k, terazPo(k, 1)).kwh, '= 0,61 zł/kWh');
+  assert.equal(cenaMiksu(rceZMiksem(k, -5), k, terazPo(k, 1)).kwh, '= -0,01 zł/kWh');
 });
 
 test('C2: nagłówki – to samo znaczenie w PL i EN (planowa / scheduled, cykl życia / life-cycle)', () => {
@@ -451,10 +495,11 @@ test('C2: nagłówki – to samo znaczenie w PL i EN (planowa / scheduled, cykl 
 test('C2: nagłówek Karty – jedna godzina; cena RCE z kwadransu miksu, a bez niej – bez ceny w nagłówku i kafelku', () => {
   const k = karta();
   const teraz = terazPo(k, 1);
-  // Próbka RCE nie ma kwadransu miksu (12:00–12:15) – w nagłówku i kafelku bez ceny (zakładka ma swoją cenę z godziną).
+  // Próbka RCE nie ma kwadransu miksu – w nagłówku bez ceny, w kafelkach „–” (D6: zakładka też, bez ceny „teraz”).
   const bez = tekstyKarty(k, RCE, teraz);
   assert.equal(bez.skrotCzesci.rce, null);
   assert.equal(bez.kafle.rce, null);
+  assert.equal(bez.cena.wartosc, '–');
   // Z ceną dla kwadransu miksu (koniec 11:15 UTC = 12:15 czasu polskiego) – ta cena, nie bieżąca.
   const rce = structuredClone(RCE);
   rce.doby['2026-11-20'].unshift({ okres: '12:00 - 12:15', koniec_utc: k.kwadrans.koniec_utc.replace('.000Z', 'Z'), cena: 500 });

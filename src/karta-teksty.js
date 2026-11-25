@@ -9,7 +9,6 @@ import { t, liczba, zDanych, LOCALE, formatCzasu as formatCzasuJezyka, formatDni
 // PSE publikuje miks z opóźnieniem ok. 30–45 min, więc zwykle dane mają do ok. 5 h.
 export const PROG_STARYCH_H = 6;
 
-const MS_KWADRANS = 15 * 60_000;
 const STREFA = 'Europe/Warsaw';
 
 // Wszystkie daty i godziny – wg czasu polskiego, niezależnie od strefy komputera widza.
@@ -98,33 +97,27 @@ export function tekstyMocy(karta, stan) {
 // Skala paska CO2 w okienku Polski: 0–1500 g CO₂eq/kWh.
 export const CO2_SKALA_MAX = 1500;
 
-// Cena RCE w bieżącym kwadransie (ta sama zasada co w okienku PSE: tylko doba dzisiejsza wg czasu polskiego).
-export function tekstCeny(rce, teraz) {
-  const seria = (rce?.doby?.[dobaPL(teraz)] ?? []).filter((p) => typeof p.cena === 'number' && p.koniec_utc);
-  const biezacy = seria.find((p) => {
-    const k = Date.parse(p.koniec_utc);
-    return teraz >= k - MS_KWADRANS && teraz < k;
-  });
-  if (!biezacy) return { ok: false, wartosc: t(rce ? 'karta.cena_brak_dzis' : 'wspolne.brak_danych_pse'), opis: '', kwh: '', zl: null };
-  return {
-    ok: true,
-    wartosc: `${zl(biezacy.cena)} ${t('jednostka.zl_mwh')}`,
-    opis: biezacy.okres.replace(' - ', '–'),
-    // Etap C2: ta sama cena w zł/kWh (÷ 1000, dwa miejsca; ujemna zostaje ujemna).
-    kwh: t('karta.cena_kwh', zl(biezacy.cena / 1000)),
-    zl: zl(biezacy.cena),
-  };
-}
-
-// Etap C2: cena RCE z TEGO SAMEGO kwadransa co miks (koniec kwadransu w UTC) – do nagłówka Karty i kafelków,
-// żeby w linijce była jedna godzina. Brak ceny dla tego kwadransa – null (w nagłówku bez ceny).
-export function cenaKwadransuMiksu(rce, koniecUtc) {
-  const k = Date.parse(koniecUtc);
+// Etap C, poprawka D6 (decyzja Ani 25.11.2026): JEDNA cena RCE w całej Karcie – z tego samego kwadransu co miks.
+// Ta jedna funkcja zasila nagłówek, kafelek telefonu, „Cena RCE” w „Ile i jak czysto” i „= X zł/kWh”; przy cenie
+// stoi okres kwadransu miksu (ta sama funkcja co mała linijka pod liczbą-bohaterem). Cena „teraz” (wg zegara) jest
+// tylko w okienku „Wiatr, słońce i cena prądu” (src/main.js). Brak miksu albo ceny dla jego kwadransu – „–”.
+export function cenaMiksu(rce, karta, teraz) {
+  const brak = { ok: false, wartosc: '–', opis: '', kwh: '', zl: null };
+  const koniec = Date.parse(karta?.kwadrans?.koniec_utc);
+  if (!Number.isFinite(koniec)) return brak;
   for (const seria of Object.values(rce?.doby ?? {})) {
-    const p = (seria ?? []).find((x) => typeof x.cena === 'number' && Date.parse(x.koniec_utc) === k);
-    if (p) return zl(p.cena);
+    const p = (seria ?? []).find((x) => typeof x.cena === 'number' && Date.parse(x.koniec_utc) === koniec);
+    if (!p) continue;
+    return {
+      ok: true,
+      wartosc: `${zl(p.cena)} ${t('jednostka.zl_mwh')}`,
+      opis: okresKwadransu(karta, teraz),
+      // Etap C2: ta sama cena w zł/kWh (÷ 1000, dwa miejsca; ujemna zostaje ujemna).
+      kwh: t('karta.cena_kwh', zl(p.cena / 1000)),
+      zl: zl(p.cena),
+    };
   }
-  return null;
+  return brak;
 }
 
 // Procent całkowity – ta sama reguła co liczba-bohater (jedna funkcja dla nagłówka, kafelków i zdań – test).
@@ -212,7 +205,6 @@ export function tekstZapotrzebowania(karta) {
 }
 
 export function tekstyKarty(karta, rce, teraz = Date.now()) {
-  const cena = tekstCeny(rce, teraz);
   const pobrano = karta?.czas_pobrania ? formatCzasu(karta.czas_pobrania) : null;
 
   if (!wygladaJakKarta(karta)) {
@@ -221,7 +213,7 @@ export function tekstyKarty(karta, rce, teraz = Date.now()) {
       ok: false,
       plakietka: powod ? t('karta.plakietka_brak_powod', powodPlakietki(powod)) : t('karta.plakietka_brak'),
       skrot: t('wspolne.brak_danych_pse'),
-      cena,
+      cena: cenaMiksu(rce, null, teraz), // bez miksu nie ma kwadransu – „–”
       pobrano: null, // czas_pobrania przy braku danych to tylko czas nieudanej próby
       moc: { ok: false, tekst: t('karta.moc_brak') },
     };
@@ -255,7 +247,7 @@ export function tekstyKarty(karta, rce, teraz = Date.now()) {
   const pasek = PASEK.map(({ grupa, nazwa }) => ({ grupa, nazwa, udzial: karta.grupy[grupa].udzial, tekst: procent1(karta.grupy[grupa].udzial) }));
   const co2 = { wartosc: t('karta.co2_wartosc', liczba(karta.co2.g_kwh_ok)), opis: t('karta.co2_opis') };
 
-  const cenaMiksu = cenaKwadransuMiksu(rce, karta.kwadrans.koniec_utc);
+  const cena = cenaMiksu(rce, karta, teraz);
   const wnioski = plakietka ? { krotki: null, pelny: null } : tekstyWnioskow(karta, oze, teraz);
 
   return {
@@ -267,14 +259,14 @@ export function tekstyKarty(karta, rce, teraz = Date.now()) {
       produkcja: t('karta.skrot_produkcja', gw(karta.produkcja_mw)),
       bohater: `${bohater.procent} ${bohater.krotko}`,
       drugi: oze ? t('karta.skrot_wegiel', procent0(karta.wegiel_udzial)) : t('karta.skrot_oze', procent0(karta.oze_udzial)),
-      rce: cenaMiksu ? t('karta.skrot_rce', cenaMiksu) : null,
+      rce: cena.ok ? t('karta.skrot_rce', cena.zl) : null,
       stan: t('karta.skrot_stan', stan),
     },
     kafle: {
       // Telefon: ten sam procent co liczba-bohater i nagłówek komputera (decyzja Ani 25.11.2026).
       bohater: `${bohater.procent} ${bohater.krotko}`,
       drugi: oze ? t('karta.skrot_wegiel', procent0(karta.wegiel_udzial)) : t('karta.skrot_oze', procent0(karta.oze_udzial)),
-      rce: cenaMiksu ? `${cenaMiksu} ${t('jednostka.zl_mwh')}` : null,
+      rce: cena.ok ? cena.wartosc : null,
     },
     wnioski,
     zapotrzebowanie: tekstZapotrzebowania(karta),
