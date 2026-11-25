@@ -5,7 +5,7 @@ import { tekstyKarty, formatCzasu, CO2_SKALA_MAX } from './karta-teksty.js';
 import { wiecejPonizej, wysokoscPrzycisku } from './wiecej-ponizej.js';
 import { TELEFON } from './zwijanie.js';
 import { t, liczba } from './jezyk.js';
-import { oznaczTerminy, objasnienie } from './terminy.js';
+import { oznaczTerminy, objasnienie, terminRce } from './terminy.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -140,7 +140,7 @@ function oznaczStaleTerminy() {
   const termin = (slowo, klucz) => ({ slowo, tytul: t(`${klucz}_termin`), czesci: objasnienie(klucz) });
   oznaczTerminy(
     $('karta-cena-etykieta'),
-    [{ slowo: 'RCE', tytul: t('slownik.rce_termin'), czesci: [{ tekst: t('slownik.rce'), podpis: t('slownik.rce_zrodlo') }, ...objasnienie('slownik.rce_osiris')] }],
+    [terminRce()],
     okienkaKarty,
   );
   oznaczTerminy(

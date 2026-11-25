@@ -92,3 +92,19 @@ if (wynik.kwadrans) {
 }
 
 await writeFile(PLIK, JSON.stringify(wynik, null, 2));
+
+// Etap C3 (D5, decyzja Ani 25.11.2026): okienko PSE (wiatr.json, raport his-wlk-cal) i Karta (his-gen-pal-sire) mają
+// osobne „stan na”. Gdy ich kwadranse się różnią – tylko ostrzeżenie w logu budowania, strona bez zmian.
+try {
+  const wiatr = JSON.parse(await readFile('public/data/wiatr.json', 'utf-8'));
+  const kw = (doba, okres) => (doba && okres ? `${doba} ${okres}` : null);
+  const okienko = kw(wiatr.doba, wiatr.okres);
+  const karta = kw(wynik.kwadrans?.doba, wynik.kwadrans?.okres);
+  if (okienko && karta && okienko !== karta) {
+    console.warn(`!!! Kwadrans okienka PSE (${okienko}) różni się od kwadransu Karty (${karta}) – każde ma swoje „stan na”.`);
+  } else if (okienko && karta) {
+    console.log(`Okienko PSE i Karta: ten sam kwadrans (${karta}).`);
+  }
+} catch (e) {
+  console.warn(`!!! Nie udało się porównać kwadransu okienka PSE i Karty (${e.message ?? e}).`);
+}

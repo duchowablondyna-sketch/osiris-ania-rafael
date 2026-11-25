@@ -28,6 +28,13 @@ function tresc(tytul, czesci) {
 // Zwykłe objaśnienie OSIRIS (jedna część z podpisem „objaśnienie OSIRIS”).
 export const objasnienie = (klucz) => [{ tekst: t(klucz), podpis: t('slownik.objasnienie') }];
 
+// RCE – część PSE ze źródłem i zdanie OSIRIS z podpisem (Etap C2). Wspólne dla Karty Polski i okienka PSE (Etap C3).
+export const terminRce = () => ({
+  slowo: 'RCE',
+  tytul: t('slownik.rce_termin'),
+  czesci: [{ tekst: t('slownik.rce'), podpis: t('slownik.rce_zrodlo') }, ...objasnienie('slownik.rce_osiris')],
+});
+
 // terminy: [{ slowo, tytul, czesci }] – w el (z potomkami) podkreśla PIERWSZE wystąpienie każdego słowa.
 // Słowa już oznaczone (.termin) i przyciski są pomijane. Brak słowa w tekście – nic się nie dzieje.
 export function oznaczTerminy(el, terminy, okienka) {

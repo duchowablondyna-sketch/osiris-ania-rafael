@@ -93,14 +93,26 @@ export default {
   'mapa.slonce_brak': 'brak danych',
   'mapa.slonce_dachy': 'PSE nie podaje, czy liczy panele na dachach – to może nie być cała fotowoltaika w Polsce.',
   'mapa.pse_skrot_brak': 'Wiatr: brak danych PSE',
-  'mapa.ograniczenie_etykieta': 'Ostatnie polecenie PSE ograniczenia wiatru:',
-  'mapa.ograniczenie': (doba, mwh) => `Ostatnie polecenie PSE ograniczenia wiatru: ${doba} – ok. ${mwh} MWh`,
-  'mapa.ograniczenie_brak': 'Ostatnie polecenie PSE ograniczenia wiatru: brak danych PSE',
+  // Etap C3 (D4, decyzja Ani 25.11.2026): neutralnie, bez „polecenie” – PSE nie podaje, czy to polecenie, czy wykonanie.
+  // Dane tylko dla wiatru (pola wi_red_*; słońce PSE podaje osobno). MWh – przeliczenie OSIRIS z MW (ZRODLA.md).
+  'mapa.ograniczenie_etykieta': 'Ostatnie ograniczenie wiatru w raporcie PSE:',
+  'mapa.ograniczenie': (doba, mwh, kwadranse) =>
+    `Ostatnie ograniczenie wiatru w raporcie PSE: doba ${doba} – ok.\u00a0${mwh}\u00a0MWh${kwadranse ? ` (${kwadranse})` : ''}`,
+  'mapa.ograniczenie_kwadranse': { one: 'kwadrans', few: 'kwadranse', many: 'kwadransów' },
+  'mapa.ograniczenie_brak': 'Ostatnie ograniczenie wiatru w raporcie PSE: brak danych PSE',
   'mapa.rce_etykieta': 'Cena prądu (RCE):',
   'mapa.cena_biezaca': 'Cena prądu (RCE) w bieżącej dobie:',
   'mapa.cena_brak_dzis': 'Cena prądu (RCE): brak danych na dziś',
   'mapa.cena_brak_pse': 'Cena prądu (RCE): brak danych PSE',
   'mapa.cena_kwadrans': (cena, okres) => `Cena prądu (RCE): ${cena} zł/MWh, ${okres}`,
+  // Etap C3: zdanie-wniosek o cenie bieżącej doby (wariant B; D1 – czas teraźniejszy, bo ceny całej doby są znane z góry).
+  // Liczby i kwadranse z rce.json (src/pse-teksty.js); część „razy” tylko przy najniższej cenie > 0 i ilorazie ≥ 1,1 (D2).
+  'mapa.rce_wniosek': (tanioOkres, tanioCena, drogoOkres, drogoCena) =>
+    `Dziś najtańszy kwadrans: ${tanioOkres} (${tanioCena}\u00a0zł/MWh), najdroższy: ${drogoOkres} (${drogoCena}\u00a0zł/MWh).`,
+  'mapa.rce_wniosek_razy': (x) => `Najdroższy kwadrans doby kosztuje ${x} razy więcej niż najtańszy.`,
+  // Remis (D3): najwcześniejszy kwadrans + ile jest jeszcze takich samych.
+  'mapa.rce_remis': (okres, inne) => `${okres} i ${inne}`,
+  'mapa.rce_inne': { one: 'inny', few: 'inne', many: 'innych' },
   'mapa.pse_pobrano': (kiedy) => `PSE · pobrano: ${kiedy}`,
   'mapa.pse_braki': (lista) => ` · brak danych: ${lista}`,
   'mapa.brak_wiatr': 'wiatr',
@@ -299,6 +311,16 @@ export default {
   'slownik.rce': 'Rynkowa cena energii elektrycznej dla okresu rozliczenia niezbilansowania – publikowana przez PSE.',
   'slownik.rce_zrodlo': 'źródło: PSE (pse.pl, OIRE → Rynkowe ceny energii)',
   'slownik.rce_osiris': 'To cena hurtowa, nie cena z faktury firmy.',
+  // Etap C3 – objaśnienia w okienku „Wiatr, słońce i cena prądu” (F1). Ograniczenie: część PSE = nazwa raportu i rubryk
+  // (strona raporty.pse.pl, odczyt 25.11.2026), część OSIRIS = objaśnienie. KSE bez rozwinięcia (brak źródła w repo).
+  'slownik.ograniczenie_termin': 'ograniczenie wiatru',
+  'slownik.ograniczenie_pse':
+    'Raport PSE „Nierynkowe redysponowanie źródeł OZE”. Dla farm wiatrowych podaje dwie rubryki, w MW: „Bilansowanie KSE” i „Zarządzanie ograniczeniami systemowymi”.',
+  'slownik.ograniczenie_zrodlo': 'źródło: PSE (raporty.pse.pl → Funkcjonowanie KSE → Plany pracy KSE)',
+  'slownik.ograniczenie_osiris':
+    'PSE nie podaje, czy to polecenie, czy wykonane zmniejszenie. MWh przeliczył OSIRIS z mocy w MW podanej przez PSE dla każdego kwadransa (MW × ¼ godziny).',
+  'slownik.mw_mwh_termin': 'MW i MWh',
+  'slownik.mw_mwh': 'MW to moc w danej chwili – jak prędkość auta; MWh to ilość energii w czasie – jak przejechane kilometry: 1 MW przez godzinę = 1 MWh.',
   // Analogia przy „nie sumujemy” (Etap C1, wariant Y).
   'moce.szacunek_analogia': 'Jak parkingi przy jednej drodze dojazdowej: im więcej aut wjedzie na jeden, tym trudniej dojechać do drugiego.',
   // Zdanie-wniosek na górze zakładki (Etap C1, wariant B, decyzje Ani 25.11.2026): liczby, daty, „0 MW” i rok z danych

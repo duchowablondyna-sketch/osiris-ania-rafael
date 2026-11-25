@@ -9,6 +9,8 @@ import { uruchomKarte, podlaczOkienkoPolski } from './karta.js';
 import { wiecejPonizej, wysokoscPrzycisku } from './wiecej-ponizej.js';
 import { pamietajRozwiniecie, czytajRozwiniecie, zapiszRozwiniecie, TELEFON } from './zwijanie.js';
 import { poZmroku } from './slonce.js';
+import { wniosekCeny, tekstOgraniczenia, formatCeny, dobaPL } from './pse-teksty.js';
+import { oznaczTerminy, objasnienie, terminRce } from './terminy.js';
 import './czcionki.css';
 import './style.css';
 
@@ -466,6 +468,8 @@ map.on('load', () => {
   // wygrywają z elektrowniami i farmami w tym samym miejscu, a kropki – z liniami.
   const okienka = utworzOkienka(map);
   podlaczOkienkoPolski(okienka); // duża liczba w Karcie Polski → okienko Polski
+  okienkaPse = okienka;
+  oznaczOkienkoPse(); // F1 w okienku PSE – jeśli dane już są (inaczej po ich wczytaniu)
 
   for (const przycisk of document.querySelectorAll('.przelacznik button')) {
     przycisk.addEventListener('click', () => {
@@ -885,9 +889,40 @@ function rysujWykres(
 // Bieżącą dobę i kwadrans wybieramy wg czasu Europe/Warsaw (koniec_utc to chwila absolutna, więc strefa
 // komputera nie ma znaczenia). Nigdy nie pokazujemy ceny z innej doby jako aktualnej.
 const MS_KWADRANS = 15 * 60_000;
-const formatCeny = (c) => liczba(c, 2);
+// formatCeny – z src/pse-teksty.js: ten sam zapis liczby w podpisach „maks./min.” i w zdaniu-wniosku (Etap C3).
 const ZL_MWH = t('jednostka.zl_mwh');
-const dzisPL = () => new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Warsaw' });
+const dzisPL = () => dobaPL(Date.now());
+
+// Napis zmieniany tylko wtedy, gdy jest inny – żeby co minutę nie zdejmować podkreślonych słów F1 (okienko C mogłoby
+// zostać przypięte do przycisku, którego już nie ma).
+function ustawTekst(el, tekst) {
+  if (el.dataset.tekst === tekst) return false;
+  el.textContent = tekst;
+  el.dataset.tekst = tekst;
+  return true;
+}
+
+// Objaśnienia F1 w okienku PSE (Etap C3): RCE (to samo co w Karcie), ograniczenie wiatru (część PSE + część OSIRIS),
+// MW i MWh – przy „MWh” w linijce ograniczenia (jedno miejsce). Okienka wzoru C powstają po wczytaniu mapy.
+let okienkaPse = null;
+function oznaczOkienkoPse() {
+  if (!okienkaPse) return;
+  oznaczTerminy(document.getElementById('rce-teraz'), [terminRce()], okienkaPse);
+  const ogr = document.getElementById('wiatr-ograniczenie');
+  if (ogr.dataset.ok !== 'tak') return; // brak danych → bez objaśnień
+  oznaczTerminy(
+    ogr,
+    [
+      {
+        slowo: t('slownik.ograniczenie_termin'),
+        tytul: t('slownik.ograniczenie_termin'),
+        czesci: [{ tekst: t('slownik.ograniczenie_pse'), podpis: t('slownik.ograniczenie_zrodlo') }, ...objasnienie('slownik.ograniczenie_osiris')],
+      },
+      { slowo: 'MWh', tytul: t('slownik.mw_mwh_termin'), czesci: objasnienie('slownik.mw_mwh') },
+    ],
+    okienkaPse,
+  );
+}
 
 function rysujWykresCeny(kontener, seria, teraz, { etykieta = t('wykres.teraz'), opisDoby = t('wykres.biezaca_doba') } = {}) {
   const W = 240, H = 84, GORA = 26, DOL = 70; // obszar linii: od GORA do DOL
@@ -929,6 +964,11 @@ function pokazCene(rce) {
   if (odtwarzanie) return; // w trakcie odtwarzania doby okienko pokazuje odtwarzaną dobę – „teraz” wróci po nim
   const tekst = document.getElementById('rce-teraz');
   const wykres = document.getElementById('rce-wykres');
+  const wniosek = document.getElementById('rce-wniosek');
+  // Zdanie-wniosek o całej dobie (Etap C3) – tylko przy pełnej dobie dzisiejszej; inaczej ukryte.
+  const zdanie = wniosekCeny(rce, Date.now());
+  wniosek.hidden = !zdanie;
+  ustawTekst(wniosek, zdanie?.tekst ?? '');
   const seria = (rce?.doby?.[dzisPL()] ?? []).filter((p) => typeof p.cena === 'number' && p.koniec_utc);
   const teraz = Date.now();
   const biezacy = seria.find((p) => {
@@ -936,7 +976,7 @@ function pokazCene(rce) {
     return teraz >= k - MS_KWADRANS && teraz < k;
   });
   if (!biezacy) {
-    tekst.textContent = t(rce ? 'mapa.cena_brak_dzis' : 'mapa.cena_brak_pse');
+    ustawTekst(tekst, t(rce ? 'mapa.cena_brak_dzis' : 'mapa.cena_brak_pse'));
     tekst.classList.add('brak-danych');
     wykres.replaceChildren();
     return;
@@ -944,7 +984,7 @@ function pokazCene(rce) {
   tekst.classList.remove('brak-danych');
   // Cena „teraz” (liczba) jest w Karcie Polski – tu tylko podpis wykresu, żeby nie pokazywać jej dwa razy
   // (decyzja Ani 21.11.2026). Odtwarzanie doby nadal wpisuje tu cenę odtwarzanego kwadransu.
-  tekst.textContent = t('mapa.cena_biezaca');
+  if (ustawTekst(tekst, t('mapa.cena_biezaca'))) oznaczOkienkoPse();
   if (seria.length >= 2) rysujWykresCeny(wykres, seria, teraz);
 }
 
@@ -1035,14 +1075,11 @@ let daneWiatr = null;
 function pokazWiatr(d) {
   document.getElementById('wiatr-etykieta').textContent = t('mapa.wiatr_etykieta');
   document.getElementById('slonce-etykieta').textContent = t('mapa.slonce_etykieta');
-  const ogr = d?.ograniczenie;
   const ograniczenie = document.getElementById('wiatr-ograniczenie');
   ograniczenie.hidden = false;
-  if (ogr && typeof ogr.mwh === 'number' && ogr.doba) {
-    ograniczenie.textContent = t('mapa.ograniczenie', formatDoby(ogr.doba), liczba(ogr.mwh));
-  } else {
-    ograniczenie.textContent = t('mapa.ograniczenie_brak');
-  }
+  const ogr = tekstOgraniczenia(d?.ograniczenie);
+  ograniczenie.dataset.ok = ogr.ok ? 'tak' : 'nie';
+  if (ustawTekst(ograniczenie, ogr.tekst)) oznaczOkienkoPse();
   const wartosc = document.getElementById('wiatr-teraz');
   const skrot = document.getElementById('pse-skrot');
   wartosc.classList.toggle('brak-danych', typeof d?.wartosc !== 'number');
@@ -1128,7 +1165,7 @@ function pokazKwadrans(i) {
   pokazSlonce(p.pv, Date.parse(p.koniec_utc));
   document.getElementById('wiatr-stan').textContent = t('odtw.kwadrans', p.okres);
   rysujWykres(document.getElementById('wiatr-wykres'), k, { znacznik: i, etykieta: godzina, opisDoby });
-  document.getElementById('rce-teraz').textContent = t('mapa.cena_kwadrans', formatCeny(p.cena), p.okres);
+  ustawTekst(document.getElementById('rce-teraz'), t('mapa.cena_kwadrans', formatCeny(p.cena), p.okres));
   rysujWykresCeny(document.getElementById('rce-wykres'), k, Date.parse(p.koniec_utc) - MS_KWADRANS / 2, { etykieta: godzina, opisDoby });
 }
 
@@ -1157,6 +1194,7 @@ function startLubPauza() {
     document.getElementById('wiatr-etykieta').textContent = t('odtw.wiatr_etykieta');
     document.getElementById('slonce-etykieta').textContent = t('odtw.slonce_etykieta');
     document.getElementById('wiatr-ograniczenie').hidden = true;
+    document.getElementById('rce-wniosek').hidden = true; // zdanie mówi o dziś, a odtwarzana jest inna doba
     przyciskTeraz.hidden = false;
     przyciskStart.textContent = t('odtw.pauza');
     ogloszenie(t('odtw.ogl_start', formatDoby(daneDoby.doba)));

@@ -251,6 +251,27 @@ main {
   font-size: 0.75rem;
 }
 
+/* Etap C3: linijka ograniczenia i zdanie-wniosek o cenie – łamią się w wierszu i nie poszerzają okienka.
+   Do C3 szerokość rozwiniętego okienka (PL) wyznaczała linijka ograniczenia: 463 px treści + odstępy = 497 px.
+   Ta szerokość zostaje jako najmniejsza na komputerze – kadr Polski bez zmian i niezależny od długości liczby MWh. */
+.wskaznik__w-wierszu {
+  width: 0;
+  min-width: 100%;
+}
+
+.wskaznik__wniosek {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.875rem;
+  color: var(--tekst);
+}
+
+@media (min-width: 641px) {
+  .wskaznik[open] {
+    min-width: 497px;
+  }
+}
+
 .wskaznik__wartosc {
   display: block;
   font-family: var(--font-mono);
