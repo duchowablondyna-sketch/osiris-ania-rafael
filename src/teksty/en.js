@@ -125,14 +125,21 @@ export default {
   'mapa.slonce_brak': 'no data',
   'mapa.slonce_dachy': 'PSE does not say whether it counts rooftop panels – this may not be all solar power in Poland.',
   'mapa.pse_skrot_brak': 'Wind: no PSE data',
-  'mapa.ograniczenie_etykieta': 'Latest PSE order to curtail wind:',
-  'mapa.ograniczenie': (doba, mwh) => `Latest PSE order to curtail wind: ${doba} – approx. ${mwh} MWh`,
-  'mapa.ograniczenie_brak': 'Latest PSE order to curtail wind: no PSE data',
+  'mapa.ograniczenie_etykieta': 'Latest wind curtailment in the PSE report:',
+  'mapa.ograniczenie': (doba, mwh, kwadranse) =>
+    `Latest wind curtailment in the PSE report: ${doba} – approx.\u00a0${mwh}\u00a0MWh${kwadranse ? ` (${kwadranse})` : ''}`,
+  'mapa.ograniczenie_kwadranse': { one: 'quarter-hour', other: 'quarter-hours' },
+  'mapa.ograniczenie_brak': 'Latest wind curtailment in the PSE report: no PSE data',
   'mapa.rce_etykieta': 'Electricity price (RCE):',
   'mapa.cena_biezaca': 'Electricity price (RCE) today:',
   'mapa.cena_brak_dzis': 'Electricity price (RCE): no data for today',
   'mapa.cena_brak_pse': 'Electricity price (RCE): no PSE data',
   'mapa.cena_kwadrans': (cena, okres) => `Electricity price (RCE): ${cena} PLN/MWh, ${okres}`,
+  'mapa.rce_wniosek': (tanioOkres, tanioCena, drogoOkres, drogoCena) =>
+    `Today's cheapest quarter-hour: ${tanioOkres} (${tanioCena}\u00a0PLN/MWh), most expensive: ${drogoOkres} (${drogoCena}\u00a0PLN/MWh).`,
+  'mapa.rce_wniosek_razy': (x) => `The most expensive quarter-hour of the day costs ${x} times as much as the cheapest.`,
+  'mapa.rce_remis': (okres, inne) => `${okres} and ${inne}`,
+  'mapa.rce_inne': { one: 'other', other: 'others' },
   // Pierwsze PSE na mapie – krótkie wyjaśnienie, kim jest PSE.
   'mapa.pse_pobrano': (kiedy) => `PSE (Poland's transmission system operator) · retrieved: ${kiedy}`,
   'mapa.pse_braki': (lista) => ` · no data: ${lista}`,
@@ -319,6 +326,15 @@ export default {
   'slownik.rce': 'Market price of electricity for the imbalance settlement period – published by PSE.',
   'slownik.rce_zrodlo': 'source: PSE (pse.pl, OIRE section)',
   'slownik.rce_osiris': "This is a wholesale price, not the price on a company's invoice.",
+  // Names of the PSE report and its columns – PSE's own English wording (raporty.pse.pl, EN version, read 25.11.2026).
+  'slownik.ograniczenie_termin': 'wind curtailment',
+  'slownik.ograniczenie_pse':
+    'PSE report “Non-market redispatch of RES resources”. For wind generation units it gives two columns, in MW: “Balancing of Polish Power System” and “System constraints management”.',
+  'slownik.ograniczenie_zrodlo': 'source: PSE (raporty.pse.pl → Polish Power System Operation → Polish Power System Operation Schedule)',
+  'slownik.ograniczenie_osiris':
+    'PSE does not say whether this is an order or the reduction actually made. OSIRIS converted it to MWh from the power in MW that PSE gives for each quarter-hour (MW × ¼ hour).',
+  'slownik.mw_mwh_termin': 'MW and MWh',
+  'slownik.mw_mwh': 'MW is power at a given moment – like a car’s speed; MWh is the amount of energy over time – like the distance driven: 1 MW for one hour = 1 MWh.',
   'moce.szacunek_analogia': 'Like car parks on a single access road: the more cars enter one, the harder it is to reach the other.',
   'moce.wniosek_b': (dataMocy, mocIstniejacych, stacjePlanowane, zZastrzezeniami, dataWykazu, bez, rok) =>
     `For a large consumer: according to PSE (as of ${dataMocy}), existing substations have ${mocIstniejacych} – only the ${stacjePlanowane} have available capacity. ` +

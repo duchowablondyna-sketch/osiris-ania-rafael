@@ -60,8 +60,10 @@
         <span class="wskaznik__etykieta wskaznik__dopisek">{{mapa.slonce_dachy}}</span>
         <div id="wiatr-wykres"></div>
         <span class="wskaznik__etykieta" id="wiatr-stan"></span>
-        <span class="wskaznik__etykieta" id="wiatr-ograniczenie">{{mapa.ograniczenie_etykieta}} {{wspolne.wczytywanie}}</span>
+        <!-- Etap C3: linijka ograniczenia i zdanie-wniosek o cenie łamią się w wierszu i nie poszerzają okienka (kadr Polski). -->
+        <span class="wskaznik__etykieta wskaznik__w-wierszu" id="wiatr-ograniczenie">{{mapa.ograniczenie_etykieta}} {{wspolne.wczytywanie}}</span>
         <span class="wskaznik__etykieta" id="rce-teraz">{{mapa.rce_etykieta}} {{wspolne.wczytywanie}}</span>
+        <span class="wskaznik__wniosek wskaznik__w-wierszu" id="rce-wniosek" hidden></span>
         <div id="rce-wykres"></div>
         <div class="odtw-przyciski">
           <button type="button" id="odtw-start" hidden>{{odtw.start}}</button>

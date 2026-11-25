@@ -287,3 +287,18 @@ test('Etap C2: nowe klucze mają PL i EN, ten sam rodzaj; RCE bez „netto” i 
   }
   for (const k of ['slownik.rce', 'slownik.rce_osiris']) assert.ok(!/netto|prosument|net of|prosumer/i.test(pl[k] + en[k]), k);
 });
+
+// Etap C3 (25.11.2026): okienko „Wiatr, słońce i cena prądu” – zdanie o cenie, neutralna linijka ograniczenia, F1.
+const KLUCZE_C3 = [
+  'mapa.rce_wniosek', 'mapa.rce_wniosek_razy', 'mapa.rce_remis', 'mapa.rce_inne',
+  'mapa.ograniczenie', 'mapa.ograniczenie_kwadranse', 'mapa.ograniczenie_etykieta', 'mapa.ograniczenie_brak',
+  'slownik.ograniczenie_termin', 'slownik.ograniczenie_pse', 'slownik.ograniczenie_zrodlo', 'slownik.ograniczenie_osiris',
+  'slownik.mw_mwh_termin', 'slownik.mw_mwh',
+];
+test('Etap C3: nowe klucze okienka PSE mają PL i EN, ten sam rodzaj; bez „polecenie” / „order”', () => {
+  for (const k of KLUCZE_C3) {
+    assert.ok(k in pl && k in en, `brak ${k}`);
+    assert.equal(typeof pl[k], typeof en[k], k);
+  }
+  for (const k of ['mapa.ograniczenie_etykieta', 'mapa.ograniczenie_brak']) assert.ok(!/polecenie/.test(pl[k]) && !/order/.test(en[k]), k);
+});

@@ -143,3 +143,4 @@
 - [x] Kula na stronie tytułowej i na obrazkach pokazuje głównie Afrykę, Polska jest na krawędzi – rozważyć obrót, żeby Europa była bliżej środka. Zrobione 23.11.2026: środek widoku 37° na południe od Polski (wariant B), nowy plakat kuli.
 - [ ] Po wdrożeniu wersji 3 strony tytułowej (nowe og-obraz.png / og-obraz-en.png, tytuły podglądu) odświeżyć podgląd linków w LinkedIn Post Inspector (https://www.linkedin.com/post-inspector/) – dla /, /en/, /mapa/ i /en/map/.
 - [ ] Zmienić nazwę klasy panelu na mapie (np. karta-polski), żeby style mapy nie działały na karty strony tytułowej – naprawa u źródła.
+- [ ] Telefon: Esc w otwartym objaśnieniu F1 (okienko C) zamyka objaśnienie i od razu zwija cały panel (Karta Polski od C2, okienko PSE od C3; obsługa Esc w `src/main.js` i `src/okienko.js`). Powinno zamknąć tylko objaśnienie – stwierdzone 25.11.2026.
