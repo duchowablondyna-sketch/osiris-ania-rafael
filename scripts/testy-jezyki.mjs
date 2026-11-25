@@ -41,7 +41,9 @@ const POLSKIE_SLOWA =
 // taki tekst dla widza złapie sprawdzian gotowej strony EN i przegląd w przeglądarce.
 // Także lista klas CSS („okienko-mocy__ostrzezenie brak-danych”).
 const TECHNICZNE = /^\s*(?:[\w/.#-]*[-/.][\w/.#-]*|[a-z_]+|(?:[a-z0-9]+(?:[-_]+[a-z0-9]+)+\s*)+)\s*$/;
-const poPolsku = (s) => POLSKIE_LITERY.test(s) || (POLSKIE_SLOWA.test(s) && !TECHNICZNE.test(s));
+// Adresy (http/https) to nie tekst dla widza – mogą zawierać polskie słowa (np. adres komunikatu URE).
+const ADRES = /^https?:\/\/\S+$/;
+const poPolsku = (s) => !ADRES.test(s) && (POLSKIE_LITERY.test(s) || (POLSKIE_SLOWA.test(s) && !TECHNICZNE.test(s)));
 
 const wszystkiePliki = (katalog, rozszerzenie) =>
   readdirSync(resolve(KATALOG, katalog), { recursive: true })

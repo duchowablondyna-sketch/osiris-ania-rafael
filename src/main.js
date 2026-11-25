@@ -71,7 +71,7 @@ const TLO_PRZETWORZENIE = {
 
 // Jednolita ostatnia linijka okienek: „ŹRÓDŁO {nazwa} · {pobrano|dane|stan}: {data}”.
 // pobrano – kiedy my ściągnęliśmy dane; dane – wersja zbioru u dostawcy; stan – kiedy dane sprawdzono lub opublikowano.
-function linijkaZrodla(nazwa, rodzajDaty, data) {
+function linijkaZrodla(nazwa, rodzajDaty, data, url = null) {
   const p = document.createElement('p');
   p.className = 'zrodlo';
   const etykieta = document.createElement('span');
@@ -79,7 +79,12 @@ function linijkaZrodla(nazwa, rodzajDaty, data) {
   etykieta.textContent = t('wspolne.zrodlo');
   // Spacja po etykiecie – żeby czytnik ekranu nie czytał „ŹródłoGEM” jako jednego słowa.
   // rodzajDaty: 'pobrano' | 'dane' | 'stan' – napis wg języka strony (słownik: zrodlo.…; PL „stan: 31.10.2026”, EN „as of 31 Oct 2026”).
-  p.append(etykieta, document.createTextNode(` ${nazwa} · ${t(`zrodlo.${rodzajDaty}`, data)}`));
+  // url (opcjonalnie): nazwa źródła jako link (nowa karta) – np. komunikat URE w okienku farmy.
+  let zrodlo = document.createTextNode(nazwa);
+  if (url) {
+    zrodlo = Object.assign(document.createElement('a'), { href: url, target: '_blank', rel: 'noopener', textContent: nazwa });
+  }
+  p.append(etykieta, ' ', zrodlo, document.createTextNode(` · ${t(`zrodlo.${rodzajDaty}`, data)}`));
   return p;
 }
 
@@ -118,16 +123,53 @@ const KOLORY = {
 // nieznana wartość pokaże się w oryginale.
 const statusMorskiej = (status) => (tekstPl(`farmy.morskie.${status}`) ? t(`farmy.morskie.${status}`) : status);
 
-// Uzupełnienie statusu farm morskich z nowszego źródła (dane EMODnet zostają bez zmian; opis w ZRODLA.md).
-// Tekst w słowniku (farmy.korekta.…), data stanu: RRRR-MM-DD.
-const KOREKTY_STATUSU = {
-  'Baltic Power': { klucz: 'farmy.korekta.baltic_power', zrodlo: 'balticpower.pl', stan: '2026-10-07' },
+// Uzupełnienia farm morskich z nowszych źródeł – dane EMODnet zostają bez zmian (opis w ZRODLA.md, wpis EMODnet).
+// Źródła: nazwa, link, data stanu (RRRR-MM-DD) albo miesiąc (RRRR-MM). Wykaz MKiŚ – w każdym okienku farmy (weryfikacja).
+const ZRODLA_FARM = {
+  mkis: { nazwa: 'farmy.zrodlo_mkis', url: 'https://www.gov.pl/web/morska-energetyka-wiatrowa/obecnie-realizowane-projekty-w-polsce', miesiac: '2024-01' },
+  ure: {
+    nazwa: 'URE',
+    url: 'https://www.ure.gov.pl/pl/urzad/informacje-ogolne/aktualnosci/13009,Offshore-Pierwsza-aukcja-dla-morskich-farm-wiatrowych-rozstrzygnieta.html',
+    stan: '2025-12-18',
+  },
+  northland: {
+    nazwa: 'Northland Power',
+    url: 'https://northlandpower.com/northland-power-reports-third-quarter-2026-results-value-accretive-growth-updates-and-reaffirms-2026-guidance/',
+    stan: '2026-11-12',
+  },
+  balticpower: {
+    nazwa: 'balticpower.pl',
+    url: 'https://balticpower.pl/news/baltic-power-project-completes-installation-of-all-76-turbines-the-first-polish-offshore-wind-farm-in-poland-enters-the-final-stage-before-commercial-operations/',
+    stan: '2026-10-07',
+  },
 };
+// Nazwa źródła: klucz słownika (MKiŚ) albo nazwa własna bez tłumaczenia (URE, Northland Power, balticpower.pl).
+const nazwaZrodla = (n) => (n.startsWith('farmy.') ? t(n) : n);
+const linijkaZrodlaFarmy = (z) =>
+  linijkaZrodla(nazwaZrodla(ZRODLA_FARM[z].nazwa), 'stan', z === 'mkis' ? formatMiesiaca(ZRODLA_FARM[z].miesiac) : formatDoby(ZRODLA_FARM[z].stan), ZRODLA_FARM[z].url);
+
+// Pierwsza aukcja offshore URE (AMFW/1/2025, 17.12.2025): Baltic East 900 MW, Baltica 9 975 MW, MFW Bałtyk I 1560 MW.
+const AUKCJA_URE = '2025-12-17';
+const mocMW = (mw) => `${liczba(mw)} MW`; // moc farmy bez zaokrąglania (np. 1045,5 MW)
+const aukcja = () => t('farmy.aukcja_ure', formatDoby(AUKCJA_URE));
+const aukcjaBaltyk1 = () => t('farmy.aukcja_ure_baltyk1', formatDoby(AUKCJA_URE), mocMW(1560));
+// rozruch – status „w rozruchu – część turbin produkuje” zamiast „w budowie” z EMODnet (nie „działa”: bez koncesji
+// i eksploatacji komercyjnej); moc – własna linijka mocy; dopiski – linijki pod weryfikacją; zrodla – linijki źródeł.
+const UZUPELNIENIA_FARM = {
+  'Baltic Power': { rozruch: true, dopiski: [() => t('farmy.korekta.baltic_power')], zrodla: ['northland', 'balticpower'] },
+  'Baltic East': { moc: (p) => t('farmy.moc_baltic_east', mocMW(p.moc_mw), mocMW(900)), dopiski: [aukcja], zrodla: ['ure'] },
+  'Baltica 9': { dopiski: [aukcja], zrodla: ['ure'] },
+  'Baltyk I Phase 1': { dopiski: [aukcjaBaltyk1], zrodla: ['ure'] },
+  'Baltyk I Phase 2': { dopiski: [aukcjaBaltyk1], zrodla: ['ure'] },
+};
+const FARMY_W_ROZRUCHU = Object.keys(UZUPELNIENIA_FARM).filter((n) => UZUPELNIENIA_FARM[n].rozruch);
 
 // Weryfikacja farmy morskiej z danych (po polsku: „na liście MKiŚ”, „prawdopodobny duplikat: X”…) → tekst w języku strony.
+// Wartości w pliku danych zostają bez zmian (są też kluczami); puste kółka mają osobne, dokładniejsze napisy (farmy.pokaz.…).
 function weryfikacjaFarmy(tekst) {
   const duplikat = tekstPl('farmy.weryfikacja.duplikat');
-  if (tekst.startsWith(duplikat)) return t('farmy.weryfikacja.duplikat') + tekst.slice(duplikat.length);
+  if (tekst.startsWith(duplikat)) return t('farmy.pokaz.duplikat') + tekst.slice(duplikat.length);
+  if (tekst === tekstPl('farmy.weryfikacja.brak_na_liscie')) return t('farmy.pokaz.brak');
   return zDanych(tekst, 'farmy.weryfikacja.');
 }
 
@@ -393,6 +435,20 @@ const DANE_ELEKTROWNI = {
 const DANE_WIATR_GEM = '2026-02'; // Global Wind Power Tracker (lądowe farmy wiatrowe)
 const STAN_OSM = '2026-11-19'; // linie 220/400 kV z OpenStreetMap
 const DANE_EMODNET = '2026-07-10'; // farmy morskie
+// Możliwe duplikaty innego wpisu EMODnet (puste kółka): widoczne dopiero od przybliżenia 9 (wariant C, decyzja Ani
+// 25.11.2026). Wtedy pusty „Orlen Neptun VIII” (2,5 km od Baltic Power) stoi już obok pełnej kropki (ok. 28 px), a nie na
+// niej – przy 8 jeszcze częściowo na nią zachodzi. Farmy spoza wykazu MKiŚ są widoczne zawsze – to osobne wpisy.
+const PROG_DUPLIKATOW = 9;
+// Licznik farm morskich (legenda i zakładka „Skąd”): farmy bez możliwych duplikatów · w rozruchu / w budowie (gdy są) /
+// planowane. Liczba duplikatów – osobno w opisie legendy („3 możliwe duplikaty – widoczne po przybliżeniu”).
+function licznikMorskich(m) {
+  const czesci = [
+    m.wRozruchu && t('licznik.w_rozruchu', m.wRozruchu),
+    m.wBudowie && t('licznik.w_budowie', m.wBudowie),
+    tn('liczba.planowana', m.planowane - m.duplikatyPlanowane),
+  ].filter(Boolean);
+  return t('licznik.morskie', tn('liczba.farma', m.rekordy - m.duplikaty), czesci.join(', '));
+}
 // Rodzaje elektrowni widoczne na mapie (pola w legendzie).
 const widoczneElektrownie = new Set(['wegiel', 'gaz', 'woda', 'pompowa']);
 function filtrElektrowni() {
@@ -501,8 +557,10 @@ map.on('load', () => {
     .then((odp) => (odp.ok ? odp.json() : null))
     .then((geo) => {
       if (!geo?.features) throw new Error('brak pliku');
-      const m = podsumujMorskie(geo);
-      ustawLicznik('morskie', t('licznik.morskie', tn('liczba.farma', m.rekordy), m.wBudowie, tn('liczba.planowana', m.planowane)));
+      const m = podsumujMorskie(geo, FARMY_W_ROZRUCHU);
+      ustawLicznik('morskie', licznikMorskich(m));
+      const duplikaty = document.getElementById('morskie-duplikaty');
+      if (duplikaty) duplikaty.textContent = m.duplikaty ? t('leg.morskie_duplikaty', tn('liczba.duplikat', m.duplikaty)) : '';
     })
     .catch(() => ustawLicznik('morskie', t('wspolne.brak_danych'), true));
 
@@ -538,7 +596,7 @@ map.on('load', () => {
   // Legenda: pola włączające i wyłączające warstwy (zwykłe pola wyboru – Tab, Spacja).
   const WARSTWY_LEGENDY = {
     linie: ['linie-nn-obwodka', 'linie-nn', 'linie-nn-klik'],
-    morskie: ['farmy-pelne', 'farmy-puste'],
+    morskie: ['farmy-pelne', 'farmy-puste', 'farmy-duplikaty'],
     ladowe: ['farmy-lad-dziala', 'farmy-lad-budowa', 'farmy-lad-budowa-srodek'],
     moce: ['moce-kola', 'moce-kola-obwodka', 'moce-podpis', 'moce'],
   };
@@ -635,9 +693,11 @@ map.on('load', () => {
   } });
 
   // Morskie farmy wiatrowe na polskim Bałtyku (EMODnet, CC BY 4.0)
-  // Dwie warstwy: pełne kropki (farmy z listy MKiŚ) pod spodem, puste (prawdopodobne duplikaty i farmy
-  // spoza listy) na wierzchu z grubszą obwódką – żeby duplikat był widoczny obok swojej pary.
+  // Pełne kropki (farmy z wykazu MKiŚ) pod spodem, puste na wierzchu z grubszą obwódką: farmy spoza wykazu
+  // i – osobna warstwa – możliwe duplikaty innego wpisu EMODnet (od przybliżenia PROG_DUPLIKATOW).
   const NA_LISCIE = ['==', ['get', 'weryfikacja'], tekstPl('farmy.weryfikacja.na_liscie')];
+  const PREFIKS_DUPLIKATU = tekstPl('farmy.weryfikacja.duplikat');
+  const DUPLIKAT = ['==', ['slice', ['get', 'weryfikacja'], 0, PREFIKS_DUPLIKATU.length], PREFIKS_DUPLIKATU];
   // Promień zależny od przybliżenia: małe z daleka, ok. 6 px przy kadrze Polski (przybliżenie ok. 5), większe bliżej.
   const PROMIEN_FARMY = ['interpolate', ['linear'], ['zoom'], 2, 2, 5, 6, 9, 12];
   map.addSource('farmy', { type: 'geojson', data: `${import.meta.env.BASE_URL}data/farmy-baltyk.geojson` });
@@ -653,21 +713,19 @@ map.on('load', () => {
       'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 2, 0.5, 5, 1.5, 9, 2.5],
     },
   });
-  map.addLayer({
-    id: 'farmy-puste',
-    type: 'circle',
-    source: 'farmy',
-    filter: ['!', NA_LISCIE],
-    paint: {
-      'circle-opacity': 0,
-      'circle-radius': PROMIEN_FARMY,
-      'circle-stroke-color': KOLORY.wiatr,
-      'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 2, 1, 5, 2.5, 9, 4],
-    },
-  });
+  const PUSTE_KOLKO = {
+    'circle-opacity': 0,
+    'circle-radius': PROMIEN_FARMY,
+    'circle-stroke-color': KOLORY.wiatr,
+    'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 2, 1, 5, 2.5, 9, 4],
+  };
+  map.addLayer({ id: 'farmy-puste', type: 'circle', source: 'farmy', filter: ['all', ['!', NA_LISCIE], ['!', DUPLIKAT]], paint: PUSTE_KOLKO });
+  map.addLayer({ id: 'farmy-duplikaty', type: 'circle', source: 'farmy', minzoom: PROG_DUPLIKATOW, filter: DUPLIKAT, paint: PUSTE_KOLKO });
 
-  okienka.dodaj({ id: 'farmy-morskie', warstwy: ['farmy-pelne', 'farmy-puste'], tresc: (obiekty) => {
-    const { nazwa, status, moc_mw, weryfikacja, weryfikacja_opis } = obiekty[0].properties;
+  okienka.dodaj({ id: 'farmy-morskie', warstwy: ['farmy-pelne', 'farmy-puste', 'farmy-duplikaty'], tresc: (obiekty) => {
+    const p = obiekty[0].properties;
+    const { nazwa, status, moc_mw, weryfikacja, weryfikacja_opis } = p;
+    const u = UZUPELNIENIA_FARM[nazwa] ?? {};
     const el = document.createElement('div');
     const tytul = document.createElement('strong');
     tytul.textContent = nazwa;
@@ -677,19 +735,19 @@ map.on('load', () => {
       return span;
     };
     const moc = typeof moc_mw === 'number' ? `${liczba(moc_mw)} MW` : t('wspolne.brak_danych');
-    el.append(tytul, document.createElement('br'), linia(t('farmy.status', statusMorskiej(status))), document.createElement('br'), linia(t('farmy.moc', moc)));
+    const statusTekst = u.rozruch ? t('farmy.rozruch') : statusMorskiej(status);
+    el.append(tytul, document.createElement('br'), linia(t('farmy.status', statusTekst)), document.createElement('br'), linia(u.moc ? u.moc(p) : t('farmy.moc', moc)));
     if (weryfikacja) el.append(document.createElement('br'), linia(t('farmy.weryfikacja', weryfikacjaFarmy(weryfikacja_opis ?? weryfikacja))));
-    const korekta = KOREKTY_STATUSU[nazwa];
-    if (korekta) el.append(document.createElement('br'), linia(t(korekta.klucz)));
+    for (const dopisek of u.dopiski ?? []) el.append(document.createElement('br'), linia(dopisek()));
     el.append(linijkaZrodla('EMODnet', 'dane', formatDoby(DANE_EMODNET)));
-    if (korekta) el.append(linijkaZrodla(korekta.zrodlo, 'stan', formatDoby(korekta.stan)));
+    for (const z of ['mkis', ...(u.zrodla ?? [])]) el.append(linijkaZrodlaFarmy(z));
     return { el, lngLat: obiekty[0].geometry.coordinates };
   } });
 
   // Okienko linii 220/400 kV: nazwa z OSM, napięcie, źródło. Linie są cienkie – klikamy w szerszy, niewidoczny pas
   // (warstwa „linie-nn-klik”). Gdy w tym samym miejscu jest farma albo elektrownia, wygrywa jej okienko
   // (leży wyżej na mapie). Tylko po kliknięciu – linie są wszędzie, okienko migałoby przy każdym ruchu myszy.
-  const KROPKI_I_ZNACZKI = ['elektrownie', 'farmy-lad-dziala', 'farmy-lad-budowa', 'farmy-pelne', 'farmy-puste', 'moce'];
+  const KROPKI_I_ZNACZKI = ['elektrownie', 'farmy-lad-dziala', 'farmy-lad-budowa', 'farmy-pelne', 'farmy-puste', 'farmy-duplikaty', 'moce'];
   // Żeby było wiadomo, że linię można kliknąć: odcinek pod kursorem się podświetla, a po ok. 0,4 s bez ruchu
   // pojawia się podpowiedź (decyzja Ani 23.11.2026); w legendzie – dopisek o kliknięciu.
   okienka.dodaj({

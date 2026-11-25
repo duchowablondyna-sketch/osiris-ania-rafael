@@ -144,7 +144,8 @@ export default {
   'leg.linie': 'Linie najwyższych napięć',
   'leg.linie_opis': '– 220 i 400 kV (grubsza linia: 400 kV); kliknij linię na mapie, by zobaczyć szczegóły',
   'leg.morskie': 'Morskie farmy wiatrowe',
-  'leg.morskie_opis': '– puste kółko: prawdopodobny duplikat lub brak na liście MKiŚ',
+  'leg.morskie_opis': '– puste kółko: brak w wykazie MKiŚ (stan: styczeń 2024) – szczegóły po kliknięciu',
+  'leg.morskie_duplikaty': (ile) => `· ${ile} – widoczne po przybliżeniu`,
   'leg.ladowe': 'Lądowe farmy wiatrowe od 10 MW',
   'leg.ladowe_opis': '– pełne kółko: działa; pierścień z kropką: w budowie',
   'leg.wegiel': 'Elektrownie węglowe',
@@ -161,6 +162,7 @@ export default {
   'liczba.elektrownia': { one: 'elektrownia', few: 'elektrownie', many: 'elektrowni' },
   'liczba.farma_dziala': { one: 'farma działa', few: 'farmy działają', many: 'farm działa' },
   'liczba.farma': { one: 'farma', few: 'farmy', many: 'farm' },
+  'liczba.duplikat': { one: 'możliwy duplikat', few: 'możliwe duplikaty', many: 'możliwych duplikatów' },
   'liczba.planowana': { one: 'planowana', few: 'planowane', many: 'planowanych' },
   'liczba.odcinek': { one: 'odcinek', few: 'odcinki', many: 'odcinków' },
   'liczba.blok': { one: 'blok', few: 'bloki', many: 'bloków' },
@@ -169,7 +171,10 @@ export default {
   'liczba.stacja_planowana': { one: 'stacja planowana', few: 'stacje planowane', many: 'stacji planowanych' },
   'licznik.ladowe': (farmy, moc, wBudowie) => `${farmy} · ${moc} · ${wBudowie} w budowie`,
   'licznik.linie': (odcinki, data) => `${odcinki} · OSM ${data}`,
-  'licznik.morskie': (farmy, wBudowie, planowane) => `${farmy} · ${wBudowie} w budowie, ${planowane}`,
+  // Licznik farm morskich: „26 wpisów · 1 w rozruchu, 25 planowanych” (części bez zer – src/main.js, licznikMorskich).
+  'licznik.morskie': (ile, czesci) => `${ile} · ${czesci}`,
+  'licznik.w_rozruchu': (n) => `${n} w rozruchu`,
+  'licznik.w_budowie': (n) => `${n} w budowie`,
 
   // ── Okienka elektrowni, farm i linii ──
   'elektrownia.wegiel': 'elektrownia węglowa',
@@ -213,11 +218,20 @@ export default {
   'farmy.weryfikacja.duplikat': 'prawdopodobny duplikat: ',
   'farmy.weryfikacja.opis_baltyk1': 'na liście MKiŚ, część projektu MFW Bałtyk I',
   'farmy.weryfikacja.opis_baltic_east': 'na liście MKiŚ jako Orlen Neptun 46.E.1 (spółka Orlen Neptun VIII)',
+  // Puste kółka – napisy w okienku (wartości w pliku danych zostają bez zmian, są kluczami wyżej).
+  'farmy.zrodlo_mkis': 'MKiŚ',
+  'farmy.pokaz.duplikat': 'możliwy duplikat: ',
+  'farmy.pokaz.brak': 'brak w wykazie MKiŚ (stan: styczeń 2024) – do sprawdzenia',
+  // Baltic Power: nie „działa” – bez koncesji i eksploatacji komercyjnej (decyzja Ani 25.11.2026).
+  'farmy.rozruch': 'w rozruchu – część turbin produkuje',
+  'farmy.aukcja_ure': (data) => `wygrał aukcję URE ${data}`,
+  'farmy.aukcja_ure_baltyk1': (data, moc) => `wygrał aukcję URE ${data} (cały projekt MFW Bałtyk I: ${moc})`,
+  'farmy.moc_baltic_east': (pozwolenie, aukcja) => `moc: ${pozwolenie} (maks. wg pozwolenia lokalizacyjnego) · w aukcji URE: ${aukcja}`,
   'farmy.korekta.baltic_power':
-    'stan wg balticpower.pl: w rozruchu – pierwsza energia do sieci 10.07.2026 (odbiór potwierdziły PSE), ' +
-    'wszystkie 76 turbin zainstalowane (7.10.2026), każda po podłączeniu przechodzi 240-godzinną próbę; ' +
-    'jeszcze bez koncesji na wytwarzanie, etap przed eksploatacją komercyjną (daty nie podano). ' +
-    'W danych EMODnet (10.07.2026) i GEM (dane wiatrowe z lutego 2026): w budowie.',
+    'stan wg Northland Power (raport za III kw. 2026, 12.11.2026): wszystkie 76 turbin zainstalowane, ponad 70% produkuje prąd, ' +
+    'rozruch trwa w IV kwartale 2026. Pierwsza energia do sieci: 10.07.2026 (ORLEN, Northland Power). ' +
+    'Według balticpower.pl (7.10.2026) jeszcze bez koncesji na wytwarzanie, przed eksploatacją komercyjną. ' +
+    'W danych EMODnet (10.07.2026) i GEM (luty 2026): w budowie.',
   'linie.podpowiedz': 'kliknij – szczegóły linii',
   'linie.bez_nazwy': 'Linia bez nazwy w OpenStreetMap',
   'linie.napiecie': (kv) => `linia najwyższego napięcia: ${kv} kV`,
@@ -402,7 +416,8 @@ export default {
   'stopka.morskie':
     'Morskie farmy wiatrowe: <a href="https://emodnet.ec.europa.eu/en/" target="_blank" rel="noopener">EMODnet</a> Human Activities, Wind Farms (twórca danych: CETMAR, stan 10.07.2026), <a href="https://creativecommons.org/licenses/by/4.0/deed.pl" target="_blank" rel="noopener">CC BY 4.0</a>; wybrano tylko farmy w polskich obszarach morskich; porównane z <a href="https://www.gov.pl/web/morska-energetyka-wiatrowa/obecnie-realizowane-projekty-w-polsce" target="_blank" rel="noopener">listą projektów MKiŚ</a> (stan: styczeń 2024) – puste kropki: prawdopodobny duplikat albo brak na liście.',
   'stopka.baltic':
-    'Status Baltic Power uzupełniony według <a href="https://balticpower.pl/" target="_blank" rel="noopener">balticpower.pl</a> (rozruch od 10.07.2026).',
+    'Status Baltic Power według <a href="https://northlandpower.com/northland-power-reports-third-quarter-2026-results-value-accretive-growth-updates-and-reaffirms-2026-guidance/" target="_blank" rel="noopener">Northland Power</a> (raport za III kw. 2026, 12.11.2026) i <a href="https://balticpower.pl/" target="_blank" rel="noopener">balticpower.pl</a> (7.10.2026). ' +
+    'Wyniki pierwszej aukcji dla morskich farm wiatrowych: <a href="https://www.ure.gov.pl/pl/urzad/informacje-ogolne/aktualnosci/13009,Offshore-Pierwsza-aukcja-dla-morskich-farm-wiatrowych-rozstrzygnieta.html" target="_blank" rel="noopener">URE</a> (komunikat z 18.12.2025).',
   'stopka.ladowe':
     'Lądowe farmy wiatrowe (zielone): Global Energy Monitor, <a href="https://globalenergymonitor.org/projects/global-integrated-power-tracker/" target="_blank" rel="noopener">Global Integrated Power Tracker</a>, September 2026 release (dane wiatrowe z Global Wind Power Tracker, luty 2026), <a href="https://creativecommons.org/licenses/by/4.0/deed.pl" target="_blank" rel="noopener">CC BY 4.0</a>, zmodyfikowane (wyciąg).',
   'stopka.ladowe_tylko':

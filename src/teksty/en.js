@@ -176,7 +176,8 @@ export default {
   'leg.linie': 'Extra-high-voltage lines',
   'leg.linie_opis': '– 220 and 400 kV (thicker line: 400 kV); click a line on the map to see details',
   'leg.morskie': 'Offshore wind farms',
-  'leg.morskie_opis': '– empty circle: likely duplicate, or not on the MKiŚ list (Polish Ministry of Climate and Environment)',
+  'leg.morskie_opis': '– empty circle: not in the MKiŚ list (Polish Ministry of Climate and Environment, as of January 2024) – details on click',
+  'leg.morskie_duplikaty': (ile) => `· ${ile} – visible when zoomed in`,
   'leg.ladowe': 'Onshore wind farms of 10 MW and above',
   'leg.ladowe_opis': '– filled dot: operating; ring with a dot: under construction',
   'leg.wegiel': 'Coal power plants',
@@ -193,6 +194,7 @@ export default {
   'liczba.elektrownia': { one: 'power plant', other: 'power plants' },
   'liczba.farma_dziala': { one: 'farm operating', other: 'farms operating' },
   'liczba.farma': { one: 'farm', other: 'farms' },
+  'liczba.duplikat': { one: 'possible duplicate', other: 'possible duplicates' },
   'liczba.planowana': { one: 'planned', other: 'planned' },
   'liczba.odcinek': { one: 'segment', other: 'segments' },
   'liczba.blok': { one: 'unit', other: 'units' },
@@ -201,7 +203,9 @@ export default {
   'liczba.stacja_planowana': { one: 'planned substation', other: 'planned substations' },
   'licznik.ladowe': (farmy, moc, wBudowie) => `${farmy} · ${moc} · ${wBudowie} under construction`,
   'licznik.linie': (odcinki, data) => `${odcinki} · OSM ${data}`,
-  'licznik.morskie': (farmy, wBudowie, planowane) => `${farmy} · ${wBudowie} under construction, ${planowane}`,
+  'licznik.morskie': (ile, czesci) => `${ile} · ${czesci}`,
+  'licznik.w_rozruchu': (n) => `${n} commissioning`,
+  'licznik.w_budowie': (n) => `${n} under construction`,
 
   // ── Okienka elektrowni, farm i linii ──
   'elektrownia.wegiel': 'coal power plant',
@@ -242,11 +246,18 @@ export default {
   'farmy.weryfikacja.duplikat': 'likely duplicate: ',
   'farmy.weryfikacja.opis_baltyk1': 'on the MKiŚ list, part of the MFW Bałtyk I project',
   'farmy.weryfikacja.opis_baltic_east': 'on the MKiŚ list as Orlen Neptun 46.E.1 (company Orlen Neptun VIII)',
+  'farmy.zrodlo_mkis': 'MKiŚ',
+  'farmy.pokaz.duplikat': 'possible duplicate: ',
+  'farmy.pokaz.brak': 'not in the MKiŚ list (as of January 2024) – to be checked',
+  'farmy.rozruch': 'commissioning – some turbines generating',
+  'farmy.aukcja_ure': (data) => `won the URE auction on ${data}`,
+  'farmy.aukcja_ure_baltyk1': (data, moc) => `won the URE auction on ${data} (whole MFW Bałtyk I project: ${moc})`,
+  'farmy.moc_baltic_east': (pozwolenie, aukcja) => `capacity: ${pozwolenie} (max. under the location permit) · in the URE auction: ${aukcja}`,
   'farmy.korekta.baltic_power':
-    'status per balticpower.pl: commissioning – first power to the grid on 10 Jul 2026 (acceptance confirmed by PSE), ' +
-    'all 76 turbines installed (7 Oct 2026), each goes through a 240-hour test after connection; ' +
-    'no generation licence yet, stage before commercial operation (no date given). ' +
-    'In EMODnet data (10 Jul 2026) and GEM (wind data from February 2026): under construction.',
+    'status per Northland Power (Q3 2026 report, 12 Nov 2026): all 76 turbines installed, over 70% generating power, ' +
+    'commissioning continues in Q4 2026. First power to the grid: 10 Jul 2026 (ORLEN, Northland Power). ' +
+    'Per balticpower.pl (7 Oct 2026) no generation licence yet, before commercial operation. ' +
+    'In EMODnet data (10 Jul 2026) and GEM (February 2026): under construction.',
   'linie.podpowiedz': 'click – line details',
   'linie.bez_nazwy': 'Line with no name in OpenStreetMap',
   'linie.napiecie': (kv) => `extra-high-voltage line: ${kv} kV`,
@@ -430,7 +441,8 @@ export default {
   'stopka.morskie':
     'Offshore wind farms: <a href="https://emodnet.ec.europa.eu/en/" target="_blank" rel="noopener">EMODnet</a> (European Marine Observation and Data Network) Human Activities, Wind Farms (data creator: CETMAR, as of 10 Jul 2026), <a href="https://creativecommons.org/licenses/by/4.0/deed.en" target="_blank" rel="noopener">CC BY 4.0</a>; only farms in Polish marine areas were selected; compared with the <a href="https://www.gov.pl/web/morska-energetyka-wiatrowa/obecnie-realizowane-projekty-w-polsce" target="_blank" rel="noopener">project list of MKiŚ</a> (Polish Ministry of Climate and Environment) (as of January 2024) – empty dots: likely duplicate or not on the list.',
   'stopka.baltic':
-    'Baltic Power status supplemented from <a href="https://balticpower.pl/" target="_blank" rel="noopener">balticpower.pl</a> (commissioning since 10 Jul 2026).',
+    'Baltic Power status per <a href="https://northlandpower.com/northland-power-reports-third-quarter-2026-results-value-accretive-growth-updates-and-reaffirms-2026-guidance/" target="_blank" rel="noopener">Northland Power</a> (Q3 2026 report, 12 Nov 2026) and <a href="https://balticpower.pl/" target="_blank" rel="noopener">balticpower.pl</a> (7 Oct 2026). ' +
+    'Results of the first offshore wind auction: <a href="https://www.ure.gov.pl/pl/urzad/informacje-ogolne/aktualnosci/13009,Offshore-Pierwsza-aukcja-dla-morskich-farm-wiatrowych-rozstrzygnieta.html" target="_blank" rel="noopener">URE</a> (Poland\'s energy regulator; announcement of 18 Dec 2025).',
   'stopka.ladowe':
     'Onshore wind farms (green): Global Energy Monitor (GEM), <a href="https://globalenergymonitor.org/projects/global-integrated-power-tracker/" target="_blank" rel="noopener">Global Integrated Power Tracker</a>, September 2026 release (wind data from the Global Wind Power Tracker, February 2026), <a href="https://creativecommons.org/licenses/by/4.0/deed.en" target="_blank" rel="noopener">CC BY 4.0</a>, modified (extract).',
   'stopka.ladowe_tylko':

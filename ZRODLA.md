@@ -327,16 +327,36 @@ Metoda dla paliw kopalnych: 820 g/kWh (IPCC, węgiel) × (wskaźnik KOBiZE paliw
   - Energa MFW 1: EMODnet 900 MW; MKiŚ 812 MW. Energa MFW 2: EMODnet 800 MW; MKiŚ 896 MW. Wartości wyglądają na zamienione – niepotwierdzone, czy to błąd w EMODnet.
   - Orlen Neptun III i IV: EMODnet po 1200 MW; MKiŚ po 1204 MW.
   - Orlen Neptun VIII: EMODnet 1000 MW; MKiŚ (46.E.1) 966 MW.
-- **Wygląd na mapie:** farmy „na liście MKiŚ” – pełna kropka; „prawdopodobny duplikat” i „brak na liście MKiŚ” – kropka pusta w środku; w okienku linia „weryfikacja: …”.
+- **Wygląd na mapie (od 25.11.2026, wariant C – decyzja Ani):** farmy „na liście MKiŚ” – pełna kropka; „brak na liście MKiŚ” – puste kółko widoczne zawsze, w okienku „weryfikacja: brak w wykazie MKiŚ (stan: styczeń 2024) – do sprawdzenia”; „prawdopodobny duplikat” – puste kółko widoczne dopiero od przybliżenia 9 (osobna warstwa `farmy-duplikaty`), w okienku „weryfikacja: możliwy duplikat: …”. Wartości w pliku danych bez zmian (są kluczami słownika); napisy na stronie – `farmy.pokaz.…` w `src/teksty/`. W każdym okienku farmy linijka źródła „MKiŚ · stan: styczeń 2024”.
+- **Wykaz MKiŚ – przeczytany ponownie 25.11.2026 (tabela HTML, liczby do sprawdzenia oczami):** kolumna „Pozwolenie na wznoszenie i wykorzystywanie sztucznych wysp (PSZW) – maksymalna moc zainstalowana”; strona nazywa PSZW „pozwolenia lokalizacyjne”. Orlen Neptun 46.E.1 (Orlen Neptun VIII sp. z o.o.): 966 MW – stąd w okienku Baltic East „966 MW (maks. wg pozwolenia lokalizacyjnego)”.
+- **EMODnet – surowe pola farm „brak na liście MKiŚ” (pobrane 25.11.2026):** Sharco Duo, Freeboard I i Licence Application No. 76 mają `status` „Planned”, `notes` puste; żadne pole nie opisuje ich jako wniosków (tylko nazwa „Licence Application No. 76”) – dlatego bez dopisku o wniosku.
+
+### Aukcja URE dla morskich farm wiatrowych (AMFW/1/2025, 17.12.2025)
+
+- **Źródło:** Urząd Regulacji Energetyki, „Offshore: Pierwsza aukcja dla morskich farm wiatrowych rozstrzygnięta”, aktualność 13009, data publikacji 18.12.2025: https://www.ure.gov.pl/pl/urzad/informacje-ogolne/aktualnosci/13009,Offshore-Pierwsza-aukcja-dla-morskich-farm-wiatrowych-rozstrzygnieta.html (wersja PDF z tej samej strony – zgodna).
+- **Treść (przeczytane w całości 25.11.2026, HTML i PDF; liczby z tekstu strony – do sprawdzenia oczami):** trzech zwycięzców, łącznie 3,435 GW: „ORLEN Neptun VIII Sp. z o.o. – Morska Farma Wiatrowa Baltic East, o mocy zainstalowanej elektrycznej 900 MW”; „Elektrownia Wiatrowa Baltica 9 Sp. z o.o. – MFW Baltica 9, o mocy zainstalowanej elektrycznej 975 MW”; „MFW Bałtyk I S.A. – MFW Bałtyk I, o mocy zainstalowanej elektrycznej 1560 MW”. Ceny w zwycięskich ofertach: 476,88–492,32 zł/MWh. Pierwsza energia do sieci w ciągu 7 lat od zamknięcia sesji aukcji.
+- **Szczegółowe wyniki w BIP URE** (https://bip.ure.gov.pl/bip/odnawialne-zrodla-energ/morskie-farmy-wiatrowe/4847,Ogloszenia-i-wyniki-aukcji.html) – nieczytane.
+- **Na mapie:** dopisek „wygrał aukcję URE 17.12.2025” w okienkach Baltic East, Baltica 9 i obu faz Bałtyku I (przy fazach: „cały projekt MFW Bałtyk I: 1560 MW”); Baltic East: „moc: 966 MW (maks. wg pozwolenia lokalizacyjnego) · w aukcji URE: 900 MW”. Linijka źródła „URE · stan: 18.12.2025” z linkiem (`UZUPELNIENIA_FARM` w `src/main.js`).
+- **Wniosek potwierdzony:** komunikat URE łączy spółkę ORLEN Neptun VIII z farmą Baltic East – wcześniej (19.11.2026) tylko wniosek ze zgodności mocy.
+- **Licencja:** informacja publiczna; podajemy źródło i link.
+- **Data sprawdzenia:** 25.11.2026
+- **Poziom weryfikacji:** 1
 
 ### Uzupełnienie statusu: Baltic Power
 
-- **Dane EMODnet zostają bez zmian** (status „Construction”, 1140 MW). Uzupełnienie jest osobnym tekstem w okienku farmy (`KOREKTY_STATUSU` w `src/main.js`) i jednym zdaniem w stopce.
-- **Źródła (przeczytane w całości 20.11.2026, poziom 1 – źródło inwestora):**
-  - Komunikat z 10.07.2026, https://balticpower.pl/aktualnosci/morska-farma-wiatrowa-baltic-power-po-raz-pierwszy-wyprodukowa%C5%82a-i-dostarczy%C5%82a-energi%C4%99-z-morza-dla-polskiej-sieci-energetycznej/ – „Odbiór energii na stacji w gminie Choczewo potwierdziły Polskie Sieci Energetyczne”; wtedy „ponad 50 z 76 turbin”, kolejne dołączane „aż do osiągnięcia pełnej mocy wytwórczej”; koncesja URE zapowiedziana na II połowę 2026.
-  - Komunikat z 7.10.2026, https://balticpower.pl/news/baltic-power-project-completes-installation-of-all-76-turbines-the-first-polish-offshore-wind-farm-in-poland-enters-the-final-stage-before-commercial-operations/ – „installation of the last, 76th turbine”; po podłączeniu turbina przechodzi „240-hour trial operation”; elektrownia „does not yet hold a generation license”; brak daty eksploatacji komercyjnej i brak informacji o pracy pełną mocą.
-- **Moc:** 76 × 15 MW = 1140 MW (= EMODnet); inwestor i GEM podają „ok. 1,2 GW” / 1200 MW.
-- **Opis w okienku:** rozruch od pierwszej energii do sieci 10.07.2026, wszystkie turbiny zainstalowane, bez koncesji, przed eksploatacją komercyjną; w EMODnet i GEM: „w budowie”.
+- **Dane EMODnet zostają bez zmian** (status „Construction”, 1140 MW). Na stronie (od 25.11.2026): status „w rozruchu – część turbin produkuje” zamiast „w budowie” – **nie „działa”** (brak koncesji na wytwarzanie i eksploatacji komercyjnej; decyzja Ani 25.11.2026). Dopisek w okienku farmy, linijki źródeł z linkami i jedno zdanie w stopce (`UZUPELNIENIA_FARM` w `src/main.js`). Licznik: „23 farmy · 1 w rozruchu, 22 planowane” (legenda i zakładka „Skąd”).
+- **Northland Power, raport za III kwartał 2026 (12.11.2026)** – https://northlandpower.com/northland-power-reports-third-quarter-2026-results-value-accretive-growth-updates-and-reaffirms-2026-guidance/ – przeczytany w całości 25.11.2026 (bez tabel finansowych), poziom 1 – źródło inwestora (49% udziałów):
+  - „Reached a major milestone at Baltic Power by completing the installation of all 76 turbines, over 70% generating power and the project advancing through commissioning.”
+  - „Northland continued to advance construction of the 1.1 GW Baltic Power project in Poland, with all 76 turbines installed and over 70% generating power. The project is advancing through commissioning in the fourth quarter of 2026.”
+  - Brak daty eksploatacji komercyjnej i brak informacji o koncesji; przychody opisane jako „pre-completion revenues”.
+- **ORLEN, komunikat z 10.07.2026** – https://www.orlen.pl/en/about-the-company/media/press-releases/current/2026/July-2026/a-historic-milestone-the-wind-farm-in-the-baltic-sea-delivers-first-power-to-the-polish-grid – przeczytany w całości 25.11.2026, poziom 1 – źródło inwestora (51% udziałów):
+  - „Electricity generated by the Baltic Power offshore wind farm has entered Poland’s national power grid today. […] 54 of 76 turbines have already been installed offshore, with the first now generating electricity.”
+  - „Achieving the First Power milestone means that the first turbine has started generating electricity and that the wind farm is entering the phased commissioning process.” Koncesja URE – „the final step”, po zakończeniu budowy.
+- **Northland Power, komunikat z 10.07.2026** – https://northlandpower.com/northlands-baltic-power-reaches-first-power-delivering-first-offshore-wind-electricity-to-polands-grid/ – przeczytany w całości 25.11.2026, poziom 1: „has achieved first power, delivering the first electricity ever generated from offshore wind to Poland’s national grid”; „1.1-gigawatt”, „owned 49% by Northland and 51% by ORLEN”.
+- **balticpower.pl (przeczytane w całości 20.11.2026, poziom 1):**
+  - Komunikat z 10.07.2026, https://balticpower.pl/aktualnosci/morska-farma-wiatrowa-baltic-power-po-raz-pierwszy-wyprodukowa%C5%82a-i-dostarczy%C5%82a-energi%C4%99-z-morza-dla-polskiej-sieci-energetycznej/ – „Odbiór energii na stacji w gminie Choczewo potwierdziły Polskie Sieci Energetyczne”.
+  - Komunikat z 7.10.2026, https://balticpower.pl/news/baltic-power-project-completes-installation-of-all-76-turbines-the-first-polish-offshore-wind-farm-in-poland-enters-the-final-stage-before-commercial-operations/ – „installation of the last, 76th turbine”; elektrownia „does not yet hold a generation license”; brak daty eksploatacji komercyjnej. To najnowsza informacja o koncesji, jaką mamy – na stronie z datą 7.10.2026.
+- **Moc:** 76 × 15 MW = 1140 MW (= EMODnet); ORLEN podaje „approximately 1.2 GW”, Northland „1.1 GW”.
 
 ## Global Energy Monitor: lądowe farmy wiatrowe (i wyciąg innych źródeł prądu)
 

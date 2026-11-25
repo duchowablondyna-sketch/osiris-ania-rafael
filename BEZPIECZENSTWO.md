@@ -114,12 +114,14 @@
 - [ ] Na później: podświetlanie całej linii 220/400 kV od stacji do stacji (łączenie odcinków OSM po nazwie) – dziś najechanie podświetla tylko jeden odcinek z OSM (decyzja Ani 23.11.2026).
 - [ ] Na później: okienko C otwarte przyciskiem spoza mapy („?” przy pasku OZE, okienko Polski) – po zamknięciu krzyżykiem fokus ma wracać na element, który je otworzył (dziś po kliknięciu myszą wraca na mapę) (23.11.2026).
 - [ ] Na później: po rozwinięciu stopki „Źródła i licencje” panel Karta Polski robi się bardzo niski (za mało miejsca nad stopką) – do poprawy przy układzie strony (23.11.2026).
+- [ ] Na później: na telefonie przy kadrze Polski sześciokąt stacji EJ1 (Biebrowo, wolna moc PSE) przykrywa kropkę Baltic Power – dotknięcie otwiera okienko stacji, farmę widać dopiero po przybliżeniu (25.11.2026).
+- [ ] Test „czy skrypt mapy się uruchamia” w sprawdzianie PR (np. `node --check` wszystkich plików JS, a najlepiej zbudowanie strony) – 25.11.2026 powtórzona nazwa funkcji (`formatMW`) zatrzymała całą mapę, a test słowników tego nie wyłapał.
 - [ ] Na później: przy niskim oknie komputera (poniżej ok. 625 px wysokości) linijka źródła w rozwiniętym okienku PSE jest widoczna dopiero po przewinięciu (25.11.2026).
 - [ ] Na później: pełny widok poziomy telefonu i tablety 641–1023 px (dziś działa tam wygląd komputerowy; po obróceniu telefonu okna zajmują dużą część ekranu) (25.11.2026).
 - [ ] Na później: okienko Polski mogłoby się pokazywać także po najechaniu na obrys Polski (Natural Earth – dane już są na mapie) (decyzja Ani 23.11.2026).
 - [ ] Harmonogram GitHub Actions bywa opóźniany lub pomijany (20.11.2026: zamiast 5 uruchomień były 2, z opóźnieniem 2–3 h) – jeśli się powtarza, rozważyć Cloudflare Cron Triggers.
 - [ ] Pulsowanie farm wiatrowych w rytm produkcji krajowej – dopiero po dodaniu farm lądowych; skala względem mocy zainstalowanej, nie maksimum doby.
-- [ ] Okienko farmy zasłania kropki, a kropki blisko siebie nachodzą na siebie (np. Baltic Power pod pustą kropką Orlen Neptun VIII, 2,5 km) – okienko powinno pokazywać wszystkie farmy w klikniętym miejscu, nie tylko tę z wierzchu.
+- [ ] Okienko farmy zasłania kropki, a kropki blisko siebie nachodzą na siebie (np. Baltic Power pod pustą kropką Orlen Neptun VIII, 2,5 km – ten przypadek rozwiązany 25.11.2026: możliwe duplikaty widoczne dopiero od przybliżenia 9) – okienko powinno pokazywać wszystkie farmy w klikniętym miejscu, nie tylko tę z wierzchu.
 - [ ] Przy zmianie domeny poprawić pełne adresy w meta Open Graph (`og:url`, `og:image` w `index.html` i `mapa/index.html` – dziś `https://osiris-ania-rafael.pages.dev/`) i odświeżyć podgląd linku w LinkedIn Post Inspector.
 - [ ] Osobna podstrona „Źródła” przy rozbudowie strony (zamiast zwijanej stopki „Źródła i licencje”).
 - [ ] Polskie nazwy elektrowni zamiast nazw z GEM (np. „Belchatow power station” → „Elektrownia Bełchatów”).
