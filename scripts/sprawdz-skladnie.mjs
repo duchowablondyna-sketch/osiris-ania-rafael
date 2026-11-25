@@ -1,4 +1,5 @@
-// Sprawdzian PR, poziom 1a: składnia wszystkich plików JS (node --check) w src/, scripts/ i vite.config.js.
+// Sprawdzian PR, poziom 1a: składnia wszystkich plików JS (node --check) w src/, scripts/, cloudflare/ (Worker zegara,
+// od 25.11.2026) i vite.config.js.
 // Łapie np. powtórzoną deklarację funkcji (25.11.2026: drugi `formatMW` w src/main.js zatrzymał cały skrypt mapy).
 // Nie uruchamia kodu – błędy, które wychodzą dopiero w przeglądarce, łapie scripts/testy-przegladarka.mjs.
 // Uruchamianie: node scripts/sprawdz-skladnie.mjs (albo całość: npm run sprawdz).
@@ -21,7 +22,12 @@ function plikiJs(katalog) {
   return wynik;
 }
 
-const pliki = [...plikiJs(join(KATALOG, 'src')), ...plikiJs(join(KATALOG, 'scripts')), join(KATALOG, 'vite.config.js')];
+const pliki = [
+  ...plikiJs(join(KATALOG, 'src')),
+  ...plikiJs(join(KATALOG, 'scripts')),
+  ...plikiJs(join(KATALOG, 'cloudflare')),
+  join(KATALOG, 'vite.config.js'),
+];
 const bledy = [];
 for (const plik of pliki) {
   // "type": "module" w package.json – pliki .js są sprawdzane jako moduły ES, tak jak w przeglądarce.

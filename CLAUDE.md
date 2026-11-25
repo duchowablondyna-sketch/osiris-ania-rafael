@@ -16,7 +16,7 @@ Mapa źródeł prądu, część 2 (działające elektrownie z GEM, legenda z prz
 „Wygląd i zaufanie” (źródło w okienkach, liczniki, czcionki u nas, szkło, lot po przełączeniu) – zakończony 20.11.2026.
 Strona tytułowa na / i mapa na /mapa/ – zakończone (PR #16).
 Wolne moce przyłączeniowe – część 1: PSE (warstwa „Wolna moc dla odbiorców”, wykaz rozdzielni, Robot OSIRIS etap A) – zakończona 21.11.2026 (PR #17, #18).
-Robot OSIRIS etap B (co tydzień, środa 05:17 UTC, sprawdza dokument PSE o dostępności mocy przyłączeniowej; ręczne uruchamianie zostaje) – działa od 21.11.2026 (PR #22).
+Robot OSIRIS etap B (co tydzień, środa 05:17 UTC i czwartek 05:47 UTC, sprawdza dokument PSE o dostępności mocy przyłączeniowej; ręczne uruchamianie zostaje) – działa od 21.11.2026 (PR #22).
 
 Cel: „Karta Polski”.
 - 5 kafelków: główne źródło (węgiel razem), cena RCE, ślad CO2 (szacunek OSIRIS), OZE %, wymiana z zagranicą.

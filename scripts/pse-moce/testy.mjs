@@ -316,6 +316,46 @@ test('zgłoś: bez-zmian – nic nie robi', () => {
   assert.equal(zglos({ wynikDir, repo, tryb: 'normalny', naSucho: true, log: () => {} }).akcja, 'nic');
 });
 
+// Drugi termin Robota (czwartek, od 25.11.2026): ten sam dokument PSE nie może dać drugiego PR ani issue.
+// Atrapa gh/git: „otwarte” = gh … list zwraca numer; „gałąź istnieje” = git ls-remote zwraca wiersz.
+test('zgłoś: już zgłoszone – otwarty PR albo issue z tym samym SHA-256 albo istniejąca gałąź → Robot nic nie wysyła', () => {
+  const poprzednie = process.env.GITHUB_REPOSITORY;
+  process.env.GITHUB_REPOSITORY = 'duchowablondyna-sketch/osiris-ania-rafael';
+  try {
+    const przypadki = [
+      { nazwa: 'otwarty PR (nowe dane)', stan: 'nowe-dane', otwartyPr: true },
+      { nazwa: 'otwarte issue (nowe dane)', stan: 'nowe-dane', otwarteIssue: true },
+      { nazwa: 'otwarte issue (problem)', stan: 'problem', otwarteIssue: true },
+      { nazwa: 'otwarty PR (nowy plik)', stan: 'nowy-plik', otwartyPr: true },
+      { nazwa: 'istniejąca gałąź robota (nowe dane)', stan: 'nowe-dane', galaz: true },
+    ];
+    for (const p of przypadki) {
+      const { repo, wynikDir, git } = repoTestowe('{"a":1}\n', '{"a":2}\n', p.stan);
+      const wywolania = [];
+      const uruchom = (cmd, args) => {
+        wywolania.push([cmd, ...args].join(' '));
+        if (cmd === 'gh' && args[1] === 'list') return (args[0] === 'pr' ? p.otwartyPr : p.otwarteIssue) ? '12\n' : '';
+        if (cmd === 'git' && args[0] === 'ls-remote') return p.galaz ? 'abc123\trefs/heads/robot-osiris/pse-2026-10-31-e3612af4\n' : '';
+        return '';
+      };
+      const log = [];
+      const w = zglos({ wynikDir, repo, tryb: 'normalny', log: (x) => log.push(x), uruchom, osoba: 'duchowablondyna-sketch' });
+      assert.equal(w.akcja, 'juz-zgloszone', p.nazwa);
+      // Szukanie po SHA-256 z wynik.json, tylko wśród otwartych.
+      assert.ok(wywolania.some((c) => c.includes('--state open') && c.includes('e3612af437f862d0 in:body')), p.nazwa);
+      // Nic nie poszło na GitHuba: bez tworzenia PR/issue, bez push, bez nowego commita i gałęzi.
+      for (const zakazane of ['pr create', 'issue create', 'push', 'switch']) {
+        assert.ok(!wywolania.some((c) => c.includes(zakazane)), `${p.nazwa}: wywołano „${zakazane}”\n${wywolania.join('\n')}`);
+      }
+      assert.equal(git('log', '--oneline').trim().split('\n').length, 1, p.nazwa);
+      assert.match(log.join('\n'), /nic nie wysyłam/, p.nazwa);
+    }
+  } finally {
+    if (poprzednie === undefined) delete process.env.GITHUB_REPOSITORY;
+    else process.env.GITHUB_REPOSITORY = poprzednie;
+  }
+});
+
 test('zgłoś na sucho (testy) nie pisze do podsumowania przebiegu, nawet gdy GITHUB_STEP_SUMMARY jest ustawione', () => {
   const plikPodsumowania = join(mkdtempSync(join(tmpdir(), 'osiris-podsum-')), 'summary.md');
   zapiszPlik(plikPodsumowania, '');
