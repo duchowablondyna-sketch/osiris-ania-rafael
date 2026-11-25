@@ -116,6 +116,7 @@
 - [ ] Na później: po rozwinięciu stopki „Źródła i licencje” panel Karta Polski robi się bardzo niski (za mało miejsca nad stopką) – do poprawy przy układzie strony (23.11.2026).
 - [ ] Na później: na telefonie przy kadrze Polski sześciokąt stacji EJ1 (Biebrowo, wolna moc PSE) przykrywa kropkę Baltic Power – dotknięcie otwiera okienko stacji, farmę widać dopiero po przybliżeniu (25.11.2026).
 - [x] Test „czy skrypt mapy się uruchamia” w sprawdzianie PR – zrobione 25.11.2026: `scripts/sprawdz-skladnie.mjs` (`node --check`), `vite build` bez PSE i test w Chrome bez okna (błędy JS na 6 stronach, mapa i przyciski okien); lokalnie `npm run sprawdz`.
+- [ ] Na później: na telefonie strona tytułowa i mapa przewijają się o 6 px (strona tytułowa EN przy 360 px – o 33 px); prawdopodobnie niewidoczne pole dotyku 44 px pod „Źródła i licencje” wystaje poza dół ekranu (pomiar 25.11.2026, było przed zmianą „praw autorskich”).
 - [ ] Na później: przy niskim oknie komputera (poniżej ok. 625 px wysokości) linijka źródła w rozwiniętym okienku PSE jest widoczna dopiero po przewinięciu (25.11.2026).
 - [ ] Na później: pełny widok poziomy telefonu i tablety 641–1023 px (dziś działa tam wygląd komputerowy; po obróceniu telefonu okna zajmują dużą część ekranu) (25.11.2026).
 - [ ] Na później: okienko Polski mogłoby się pokazywać także po najechaniu na obrys Polski (Natural Earth – dane już są na mapie) (decyzja Ani 23.11.2026).

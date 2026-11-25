@@ -20,6 +20,11 @@ const STRONY = ['/', '/mapa/', '/en/', '/en/map/', '/o-nas/', '/en/about/'];
 const MAPY = new Set(['/mapa/', '/en/map/']);
 // Mapa: płótno MapLibre i nagłówki okien (na telefonie to przyciski przy lewej krawędzi).
 const NA_MAPIE = ['canvas.maplibregl-canvas', '#okienko-pse > summary', '.legenda > summary', '#karta > summary'];
+// Prawa autorskie (25.11.2026) muszą być widoczne: „O nas” – na dole; inne strony – w wierszu stopki (komputer)
+// albo na górze rozwiniętej sekcji „Źródła i licencje” (telefon).
+const O_NAS = new Set(['/o-nas/', '/en/about/']);
+const prawaAutorskie = (widok, sciezka) =>
+  O_NAS.has(sciezka) ? '.o-nas__prawa' : widok.nazwa === 'telefon' ? '.stopka__prawa--zrodla' : '.stopka__prawa--wiersz';
 const BEZ_PSE = new Set(
   ['wiatr', 'rce', 'doba', 'karta', 'podsumowanie', 'moce-pse-sprawdzono'].map((n) => `/data/${n}.json`),
 );
@@ -92,6 +97,14 @@ async function sprawdzStrone(przegladarka, widok, sciezka) {
     // Chwila na to, co skrypty robią po wczytaniu (pobieranie danych, odpowiedzi 404).
     await strona.waitForLoadState('networkidle', { timeout: 15_000 }).catch(() => {});
     await strona.waitForTimeout(500);
+    const prawa = prawaAutorskie(widok, sciezka);
+    if (prawa === '.stopka__prawa--zrodla') {
+      await strona.evaluate(() => {
+        const zrodla = document.getElementById('zrodla');
+        if (zrodla) zrodla.open = true;
+      });
+    }
+    if (!(await strona.locator(prawa).first().isVisible())) bledy.push(`nie widać praw autorskich: ${prawa}`);
   } catch (blad) {
     bledy.push(`nie wczytała się: ${blad.message.split('\n')[0]}`);
   } finally {
