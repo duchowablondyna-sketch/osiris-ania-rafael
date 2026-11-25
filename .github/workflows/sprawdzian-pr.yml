@@ -1,0 +1,47 @@
+name: Sprawdzian PR
+
+# Bezpiecznik przy każdym PR (od 25.11.2026): czy strona w ogóle działa.
+# To samo co lokalnie `npm run sprawdz`: składnia wszystkich plików JS, zbudowanie strony BEZ pobierania z PSE
+# (vite build zamiast npm run build), istniejące testy i test w Chrome bez okna (6 stron, komputer i telefon).
+# Test w przeglądarce nie korzysta z internetu (NASA, PSE odcięte) – łapie tylko błędy naszego kodu.
+# Nazwa zadania „Sprawdzian strony” jest wymaganym sprawdzianem w rulesecie „ochrona-main” – nie zmieniać bez zmiany tam.
+# PR otwarte przez Robota OSIRIS (GITHUB_TOKEN) nie uruchamiają tego workflow same – zamknąć i od razu otworzyć PR
+# ponownie (albo uruchomić ręcznie na gałęzi robota).
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sprawdzian-pr-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sprawdz:
+    name: Sprawdzian strony
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Pobierz kod
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Node 26
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26
+
+      - name: Zainstaluj pakiety (dokładnie z package-lock.json)
+        run: npm ci
+
+      - name: Wersje (Chrome jest już na maszynie GitHuba – playwright-core niczego nie pobiera)
+        run: |
+          node --version
+          google-chrome --version
+
+      - name: Składnia, zbudowanie strony, testy, przeglądarka
+        run: npm run sprawdz

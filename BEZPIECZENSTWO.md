@@ -90,8 +90,8 @@
 - Od etapu „Wygląd 1” (19.11.2026) przeglądarka widza pobiera kafelki tła satelitarnego z serwera NASA GIBS (`gibs.earthdata.nasa.gov`), więc NASA widzi adres IP odwiedzającego. Od etapu „Prąd nocą” (20.11.2026) dotyczy to obu teł: Blue Marble (Dzień) i VIIRS_Black_Marble (Noc). Od etapu „Strona tytułowa” (20.11.2026) do 21.11.2026 także strona tytułowa (/) pobierała kafelki Black Marble do globusa z NASA. **Od 21.11.2026 globus na stronie tytułowej korzysta z naszej kopii kafelków** (`public/kafelki/black-marble-2016`, przybliżenia 0–3, sumy SHA-256 obok) – strona tytułowa nie łączy już widza z NASA; połączenie z NASA zaczyna się dopiero na /mapa/. Dane PSE nadal są pobierane tylko przy budowaniu strony.
 
 ### Do zrobienia
-- [ ] Robot Playwright jako wymagany test.
-- [ ] Testy karty uruchamiane automatycznie na GitHubie (Actions): `node --test scripts/karta/testy.mjs scripts/karta/testy-panel.mjs` (dziś tylko ręcznie; budowanie na Cloudflare ich nie uruchamia – dane zatrzymuje sam sprawdzian w skrypcie).
+- [ ] Robot Playwright jako wymagany test. Test jest od 25.11.2026 (workflow „Sprawdzian PR”, zadanie „Sprawdzian strony”, `scripts/testy-przegladarka.mjs`, playwright-core 1.65.0); zostało: dodać „Sprawdzian strony” jako wymagany sprawdzian w rulesecie „ochrona-main” (Ania, po pierwszym przebiegu) i sprawdzić na PR „[TEST]” z trybu `wymus-pr`, że po zamknięciu i ponownym otwarciu PR Robota sprawdzian rusza.
+- [x] Testy karty uruchamiane automatycznie na GitHubie (Actions) – zrobione 25.11.2026: `npm run sprawdz` w workflow „Sprawdzian PR” (razem z testami słowników, okienka i Robota).
 - [x] Kafelki NASA u nas – globus na stronie tytułowej: 85 kafelków Black Marble 2016 (przybliżenia 0–3, 1 901 156 B), `scripts/pobierz-kafelki-globusa.mjs`, sumy SHA-256, warunki NASA w ZRODLA.md – zrobione 21.11.2026. Mapa /mapa/ nadal korzysta z NASA bezpośrednio (punkt niżej o kafelkach tła dla Polski).
 - [ ] Ślad CO2: policzyć wpływ założenia dla węgla brunatnego (957 g/kWh, ok. 17% produkcji) – zakres przy wartościach ze źródeł, do Metodologii i ZRODLA.md.
 - [ ] `dependabot.yml`.
@@ -115,7 +115,7 @@
 - [ ] Na później: okienko C otwarte przyciskiem spoza mapy („?” przy pasku OZE, okienko Polski) – po zamknięciu krzyżykiem fokus ma wracać na element, który je otworzył (dziś po kliknięciu myszą wraca na mapę) (23.11.2026).
 - [ ] Na później: po rozwinięciu stopki „Źródła i licencje” panel Karta Polski robi się bardzo niski (za mało miejsca nad stopką) – do poprawy przy układzie strony (23.11.2026).
 - [ ] Na później: na telefonie przy kadrze Polski sześciokąt stacji EJ1 (Biebrowo, wolna moc PSE) przykrywa kropkę Baltic Power – dotknięcie otwiera okienko stacji, farmę widać dopiero po przybliżeniu (25.11.2026).
-- [ ] Test „czy skrypt mapy się uruchamia” w sprawdzianie PR (np. `node --check` wszystkich plików JS, a najlepiej zbudowanie strony) – 25.11.2026 powtórzona nazwa funkcji (`formatMW`) zatrzymała całą mapę, a test słowników tego nie wyłapał.
+- [x] Test „czy skrypt mapy się uruchamia” w sprawdzianie PR – zrobione 25.11.2026: `scripts/sprawdz-skladnie.mjs` (`node --check`), `vite build` bez PSE i test w Chrome bez okna (błędy JS na 6 stronach, mapa i przyciski okien); lokalnie `npm run sprawdz`.
 - [ ] Na później: przy niskim oknie komputera (poniżej ok. 625 px wysokości) linijka źródła w rozwiniętym okienku PSE jest widoczna dopiero po przewinięciu (25.11.2026).
 - [ ] Na później: pełny widok poziomy telefonu i tablety 641–1023 px (dziś działa tam wygląd komputerowy; po obróceniu telefonu okna zajmują dużą część ekranu) (25.11.2026).
 - [ ] Na później: okienko Polski mogłoby się pokazywać także po najechaniu na obrys Polski (Natural Earth – dane już są na mapie) (decyzja Ani 23.11.2026).
