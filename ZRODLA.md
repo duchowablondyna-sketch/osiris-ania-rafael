@@ -287,7 +287,8 @@ Metoda dla paliw kopalnych: 820 g/kWh (IPCC, węgiel) × (wskaźnik KOBiZE paliw
   (`visibility: hidden`, układ bez zmian) tylko to, co by się zestarzało: linijka „ostatnie pobranie / last retrieved”
   (`#liczba-pse`) i zegar „CZAS WARSZAWA / WARSAW TIME” (`.zegar`), a także rogi paska: „Źródła i licencje”, „Opis ▾”
   (`.rog--lewy`), przełącznik „PL | EN” (`.gora .jezyki`) i napis stopki „Źródła i licencje ▸” (`.stopka__zrodla summary`;
-  zostaje cienka linia stopki) – decyzje Ani 23.11.2026; logo OSIRIS i podpis NASA zostają;
+  zostaje cienka linia stopki) – decyzje Ani 23.11.2026; od 25.11.2026 przy następnym zrzucie ukryć tak samo także
+  prawa autorskie w wierszu stopki (`.stopka__prawa--wiersz`) – wtedy obrazek wygląda jak dotąd; logo OSIRIS i podpis NASA zostają;
   zrzut całego okna. Liczby na obrazku: stan danych z dnia zrzutu (40 · 27,3 GW, 233 · 9,0 GW, 23).
 - **Wcześniej:** polski obrazek z 20.11.2026 (commit 2ac509f) – sposób powstania nie był zapisany; pokazywał starszy wygląd
   strony i datę „ostatnie pobranie: 20.11, 15:50”. Zastąpiony 23.11.2026. Obrazki z 23.11.2026 z dużym napisem OSIRIS

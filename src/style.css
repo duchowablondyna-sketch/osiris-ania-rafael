@@ -309,11 +309,35 @@ main {
   border-top: 1px solid #2a3550;
 }
 
-/* „O nas” – w wierszu „Źródła i licencje”, przy prawej krawędzi stopki; ten sam krój co „Źródła i licencje”. */
-.stopka a.stopka__o-nas {
+/* Prawy róg wiersza „Źródła i licencje”: prawa autorskie i „O nas”, przy prawej krawędzi stopki. */
+.stopka__prawo {
   position: absolute;
   top: 8px;
   right: 16px;
+  display: flex;
+  align-items: baseline;
+  gap: 24px;
+}
+
+/* Prawa autorskie: mały, spokojny krój (wielkość jak „Źródła i licencje”, bez wielkich liter, kolor pomocniczy).
+   Komputer – w wierszu (--wiersz); telefon – na górze rozwiniętej treści „Źródła i licencje” (--zrodla, blok telefonu). */
+.stopka__prawa {
+  margin: 0;
+  font-size: 0.6875rem;
+  color: var(--tekst-pomocniczy);
+}
+
+.stopka__prawa--wiersz {
+  white-space: nowrap;
+}
+
+.stopka__prawa--zrodla {
+  display: none;
+}
+
+/* „O nas” – ten sam krój co „Źródła i licencje”. */
+.stopka a.stopka__o-nas {
+  position: relative;
   font-size: 0.6875rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -1632,6 +1656,17 @@ button.panel-moce__nazwa:hover {
     /* Przycisk „↓ więcej poniżej” ma na telefonie min. 44 px (niżej) – tyle samo rezerwuje liczenie wysokości
        Karty i legendy. Przy 22 px przycisk wystawał za dolną krawędź ekranu (odbiór telefonu 25.11.2026). */
     --wiecej-ponizej-wys: 44px;
+  }
+
+  /* Prawa autorskie na telefonie (wariant B, decyzja Ani 25.11.2026): nie w wierszu stopki (nie mieszczą się obok
+     „Źródła i licencje” i „O nas” – wysokość stopki i „jeden ekran” bez zmian), tylko na górze rozwiniętej treści. */
+  .stopka__prawa--wiersz {
+    display: none;
+  }
+
+  .stopka__prawa--zrodla {
+    display: block;
+    margin-bottom: 4px;
   }
 
   .mapa-gora {

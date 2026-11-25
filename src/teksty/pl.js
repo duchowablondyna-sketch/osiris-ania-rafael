@@ -481,4 +481,7 @@ export default {
   'onas.mapa': 'Mapa',
   'onas.zrodla_info': 'Źródła i licencje wszystkich danych – w stopce mapy.',
   'stopka.o_nas': 'O nas',
+  // Prawa autorskie (decyzja Ani 25.11.2026): komputer – w wierszu stopki obok „O nas”; telefon – na górze rozwiniętej
+  // sekcji „Źródła i licencje”; zawsze na dole strony „O nas”. Jeden tekst dla wszystkich trzech miejsc.
+  'stopka.prawa': '© 2026 Anna Kołodziejczyk, Rafael Knuth. Wszelkie prawa zastrzeżone.',
 };

@@ -3,11 +3,16 @@
      te same (wyjątek: streszczenie CC BY 4.0 – deed.pl / deed.en; pilnuje tego test języków). Podpis NASA – w oryginale,
      wspólny dla obu wersji. Miejsca na daty (span z id) wypełnia JavaScript; do tego czasu „wczytywanie…”. -->
 <footer class="stopka">
-  <!-- „O nas” – w tym samym wierszu co „Źródła i licencje”, przy prawej krawędzi (nic się nie przesuwa). -->
-  <a class="stopka__o-nas" href="{{@adres:onas}}">{{stopka.o_nas}}</a>
+  <!-- Prawy róg wiersza „Źródła i licencje”: prawa autorskie i „O nas” (nic się nie przesuwa). Na telefonie (do 640 px)
+       prawa autorskie są tylko na górze rozwiniętej treści niżej – wysokość stopki bez zmian (decyzja Ani 25.11.2026). -->
+  <div class="stopka__prawo">
+    <p class="stopka__prawa stopka__prawa--wiersz">{{stopka.prawa}}</p>
+    <a class="stopka__o-nas" href="{{@adres:onas}}">{{stopka.o_nas}}</a>
+  </div>
   <details class="stopka__zrodla" id="zrodla">
   <summary>{{stopka.tytul}}</summary>
   <div class="stopka__tresc">
+  <p class="stopka__prawa stopka__prawa--zrodla">{{stopka.prawa}}</p>
   {{stopka.kontur}}
   <br />
   {{stopka.wiatr}}

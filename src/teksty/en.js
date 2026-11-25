@@ -506,4 +506,5 @@ export default {
   'onas.mapa': 'Map',
   'onas.zrodla_info': 'Sources and licences for all data – in the map footer.',
   'stopka.o_nas': 'About',
+  'stopka.prawa': '© 2026 Anna Kołodziejczyk, Rafael Knuth. All rights reserved.',
 };
