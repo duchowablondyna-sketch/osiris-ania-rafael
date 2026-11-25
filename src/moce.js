@@ -158,6 +158,12 @@ function opisLokalizacji(s, promien) {
 }
 
 export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, okienka }) {
+  // „OSD” w zdaniu o operatorach dystrybucyjnych (F1, 25.11.2026) – tekst stały w HTML, więc bez czekania na dane.
+  oznaczTerminy(
+    document.getElementById('moce-osd-wstep'),
+    [{ slowo: t('slownik.osd_w_zdaniu'), tytul: t('slownik.osd_termin'), czesci: objasnienie('slownik.osd') }],
+    okienka,
+  );
   let dane = null;
   let wykaz = null; // wykaz rozdzielni PSE (public/data/rozdzielnie-pse.json); null = nie wczytał się
   let bezRozpatrzenia = new Map();

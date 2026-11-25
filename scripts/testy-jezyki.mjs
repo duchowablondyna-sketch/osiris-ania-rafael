@@ -302,3 +302,53 @@ test('Etap C3: nowe klucze okienka PSE mają PL i EN, ten sam rodzaj; bez „pol
   }
   for (const k of ['mapa.ograniczenie_etykieta', 'mapa.ograniczenie_brak']) assert.ok(!/polecenie/.test(pl[k]) && !/order/.test(en[k]), k);
 });
+
+// OSD (25.11.2026): linki do stron operatorów dystrybucyjnych w zakładce „Gdzie” – 5 operatorów, każdy link https,
+// nowa karta, rel="noopener noreferrer", dopisek dla czytnika; te same adresy w PL i EN; teksty w obu słownikach.
+const OPERATORZY = ['stoen', 'pge', 'energa', 'enea', 'tauron'];
+const KLUCZE_OSD = ['moce.osd_wstep', 'moce.osd_aria', ...OPERATORZY.map((o) => `moce.osd.${o}`), 'slownik.osd_termin', 'slownik.osd_w_zdaniu', 'slownik.osd'];
+function linkiOsd(html) {
+  const lista = html.match(/<ul class="panel-moce__osd-lista"[^>]*>([\s\S]*?)<\/ul>/);
+  assert.ok(lista, 'brak listy operatorów (panel-moce__osd-lista)');
+  return [...lista[1].matchAll(/<a ([^>]*)>([\s\S]*?)<\/a>/g)].map(([, atrybuty, tresc]) => ({
+    href: atrybuty.match(/href="([^"]*)"/)?.[1],
+    target: atrybuty.match(/target="([^"]*)"/)?.[1],
+    rel: atrybuty.match(/rel="([^"]*)"/)?.[1],
+    tekst: tresc.replace(/<svg[\s\S]*?<\/svg>/g, '').replace(/<span class="tylko-czytnik">[\s\S]*?<\/span>/g, '').trim(),
+    czytnik: tresc.match(/<span class="tylko-czytnik">([\s\S]*?)<\/span>/)?.[1]?.trim(),
+  }));
+}
+test('OSD: nowe klucze w obu słownikach; zdanie bez „kolejny etap” i ze słowem z objaśnienia F1', () => {
+  for (const k of KLUCZE_OSD) {
+    assert.equal(typeof pl[k], 'string', `pl: ${k}`);
+    assert.equal(typeof en[k], 'string', `en: ${k}`);
+  }
+  assert.ok(!/kolejny etap/.test(pl['moce.wazne'] + pl['moce.osd_wstep']) && !/next stage/.test(en['moce.wazne'] + en['moce.osd_wstep']));
+  assert.ok(pl['moce.osd_wstep'].includes(pl['slownik.osd_w_zdaniu']) && en['moce.osd_wstep'].includes(en['slownik.osd_w_zdaniu']));
+});
+test('OSD: szablon mapy – 5 linków do operatorów, każdy https, nowa karta, rel="noopener noreferrer", dopisek dla czytnika', () => {
+  const linki = linkiOsd(readFileSync(resolve(KATALOG, 'mapa/index.html'), 'utf-8'));
+  assert.deepEqual(linki.map((l) => l.tekst), OPERATORZY.map((o) => `{{moce.osd.${o}}}`));
+  for (const l of linki) {
+    assert.match(l.href, /^https:\/\/[^/]+\.pl\//, l.href);
+    assert.ok(!/\.pdf|version=|download/i.test(l.href), `link do pliku, a nie do strony: ${l.href}`);
+    assert.equal(l.target, '_blank', l.href);
+    assert.equal(l.rel, 'noopener noreferrer', l.href);
+    assert.equal(l.czytnik, '{{onas.nowa_karta}}', l.href);
+  }
+  assert.equal(new Set(linki.map((l) => new URL(l.href).hostname)).size, 5, 'każdy operator ma własną domenę');
+});
+test('OSD: po zbudowaniu (jeśli jest dist/) – te same 5 adresów w PL i EN, nazwy operatorów w języku strony', (t) => {
+  const pliki = { pl: resolve(KATALOG, 'dist/mapa/index.html'), en: resolve(KATALOG, 'dist/en/map/index.html') };
+  if (!existsSync(pliki.pl) || !existsSync(pliki.en)) return t.skip('brak dist/ – uruchom vite build');
+  const linki = Object.fromEntries(Object.entries(pliki).map(([j, p]) => [j, linkiOsd(readFileSync(p, 'utf-8'))]));
+  assert.equal(linki.pl.length, 5);
+  assert.deepEqual(linki.en.map((l) => l.href), linki.pl.map((l) => l.href));
+  for (const [j, s] of [['pl', pl], ['en', en]]) {
+    assert.deepEqual(linki[j].map((l) => l.tekst), OPERATORZY.map((o) => s[`moce.osd.${o}`]), j);
+    for (const l of linki[j]) {
+      assert.ok(l.href.startsWith('https://') && l.rel === 'noopener noreferrer' && l.target === '_blank', `${j}: ${l.href}`);
+      assert.equal(l.czytnik, s['onas.nowa_karta'], j);
+    }
+  }
+});

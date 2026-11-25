@@ -196,7 +196,17 @@
           <!-- „Nie sumujemy” z analogią – zaraz pod zdaniem-wnioskiem, widoczne bez przewijania we wszystkich widokach
                (Etap C1, decyzja Ani 25.11.2026: jedna kolejność wszędzie, bez osobnej wersji dla telefonu). -->
           <p class="panel-moce__uwaga" id="moce-nie-sumujemy">{{moce.szacunek}} {{moce.szacunek_analogia}}</p>
-          <p class="panel-moce__wazne">{{moce.wazne}}</p>
+          <p class="panel-moce__wazne">{{moce.wazne}} <span id="moce-osd-wstep">{{moce.osd_wstep}}</span></p>
+          <!-- OSD (25.11.2026, wariant B – lista widoczna od razu, decyzja Ani): tylko linki do stron operatorów z informacją
+               o dostępnej mocy – danych nie pobieramy (ZRODLA.md → „Operatorzy dystrybucyjni”). Nowa karta,
+               rel="noopener noreferrer", dopisek dla czytnika. -->
+          <ul class="panel-moce__osd-lista" id="moce-osd" aria-label="{{moce.osd_aria}}">
+            <li><a class="link-zewn" href="https://www.stoen.pl/strona/siec" target="_blank" rel="noopener noreferrer">{{moce.osd.stoen}}<svg class="link-zewn__ikona" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true" focusable="false"><path d="M7 1h4v4M11 1 5.5 6.5M9.5 7.5V11h-9V2H4" fill="none" stroke="currentColor" stroke-width="1.3"/></svg><span class="tylko-czytnik"> {{onas.nowa_karta}}</span></a></li>
+            <li><a class="link-zewn" href="https://pgedystrybucja.pl/przylaczenia/procedury-przylaczeniowe/informacja-o-lacznej-dostepnej-mocy-przylaczeniowej" target="_blank" rel="noopener noreferrer">{{moce.osd.pge}}<svg class="link-zewn__ikona" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true" focusable="false"><path d="M7 1h4v4M11 1 5.5 6.5M9.5 7.5V11h-9V2H4" fill="none" stroke="currentColor" stroke-width="1.3"/></svg><span class="tylko-czytnik"> {{onas.nowa_karta}}</span></a></li>
+            <li><a class="link-zewn" href="https://energa-operator.pl/przylaczenie-do-sieci/informacje-o-stanie-przylaczen" target="_blank" rel="noopener noreferrer">{{moce.osd.energa}}<svg class="link-zewn__ikona" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true" focusable="false"><path d="M7 1h4v4M11 1 5.5 6.5M9.5 7.5V11h-9V2H4" fill="none" stroke="currentColor" stroke-width="1.3"/></svg><span class="tylko-czytnik"> {{onas.nowa_karta}}</span></a></li>
+            <li><a class="link-zewn" href="https://www.operator.enea.pl/przylaczenie-do-sieci/dostepne-moce" target="_blank" rel="noopener noreferrer">{{moce.osd.enea}}<svg class="link-zewn__ikona" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true" focusable="false"><path d="M7 1h4v4M11 1 5.5 6.5M9.5 7.5V11h-9V2H4" fill="none" stroke="currentColor" stroke-width="1.3"/></svg><span class="tylko-czytnik"> {{onas.nowa_karta}}</span></a></li>
+            <li><a class="link-zewn" href="https://www.tauron-dystrybucja.pl/przylaczenie-do-sieci/dostepne-moce" target="_blank" rel="noopener noreferrer">{{moce.osd.tauron}}<svg class="link-zewn__ikona" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true" focusable="false"><path d="M7 1h4v4M11 1 5.5 6.5M9.5 7.5V11h-9V2H4" fill="none" stroke="currentColor" stroke-width="1.3"/></svg><span class="tylko-czytnik"> {{onas.nowa_karta}}</span></a></li>
+          </ul>
           <p class="panel-moce__podsumowanie" id="moce-podsumowanie">{{wspolne.wczytywanie}}</p>
           <h2 class="etykieta-mala">{{moce.lista1}}</h2>
           <ul class="panel-moce__lista" id="moce-lista-1"></ul>

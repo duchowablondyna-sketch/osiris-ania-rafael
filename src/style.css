@@ -1442,6 +1442,39 @@ button.karta__procent:disabled {
   color: var(--tekst);
 }
 
+/* OSD – linki do operatorów dystrybucyjnych (25.11.2026, wariant B: lista widoczna od razu). */
+.panel-moce__osd-lista {
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.panel-moce__osd-lista li + li {
+  margin-top: 4px;
+}
+
+.link-zewn {
+  color: var(--tekst);
+  text-decoration: underline;
+  text-decoration-color: var(--tekst-pomocniczy);
+  text-underline-offset: 3px;
+}
+
+.link-zewn:hover {
+  text-decoration-color: var(--tekst);
+}
+
+.link-zewn:focus-visible {
+  outline: 2px solid var(--fokus);
+  outline-offset: 2px;
+}
+
+.link-zewn__ikona {
+  margin-left: 4px;
+  vertical-align: baseline;
+  color: var(--tekst-pomocniczy);
+}
+
 .panel-moce__uwaga,
 .panel-moce__stan {
   color: var(--tekst-pomocniczy);
@@ -1562,6 +1595,19 @@ button.panel-moce__nazwa:hover {
 .termin:focus-visible {
   outline: 2px solid var(--fokus);
   outline-offset: 2px;
+}
+
+/* Telefon: linki OSD – pole dotyku min. 44 px (zasada z CLAUDE.md). */
+@media (max-width: 640px) {
+  .panel-moce__osd-lista a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .panel-moce__osd-lista li + li {
+    margin-top: 0;
+  }
 }
 
 @media (max-width: 640px) {

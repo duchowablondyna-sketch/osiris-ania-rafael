@@ -270,7 +270,17 @@ export default {
   // ── GDZIE: wolna moc dla odbiorców (PSE) ──
   'moce.tytul': 'Wolna moc dla odbiorców · PSE 220/400 kV',
   'moce.wazne':
-    'Sieć najwyższych napięć (220/400 kV) – dla największych odbiorców, np. fabryk i centrów danych. Mniejsze firmy przyłączają się do sieci operatorów dystrybucyjnych (kolejny etap OSIRIS).',
+    'Sieć najwyższych napięć (220/400 kV) – dla największych odbiorców, np. fabryk i centrów danych.',
+  // OSD – linki do operatorów dystrybucyjnych (25.11.2026): tylko linki do stron operatorów, danych nie pobieramy
+  // (ZRODLA.md → „Operatorzy dystrybucyjni”). Obszary – „głównie”, bo obszary operatorów nie pokrywają się z regionami.
+  'moce.osd_wstep':
+    'Mniejsze firmy przyłączają się do sieci operatorów dystrybucyjnych (OSD). Każdy publikuje wolną moc dla swojego obszaru – OSIRIS jeszcze tych danych nie pokazuje:',
+  'moce.osd_aria': 'Strony operatorów dystrybucyjnych z informacją o dostępnej mocy',
+  'moce.osd.stoen': 'Stoen Operator (Warszawa)',
+  'moce.osd.pge': 'PGE Dystrybucja (głównie wschód i centrum)',
+  'moce.osd.energa': 'Energa-Operator (głównie północ)',
+  'moce.osd.enea': 'Enea Operator (głównie zachód)',
+  'moce.osd.tauron': 'TAURON Dystrybucja (głównie południe)',
   'moce.lista1': 'Stacje dla nowych odbiorców',
   'moce.lista2': 'Stacje budowane głównie dla sieci i nowych źródeł – według PSE mogą też zasilać odbiorców',
   'moce.szacunek':
@@ -306,6 +316,10 @@ export default {
   'slownik.kobize': 'Krajowy Ośrodek Bilansowania i Zarządzania Emisjami, działający w Instytucie Ochrony Środowiska – Państwowym Instytucie Badawczym; publikuje m.in. wskaźniki emisyjności dla energii elektrycznej',
   'slownik.ipcc_termin': 'IPCC',
   'slownik.ipcc': 'Międzyrządowy Zespół do spraw Zmian Klimatu (IPCC); jego raport AR5 (2014) podaje typowy ślad CO₂ źródeł prądu w całym cyklu życia',
+  'slownik.osd_termin': 'OSD',
+  'slownik.osd_w_zdaniu': 'OSD',
+  'slownik.osd':
+    'operator systemu dystrybucyjnego – firma, która zarządza siecią prądu niższych napięć (110 kV i mniej) w swoim regionie; to u niego mniejsze firmy składają wniosek o przyłączenie',
   'slownik.rce_termin': 'RCE',
   // RCE – tylko to, co podaje PSE (decyzja Ani 25.11.2026: bez „netto” i „prosumentów”); zdanie OSIRIS osobno, z podpisem.
   'slownik.rce': 'Rynkowa cena energii elektrycznej dla okresu rozliczenia niezbilansowania – publikowana przez PSE.',
