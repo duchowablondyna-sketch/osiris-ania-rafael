@@ -291,6 +291,13 @@ main {
   border-top: 0;
 }
 
+/* Nazwa źródła jako link (np. komunikat URE) – w kolorze linijki, podkreślona; klikalna po przypięciu okienka. */
+.zrodlo a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 /* ── Stopka ────────────────────────────────────────────────── */
 .stopka {
   padding: 8px 16px;

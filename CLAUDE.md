@@ -51,6 +51,7 @@ Strona z mapą pokazującą, jak i gdzie Polska może uzyskać więcej prądu. R
 - Ciemne, kosmiczne tło (inspiracja: God's Eye View, Bilawal Sidhu).
 - Linie najwyższych napięć w kolorze złotym (energia).
 - Wiatr (farmy, wykres wiatru) na jasnoniebiesko, dobrze widoczny na ciemnym tle.
+- Morskie farmy (decyzje Ani 25.11.2026, wariant C): puste kółko – „brak w wykazie MKiŚ (stan: styczeń 2024)” widoczne zawsze, „możliwy duplikat” innego wpisu EMODnet dopiero od przybliżenia 9; Baltic Power „w rozruchu – część turbin produkuje” (nie „działa”, dopóki nie ma koncesji i eksploatacji komercyjnej); zwycięzcy aukcji URE z dopiskiem i linkiem do komunikatu.
 - Słońce (produkcja PV w okienku PSE) w kolorze jasnej cytryny #FEF08A – linia ciągła z podpisem „słońce” przy linii; kreskowanie zarezerwowane dla danych wstępnych (decyzja Ani 25.11.2026).
 - Globus od razu przybliżony do Polski.
 - Priorytet: komputer (telefon później).

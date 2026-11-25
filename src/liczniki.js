@@ -79,14 +79,21 @@ export function podsumujElektrownie(elektrownie, rodzaj) {
   return { liczba: e.length, mocMw: e.reduce((suma, p) => suma + p.moc, 0) };
 }
 
-// Farmy morskie (EMODnet): wszystkie rekordy, w budowie, planowane i „projekty” = bez prawdopodobnych duplikatów.
-export function podsumujMorskie(geo) {
+// Farmy morskie (EMODnet): wszystkie rekordy, w rozruchu, w budowie, planowane i „projekty” = bez możliwych duplikatów.
+// wRozruchu – nazwy farm, których status uzupełniamy z nowszego źródła (src/main.js, UZUPELNIENIA_FARM): liczone osobno,
+// nie jako „w budowie” z EMODnet.
+export function podsumujMorskie(geo, wRozruchu = []) {
   const p = geo.features.map((f) => f.properties);
+  // „prawdopodobny duplikat: …” – wartość z danych (po polsku), ta sama co w słowniku.
+  const duplikat = (x) => String(x.weryfikacja ?? '').startsWith(tekstPl('farmy.weryfikacja.duplikat'));
+  const rozruch = (x) => wRozruchu.includes(x.nazwa);
   return {
     rekordy: p.length,
-    wBudowie: p.filter((x) => x.status === 'Construction').length,
-    planowane: p.filter((x) => x.status === 'Planned').length,
-    // „prawdopodobny duplikat: …” – wartość z danych (po polsku), ta sama co w słowniku.
-    projekty: p.filter((x) => !String(x.weryfikacja ?? '').startsWith(tekstPl('farmy.weryfikacja.duplikat'))).length,
+    wRozruchu: p.filter(rozruch).length,
+    wBudowie: p.filter((x) => x.status === 'Construction' && !rozruch(x)).length,
+    planowane: p.filter((x) => x.status === 'Planned' && !rozruch(x)).length,
+    duplikaty: p.filter(duplikat).length,
+    duplikatyPlanowane: p.filter((x) => duplikat(x) && x.status === 'Planned').length,
+    projekty: p.filter((x) => !duplikat(x)).length,
   };
 }
