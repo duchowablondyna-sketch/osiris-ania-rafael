@@ -419,7 +419,6 @@ export default {
   'karta.moc_ponad': (stan) => `more than the capacity in the PSE report (as of ${stan}) – new power plants may have been added since`,
   'karta.moc_podpis': (stan, stanMocy) => `generation: as of ${stan} · capacity across Poland: PSE, as of ${stanMocy}`,
   'karta.moc_zrodlo': (stanMocy) => `PSE, KSE Report 2025 (Polish power system), Table 1.1 · as of ${stanMocy}`,
-  'karta.cena_brak_dzis': 'no data for today',
   'karta.wymiana_zero': 'approx. 0\u00a0GW',
   'karta.wymiana_zero_opis': 'almost no exchange',
   'karta.wymiana_kupuje': (gw) => `importing approx. ${gw}\u00a0GW`,
