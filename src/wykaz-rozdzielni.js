@@ -32,3 +32,24 @@ export function stacjeBezRozpatrzenia(wykaz) {
 export function czyPusty(wpis) {
   return Boolean(wpis) && wpis.rozdzielnie.some((r) => [220, 400].includes(napiecieKv(r)));
 }
+
+// Napięcia 220/400 kV z wykazu dla podanych wpisów – rosnąco, bez powtórzeń, np. [220, 400] albo [400].
+export function napiecia220400(wpisy) {
+  const kv = wpisy.flatMap((w) => w.rozdzielnie.map(napiecieKv)).filter((x) => x === 220 || x === 400);
+  return [...new Set(kv)].sort((a, b) => a - b);
+}
+
+// Podział stacji z mocą dla odbiorców według wykazu (Etap C1, 25.11.2026) – liczby do zdań w zakładce „Gdzie”:
+// pelne – w wykazie rozdzielnia 220/400 kV (pusty sześciokąt); tylko110 – w wykazie tylko 110 kV; bezZastrzezen – stacji
+// nie ma na listach 2 i 3. Grupy się nie nakładają (razem = pelne + tylko110 + bezZastrzezen).
+export function podzialStacji(odbiorcy, bezRozpatrzenia) {
+  const wpisy = odbiorcy.map((s) => bezRozpatrzenia.get(s.kod));
+  const pelne = wpisy.filter((w) => w?.pusty);
+  return {
+    razem: odbiorcy.length,
+    pelne: pelne.length,
+    tylko110: wpisy.filter((w) => w && !w.pusty).length,
+    bezZastrzezen: wpisy.filter((w) => !w).length,
+    napieciaPelnych: napiecia220400(pelne),
+  };
+}

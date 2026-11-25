@@ -258,3 +258,16 @@ test('po zbudowaniu (jeśli jest dist/): strony EN istnieją i mają lang="en"',
     assert.ok(!/\{\{/.test(html), 'został znacznik {{…}}');
   }
 });
+
+// Etap C1 (25.11.2026): nowe i zmienione teksty zakładki „Gdzie” – każdy w PL i EN, ten sam rodzaj, bez „obecnie”
+// (data wykazu z danych). Kolejne klucze C1 (wybrane warianty) – dopisywać do tej listy.
+const KLUCZE_C1 = ['leg.moce_pusty', 'leg.moce_110', 'moce.zrodla_dotyczy', 'moce.uwaga_pusty', 'moce.uwaga_110', 'moce.wstrzymane_pusty', 'moce.podsumowanie', 'moce.wniosek_b', 'moce.szacunek_analogia', 'slownik.kv_termin', 'slownik.kv', 'slownik.rozdzielnia_termin', 'slownik.rozdzielnia', 'slownik.rozdzielnia_w_zdaniu', 'slownik.aria', 'slownik.objasnienie'];
+test('Etap C1: nowe klucze zakładki „Gdzie” mają PL i EN, bez „obecnie” / „currently”', () => {
+  const tekst = (v) => (typeof v === 'function' ? v('4.02.2026', '220 lub 400 kV', 2, 5, '04.02.2026', '31.10.2026') : String(v));
+  for (const k of KLUCZE_C1) {
+    assert.ok(k in pl && k in en, `brak ${k} w PL albo EN`);
+    assert.equal(typeof pl[k], typeof en[k], k);
+    assert.ok(tekst(pl[k]).trim() && tekst(en[k]).trim(), `pusty tekst: ${k}`);
+    assert.ok(!/obecnie/.test(tekst(pl[k])) && !/currently/.test(tekst(en[k])), `„obecnie”/„currently” w ${k}`);
+  }
+});
