@@ -32,6 +32,27 @@ Poziomy weryfikacji:
 - **Data sprawdzenia:** 18.11.2026
 - **Poziom weryfikacji:** 1
 
+### PSE: produkcja ze słońca (pole pv)
+
+- **Co:** produkcja ze słońca, raport „Wielkości podstawowe” (`his-wlk-cal`), pole `pv`, okresy 15-minutowe – ten sam raport i ten sam rekord (kwadrans) co wiatr (`wi`).
+- **Używamy w:** okienko „Wiatr, słońce i cena prądu” na mapie (od 25.11.2026): `public/data/wiatr.json` (pole `slonce` – ostatni kwadrans z wartością `wi`; seria `pv` – do wspólnego wykresu z wiatrem) i `public/data/doba.json` (pole `pv` w odtworzeniu doby; doba jest pełna tylko wtedy, gdy każdy kwadrans ma `wi`, `pv` i cenę). Plik: `scripts/pobierz-pse.mjs`.
+- **Link:** https://api.raporty.pse.pl/api/his-wlk-cal (API), https://raporty.pse.pl/report/his-wlk-cal (strona raportu)
+- **Co wiemy na pewno:**
+  - Nazwa pola wg PSE (EndpointsMap.pdf): `pv` = „Sumaryczna generacja Źródeł fotowoltaicznych”. Nagłówek kolumny na stronie raportu (wersja angielska): „Total generation of Photovoltaic Sources [MW]”.
+  - Komentarz PSE pod tabelą raportu (dosłownie, odczyt 25.11.2026): „Aggregate generation of Wind Sources and Aggregate generation of Photovoltaic Sources include both the JGz that are in the balancing market and outside the balancing market”.
+  - Nocą PSE publikuje **0**, nie puste pole (API, doby 24.11 i 25.11.2026, kwadranse 06:00–07:00 czasu polskiego: `pv` = 0; wschód słońca ok. 07:15). Puste pole (`null`) = kwadrans jeszcze nieopublikowany.
+  - `pv` = „ES” w raporcie `his-gen-pal-sire` (Karta Polski) – sprawdzian przy każdym pobraniu Karty (tolerancja 1 MW), patrz wpis „PSE: produkcja według paliw (raport his-gen-pal-sire)”.
+  - Czas: pola `period` i `business_date` – czas polski; `dtime_utc` – koniec kwadransu w UTC (jednoznaczny także w dniu zmiany czasu).
+- **Czego nie wiemy:**
+  - czy wartość jest zmierzona, czy szacowana przez PSE – PSE tego nie opisuje;
+  - czy obejmuje panele na dachach (mikroinstalacje) – PSE tego nie opisuje; strona pomocy raporty.pse.pl/faq: 404 (sprawdzone 23.11.2026). Na stronie pod liczbą stoi zdanie: „PSE nie podaje, czy liczy panele na dachach – to może nie być cała fotowoltaika w Polsce.”
+- **Jednostka:** MW – z podpisu „[MW]” na stronie raportu.
+- **Przetworzenie:** wartość z tego samego rekordu co wiatr (ten sam kwadrans), zaokrąglona do pełnych MW na stronie; w serii do 0,1 MW. Przy 0 MW, gdy cały kwadrans wypada przed wschodem albo po zachodzie słońca dla środka Polski, okienko dopisuje: „Po zmroku i przed świtem panele nie pracują – 0 MW to pora dnia, a nie awaria.” Godziny wschodu i zachodu: uproszczony wzór NOAA (https://gml.noaa.gov/grad/solcalc/solareqns.PDF), `src/slonce.js`; sprawdzone dla Warszawy 25.11 i 21.06.2026 – zgodność do kilku minut. 0 MW w dzień – bez dopisku.
+- **Lekcja (25.11.2026):** liczba 107,9 MW odczytana z tabeli strony raportu przepisanej jako tekst okazała się polem `jgm1` (magazyny energii), nie `pv` – puste komórki przesunęły kolumny. Liczby bierzemy z API (JSON).
+- **Licencja:** jak wiatr (warunki PSE).
+- **Data sprawdzenia:** 25.11.2026
+- **Poziom weryfikacji:** 1 (opis PSE przeczytany; wartości z API porównane przez Claude z rekordami surowymi; porównanie ze stroną raporty.pse.pl przez Anię – do zrobienia)
+
 ### PSE: ograniczenia wiatru (raport poze-redoze)
 
 - **Co:** raport „Nierynkowe redysponowanie źródeł OZE” (`poze-redoze`), okresy 15-minutowe (96 na dobę).

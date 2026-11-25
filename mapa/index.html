@@ -53,6 +53,11 @@
         </div>
         <span class="wskaznik__etykieta etykieta-mala" id="wiatr-etykieta">{{mapa.wiatr_etykieta}}</span>
         <span class="wskaznik__wartosc" id="wiatr-teraz">{{wspolne.wczytywanie}}</span>
+        <!-- Słońce (pole pv): ten sam kwadrans co wiatr. Dopisek nocny tylko przy 0 MW po zmroku (src/slonce.js). -->
+        <span class="wskaznik__etykieta etykieta-mala" id="slonce-etykieta">{{mapa.slonce_etykieta}}</span>
+        <span class="wskaznik__wartosc" id="slonce-teraz">{{wspolne.wczytywanie}}</span>
+        <span class="wskaznik__etykieta wskaznik__dopisek" id="slonce-noc" hidden>{{mapa.slonce_noc}}</span>
+        <span class="wskaznik__etykieta wskaznik__dopisek">{{mapa.slonce_dachy}}</span>
         <div id="wiatr-wykres"></div>
         <span class="wskaznik__etykieta" id="wiatr-stan"></span>
         <span class="wskaznik__etykieta" id="wiatr-ograniczenie">{{mapa.ograniczenie_etykieta}} {{wspolne.wczytywanie}}</span>

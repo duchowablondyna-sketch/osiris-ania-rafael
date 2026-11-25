@@ -77,13 +77,21 @@ export default {
     'Światła nocne (zdjęcie z 2016 r.) to przybliżenie aktywności i oświetlenia – głównie oświetlenia ulic i zabudowy – a nie pomiar zużycia prądu.',
   'mapa.powrot_aria': 'Strona główna OSIRIS',
 
-  // ── Okienko PSE (lewa góra): wiatr, ograniczenia, cena, odtwarzanie doby ──
-  'mapa.wiatr_etykieta': 'Produkcja z wiatru (ostatni dostępny pomiar):',
+  // ── Okienko PSE (lewa góra): wiatr, słońce, ograniczenia, cena, odtwarzanie doby ──
+  'mapa.wiatr_etykieta': 'Produkcja z wiatru (ostatni dostępny kwadrans):',
   'mapa.wiatr_stan': (doba, okres) => `stan na: ${doba}, ${okres}`,
   // Tryb spokojny (decyzja Ani 23.11.2026): nagłówek rozwiniętego okienka PSE i jego zwinięta linijka (bez ceny –
   // cena „teraz” jest tylko w Karcie Polski). kiedy = „08:00–08:15” albo z datą, gdy pomiar nie jest z dziś.
-  'mapa.pse_tytul': 'Wiatr i cena prądu',
-  'mapa.pse_skrot': (mw, kiedy) => `Wiatr ${mw} · stan na ${kiedy} · PSE`,
+  'mapa.pse_tytul': 'Wiatr, słońce i cena prądu',
+  // Zwinięta linijka z trzech części, każda bez łamania w środku (na wąskim ekranie łamie się tylko między nimi).
+  'mapa.pse_skrot_wiatr': (mw) => `Wiatr ${mw}`,
+  'mapa.pse_skrot_slonce': (pv) => `Słońce ${pv}`,
+  'mapa.pse_skrot_stan': (kiedy) => `stan na ${kiedy} · PSE`,
+  // Słońce (pole pv raportu his-wlk-cal) – ten sam kwadrans co wiatr. Dopisek tylko przy 0 MW po zmroku albo przed świtem.
+  'mapa.slonce_etykieta': 'Produkcja ze słońca (ten sam kwadrans):',
+  'mapa.slonce_noc': 'Po zmroku i przed świtem panele nie pracują – 0 MW to pora dnia, a nie awaria.',
+  'mapa.slonce_brak': 'brak danych',
+  'mapa.slonce_dachy': 'PSE nie podaje, czy liczy panele na dachach – to może nie być cała fotowoltaika w Polsce.',
   'mapa.pse_skrot_brak': 'Wiatr: brak danych PSE',
   'mapa.ograniczenie_etykieta': 'Ostatnie polecenie PSE ograniczenia wiatru:',
   'mapa.ograniczenie': (doba, mwh) => `Ostatnie polecenie PSE ograniczenia wiatru: ${doba} – ok. ${mwh} MWh`,
@@ -98,10 +106,14 @@ export default {
   'mapa.brak_wiatr': 'wiatr',
   'mapa.brak_cena': 'cena',
   'wykres.wiatr_opis': (doba) => `Produkcja z wiatru ${doba}, co 15 minut, w MW`,
+  'wykres.wiatr_slonce_opis': (doba) => `Produkcja z wiatru i ze słońca ${doba}, co 15 minut, w MW`,
+  'wykres.linia_wiatr': 'wiatr',
+  'wykres.linia_slonce': 'słońce',
   'wykres.cena_opis': (doba) => `Cena prądu RCE ${doba}, co 15 minut, w zł/MWh`,
   'wykres.biezaca_doba': 'w bieżącej dobie',
   'wykres.w_dobie': (doba) => `w dobie ${doba}`,
   'wykres.maks': (x) => `maks. ${x}`,
+  'wykres.maks_linie': (lista) => `maks.: ${lista}`,
   'wykres.min': (x) => `min. ${x}`,
   'wykres.teraz': 'teraz',
   'odtw.start': '▶ Odtwórz dobę',
@@ -110,6 +122,7 @@ export default {
   'odtw.wznow': '▶ Wznów',
   'odtw.data': (doba) => `Odtworzenie doby: ${doba}`,
   'odtw.wiatr_etykieta': 'Produkcja z wiatru:',
+  'odtw.slonce_etykieta': 'Produkcja ze słońca:',
   'odtw.kwadrans': (okres) => `kwadrans ${okres}`,
   'odtw.ogl_start': (doba) => `Odtwarzanie doby ${doba}, 1 sekunda to 1 godzina.`,
   'odtw.ogl_pauza': (godzina) => `Pauza, godzina ${godzina}.`,
@@ -377,7 +390,7 @@ export default {
   'stopka.kontur':
     'Kontur Polski: <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a> (domena publiczna), dane uproszczone do konturu jednego kraju.',
   'stopka.wiatr':
-    'Produkcja z wiatru: PSE S.A., <a href="https://raporty.pse.pl/" target="_blank" rel="noopener">raporty.pse.pl</a>, dane pobrane <span id="wiatr-pobrano">wczytywanie…</span>, przetworzone.',
+    'Produkcja z wiatru i ze słońca: PSE S.A., <a href="https://raporty.pse.pl/" target="_blank" rel="noopener">raporty.pse.pl</a>, dane pobrane <span id="wiatr-pobrano">wczytywanie…</span>, przetworzone.',
   'stopka.ograniczenia':
     'Ograniczenia wiatru: PSE S.A., raport „Nierynkowe redysponowanie źródeł OZE”, ten sam czas pobrania, przetworzone (suma kwadransów ÷ 4, przy założeniu, że wartości są w MW).',
   'stopka.rce':

@@ -114,10 +114,16 @@ export default {
   'mapa.powrot_aria': 'OSIRIS home page',
 
   // ── Okienko PSE ──
-  'mapa.wiatr_etykieta': 'Wind generation (latest available measurement):',
+  'mapa.wiatr_etykieta': 'Wind generation (latest available quarter-hour):',
   'mapa.wiatr_stan': (doba, okres) => `as of: ${doba}, ${okres}`,
-  'mapa.pse_tytul': 'Wind and electricity price',
-  'mapa.pse_skrot': (mw, kiedy) => `Wind ${mw} · as of ${kiedy} · PSE`,
+  'mapa.pse_tytul': 'Wind, solar and electricity price',
+  'mapa.pse_skrot_wiatr': (mw) => `Wind ${mw}`,
+  'mapa.pse_skrot_slonce': (pv) => `Solar ${pv}`,
+  'mapa.pse_skrot_stan': (kiedy) => `as of ${kiedy} · PSE`,
+  'mapa.slonce_etykieta': 'Solar generation (same quarter-hour):',
+  'mapa.slonce_noc': 'Solar panels don’t work between sunset and sunrise – 0 MW is the time of day, not a breakdown.',
+  'mapa.slonce_brak': 'no data',
+  'mapa.slonce_dachy': 'PSE does not say whether it counts rooftop panels – this may not be all solar power in Poland.',
   'mapa.pse_skrot_brak': 'Wind: no PSE data',
   'mapa.ograniczenie_etykieta': 'Latest PSE order to curtail wind:',
   'mapa.ograniczenie': (doba, mwh) => `Latest PSE order to curtail wind: ${doba} – approx. ${mwh} MWh`,
@@ -133,10 +139,14 @@ export default {
   'mapa.brak_wiatr': 'wind',
   'mapa.brak_cena': 'price',
   'wykres.wiatr_opis': (doba) => `Wind generation ${doba}, every 15 minutes, in MW`,
+  'wykres.wiatr_slonce_opis': (doba) => `Wind and solar generation ${doba}, every 15 minutes, in MW`,
+  'wykres.linia_wiatr': 'wind',
+  'wykres.linia_slonce': 'solar',
   'wykres.cena_opis': (doba) => `RCE electricity price ${doba}, every 15 minutes, in PLN/MWh`,
   'wykres.biezaca_doba': 'today',
   'wykres.w_dobie': (doba) => `on ${doba}`,
   'wykres.maks': (x) => `max ${x}`,
+  'wykres.maks_linie': (lista) => `max: ${lista}`,
   'wykres.min': (x) => `min ${x}`,
   'wykres.teraz': 'now',
   'odtw.start': '▶ Replay the day',
@@ -145,6 +155,7 @@ export default {
   'odtw.wznow': '▶ Resume',
   'odtw.data': (doba) => `Day replay: ${doba}`,
   'odtw.wiatr_etykieta': 'Wind generation:',
+  'odtw.slonce_etykieta': 'Solar generation:',
   'odtw.kwadrans': (okres) => `quarter-hour ${okres}`,
   'odtw.ogl_start': (doba) => `Replaying ${doba}, 1 second is 1 hour.`,
   'odtw.ogl_pauza': (godzina) => `Paused at ${godzina}.`,
@@ -407,7 +418,7 @@ export default {
   'stopka.kontur':
     'Outline of Poland: <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a> (public domain), data simplified to the outline of a single country.',
   'stopka.wiatr':
-    'Wind generation: PSE S.A. (Poland\'s transmission system operator), <a href="https://raporty.pse.pl/" target="_blank" rel="noopener">raporty.pse.pl</a>, data retrieved <span id="wiatr-pobrano">loading…</span>, processed.',
+    'Wind and solar generation: PSE S.A. (Poland\'s transmission system operator), <a href="https://raporty.pse.pl/" target="_blank" rel="noopener">raporty.pse.pl</a>, data retrieved <span id="wiatr-pobrano">loading…</span>, processed.',
   'stopka.ograniczenia':
     'Wind curtailment: PSE S.A., report “Nierynkowe redysponowanie źródeł OZE” (non-market redispatch of renewable sources), same retrieval time, processed (sum of quarter-hours ÷ 4, assuming the values are in MW).',
   'stopka.rce':

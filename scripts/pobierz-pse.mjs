@@ -1,4 +1,4 @@
-// Pobiera najnowszą produkcję z wiatru z API PSE (raport his-wlk-cal, pole wi)
+// Pobiera najnowszą produkcję z wiatru i ze słońca z API PSE (raport his-wlk-cal, pola wi i pv)
 // i zapisuje public/data/wiatr.json. Uruchamiany automatycznie przed `npm run build`.
 // Jeśli PSE nie odpowie, zapisuje brak danych, a budowanie idzie dalej.
 import { writeFile } from 'node:fs/promises';
@@ -12,7 +12,9 @@ const od = new Date(Date.now() - 3 * 86400_000).toLocaleDateString('sv-SE', { ti
 const pierwszyUrl = `${API}?%24filter=business_date%20ge%20%27${od}%27`;
 
 const czasPobrania = new Date().toISOString();
-const zrodlo = 'PSE S.A., raporty.pse.pl (raport his-wlk-cal, pole wi)';
+const zrodlo = 'PSE S.A., raporty.pse.pl (raport his-wlk-cal, pola wi i pv)';
+// Słońce (pv) bierzemy z tego samego rekordu co wiatr – ten sam kwadrans. Nocą PSE publikuje 0 (nie puste pole).
+const mw1 = (v) => (typeof v === 'number' ? Math.round(v * 10) / 10 : null);
 
 async function pobierzWszystko(start = pierwszyUrl) {
   const rekordy = [];
@@ -39,6 +41,7 @@ try {
   if (!ost) throw new Error('brak rekordów z polem wi');
   wynik = {
     wartosc: ost.wi,
+    slonce: typeof ost.pv === 'number' ? ost.pv : null,
     jednostka: 'MW',
     czas_pomiaru: ost.dtime,
     czas_pomiaru_utc: ost.dtime_utc,
@@ -49,9 +52,9 @@ try {
     // Wszystkie kwadranse doby ostatniego pomiaru (od 00:00) – do wykresu w okienku.
     seria: rekordy
       .filter((r) => r.business_date === ost.business_date)
-      .map((r) => ({ okres: r.period, mw: Math.round(r.wi * 10) / 10 })),
+      .map((r) => ({ okres: r.period, mw: mw1(r.wi), pv: mw1(r.pv) })),
   };
-  console.log(`PSE: wi = ${ost.wi} (doba ${ost.business_date}, ${ost.period}), wykres: ${wynik.seria.length} kwadransów`);
+  console.log(`PSE: wi = ${ost.wi}, pv = ${ost.pv} (doba ${ost.business_date}, ${ost.period}), wykres: ${wynik.seria.length} kwadransów`);
 } catch (e) {
   wynik = { wartosc: null, czas_pobrania: czasPobrania, zrodlo, blad: String(e.message ?? e) };
   console.warn(`PSE: nie udało się pobrać danych (${wynik.blad}), zapisuję brak danych`);
@@ -126,15 +129,15 @@ for (const doba of [dobaPL(0), dobaPL(1)]) {
 }
 await writeFile(PLIK_RCE, JSON.stringify(rce));
 
-// Odtworzenie doby: wczorajsza pełna doba (wiatr his-wlk-cal + cena rce-pln, co 15 min).
+// Odtworzenie doby: wczorajsza pełna doba (wiatr i słońce his-wlk-cal + cena rce-pln, co 15 min).
 // Wiatr za wczoraj bywa kompletny dopiero ok. 3:00 następnego dnia – jeśli wczoraj jest niepełne,
-// bierzemy przedwczoraj (jeśli pełne). Doba jest pełna tylko wtedy, gdy wiatr i cena mają tę samą liczbę
+// bierzemy przedwczoraj (jeśli pełne). Doba jest pełna tylko wtedy, gdy wiatr, słońce i cena mają tę samą liczbę
 // kwadransów (96, w dniu zmiany czasu 92 albo 100), każdy z liczbą, o tych samych czasach końca. Bez uzupełniania luk.
 const PLIK_DOBA = 'public/data/doba.json';
 const koniecUtc = (r) => (r.dtime_utc ? `${r.dtime_utc.slice(0, 19).replace(' ', 'T')}Z` : null);
 const odtworzenie = {
   czas_pobrania: czasPobrania,
-  zrodlo: 'PSE S.A., raporty.pse.pl (raporty his-wlk-cal, pole wi, i rce-pln, pole rce_pln)',
+  zrodlo: 'PSE S.A., raporty.pse.pl (raporty his-wlk-cal, pola wi i pv, i rce-pln, pole rce_pln)',
   doba: null,
   kwadranse: [],
 };
@@ -150,13 +153,17 @@ for (const doba of [dobaPL(-1), dobaPL(-2)]) {
     const pelna =
       [92, 96, 100].includes(n) &&
       cenyDoby.length === n &&
-      wiatrDoby.every((w, i) => typeof w.wi === 'number' && typeof cenyDoby[i].rce_pln === 'number' && koniecUtc(w) === koniecUtc(cenyDoby[i]));
+      wiatrDoby.every(
+        (w, i) =>
+          typeof w.wi === 'number' && typeof w.pv === 'number' && typeof cenyDoby[i].rce_pln === 'number' && koniecUtc(w) === koniecUtc(cenyDoby[i]),
+      );
     if (!pelna) throw new Error(`niepełna (wiatr ${n}, cena ${cenyDoby.length} kwadransów)`);
     odtworzenie.doba = doba;
     odtworzenie.kwadranse = wiatrDoby.map((w, i) => ({
       okres: w.period,
       koniec_utc: koniecUtc(w),
-      mw: Math.round(w.wi * 10) / 10,
+      mw: mw1(w.wi),
+      pv: mw1(w.pv),
       cena: cenyDoby[i].rce_pln,
     }));
     console.log(`PSE: odtworzenie doby ${doba}: ${n} kwadransów`);

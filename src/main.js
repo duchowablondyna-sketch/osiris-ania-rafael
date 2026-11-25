@@ -8,6 +8,7 @@ import { utworzOkienka } from './okienko.js';
 import { uruchomKarte, podlaczOkienkoPolski } from './karta.js';
 import { wiecejPonizej, wysokoscPrzycisku } from './wiecej-ponizej.js';
 import { pamietajRozwiniecie, czytajRozwiniecie, zapiszRozwiniecie, TELEFON } from './zwijanie.js';
+import { poZmroku } from './slonce.js';
 import './czcionki.css';
 import './style.css';
 
@@ -103,6 +104,7 @@ const KOLORY = {
   kosmos: '#05070D',
   linie: '#F2C14E', // złoto: linie najwyższych napięć
   wiatr: '#5CC8FF', // jasnoniebieski: farmy i wykres wiatru
+  slonce: '#FEF08A', // jasna cytryna: słońce w okienku PSE (kontrast 16,1:1 do tła okienka; inny niż złoto linii)
   wiatrLad: '#4ADE80', // zielony: lądowe farmy wiatrowe (GEM)
   kontur: '#E8EEF7',
   tekst: '#E8EEF7',
@@ -732,43 +734,82 @@ const podpis = (tekst, atrybuty) => {
   return t;
 };
 
-// Mały wykres liniowy produkcji z wiatru z bieżącej doby.
-// seria: [{ okres: 'HH:MM - HH:MM', mw }], kolejne kwadranse od 00:00.
+// Linie wykresu produkcji: pole w danych (mw – wiatr, pv – słońce), kolor i podpis przy końcu linii.
+// Obie linie ciągłe – kreskowanie rezerwujemy dla danych wstępnych (decyzja Ani 25.11.2026).
+const LINIA_WIATR = { pole: 'mw', kolor: KOLORY.wiatr, podpis: 'wykres.linia_wiatr' };
+const LINIA_SLONCE = { pole: 'pv', kolor: KOLORY.slonce, podpis: 'wykres.linia_slonce' };
+const LINIE_PRODUKCJI = [LINIA_WIATR, LINIA_SLONCE];
+
+// Mały wykres liniowy produkcji (wiatr i słońce) z bieżącej doby – wspólna skala MW.
+// seria: [{ okres: 'HH:MM - HH:MM', mw, pv }], kolejne kwadranse od 00:00.
 // znacznik (opcjonalnie): numer kwadransu, na którym stoi kreska (odtwarzanie doby), etykieta: podpis kreski.
-function rysujWykres(kontener, seria, { znacznik = null, etykieta = '', opisDoby = t('wykres.biezaca_doba') } = {}) {
-  const punkty = (seria ?? []).filter((p) => typeof p.mw === 'number' && typeof p.okres === 'string');
-  if (punkty.length < 2) {
+function rysujWykres(
+  kontener,
+  seria,
+  { linie = LINIE_PRODUKCJI, opisKlucz = 'wykres.wiatr_slonce_opis', znacznik = null, etykieta = '', opisDoby = t('wykres.biezaca_doba') } = {},
+) {
+  const punkty = (seria ?? []).filter((p) => typeof p.okres === 'string');
+  const zDanymi = linie.filter((l) => punkty.filter((p) => typeof p[l.pole] === 'number').length >= 2);
+  if (punkty.length < 2 || zDanymi.length === 0) {
     kontener.replaceChildren();
     return;
   }
 
-  const W = 240, H = 72, GORA = 14, DOL = 58; // obszar linii: od GORA do DOL
-  const maks = Math.max(...punkty.map((p) => p.mw));
-  const min = Math.min(0, ...punkty.map((p) => p.mw));
-  const x = (i) => (i / (punkty.length - 1)) * W;
+  // Z prawej miejsce na podpisy linii („wiatr”, „słońce”) – szerokość całego wykresu bez zmian (240 px).
+  // Dwie linie: osobne maksima w pierwszym wierszu, godzina odtwarzania w drugim (nie nachodzą na siebie).
+  const dwa = zDanymi.length > 1;
+  const W = 240, H = dwa ? 82 : 72, GORA = dwa ? 24 : 14, DOL = H - 14, PODPISY = 40; // linie: od GORA do DOL, od 0 do W - PODPISY
+  const SZER = W - PODPISY;
+  const wartosci = zDanymi.flatMap((l) => punkty.map((p) => p[l.pole]).filter((v) => typeof v === 'number'));
+  const maks = Math.max(...wartosci);
+  const min = Math.min(0, ...wartosci);
+  const x = (i) => (i / (punkty.length - 1)) * SZER;
   const y = (mw) => DOL - ((mw - min) / (maks - min || 1)) * (DOL - GORA);
 
-  const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
+  // overflow: visible – przy dwóch pięciocyfrowych maksimach podpis może być o kilka pikseli szerszy niż 240 px.
+  const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img', overflow: 'visible' });
   const opis = el('title', {});
-  opis.textContent = t('wykres.wiatr_opis', opisDoby);
+  opis.textContent = t(opisKlucz, opisDoby);
+  svg.append(opis, el('line', { x1: 0, y1: DOL, x2: SZER, y2: DOL, stroke: KOLORY.os, 'stroke-width': 1 }));
+
+  // Podpisy przy końcu linii – rozsunięte, gdy końce wypadają blisko siebie (np. w nocy oba przy dole).
+  const konce = [];
+  for (const l of zDanymi) {
+    const pkt = punkty.map((p, i) => [i, p[l.pole]]).filter(([, v]) => typeof v === 'number');
+    svg.append(
+      el('polyline', {
+        points: pkt.map(([i, v]) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' '),
+        fill: 'none',
+        stroke: l.kolor,
+        'stroke-width': 1.5,
+        'stroke-linejoin': 'round',
+      }),
+    );
+    const [iK, vK] = pkt.at(-1);
+    konce.push({ l, x: x(iK), y: y(vK) + 3 });
+  }
+  konce.sort((a, b) => a.y - b.y);
+  for (let k = 1; k < konce.length; k++) konce[k].y = Math.max(konce[k].y, konce[k - 1].y + 10);
+  const nadmiar = Math.max(0, konce.at(-1).y - (DOL + 3));
+  for (const k of konce) {
+    k.y = Math.max(GORA, k.y - nadmiar);
+    svg.append(podpis(t(k.l.podpis), { x: k.x + 4, y: k.y.toFixed(1), fill: k.l.kolor }));
+  }
+
   svg.append(
-    opis,
-    el('line', { x1: 0, y1: DOL, x2: W, y2: DOL, stroke: KOLORY.os, 'stroke-width': 1 }),
-    el('polyline', {
-      points: punkty.map((p, i) => `${x(i).toFixed(1)},${y(p.mw).toFixed(1)}`).join(' '),
-      fill: 'none',
-      stroke: KOLORY.wiatr,
-      'stroke-width': 1.5,
-      'stroke-linejoin': 'round',
-    }),
-    podpis(t('wykres.maks', `${liczba(Math.round(maks))} MW`), { x: 0, y: 10 }),
+    podpis(
+      dwa
+        ? t('wykres.maks_linie', zDanymi.map((l) => `${t(l.podpis)} ${liczba(Math.round(Math.max(...punkty.map((p) => p[l.pole]).filter((v) => typeof v === 'number'))))} MW`).join(' · '))
+        : t('wykres.maks', `${liczba(Math.round(maks))} MW`),
+      { x: 0, y: 10 },
+    ),
     podpis(punkty[0].okres.split(' - ')[0], { x: 0, y: H - 2 }),
-    podpis(punkty.at(-1).okres.split(' - ')[1] ?? '', { x: W, y: H - 2, 'text-anchor': 'end' }),
+    podpis(punkty.at(-1).okres.split(' - ')[1] ?? '', { x: SZER, y: H - 2, 'text-anchor': 'end' }),
   );
   if (znacznik !== null) {
     svg.append(
       el('line', { x1: x(znacznik), y1: GORA - 4, x2: x(znacznik), y2: DOL, stroke: KOLORY.teraz, 'stroke-width': 1.5 }),
-      podpis(etykieta, { x: W, y: 10, 'text-anchor': 'end', fill: KOLORY.teraz }),
+      podpis(etykieta, { x: W, y: dwa ? 21 : 10, 'text-anchor': 'end', fill: KOLORY.teraz }),
     );
   }
   kontener.replaceChildren(svg);
@@ -906,10 +947,25 @@ pilnujLegendy();
 const trescStopki = document.querySelector('.stopka__tresc');
 if (trescStopki) wiecejPonizej(trescStopki);
 
-// Widok „teraz” wiatru w okienku (wywoływany po wczytaniu i po zakończeniu odtwarzania doby).
+// Słońce w okienku: liczba z tego samego kwadransu co wiatr. 0 MW po zmroku – z krótkim dopiskiem (to pora dnia,
+// a nie awaria). Noc liczona dla środka Polski (src/slonce.js); 0 MW w dzień – bez dopisku.
+const formatMW = (mw) => `${liczba(Math.round(mw))} MW`;
+function pokazSlonce(pv, koniecUtc) {
+  const wartosc = document.getElementById('slonce-teraz');
+  const jest = typeof pv === 'number';
+  wartosc.classList.toggle('brak-danych', !jest);
+  wartosc.textContent = jest ? formatMW(pv) : t('wspolne.brak_danych_pse');
+  const noc = jest && Math.round(pv) === 0 && poZmroku(koniecUtc, { szer: SRODEK_POLSKI.lat, dl: SRODEK_POLSKI.lng });
+  document.getElementById('slonce-noc').hidden = !noc;
+}
+// Koniec kwadransu PSE („RRRR-MM-DD HH:MM:SS”, UTC) → ms od 1970.
+const msUtc = (tekst) => (tekst ? Date.parse(`${tekst.slice(0, 19).replace(' ', 'T')}Z`) : NaN);
+
+// Widok „teraz” wiatru i słońca w okienku (wywoływany po wczytaniu i po zakończeniu odtwarzania doby).
 let daneWiatr = null;
 function pokazWiatr(d) {
   document.getElementById('wiatr-etykieta').textContent = t('mapa.wiatr_etykieta');
+  document.getElementById('slonce-etykieta').textContent = t('mapa.slonce_etykieta');
   const ogr = d?.ograniczenie;
   const ograniczenie = document.getElementById('wiatr-ograniczenie');
   ograniczenie.hidden = false;
@@ -927,14 +983,25 @@ function pokazWiatr(d) {
     wartosc.textContent = t('wspolne.brak_danych_pse');
     document.getElementById('wiatr-stan').textContent = '';
     document.getElementById('wiatr-wykres').replaceChildren();
+    pokazSlonce(null);
     return;
   }
   document.getElementById('wiatr-teraz').textContent = `${liczba(Math.round(d.wartosc))} ${d.jednostka}`;
   document.getElementById('wiatr-stan').textContent = t('mapa.wiatr_stan', formatDoby(d.doba), d.okres);
-  // Zwinięta linijka: tylko wiatr i jego własny kwadrans (data – gdy pomiar nie jest z dziś).
+  pokazSlonce(d.slonce, msUtc(d.czas_pomiaru_utc));
+  // Zwinięta linijka: wiatr i słońce z jednego kwadransu (data – gdy pomiar nie jest z dziś).
   const okres = String(d.okres ?? '').replace(' - ', '–');
   const kiedy = d.doba === dzisPL() ? okres : `${formatDoby(d.doba)}, ${okres}`;
-  skrot.textContent = t('mapa.pse_skrot', `${liczba(Math.round(d.wartosc))} ${d.jednostka}`, kiedy);
+  const pv = typeof d.slonce === 'number' ? formatMW(d.slonce) : t('mapa.slonce_brak');
+  // Trzy części bez łamania w środku – „stan na DATA, GG:MM–GG:MM · PSE” przechodzi do drugiego wiersza tylko w całości.
+  const czesc = (tekst) => Object.assign(document.createElement('span'), { className: 'bez-lamania', textContent: tekst });
+  skrot.replaceChildren(
+    czesc(t('mapa.pse_skrot_wiatr', `${liczba(Math.round(d.wartosc))} ${d.jednostka}`)),
+    ' · ',
+    czesc(t('mapa.pse_skrot_slonce', pv)),
+    ' · ',
+    czesc(t('mapa.pse_skrot_stan', kiedy)),
+  );
   rysujWykres(document.getElementById('wiatr-wykres'), d.seria);
 }
 
@@ -989,6 +1056,7 @@ function pokazKwadrans(i) {
   const opisDoby = t('wykres.w_dobie', formatDoby(daneDoby.doba));
   document.getElementById('odtw-zegar').textContent = godzina;
   document.getElementById('wiatr-teraz').textContent = `${liczba(Math.round(p.mw))} MW`;
+  pokazSlonce(p.pv, Date.parse(p.koniec_utc));
   document.getElementById('wiatr-stan').textContent = t('odtw.kwadrans', p.okres);
   rysujWykres(document.getElementById('wiatr-wykres'), k, { znacznik: i, etykieta: godzina, opisDoby });
   document.getElementById('rce-teraz').textContent = t('mapa.cena_kwadrans', formatCeny(p.cena), p.okres);
@@ -1018,6 +1086,7 @@ function startLubPauza() {
     document.getElementById('odtw-naglowek').hidden = false;
     document.getElementById('odtw-data').textContent = t('odtw.data', formatDoby(daneDoby.doba));
     document.getElementById('wiatr-etykieta').textContent = t('odtw.wiatr_etykieta');
+    document.getElementById('slonce-etykieta').textContent = t('odtw.slonce_etykieta');
     document.getElementById('wiatr-ograniczenie').hidden = true;
     przyciskTeraz.hidden = false;
     przyciskStart.textContent = t('odtw.pauza');

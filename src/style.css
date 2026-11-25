@@ -148,6 +148,9 @@ main {
    spacja z klawiatury); rozwinięte – jak dotąd, z nagłówkiem „WIATR I CENA PRĄDU ▾”. Ten sam wzór co nagłówek Karty. */
 .wskaznik:not([open]) {
   padding: 8px 12px;
+  /* Zwinięta linijka (wiatr + słońce + „stan na” z datą) nie wchodzi pod przełączniki PL | EN i DZIEŃ | NOC
+     (.mapa-gora: 52 px od prawej + ok. 235 px szerokości) – na wąskim ekranie łamie się na dwa wiersze. */
+  max-width: calc(100% - 16px - 300px);
 }
 
 .wskaznik__naglowek {
@@ -191,6 +194,11 @@ main {
   color: var(--zloto);
 }
 
+/* Część zwiniętej linijki, która nie łamie się w środku (np. „stan na 24.11.2026, 12:00–12:15 · PSE”). */
+.bez-lamania {
+  white-space: nowrap;
+}
+
 .wskaznik__skrot {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
@@ -215,6 +223,14 @@ main {
 
 .wskaznik__etykieta.etykieta-mala {
   font-size: 0.6875rem;
+}
+
+/* Dopisek pod liczbą (np. „po zmroku panele nie pracują”): łamie się w wierszu i nie poszerza okienka –
+   od szerokości rozwiniętego okienka zależy kadr Polski. */
+.wskaznik__dopisek {
+  width: 0;
+  min-width: 100%;
+  font-size: 0.75rem;
 }
 
 .wskaznik__wartosc {
