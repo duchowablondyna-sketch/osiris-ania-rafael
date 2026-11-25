@@ -5,8 +5,9 @@ name: Sprawdzian PR
 # (vite build zamiast npm run build), istniejące testy i test w Chrome bez okna (6 stron, komputer i telefon).
 # Test w przeglądarce nie korzysta z internetu (NASA, PSE odcięte) – łapie tylko błędy naszego kodu.
 # Nazwa zadania „Sprawdzian strony” jest wymaganym sprawdzianem w rulesecie „ochrona-main” – nie zmieniać bez zmiany tam.
-# PR otwarte przez Robota OSIRIS (GITHUB_TOKEN) nie uruchamiają tego workflow same – zamknąć i od razu otworzyć PR
-# ponownie (albo uruchomić ręcznie na gałęzi robota).
+# PR otwarte przez Robota OSIRIS (github-actions[bot]) uruchamiają ten workflow, ale GitHub zatrzymuje go w stanie
+# action_required – trzeba kliknąć „Approve workflows to run” (zapasowo: Close → Reopen). Procedura: BEZPIECZENSTWO.md,
+# sekcja „Robot OSIRIS” (sprawdzone 25.11.2026 na PR #50).
 on:
   pull_request:
     branches: [main]
