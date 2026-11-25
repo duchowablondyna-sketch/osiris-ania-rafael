@@ -54,9 +54,22 @@ export function oznaczTerminy(el, terminy, okienka) {
       b.setAttribute('aria-haspopup', 'dialog');
       b.setAttribute('aria-label', `${m[0]} – ${t('slownik.aria', tytul)}`);
       okienka.podlacz(b, () => tresc(tytul, czesci));
-      const po = wezel.splitText(m.index);
-      po.textContent = po.textContent.slice(m[0].length);
-      po.parentNode.insertBefore(b, po);
+      // Znaki interpunkcji przy słowie (np. „(OSD)”, „kV,”) – w jednym wierszu ze słowem: przycisk jest osobnym
+      // pudełkiem, więc bez tego przeglądarka może zostawić „(” na końcu wiersza albo przenieść sam „)” do następnego
+      // (25.11.2026, telefon). Słowo bez takich znaków – sam przycisk, jak dotąd.
+      const przed = /[(\[„«“]+$/.exec(wezel.textContent.slice(0, m.index))?.[0] ?? '';
+      const po = wezel.splitText(m.index - przed.length);
+      po.textContent = po.textContent.slice(przed.length + m[0].length);
+      const za = /^[)\].,;:!?»”]+/.exec(po.textContent)?.[0] ?? '';
+      if (przed || za) {
+        const razem = document.createElement('span');
+        razem.className = 'bez-lamania';
+        razem.append(przed, b, za);
+        po.textContent = po.textContent.slice(za.length);
+        po.parentNode.insertBefore(razem, po);
+      } else {
+        po.parentNode.insertBefore(b, po);
+      }
       break;
     }
   }

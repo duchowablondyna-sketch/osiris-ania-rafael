@@ -290,7 +290,15 @@ export default {
   // ── WHERE TO CONNECT ──
   'moce.tytul': 'Available connection capacity for large consumers · PSE 220/400 kV',
   'moce.wazne':
-    "Extra-high-voltage grid (220/400 kV) – for the largest consumers, such as factories and data centres. Smaller businesses connect to the networks of distribution system operators (DSOs) – the next stage of OSIRIS.",
+    'Extra-high-voltage grid (220/400 kV) – for the largest consumers, such as factories and data centres.',
+  'moce.osd_wstep':
+    'Smaller businesses connect to the networks of distribution system operators (DSOs). Each publishes available capacity for its own area – OSIRIS does not show this data yet:',
+  'moce.osd_aria': 'Distribution system operators’ pages with available capacity information',
+  'moce.osd.stoen': 'Stoen Operator (Warsaw)',
+  'moce.osd.pge': 'PGE Dystrybucja (mainly east and centre)',
+  'moce.osd.energa': 'Energa-Operator (mainly north)',
+  'moce.osd.enea': 'Enea Operator (mainly west)',
+  'moce.osd.tauron': 'TAURON Dystrybucja (mainly south)',
   'moce.lista1': 'Substations for new consumers',
   'moce.lista2': 'Substations built mainly for the grid and new generators – according to PSE they can also supply consumers',
   'moce.szacunek':
@@ -322,6 +330,10 @@ export default {
   'slownik.kobize': "Poland's National Centre for Emissions Balancing and Management (KOBiZE), part of the Institute of Environmental Protection – National Research Institute; publishes, among others, emission factors for electricity",
   'slownik.ipcc_termin': 'IPCC',
   'slownik.ipcc': 'Intergovernmental Panel on Climate Change (IPCC); its AR5 report (2014) gives typical life-cycle carbon footprints of power sources',
+  'slownik.osd_termin': 'DSO',
+  'slownik.osd_w_zdaniu': 'DSOs',
+  'slownik.osd':
+    'distribution system operator – a company that manages the lower-voltage electricity network (110 kV and below) in its region; this is where smaller businesses apply for a connection',
   'slownik.rce_termin': 'RCE',
   'slownik.rce': 'Market price of electricity for the imbalance settlement period – published by PSE.',
   'slownik.rce_zrodlo': 'source: PSE (pse.pl, OIRE section)',
