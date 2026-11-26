@@ -54,7 +54,7 @@ Strona z mapą pokazującą, jak i gdzie Polska może uzyskać więcej prądu. R
 - Morskie farmy (decyzje Ani 25.11.2026, wariant C): puste kółko – „brak w wykazie MKiŚ (stan: styczeń 2024)” widoczne zawsze, „możliwy duplikat” innego wpisu EMODnet dopiero od przybliżenia 9; Baltic Power „w rozruchu – część turbin produkuje” (nie „działa”, dopóki nie ma koncesji i eksploatacji komercyjnej); zwycięzcy aukcji URE z dopiskiem i linkiem do komunikatu.
 - Słońce (produkcja PV w okienku PSE) w kolorze jasnej cytryny #FEF08A – linia ciągła z podpisem „słońce” przy linii; kreskowanie zarezerwowane dla danych wstępnych (decyzja Ani 25.11.2026).
 - Globus od razu przybliżony do Polski.
-- Priorytet: komputer (telefon później).
+- Priorytet: komputer (telefon później). Wyjątek (decyzja Ani 26.11.2026): E1 „Planuję inwestycję” (wyszukiwarka stacji w zakładce „Gdzie”) od razu także na telefonie 390×844.
 - Ruch: jeden lot wprowadzający przy otwarciu (bez lotu przy prefers-reduced-motion); odtwarzanie doby uruchamiane przyciskiem przez widza; inne animacje – decyzja później.
 - Płynne przejście między stronami (View Transitions) i plakat kuli na stronie tytułowej – decyzja Ani 21.11; bez animacji przy ogranicz ruch.
 - Reguła przenikania (`@view-transition`) musi być także w małym `<style>` w `<head>` obu stron (index.html i mapa/index.html), nie tylko w src/style.css – sama reguła w zewnętrznym CSS przegrywa w Chrome wyścig z ciężkim modułem (22.11.2026).

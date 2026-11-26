@@ -385,6 +385,55 @@ export default {
   'moce.licznik_wykaz_brak': 'wykaz rozdzielni: brak danych',
   'moce.brak': 'Wolne moce PSE: brak danych',
 
+  // E1 „Planuję inwestycję” (decyzje Ani 26.11.2026): pole nad listą stacji w zakładce „Gdzie” (src/wyszukiwarka-mocy.js).
+  // Każda stacja osobno, bez sumowania; bez ocen i rad. Twarda spacja (\u00a0) przed jednostkami i „r.” (tylko w nowych tekstach).
+  'szukaj.etykieta': 'Ile MW potrzebujesz?',
+  'szukaj.podpowiedz': 'np. 300',
+  'szukaj.opis': 'Pokażemy stacje, przy których PSE podaje co najmniej tyle wolnej mocy – każdą osobno, bez sumowania.',
+  'szukaj.pasuje': (n, razem) => `Pasuje: ${n} z ${razem} stacji`,
+  'szukaj.wszystkie': 'Pokaż wszystkie stacje',
+  'szukaj.blad_zero': 'Wpisz liczbę większą od 0 (w\u00a0MW).',
+  'szukaj.blad_liczba': 'Wpisz samą liczbę megawatów, np. 300.',
+  'szukaj.blad_kropka': 'Wpisz liczbę bez kropki, np. 1500.',
+  'szukaj.blad_przecinek': 'Wpisz liczbę bez przecinka, np. 1500.',
+  'szukaj.blad_jednostka': 'Wpisz moc w\u00a0MW (1\u00a0GW = 1000\u00a0MW).',
+  // mw, max – już z jednostką („1 500 MW”); max – największa moc przy JEDNEJ stacji, liczona z danych (nie suma).
+  'szukaj.brak': (mw, data, rok, max) =>
+    `Według PSE (stan na ${data}) żadna planowana stacja nie ma co najmniej ${mw} wolnej mocy dla odbiorców na\u00a0${rok}\u00a0r. ` +
+    `Najwięcej przy jednej stacji: ${max}. Mocy kilku stacji nie dodajemy – wykorzystanie mocy w jednej może zmniejszyć moc w sąsiednich.`,
+  'szukaj.brak_osd': 'Przyłączenia do sieci 110\u00a0kV i niższych napięć obsługują operatorzy dystrybucyjni (OSD) –',
+  'szukaj.brak_osd_link': 'zobacz listę operatorów',
+  'szukaj.co_dalej': 'Co dalej: wzory wniosków o warunki przyłączenia do sieci PSE –',
+  'szukaj.co_dalej_link': 'strona PSE „Dokumenty”',
+  'szukaj.co_dalej_sciezka': 'Wzory wniosków i umów → Wnioski o określenie warunków przyłączenia do sieci przesyłowej',
+  'szukaj.moc': (rok, data) => `na\u00a0${rok}\u00a0r. · stan na ${data}`,
+  // Linijka z projektu planu rozwoju sieci PSE 2027–2036 (public/data/plan-rozwoju-pse.json; ZRODLA.md).
+  'plan.linia': (miesiac, od, doRoku) =>
+    `Projekt planu rozwoju sieci PSE (${miesiac}, przed uzgodnieniem z\u00a0URE) – zadanie budowy stacji: ${od}–\u2060${doRoku} (rozpoczęcie – zakończenie zadania)`,
+  'plan.krotko': (od, doRoku) => `Projekt planu PSE – zadanie budowy stacji: ${od}–\u2060${doRoku}`,
+  'plan.krotko_aria': (stacja) => `${stacja} – zastrzeżenia PSE i projekt planu rozwoju sieci`,
+  // Skróty przypisów PSE na wierzchu (wariant A, decyzja Ani 26.11.2026); pełne brzmienie z oryginałem – w okienku „?”.
+  // (1) i (4): PSE pisze o „zasadności i terminie/harmonogramie” – czyli czy i kiedy; (2): tylko termin; (6): harmonogram.
+  'plan.skrot.1': '· realizacja zależy od odbiorców (PSE)',
+  'plan.skrot.2': '· termin zależy od budowy elektrowni, zakładu odbiorcy lub magazynu energii (PSE)',
+  'plan.skrot.4': '· realizacja zależy od budowy Portu Polska (PSE)',
+  'plan.skrot.6': '· harmonogram zależy od liczby, mocy i budowy bloków (PSE)',
+  'plan.okienko_tytul': 'Projekt planu rozwoju sieci PSE',
+  'plan.niepewne.POM':
+    'Dopasowanie niepewne: w planie – rozbudowa istniejącej stacji 110\u00a0kV Pomorzany o rozdzielnię 220\u00a0kV; w wykazie mocy PSE – stacja planowana.',
+  // Przypisy PSE przy latach (str. 62 i 76) – prostymi słowami, bez zmiany sensu; oryginał w objaśnieniu („PSE”).
+  'plan.przypis.1': 'PSE: czy i kiedy zadanie zostanie zrealizowane, zależy od tego, czy na tym terenie powstaną i rozwiną się odbiorcy prądu.',
+  'plan.przypis.2': 'PSE: termin zależy od tego, czy i kiedy powstanie elektrownia, zakład odbiorcy albo magazyn energii.',
+  'plan.przypis.4': 'PSE: czy i kiedy zadanie zostanie zrealizowane, zależy od budowy infrastruktury Portu Polska.',
+  'plan.przypis.6': 'PSE: harmonogram zależy od liczby bloków energetycznych, ich mocy i harmonogramu ich budowy.',
+  'plan.cytat': (tekst) => `„${tekst}”`,
+  'plan.zrodlo': (strony) => `źródło: PSE, projekt planu rozwoju sieci 2027–2036, str.\u00a0${strony}`,
+  'slownik.zakonczenie_pse': 'Data zakończenia zadania „zarówno pod względem technicznym jak i finansowym i formalnym”.',
+  'slownik.zakonczenie_osiris': 'To nie jest dzień, w którym stacja zaczyna działać.',
+  // Decyzja Ani 26.11.2026: budowa stacji i linii do niej to w planie osobne zadania – lat linii nie pokazujemy.
+  'slownik.zakonczenie_linie': 'Linie, które doprowadzą prąd do stacji, są w planie osobnymi zadaniami – czasem z późniejszym terminem.',
+  'slownik.ure': 'Urząd Regulacji Energetyki – jego prezes uzgadnia plan rozwoju sieci PSE.',
+
   // ── ILE I JAK CZYSTO: liczba-bohater, pasek, paski mocy, trzy liczby ──
   'karta.miks_aria': 'Miks produkcji w Polsce',
   'karta.moce_tytul': 'Ile pracuje z tego, co mamy',

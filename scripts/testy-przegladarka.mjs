@@ -83,6 +83,42 @@ async function uruchomSerwer() {
   throw new Error('vite preview nie odpowiada po 15 s');
 }
 
+// E1 „Planuję inwestycję” (26.11.2026): zakładka „Gdzie”, pole „Ile MW potrzebujesz?” filtruje listę stacji.
+// Dane mocy i planu są w repo (public/data), więc działa także „bez PSE”. Sprawdza po kodach stacji – niezależnie od języka.
+async function sprawdzWyszukiwarke(strona, widok) {
+  const bledy = [];
+  const widoczne = () =>
+    strona.evaluate(() => [...document.querySelectorAll('.panel-moce__lista li')].filter((l) => !l.hidden).map((l) => l.dataset.kod));
+  await strona.locator('#karta > summary').click();
+  await strona.locator('#zakladka-gdzie').click();
+  const pole = strona.locator('#szukaj-mw-pole');
+  await pole.waitFor({ state: 'attached', timeout: 15_000 });
+  await strona.locator('#szukaj-mw').waitFor({ state: 'visible', timeout: 15_000 });
+  const wszystkie = (await widoczne()).length;
+  if (wszystkie !== 25) bledy.push(`wyszukiwarka: na starcie ${wszystkie} stacji zamiast 25`);
+  await pole.fill('600');
+  const k600 = (await widoczne()).join(',');
+  if (k600 !== 'MKA,EPK,DZO') bledy.push(`wyszukiwarka: 600 MW → ${k600} (oczekiwano MKA,EPK,DZO)`);
+  if (!(await strona.locator('#szukaj-mw-status').textContent()).includes('3')) bledy.push('wyszukiwarka: licznik przy 600 MW bez „3”');
+  await pole.fill('1500');
+  if ((await widoczne()).length) bledy.push('wyszukiwarka: 1500 MW → są stacje (nic nie sumujemy, max 1000 MW)');
+  if (!(await strona.locator('#szukaj-mw-brak').isVisible())) bledy.push('wyszukiwarka: 1500 MW → nie widać zdania „brak wyniku”');
+  if (!(await strona.locator('#szukaj-mw-do-osd').isVisible())) bledy.push('wyszukiwarka: 1500 MW → nie widać odesłania do OSD');
+  await pole.fill('abc');
+  if ((await widoczne()).length !== 25) bledy.push('wyszukiwarka: „abc” → lista niepełna');
+  if (!(await strona.locator('#szukaj-mw-status').textContent()).trim()) bledy.push('wyszukiwarka: „abc” → brak komunikatu');
+  await strona.locator('#szukaj-mw-wszystkie').click();
+  if ((await pole.inputValue()) !== '' || (await widoczne()).length !== 25) bledy.push('wyszukiwarka: „Pokaż wszystkie” nie czyści filtra');
+  if (widok.nazwa === 'telefon') {
+    const m = await pole.evaluate((e) => ({ h: e.getBoundingClientRect().height, f: parseFloat(getComputedStyle(e).fontSize) }));
+    if (m.h < 44) bledy.push(`wyszukiwarka (telefon): pole ma ${m.h} px wysokości (min. 44)`);
+    if (m.f < 16) bledy.push(`wyszukiwarka (telefon): czcionka pola ${m.f} px (min. 16 – inaczej iPhone przybliża)`);
+    const szer = await strona.evaluate(() => document.documentElement.scrollWidth);
+    if (szer > widok.viewport.width) bledy.push(`wyszukiwarka (telefon): przewijanie w bok (${szer} px)`);
+  }
+  return bledy;
+}
+
 async function sprawdzStrone(przegladarka, widok, sciezka) {
   const bledy = [];
   const odciete = new Set();
@@ -131,6 +167,10 @@ async function sprawdzStrone(przegladarka, widok, sciezka) {
       });
     }
     if (!(await strona.locator(prawa).first().isVisible())) bledy.push(`nie widać praw autorskich: ${prawa}`);
+    if (MAPY.has(sciezka)) {
+      if (prawa === '.stopka__prawa--zrodla') await strona.evaluate(() => (document.getElementById('zrodla').open = false));
+      bledy.push(...(await sprawdzWyszukiwarke(strona, widok)));
+    }
   } catch (blad) {
     bledy.push(`nie wczytała się: ${blad.message.split('\n')[0]}`);
   } finally {
@@ -160,7 +200,7 @@ try {
     for (const sciezka of STRONY) {
       const bledy = await sprawdzStrone(przegladarka, widok, sciezka);
       const znak = bledy.length ? '✗' : '✓';
-      console.log(`${znak} ${widok.nazwa.padEnd(8)} ${sciezka}${MAPY.has(sciezka) && !bledy.length ? '  (mapa i 3 przyciski okien widoczne)' : ''}`);
+      console.log(`${znak} ${widok.nazwa.padEnd(8)} ${sciezka}${MAPY.has(sciezka) && !bledy.length ? '  (mapa, 3 przyciski okien i wyszukiwarka MW)' : ''}`);
       for (const b of bledy) console.log(`    ${b.replace(/\n/g, '\n    ')}`);
       if (bledy.length) czerwone++;
     }

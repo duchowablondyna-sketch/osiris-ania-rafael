@@ -469,6 +469,7 @@ Metoda dla paliw kopalnych: 820 g/kWh (IPCC, węgiel) × (wskaźnik KOBiZE paliw
 - **Licencja:** w pliku brak – jak wyżej (warunki www.pse.pl, **status do potwierdzenia**).
 - **Data sprawdzenia:** 21.11.2026
 - **Poziom weryfikacji:** 1 (Claude: arkusz przeczytany w całości Pythonem i osobno skryptem Node – wyniki zgodne, test `wykaz: prawdziwy XLSX`).
+- **Sprawdzenie 26.11.2026:** nowszej wersji brak – strona PSE (oba adresy działu) jako aktualny podaje plik `20260204_…` (XLSX i PDF), obok tylko wersje z 13.08.2025 i 4.09.2025; nagłówki pliku bez zmian (Last-Modified 04.02.2026 09:26:46 GMT, 16 074 B).
 
 ### Lokalizacje stacji z mocą dla odbiorców (OpenStreetMap)
 
@@ -478,6 +479,37 @@ Metoda dla paliw kopalnych: 820 g/kWh (IPCC, węgiel) × (wskaźnik KOBiZE paliw
 - **Licencja:** ODbL 1.0 – jak wpis „OpenStreetMap: linie najwyższych napięć”.
 - **Data sprawdzenia:** 21.11.2026
 - **Poziom weryfikacji:** 1 (wybór Claude; do sprawdzenia przez Anię).
+
+### PSE: projekt planu rozwoju sieci przesyłowej 2027–2036 (terminy zadań budowy stacji z mocą dla odbiorców, od 26.11.2026)
+
+- **Co:** „Plan rozwoju w zakresie zaspokojenia obecnego i przyszłego zapotrzebowania na energię elektryczną na lata 2027-2036. Dokument główny”, okładka „Kwiecień 2026 r.”, 120 stron – wersja „projekt po konsultacjach”. Tab. 5.2 „Planowane zadania inwestycyjne…” (str. 56–62) i Tab. 5.3 „Realizowane zadania inwestycyjne…” (str. 63–76): numer zadania, nazwa, cel, rok rozpoczęcia, rok zakończenia z przypisami.
+- **Status:** projekt, **przed uzgodnieniem z Prezesem URE**. Wpis PSE z 2.02.2026: „Po przeprowadzeniu konsultacji dokument trafi do uzgodnienia z Prezesem Urzędu Regulacji Energetyki”. Informacji o uzgodnieniu nie znaleziono (26.11.2026: aktualności PSE, wyszukiwarka; nie przejrzano całego archiwum).
+- **Używamy w:** `public/data/plan-rozwoju-pse.json` (25 wpisów, odczyt ręczny) → linijka „zadanie budowy stacji: RRRR–RRRR” przy stacji w zakładce „Gdzie” (E1 „Planuję inwestycję”); test: `node --test scripts/testy-wyszukiwarka.mjs`.
+- **Link:** wpis https://www.pse.pl/-/projekt-nowego-planu-rozwoju-sieci-przesylowej-na-lata-2027-2036 (2.02.2026, przeczytany w całości), PDF https://www.pse.pl/documents/20182/7102190804/PRSP_2027-2036-dokument_glowny_projekt_po_konsultacji.pdf/de2f004f-8a80-4264-907a-a38d52c5d50f
+- **Plik:** Last-Modified 23.04.2026 11:49:46 GMT, 4 510 145 B, SHA-256 `5273f6837f5051a2de077f8904cb497fb9dcbab3e9302d8a4f8d34211ca3cc19`. Surowy PDF – poza repo (`~/Projekty/_dane/pse/pse-prsp-2027-2036-projekt-po-konsultacji-pobrano-2026-11-26.pdf`).
+- **„Rok zakończenia”:** przypis *3: „Data zakończenia zadania zarówno pod względem technicznym jak i finansowym i formalnym” – nie data uruchomienia stacji. Budowa stacji i budowa linii do niej to w planie **osobne zadania**, linie bywają z późniejszym terminem (np. Toruń: stacja III.63 do 2032, linie III.64–III.66 do 2035 – wskazała Ania 26.11.2026, zgodne z obrazem str. 57). Na stronie zawsze „zadanie budowy stacji: RRRR–RRRR” / „substation construction task”, nigdy „stacja gotowa” ani „uruchomienie”; lat linii nie pokazujemy (decyzja Ani 26.11.2026).
+- **Przypisy przy latach (str. 62 i 76, dosłownie):** (1) „Zasadność realizacji zadania i jego termin uzależnione są od powstania i rozwoju odbiorców energii na danym terenie inwestycyjnym.” (2) „Termin realizacji zadania uzależniony jest od faktu oraz harmonogramu fizycznej budowy: źródła wytwórczego, odbiorcy energii elektrycznej albo magazynu energii elektrycznej.” (4) „Zasadność realizacji zadania i jego harmonogram uzależnione są od budowy infrastruktury Portu Polska.” (6) „Harmonogram realizacji zadania uzależniony jest od liczby bloków, ich mocy oraz harmonogramu budowy.” Na stronie – prostymi słowami (teksty `plan.przypis.*`), oryginał w objaśnieniu.
+- **Dopasowanie stacji** (kodów PSE w tabelach nie ma – są tylko na mapach str. 84–92, bez lat; pole `dopasowanie` w pliku danych, na stronie tylko „niepewne”): 16 stacji przez numer z kolumny „Poz. w PRSP 2025 - 2034” wykazu rozdzielni → pełna nazwa zadania w planie 2025–2034 → to samo zadanie w projekcie 2027–2036 (m.in. ZER = linia Kromolice-Pątnów, PSC = Baczyna-Plewiska; REM = Mościska-Miłosna, SWR = Kozienice-Miłosna); 8 tylko po nazwie (NOR, WIG, WYP, DSC, CPK, WTN, MAK, ZGN); POM – niepewne: w planie „rozbudowa stacji 110 kV Pomorzany o rozdzielnię 220 kV” (istniejąca stacja), w wykazie mocy PSE – stacja planowana (na stronie: lata z dopiskiem dlaczego – decyzja Ani 26.11.2026).
+- **Przeczytane strony:** 57–60, 62–63, 65, 67, 69, 71–73, 75–76 (obrazy stron z PDFKit; numery i nazwy także w tekście). Nie cały dokument.
+- **Licencja:** w dokumencie brak – jak inne pliki z www.pse.pl (status do potwierdzenia).
+- **Data sprawdzenia:** 26.11.2026
+- **Poziom weryfikacji:** **3 dla 10 stacji** – Ania 26.11.2026 porównała w PDF pobranym ze strony pse.pl (SHA-256 zgodny z plikiem OSIRIS) lata i przypisy: MKA (III.19), PBO (II.70), LWN (III.70), ZER (III.71), REM (III.73), SWR (III.77), DZO (III.63), MAO (III.67), EPK (III.68), WRS (III.69) – wszystkie zgodne. **1 dla pozostałych 15** (odczyt Claude). Pole `poziom_weryfikacji` przy każdej stacji w pliku danych.
+
+### PSE: plan rozwoju sieci przesyłowej 2025–2034 (uzgodniony – tylko do dopasowania, od 26.11.2026)
+
+- **Co:** „Plan rozwoju … na lata 2025-2034. Dokument główny”, „Grudzień 2024 r.”, 100 stron. **Uzgodniony przez Prezesa URE 20.12.2024** (wpis PSE z 2.01.2025: https://www.pse.pl/-/projekt-nowego-planu-rozwoju-sieci-przesylowej-na-lata-2025-2034-uzgodniony – „20 grudnia 2024 r. Prezes URE uzgodnił Plan rozwoju sieci przesyłowej (PRSP) na lata 2025-2034”).
+- **Używamy w:** tylko do dopasowania numerów z wykazu rozdzielni („Poz. w PRSP 2025 - 2034”) do nazw zadań (pole `pozycja_prsp_2025_2034` w `plan-rozwoju-pse.json`); lat z tego planu na stronie nie pokazujemy.
+- **Link:** https://www.pse.pl/documents/20182/21595261/PRSP_2025_2034_dokument_glowny_2024_12_20.pdf/55b0f905-3dd9-4e7e-b33a-78694e893928
+- **Plik:** Last-Modified 26.03.2025 12:58:43 GMT, 3 012 554 B, SHA-256 `bab5922f592e933cc7ccc0f201dcab7109fb285822ec704c2d2780ad08dbaae6`. Surowy PDF – poza repo (`~/Projekty/_dane/pse/pse-prsp-2025-2034-uzgodniony-pobrano-2026-11-26.pdf`).
+- **Uwaga:** tytuł rozdz. 6 dokumentu o dostępności mocy mówi o „PRSP na lata 2026-2035” – takiego planu nie znaleziono (str. 3 tego samego dokumentu: PRSP 2025–2034). Niespójność u źródła.
+- **Przeczytane strony:** 54, 56, 58 (obrazy) + wyszukiwanie numerów w tekście.
+- **Data sprawdzenia:** 26.11.2026 · **Poziom weryfikacji:** 1
+
+### PSE: „co dalej” – strona „Dokumenty” (link w zakładce „Gdzie”, od 26.11.2026)
+
+- **Adres:** https://www.pse.pl/dokumenty – HTTP 200 (26.11.2026). Ścieżka w menu strony: „Wzory wniosków i umów → Wnioski o określenie warunków przyłączenia do sieci przesyłowej” (folder otwierany skryptem – bez własnego adresu, dlatego link do strony i opis ścieżki). Tylko link, bez kopiowania treści i bez rad.
+- **Odrzucone:** komunikat PSE „Zmiany w sposobie rozpatrywania wniosków o określenie warunków przyłączenia” (31.07.2025, przeczytany w całości 26.11.2026) – o kolejce i zmianach od 1.08.2025, nie o drodze odbiorcy; zapowiadana reforma („jesienią 2025 r.”) nieaktualna.
+- **Licencja:** nie dotyczy (sam link). **Data sprawdzenia:** 26.11.2026 · **Poziom weryfikacji:** 1
 
 ## Operatorzy dystrybucyjni – strony z informacją o dostępnej mocy (od 25.11.2026)
 

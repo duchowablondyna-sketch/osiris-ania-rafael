@@ -1287,6 +1287,13 @@ button.karta__procent:disabled {
   margin: 6px 0 0;
 }
 
+/* E1: podpis części w okienku „?” stacji – tuż pod zdaniem (nie przyklejany na dół). */
+.okienko-pytajnik .okienko-pytajnik__podpis {
+  margin: 2px 0 0;
+  font-size: 0.6875rem;
+  color: var(--tekst-pomocniczy);
+}
+
 .karta__moc-dopisek {
   margin: 2px 0 0;
   font-size: 0.6875rem;
@@ -1633,6 +1640,149 @@ button.panel-moce__nazwa:hover {
 
 .panel-moce__pozycja--wstrzymana .panel-moce__mw {
   opacity: 0.55;
+}
+
+/* ── E1 „Planuję inwestycję” (decyzje Ani 26.11.2026): pole „Ile MW potrzebujesz?” nad listą stacji ── */
+.szukaj-mw {
+  margin: 10px 0 2px;
+  padding: 8px 10px;
+  border: 1px solid var(--szklo-ramka);
+  border-radius: 8px;
+}
+
+.szukaj-mw__etykieta {
+  display: block;
+  font-weight: 600;
+  color: var(--tekst);
+}
+
+.szukaj-mw__wiersz {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.szukaj-mw__pole {
+  width: 9em;
+  padding: 3px 8px;
+  font: inherit;
+  color: var(--tekst);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--tekst-pomocniczy);
+  border-radius: 6px;
+}
+
+.szukaj-mw__pole::placeholder {
+  color: var(--tekst-pomocniczy);
+}
+
+.szukaj-mw__pole:focus-visible,
+.szukaj-mw__wszystkie:focus-visible,
+.szukaj-mw__do-osd:focus-visible {
+  outline: 2px solid var(--fokus);
+  outline-offset: 2px;
+}
+
+.szukaj-mw__wszystkie {
+  padding: 2px 10px;
+  font: inherit;
+  font-size: 0.75rem;
+  color: var(--zloto);
+  background: none;
+  border: 1px solid var(--zloto);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.szukaj-mw__opis,
+.szukaj-mw__co-dalej {
+  margin: 6px 0 0;
+  font-size: 0.6875rem;
+  color: var(--tekst-pomocniczy);
+}
+
+/* „Co dalej” pod listą stacji (E1, decyzja Ani 26.11.2026). */
+.szukaj-mw__co-dalej {
+  margin-top: 10px;
+}
+
+.szukaj-mw__co-dalej .cytat-oryginal {
+  display: block;
+}
+
+.szukaj-mw__status {
+  margin: 6px 0 0;
+  font-weight: 600;
+  color: var(--kolor-moce);
+}
+
+.szukaj-mw__status:empty {
+  display: none;
+}
+
+.szukaj-mw__status--blad {
+  color: var(--ostrzezenie);
+}
+
+.szukaj-mw__brak p {
+  margin: 6px 0 0;
+  color: var(--tekst);
+}
+
+.szukaj-mw__do-osd {
+  position: relative;
+  color: var(--zloto);
+}
+
+/* Filtr ukrywa pozycje i nagłówki tabel bez wyników (li ma display: grid – bez tej reguły hidden by nie działał). */
+.panel-moce__lista li[hidden],
+.panel-moce h2[hidden] {
+  display: none;
+}
+
+/* Linijki pozycji zawsze w lewej kolumnie (prawa – sama moc). */
+.panel-moce__lista li > :not(.panel-moce__mw) {
+  grid-column: 1;
+}
+
+.panel-moce__plan,
+.panel-moce__niepewne {
+  display: block;
+  font-size: 0.6875rem;
+}
+
+.panel-moce__plan {
+  color: var(--tekst);
+}
+
+.panel-moce__niepewne {
+  color: var(--tekst-pomocniczy);
+}
+
+@media (max-width: 640px) {
+  /* Pole: min. 44 px i czcionka 16 px (mniejsza – iPhone przybliża stronę przy wpisywaniu). */
+  .szukaj-mw__pole {
+    flex: 1 1 8em;
+    min-height: 44px;
+    font-size: 16px;
+  }
+
+  .szukaj-mw__wszystkie {
+    min-height: 44px;
+  }
+
+  /* „zobacz listę operatorów” w zdaniu – niewidoczne pole dotyku 44 × 44 px. */
+  .szukaj-mw__do-osd::before {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(100%, 44px);
+    height: 44px;
+    content: '';
+    transform: translate(-50%, -50%);
+  }
 }
 
 /* ── Płynne przejście między stroną tytułową a mapą (obie strony wczytują ten plik) ──
