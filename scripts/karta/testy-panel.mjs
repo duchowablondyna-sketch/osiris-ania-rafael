@@ -73,7 +73,7 @@ test('ślad CO2: „ok. … g CO₂eq/kWh” z dziesiątek; dokładnie tylko w M
   const k = karta();
   const t = tekstyKarty(k, RCE, terazPo(k, 1));
   assert.equal(t.co2.wartosc, `ok. ${k.co2.g_kwh_ok} g CO₂eq/kWh`);
-  assert.equal(t.co2.opis, 'szacunek OSIRIS');
+  assert.equal(t.co2.opis, 'szacunek SOURCE');
   assert.equal(t.metodologia.co2, `${k.co2.g_kwh.toFixed(1).replace('.', ',')} g CO₂eq/kWh`);
 });
 
@@ -85,7 +85,7 @@ test('wersja EN: liczba-bohater, ślad CO2, wymiana planowa i podpis – po angi
     const t = tekstyKarty(k, RCE, terazPo(k, 1));
     assert.equal(t.bohater.zdanie, "of Poland's electricity came from coal");
     assert.equal(t.co2.wartosc, `approx. ${k.co2.g_kwh_ok} g CO₂eq/kWh`);
-    assert.equal(t.co2.opis, 'OSIRIS estimate');
+    assert.equal(t.co2.opis, 'SOURCE estimate');
     assert.equal(t.metodologia.co2, `${k.co2.g_kwh.toFixed(1)} g CO₂eq/kWh`);
     assert.match(t.wymiana.wartosc, /^(importing|exporting) approx\. \d+\.\d\u00a0GW$|^approx\. 0\u00a0GW$/);
     // Etap C2: „scheduled” stoi w nagłówku kafelka – pod liczbą już nie.
@@ -238,7 +238,7 @@ test('okienko, węgiel: pierścień = kamienny + brunatny z paska, razem = liczb
   assert.equal(`${Math.round(naLiczbe(o.razem))}%`, t.bohater.procent);
   // CO2 = wartość z panelu; kropka na skali 0–1500.
   assert.equal(o.co2.wartosc, t.co2.wartosc);
-  assert.equal(o.co2.tekst, `tu jesteśmy: ${t.co2.wartosc} – szacunek OSIRIS wg IPCC`);
+  assert.equal(o.co2.tekst, `tu jesteśmy: ${t.co2.wartosc} – szacunek SOURCE wg IPCC`);
   assert.equal(o.co2.polozenie, k.co2.g_kwh_ok / 1500);
   assert.equal(o.zdanie, 'z produkcji w Polsce · dane PSE co 15 min');
 });

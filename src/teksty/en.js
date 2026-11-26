@@ -9,8 +9,8 @@
 //   KSE                                 → Polish power system (KSE)
 //   RCE                                 → RCE (market price of electricity, set by PSE for every 15 min)
 //   ślad CO2                            → life-cycle carbon footprint (od Etapu C2, 25.11.2026; wcześniej carbon intensity); w Metodologii i wyjaśnieniach dokładnie:
-//                                         life-cycle carbon intensity (g CO₂eq/kWh), OSIRIS estimate based on IPCC
-//   szacunek OSIRIS                     → OSIRIS estimate
+//                                         life-cycle carbon intensity (g CO₂eq/kWh), SOURCE estimate based on IPCC
+//   szacunek SOURCE                     → SOURCE estimate
 //   moc zainstalowana                   → installed capacity
 //   produkcja                           → generation
 //   OZE                                 → renewables
@@ -33,8 +33,9 @@
 //   Wkrótce                             → Coming soon
 //   SKĄD / GDZIE / ILE I JAK CZYSTO / CO SIĘ ZMIENI → WHERE FROM / WHERE TO CONNECT / HOW MUCH & HOW CLEAN / WHAT'S NEXT
 //   Karta Polski                        → Poland at a glance
-//   Robot OSIRIS                        → w zdaniu: „the OSIRIS robot” (np. „checked by the OSIRIS robot: …”, decyzja Ani 23.11.2026)
-//   kafelek śladu CO2                   → Life-cycle carbon intensity: approx. N g CO₂eq/kWh · OSIRIS estimate
+//   sprawdzono przez Robota OSIRIS      → od 26.11.2026 na stronie „sprawdzono automatycznie” → „checked automatically”
+//                                         (robot na GitHubie nadal „Robot OSIRIS”; nazwa na stronie: SOURCE – decyzja Ani 26.11.2026)
+//   kafelek śladu CO2                   → Life-cycle carbon intensity: approx. N g CO₂eq/kWh · SOURCE estimate
 //   kupuje / sprzedaje (wymiana)        → importing / exporting
 // Nazwy instytucji bez tłumaczenia (PSE, KOBiZE, GEM, OSM, EMODnet, NASA GIBS); krótkie wyjaśnienie po angielsku
 // przy pierwszym użyciu, np. „PSE (Poland's transmission system operator)”.
@@ -42,10 +43,10 @@
 
 export default {
   // ── <head> ──
-  'meta.tytul': 'OSIRIS – Electricity in Poland',
+  'meta.tytul': 'SOURCE – Energy in Poland',
   'meta.opis':
     'See in one place where Poland gets its electricity and what it costs. Power plants, wind farms, extra-high-voltage lines, wind generation and the energy price – from official, public sources.',
-  'meta.og_tytul': 'OSIRIS – Electricity in Poland',
+  'meta.og_tytul': 'SOURCE – Energy in Poland',
   'meta.og_opis':
     'Where Poland gets its electricity and what it costs – power plants, wind farms, the extra-high-voltage grid, wind and the energy price. From official, public sources, with a date next to every number.',
   'meta.og_obraz_alt':
@@ -69,7 +70,7 @@ export default {
   // Duży napis (wersja 3, decyzja Ani 23.11.2026) – zwykła pisownia; wielkie litery robi CSS.
   // <br class="tytul__lamanie"> – łamanie tylko na telefonie („ELECTRICITY” / „IN POLAND”, decyzja Ani 23.11.2026);
   // na komputerze CSS go ukrywa, spacja przed nim zostaje.
-  'tytulowa.nazwa': 'Electricity <br class="tytul__lamanie" />in Poland',
+  'tytulowa.nazwa': 'Energy <br class="tytul__lamanie" />in Poland',
   'tytulowa.haslo': "THE HEART OF POLAND'S POWER DATA.",
   'tytulowa.otworz_mape': 'OPEN MAP →',
   'tytulowa.wegiel_nazwa': 'COAL POWER PLANTS',
@@ -98,7 +99,7 @@ export default {
   'cytat.bez_tlumaczenia': 'PSE wording, not yet translated',
 
   // ── <head>, mapa, przyciski ──
-  'mapa.meta.tytul': 'Map · OSIRIS – Electricity in Poland',
+  'mapa.meta.tytul': 'Map · SOURCE – Energy in Poland',
   'mapa.meta.opis':
     "Map of Poland's power sources: power plants, onshore and Baltic offshore wind farms, extra-high-voltage lines, available connection capacity for large consumers on the PSE grid, wind generation and the energy price – from official, public sources.",
   'mapa.meta.og_opis': 'Where Poland gets its electricity and what it costs – from official, public sources, with a date next to every number.',
@@ -111,7 +112,7 @@ export default {
   'mapa.noc': 'Night',
   'mapa.noc_opis':
     'Night lights (2016 image) approximate activity and lighting – mainly street and building lights – not a measurement of electricity use.',
-  'mapa.powrot_aria': 'OSIRIS home page',
+  'mapa.powrot_aria': 'SOURCE home page',
 
   // ── Okienko PSE ──
   'mapa.wiatr_etykieta': 'Wind generation (latest available quarter-hour):',
@@ -292,7 +293,7 @@ export default {
   'moce.wazne':
     'Extra-high-voltage grid (220/400 kV) – for the largest consumers, such as factories and data centres.',
   'moce.osd_wstep':
-    'Smaller businesses connect to the networks of distribution system operators (DSOs). Each publishes available capacity for its own area – OSIRIS does not show this data yet:',
+    'Smaller businesses connect to the networks of distribution system operators (DSOs). Each publishes available capacity for its own area – SOURCE does not show this data yet:',
   'moce.osd_aria': 'Distribution system operators’ pages with available capacity information',
   'moce.osd.stoen': 'Stoen Operator (Warsaw)',
   'moce.osd.pge': 'PGE Dystrybucja (mainly east and centre)',
@@ -315,7 +316,7 @@ export default {
   'slownik.rozdzielnia': 'the part of a substation working at one voltage level (e.g. 110 kV), from which power branches out along lines – like a motorway junction',
   'slownik.rozdzielnia_w_zdaniu': 'switchyard',
   'slownik.aria': (termin) => `What does “${termin}” mean? – explanation`,
-  'slownik.objasnienie': 'OSIRIS explanation',
+  'slownik.objasnienie': 'SOURCE explanation',
   'slownik.mw_termin': 'MW, GW',
   'slownik.mw': 'megawatt – a measure of power, i.e. how much electricity flows at a given moment; 1 GW = 1,000 MW',
   'slownik.mwh_termin': 'MWh, kWh',
@@ -325,7 +326,7 @@ export default {
   'slownik.saldo': 'the difference between scheduled power flowing into Poland and flowing out; plus – Poland imports, minus – exports',
   'slownik.oze_termin': 'renewables',
   'slownik.oze_w_zdaniu': 'renewables',
-  'slownik.oze': 'renewable energy sources – in OSIRIS: wind, solar, hydro, biomass and biogas (excluding waste)',
+  'slownik.oze': 'renewable energy sources – in SOURCE: wind, solar, hydro, biomass and biogas (excluding waste)',
   'slownik.kobize_termin': 'KOBiZE',
   'slownik.kobize': "Poland's National Centre for Emissions Balancing and Management (KOBiZE), part of the Institute of Environmental Protection – National Research Institute; publishes, among others, emission factors for electricity",
   'slownik.ipcc_termin': 'IPCC',
@@ -344,7 +345,7 @@ export default {
     'PSE report “Non-market redispatch of RES resources”. For wind generation units it gives two columns, in MW: “Balancing of Polish Power System” and “System constraints management”.',
   'slownik.ograniczenie_zrodlo': 'source: PSE (raporty.pse.pl → Polish Power System Operation → Polish Power System Operation Schedule)',
   'slownik.ograniczenie_osiris':
-    'PSE does not say whether this is an order or the reduction actually made. OSIRIS converted it to MWh from the power in MW that PSE gives for each quarter-hour (MW × ¼ hour).',
+    'PSE does not say whether this is an order or the reduction actually made. SOURCE converted it to MWh from the power in MW that PSE gives for each quarter-hour (MW × ¼ hour).',
   'slownik.mw_mwh_termin': 'MW and MWh',
   'slownik.mw_mwh': 'MW is power at a given moment – like a car’s speed; MWh is the amount of energy over time – like the distance driven: 1 MW for one hour = 1 MWh.',
   'moce.szacunek_analogia': 'Like car parks on a single access road: the more cars enter one, the harder it is to reach the other.',
@@ -353,7 +354,7 @@ export default {
     `For ${zZastrzezeniami} of them, the PSE list of ${dataWykazu} states that applications for some switchyards were not being processed; for ${bez}, it lists no such restriction. ` +
     `This is the operator's estimate for ${rok}, not a guarantee of connection.`,
   'moce.lok_okolica': (rejon, miejsce, km) =>
-    `Approximate location – PSE gives only »${rejon}«; OSIRIS chose the centre of the circle (${miejsce}, radius ${km} km).`,
+    `Approximate location – PSE gives only »${rejon}«; SOURCE chose the centre of the circle (${miejsce}, radius ${km} km).`,
   'moce.lok_osm': (nazwa) => `Location: planned substation in OpenStreetMap (“${nazwa}”) – uncertain match.`,
   'moce.lok_brak': "Not on the map – PSE gives no town, or it can't be identified without guessing.",
   'moce.w_tym_miejscu': (stacje) => `${stacje} at this location`,
@@ -383,7 +384,7 @@ export default {
     `${ile} capacity for consumers. According to the PSE list of ${dataWykazu}, at ${pelne} of them applications for the ${napiecia} switchyard were not being processed; ` +
     `for ${tylko110} more, the list covers only the 110 kV switchyard (capacities as of ${dataMocy}).`,
   'moce.podsumowanie_bez_wykazu': (ile) => `${ile} capacity for consumers. PSE switchyard list (where applications are not processed): no data.`,
-  'moce.sprawdzono_robot': (data) => `checked by the OSIRIS robot: ${data}`,
+  'moce.sprawdzono_robot': (data) => `checked automatically: ${data}`,
   'moce.sprawdzono': (data) => `checked: ${data} (date the data was accepted)`,
   'moce.stan': (data, sprawdzono) => `as of: ${data} · ${sprawdzono}`,
   'moce.licznik': (planowane, naMapie, stan, wykaz) => `${planowane} · ${naMapie} on the map · as of ${stan} · ${wykaz}`,
@@ -449,7 +450,7 @@ export default {
   'karta.cena_rce': 'RCE price',
   'karta.slad_co2': 'Life-cycle carbon footprint',
   'karta.wymiana': 'Cross-border exchange (scheduled)',
-  'karta.przetworzenie': 'processing and carbon intensity: OSIRIS',
+  'karta.przetworzenie': 'processing and carbon intensity: SOURCE',
   'karta.pytajnik_aria': 'Why the question mark? – explanation',
   'karta.pytajnik_tytul': 'Why the question mark?',
   'karta.skrot_stare': (skrot) => `${skrot} · ⚠ data not the latest`,
@@ -507,18 +508,18 @@ export default {
   'karta.wn_udzialy': (wiekszosc, k1, p1, k2, p2, najwiecej) => (wiekszosc ? ` – mostly ${k1} (${p1}), ${p2} ${k2}.` : ` – ${p1} ${k1}, ${p2} ${k2}.`),
   'karta.wn_kupuje': (gw) => ` According to PSE's schedule, it was importing approx. ${gw} GW.`,
   'karta.wn_sprzedaje': (gw) => ` According to PSE's schedule, it was exporting approx. ${gw} GW.`,
-  'karta.wn_co2': (g) => ` OSIRIS estimate for this quarter-hour: approx. ${g} g CO₂eq per kWh, over the power plants' whole life cycle.`,
+  'karta.wn_co2': (g) => ` SOURCE estimate for this quarter-hour: approx. ${g} g CO₂eq per kWh, over the power plants' whole life cycle.`,
   'karta.zapotrzebowanie': (zap, prod, wymiana) => `Demand (PSE): ${zap} GW · generation in Poland: ${prod} GW · exchange: ${wymiana}`,
   'karta.wiatr_slonce_z': (x, y, p) => `Wind and solar provided ${x} GW of the ${y} GW generated (${p}).`,
   'karta.cena_kwh': (x) => `= ${x} PLN/kWh`,
   'karta.opublikowalo': (kiedy) => ` · published by PSE at ${kiedy}`,
   'karta.podpis': (okres, stan) => `in the quarter-hour ${okres} · of generation in Poland · ${stan}`,
   'karta.co2_wartosc': (g) => `approx. ${g} g CO₂eq/kWh`,
-  'karta.co2_opis': 'OSIRIS estimate',
+  'karta.co2_opis': 'SOURCE estimate',
   'karta.co2_dokladnie': (x) => `${x} g CO₂eq/kWh`,
   'karta.sprawdzian': (kwadranse, mw) => `${kwadranse} matching quarter-hours, largest difference ${mw} MW`,
   'okienko_polski.naglowek': (krotko) => `Poland · power ${krotko}`,
-  'okienko_polski.tu': (wartosc) => `we are here: ${wartosc} – OSIRIS estimate based on IPCC`,
+  'okienko_polski.tu': (wartosc) => `we are here: ${wartosc} – SOURCE estimate based on IPCC`,
   'okienko_polski.zdanie': 'of generation in Poland · PSE data every 15 min',
   'okienko_polski.razem': '= total',
   'okienko_polski.co2_tytul': 'Life-cycle carbon footprint',
@@ -534,7 +535,7 @@ export default {
   'met.udzialy':
     '<strong>Shares:</strong> calculated from generation in Poland. We leave out pumped-storage plants – they store energy, they are not a source. Waste is not counted as renewable.',
   'met.co2':
-    '<strong>Life-cycle carbon intensity (g CO₂eq/kWh), OSIRIS estimate based on IPCC:</strong> generation from each fuel × typical life-cycle emissions ' +
+    '<strong>Life-cycle carbon intensity (g CO₂eq/kWh), SOURCE estimate based on IPCC:</strong> generation from each fuel × typical life-cycle emissions ' +
     'of a power plant, in CO₂ equivalent (CO₂eq) – IPCC medians, AR5 report, 2014. For fuels IPCC doesn\'t cover ' +
     '(lignite, oil, coal-derived gas, waste, “other”, “other renewables”), we made our own assumptions based on factors from KOBiZE ' +
     '(Polish National Centre for Emissions Management). In the quarter-hour we checked (20 Nov 2026, 12:00–12:15), the extreme variants ' +
@@ -560,7 +561,7 @@ export default {
   'stopka.odtworzenie':
     'Day replay: PSE S.A., reports his-wlk-cal and rce-pln, day <span id="odtw-zrodlo-doba">loading…</span>, processed.',
   'stopka.karta':
-    'Poland at a glance (fuel mix, scheduled cross-border exchange): PSE S.A., reports his-gen-pal-sire and his-wlk-cal, data retrieved <span id="karta-pobrano">loading…</span>, processed (shares, cross-check; life-cycle carbon intensity in g CO₂eq/kWh – OSIRIS estimate based on IPCC AR5 and factors from KOBiZE (Polish National Centre for Emissions Management), method in the “Methodology” panel).',
+    'Poland at a glance (fuel mix, scheduled cross-border exchange): PSE S.A., reports his-gen-pal-sire and his-wlk-cal, data retrieved <span id="karta-pobrano">loading…</span>, processed (shares, cross-check; life-cycle carbon intensity in g CO₂eq/kWh – SOURCE estimate based on IPCC AR5 and factors from KOBiZE (Polish National Centre for Emissions Management), method in the “Methodology” panel).',
   'stopka.morskie':
     'Offshore wind farms: <a href="https://emodnet.ec.europa.eu/en/" target="_blank" rel="noopener">EMODnet</a> (European Marine Observation and Data Network) Human Activities, Wind Farms (data creator: CETMAR, as of 10 Jul 2026), <a href="https://creativecommons.org/licenses/by/4.0/deed.en" target="_blank" rel="noopener">CC BY 4.0</a>; only farms in Polish marine areas were selected; compared with the <a href="https://www.gov.pl/web/morska-energetyka-wiatrowa/obecnie-realizowane-projekty-w-polsce" target="_blank" rel="noopener">project list of MKiŚ</a> (Polish Ministry of Climate and Environment) (as of January 2024) – empty dots: likely duplicate or not on the list.',
   'stopka.baltic':
@@ -589,36 +590,36 @@ export default {
   'stopka.wykaz':
     'Substations where applications were not being processed according to the list (empty hexagon – the list covers the 220/400 kV switchyard; if only 110 kV – filled hexagon and a note in the pop-up): PSE S.A., <a href="https://www.pse.pl/dane-systemowe/praca-kse/informacje-ogolne/wykaz-obiektow-planowanych-do-przylaczenia" target="_blank" rel="noopener">“Wykaz rozdzielni na stacjach bez możliwości przyłączenia nowych obiektów”</a> (list of switchyards at substations where new facilities cannot be connected), as of 4 Feb 2026 (older than the capacities – as of 31 Oct 2026), file retrieved 21 Nov 2026, processed (extract of lists 2 and 3).',
   'stopka.miejsca':
-    'Substation locations: OpenStreetMap (OSM), ODbL – planned substations from OSM, or 20 km circles around the town named by PSE (approximate location, chosen by OSIRIS).',
+    'Substation locations: OpenStreetMap (OSM), ODbL – planned substations from OSM, or 20 km circles around the town named by PSE (approximate location, chosen by SOURCE).',
   'stopka.linie':
     'Extra-high-voltage lines: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>, <a href="https://opendatacommons.org/licenses/odbl/" target="_blank" rel="noopener">ODbL</a> (this credit is also always visible on the map, bottom right).',
   'stopka.czcionki':
-    'Fonts: Inter and JetBrains Mono, SIL Open Font License 1.1 (<a href="/licencje/OFL-Inter.txt" target="_blank" rel="noopener">Inter licence</a>, <a href="/licencje/OFL-JetBrains-Mono.txt" target="_blank" rel="noopener">JetBrains Mono licence</a>); the font files are hosted on our server.',
+    'Fonts: Inter, JetBrains Mono and Outfit (logo), SIL Open Font License 1.1 (<a href="/licencje/OFL-Inter.txt" target="_blank" rel="noopener">Inter licence</a>, <a href="/licencje/OFL-JetBrains-Mono.txt" target="_blank" rel="noopener">JetBrains Mono licence</a>, <a href="/licencje/OFL-Outfit.txt" target="_blank" rel="noopener">Outfit licence</a>); the font files are hosted on our server.',
   // ── About page (/en/about/) ──
-  'onas.meta.tytul': 'About · OSIRIS – electricity in Poland',
-  'onas.meta.opis': 'Who is behind OSIRIS and how it was built: data from public sources, built with AI under the control of people and rules.',
-  'onas.logo_aria': 'OSIRIS – home page',
+  'onas.meta.tytul': 'About · SOURCE – Energy in Poland',
+  'onas.meta.opis': 'Who is behind SOURCE and how it was built: data from public sources, built with AI under the control of people and rules.',
+  'onas.logo_aria': 'SOURCE – home page',
   'onas.tytul': 'About',
   'onas.projekt_tytul': 'About the project',
   'onas.projekt':
-    'OSIRIS shows in one place where Poland gets its electricity, what it costs and where new investments can connect to the grid. ' +
+    'SOURCE shows in one place where Poland gets its electricity, what it costs and where new investments can connect to the grid. ' +
     'All data comes from public sources – including PSE (Poland\'s transmission system operator), URE, OpenStreetMap and EMODnet – with the source and date next to every number.',
   'onas.kto_tytul': 'Who is behind it',
   'onas.anna':
     '<strong>Anna Kołodziejczyk</strong> – creator and host of “Anna Kołodziejczyk | AI Revolution”, conversations with people shaping artificial intelligence. ' +
-    'She sets the direction and design of OSIRIS and decides what goes live.',
+    'She sets the direction and design of SOURCE and decides what goes live.',
   'onas.rafael':
     '<strong>Rafael Knuth</strong> – consultant and trainer. He helps business and technology teams build with AI in a way that lasts – ' +
     'using shared engineering principles and rules that apply equally to humans and AI agents. Project mentor.',
   'onas.jak_tytul': 'How we built it',
   'onas.jak':
-    'AI writes fast – so people and rules decide what goes live. OSIRIS was built in a few weeks with AI (Claude Code). ' +
+    'AI writes fast – so people and rules decide what goes live. SOURCE was built in a few weeks with AI (Claude Code). ' +
     'Every change is reviewed and checked before it is published. ' +
     'A robot checks weekly whether PSE has published a new document on available connection capacity; electricity data is refreshed every 4 hours. ' +
     'The code is public <a href="https://github.com/duchowablondyna-sketch/osiris-ania-rafael" target="_blank" rel="noopener noreferrer">on GitHub<span class="tylko-czytnik"> (opens in a new tab)</span></a>.',
-  'onas.czym_tytul': 'What OSIRIS is not',
+  'onas.czym_tytul': 'What SOURCE is not',
   'onas.czym':
-    'It is not an official service of PSE or grid operators. Our own calculations (e.g. carbon intensity) are labelled “OSIRIS estimate”. ' +
+    'It is not an official service of PSE or grid operators. Our own calculations (e.g. carbon intensity) are labelled “SOURCE estimate”. ' +
     'Available connection capacity is the operator\'s estimate, not a guarantee of connection.',
   'onas.kontakt_tytul': 'Contact',
   'onas.linkedin_anna': 'Anna Kołodziejczyk on LinkedIn',

@@ -6,10 +6,10 @@
 
 export default {
   // ── <head>: tytuł karty i opisy do udostępniania ──
-  'meta.tytul': 'OSIRIS – prąd w Polsce',
+  'meta.tytul': 'SOURCE – energia w Polsce',
   'meta.opis':
     'Zobacz w jednym miejscu, skąd Polska bierze prąd i ile on kosztuje. Elektrownie, farmy wiatrowe, linie najwyższych napięć, produkcja z wiatru i cena energii – z oficjalnych, publicznych źródeł.',
-  'meta.og_tytul': 'OSIRIS – prąd w Polsce',
+  'meta.og_tytul': 'SOURCE – energia w Polsce',
   'meta.og_opis':
     'Skąd Polska bierze prąd i ile on kosztuje – elektrownie, farmy wiatrowe, sieć najwyższych napięć, wiatr i cena energii. Z oficjalnych, publicznych źródeł, z datą przy każdej liczbie.',
   'meta.og_obraz_alt':
@@ -32,7 +32,7 @@ export default {
     'Zobacz w jednym miejscu, skąd Polska bierze prąd i ile on kosztuje. Elektrownie, farmy wiatrowe na lądzie i na Bałtyku, linie najwyższych napięć, produkcja z wiatru i cena energii godzina po godzinie. Wszystko z oficjalnych, publicznych źródeł, z datą przy każdej liczbie. Dla zarządów i inwestorów, którzy pytają: gdzie i jak zdobyć więcej prądu?',
   'tytulowa.czas_warszawa': 'CZAS WARSZAWA',
   // Duży napis na stronie tytułowej (wersja 3, decyzja Ani 23.11.2026) – zwykła pisownia; wielkie litery robi CSS.
-  'tytulowa.nazwa': 'Prąd w Polsce',
+  'tytulowa.nazwa': 'Energia w Polsce',
   'tytulowa.haslo': 'SERCE DANYCH O POLSKIM PRĄDZIE.',
   'tytulowa.otworz_mape': 'OTWÓRZ MAPĘ →',
   'tytulowa.wegiel_nazwa': 'ELEKTROWNIE WĘGLOWE',
@@ -62,7 +62,7 @@ export default {
   'cytat.bez_tlumaczenia': 'tekst PSE, jeszcze bez tłumaczenia',
 
   // ── <head>, mapa, przyciski ──
-  'mapa.meta.tytul': 'Mapa · OSIRIS – prąd w Polsce',
+  'mapa.meta.tytul': 'Mapa · SOURCE – energia w Polsce',
   'mapa.meta.opis':
     'Mapa źródeł prądu w Polsce: elektrownie, farmy wiatrowe na lądzie i na Bałtyku, linie najwyższych napięć, wolna moc przyłączeniowa dla odbiorców w sieci PSE, produkcja z wiatru i cena energii – z oficjalnych, publicznych źródeł.',
   'mapa.meta.og_opis': 'Skąd Polska bierze prąd i ile on kosztuje – z oficjalnych, publicznych źródeł, z datą przy każdej liczbie.',
@@ -75,7 +75,7 @@ export default {
   'mapa.noc': 'Noc',
   'mapa.noc_opis':
     'Światła nocne (zdjęcie z 2016 r.) to przybliżenie aktywności i oświetlenia – głównie oświetlenia ulic i zabudowy – a nie pomiar zużycia prądu.',
-  'mapa.powrot_aria': 'Strona główna OSIRIS',
+  'mapa.powrot_aria': 'Strona główna SOURCE',
 
   // ── Okienko PSE (lewa góra): wiatr, słońce, ograniczenia, cena, odtwarzanie doby ──
   'mapa.wiatr_etykieta': 'Produkcja z wiatru (ostatni dostępny kwadrans):',
@@ -274,7 +274,7 @@ export default {
   // OSD – linki do operatorów dystrybucyjnych (25.11.2026): tylko linki do stron operatorów, danych nie pobieramy
   // (ZRODLA.md → „Operatorzy dystrybucyjni”). Obszary – „głównie”, bo obszary operatorów nie pokrywają się z regionami.
   'moce.osd_wstep':
-    'Mniejsze firmy przyłączają się do sieci operatorów dystrybucyjnych (OSD). Każdy publikuje wolną moc dla swojego obszaru – OSIRIS jeszcze tych danych nie pokazuje:',
+    'Mniejsze firmy przyłączają się do sieci operatorów dystrybucyjnych (OSD). Każdy publikuje wolną moc dla swojego obszaru – SOURCE jeszcze tych danych nie pokazuje:',
   'moce.osd_aria': 'Strony operatorów dystrybucyjnych z informacją o dostępnej mocy',
   'moce.osd.stoen': 'Stoen Operator (Warszawa)',
   'moce.osd.pge': 'PGE Dystrybucja (głównie wschód i centrum)',
@@ -300,7 +300,7 @@ export default {
   'slownik.rozdzielnia_w_zdaniu': 'rozdzielni',
   'slownik.aria': (termin) => `Co znaczy „${termin}”? – wyjaśnienie`,
   // Podpis w okienku zamiast linijki źródła (to nasze wyjaśnienie, nie dane).
-  'slownik.objasnienie': 'objaśnienie OSIRIS',
+  'slownik.objasnienie': 'objaśnienie SOURCE',
   // Etap C2 – objaśnienia w Karcie (F1). Nazwy KOBiZE i IPCC: ZRODLA.md.
   'slownik.mw_termin': 'MW, GW',
   'slownik.mw': 'megawat – miara mocy, czyli ile prądu płynie w danej chwili; 1 GW = 1 000 MW',
@@ -311,7 +311,7 @@ export default {
   'slownik.saldo': 'różnica między prądem, który według planu przypływa z zagranicy, a tym, który wypływa; plus – Polska kupuje, minus – sprzedaje',
   'slownik.oze_termin': 'OZE',
   'slownik.oze_w_zdaniu': 'OZE',
-  'slownik.oze': 'odnawialne źródła energii – w OSIRIS: wiatr, słońce, woda, biomasa i biogaz (bez odpadów)',
+  'slownik.oze': 'odnawialne źródła energii – w SOURCE: wiatr, słońce, woda, biomasa i biogaz (bez odpadów)',
   'slownik.kobize_termin': 'KOBiZE',
   'slownik.kobize': 'Krajowy Ośrodek Bilansowania i Zarządzania Emisjami, działający w Instytucie Ochrony Środowiska – Państwowym Instytucie Badawczym; publikuje m.in. wskaźniki emisyjności dla energii elektrycznej',
   'slownik.ipcc_termin': 'IPCC',
@@ -332,7 +332,7 @@ export default {
     'Raport PSE „Nierynkowe redysponowanie źródeł OZE”. Dla farm wiatrowych podaje dwie rubryki, w MW: „Bilansowanie KSE” i „Zarządzanie ograniczeniami systemowymi”.',
   'slownik.ograniczenie_zrodlo': 'źródło: PSE (raporty.pse.pl → Funkcjonowanie KSE → Plany pracy KSE)',
   'slownik.ograniczenie_osiris':
-    'PSE nie podaje, czy to polecenie, czy wykonane zmniejszenie. MWh przeliczył OSIRIS z mocy w MW podanej przez PSE dla każdego kwadransa (MW × ¼ godziny).',
+    'PSE nie podaje, czy to polecenie, czy wykonane zmniejszenie. MWh to przeliczenie SOURCE z mocy w MW podanej przez PSE dla każdego kwadransa (MW × ¼ godziny).',
   'slownik.mw_mwh_termin': 'MW i MWh',
   'slownik.mw_mwh': 'MW to moc w danej chwili – jak prędkość auta; MWh to ilość energii w czasie – jak przejechane kilometry: 1 MW przez godzinę = 1 MWh.',
   // Analogia przy „nie sumujemy” (Etap C1, wariant Y).
@@ -345,7 +345,7 @@ export default {
     `Przy ${zZastrzezeniami} z nich wykaz PSE z ${dataWykazu} podaje, że wnioski do części rozdzielni nie były rozpatrywane; przy ${bez} takich zastrzeżeń nie podaje. ` +
     `To szacunek operatora na ${rok} r., nie gwarancja przyłączenia.`,
   'moce.lok_okolica': (rejon, miejsce, km) =>
-    `Lokalizacja przybliżona – PSE podaje tylko »${rejon}«; środek koła wybrał OSIRIS (${miejsce}, promień ${km} km).`,
+    `Lokalizacja przybliżona – PSE podaje tylko »${rejon}«; środek koła wybrany przez SOURCE (${miejsce}, promień ${km} km).`,
   'moce.lok_osm': (nazwa) => `Lokalizacja: planowana stacja w OpenStreetMap („${nazwa}”) – dopasowanie niepewne.`,
   'moce.lok_brak': 'Brak na mapie – PSE nie podaje miejscowości albo nie da się jej ustalić bez zgadywania.',
   'moce.w_tym_miejscu': (stacje) => `${stacje} w tym miejscu`,
@@ -377,7 +377,7 @@ export default {
     `${ile} moc dla odbiorców. Według wykazu PSE z ${dataWykazu} w ${pelne} z nich wnioski do rozdzielni ${napiecia} nie były rozpatrywane; ` +
     `przy ${tylko110} kolejnych wykaz dotyczy tylko rozdzielni 110 kV (moce – stan na ${dataMocy}).`,
   'moce.podsumowanie_bez_wykazu': (ile) => `${ile} moc dla odbiorców. Wykaz rozdzielni PSE (gdzie wnioski nie są rozpatrywane): brak danych.`,
-  'moce.sprawdzono_robot': (data) => `sprawdzono przez Robota OSIRIS: ${data}`,
+  'moce.sprawdzono_robot': (data) => `sprawdzono automatycznie: ${data}`,
   'moce.sprawdzono': (data) => `sprawdzono: ${data} (data przyjęcia danych)`,
   'moce.stan': (data, sprawdzono) => `stan na: ${data} · ${sprawdzono}`,
   'moce.licznik': (planowane, naMapie, stan, wykaz) => `${planowane} · ${naMapie} na mapie · stan ${stan} · ${wykaz}`,
@@ -450,7 +450,7 @@ export default {
   // Etap C2: jedno znaczenie w PL i EN (decyzja Ani 25.11.2026).
   'karta.slad_co2': 'Ślad CO<sub>2</sub> w cyklu życia',
   'karta.wymiana': 'Wymiana z zagranicą (planowa)',
-  'karta.przetworzenie': 'przetworzenie i ślad CO2: OSIRIS',
+  'karta.przetworzenie': 'przetworzenie i ślad CO2: SOURCE',
   'karta.pytajnik_aria': 'Dlaczego znak zapytania? – wyjaśnienie',
   'karta.pytajnik_tytul': 'Dlaczego znak zapytania?',
   'karta.skrot_stare': (skrot) => `${skrot} · ⚠ dane nie są najnowsze`,
@@ -521,7 +521,7 @@ export default {
     wiekszosc ? ` – w większości ${k1} (${p1}), a ${p2} ${k2}.` : najwiecej ? ` – najwięcej ${k1} (${p1}), a ${p2} ${k2}.` : ` – ${p1} ${k1}, a ${p2} ${k2}.`,
   'karta.wn_kupuje': (gw) => ` Według planu PSE kupowała za granicą ok. ${gw} GW.`,
   'karta.wn_sprzedaje': (gw) => ` Według planu PSE sprzedawała za granicę ok. ${gw} GW.`,
-  'karta.wn_co2': (g) => ` Szacunek OSIRIS dla tego kwadransa: ok. ${g} g CO₂eq na każdą kWh, licząc cały cykl życia elektrowni.`,
+  'karta.wn_co2': (g) => ` Szacunek SOURCE dla tego kwadransa: ok. ${g} g CO₂eq na każdą kWh, licząc cały cykl życia elektrowni.`,
   // „Ile pracuje z tego, co mamy”: zapotrzebowanie PSE (pole demand) i wiatr + słońce – procent od produkcji w Polsce.
   // Wymiana – tylko saldo PSE (swm_p + swm_np), nie różnica zapotrzebowanie − produkcja (ZRODLA.md).
   'karta.zapotrzebowanie': (zap, prod, wymiana) => `Zapotrzebowanie (PSE): ${zap} GW · produkcja w Polsce: ${prod} GW · wymiana: ${wymiana}`,
@@ -531,11 +531,11 @@ export default {
   'karta.podpis': (okres, stan) => `w kwadransie ${okres} · z produkcji w Polsce · ${stan}`,
   // Ślad CO2 w ekwiwalencie (CO₂eq) – mediany IPCC są w ekwiwalencie (decyzja Ani 23.11.2026, obie wersje mówią to samo).
   'karta.co2_wartosc': (g) => `ok. ${g} g CO₂eq/kWh`,
-  'karta.co2_opis': 'szacunek OSIRIS',
+  'karta.co2_opis': 'szacunek SOURCE',
   'karta.co2_dokladnie': (x) => `${x} g CO₂eq/kWh`,
   'karta.sprawdzian': (kwadranse, mw) => `${kwadranse} wspólnych kwadransów, największa różnica ${mw} MW`,
   'okienko_polski.naglowek': (krotko) => `Polska · prąd ${krotko}`,
-  'okienko_polski.tu': (wartosc) => `tu jesteśmy: ${wartosc} – szacunek OSIRIS wg IPCC`,
+  'okienko_polski.tu': (wartosc) => `tu jesteśmy: ${wartosc} – szacunek SOURCE wg IPCC`,
   'okienko_polski.zdanie': 'z produkcji w Polsce · dane PSE co 15 min',
   'okienko_polski.razem': '= razem',
   'okienko_polski.co2_tytul': 'Ślad CO<sub>2</sub> w cyklu życia',
@@ -551,7 +551,7 @@ export default {
   'met.udzialy':
     '<strong>Udziały:</strong> liczone z produkcji w Polsce. Elektrownie szczytowo-pompowe pomijamy – to magazyn energii, a nie źródło. Odpady nie są liczone jako OZE.',
   'met.co2':
-    '<strong>Ślad CO<sub>2</sub> – szacunek OSIRIS:</strong> produkcja z każdego paliwa × typowy ślad CO<sub>2</sub> w całym cyklu życia elektrowni, ' +
+    '<strong>Ślad CO<sub>2</sub> – szacunek SOURCE:</strong> produkcja z każdego paliwa × typowy ślad CO<sub>2</sub> w całym cyklu życia elektrowni, ' +
     'liczony jako CO<sub>2</sub> ekwiwalent (CO<sub>2</sub>eq) – mediany IPCC, raport AR5 z 2014 r. Dla paliw, których IPCC nie podaje ' +
     '(węgiel brunatny, olej, gaz z węgla, odpady, „inne”, „inne OZE”), przyjęliśmy własne założenia na podstawie wskaźników KOBiZE. ' +
     'W sprawdzonym kwadransie (20.11.2026, 12:00–12:15) skrajne warianty założeń dla tych paliw – bez węgla brunatnego – zmieniały wynik ' +
@@ -576,7 +576,7 @@ export default {
   'stopka.odtworzenie':
     'Odtworzenie doby: PSE S.A., raporty his-wlk-cal i rce-pln, doba <span id="odtw-zrodlo-doba">wczytywanie…</span>, przetworzone.',
   'stopka.karta':
-    'Karta Polski (miks paliw, wymiana z zagranicą): PSE S.A., raporty his-gen-pal-sire i his-wlk-cal, dane pobrane <span id="karta-pobrano">wczytywanie…</span>, przetworzone (udziały, sprawdzian; ślad CO2 (CO₂eq) – szacunek OSIRIS wg IPCC AR5 i wskaźników KOBiZE, metoda w panelu „Metodologia”).',
+    'Karta Polski (miks paliw, wymiana z zagranicą): PSE S.A., raporty his-gen-pal-sire i his-wlk-cal, dane pobrane <span id="karta-pobrano">wczytywanie…</span>, przetworzone (udziały, sprawdzian; ślad CO2 (CO₂eq) – szacunek SOURCE wg IPCC AR5 i wskaźników KOBiZE, metoda w panelu „Metodologia”).',
   'stopka.morskie':
     'Morskie farmy wiatrowe: <a href="https://emodnet.ec.europa.eu/en/" target="_blank" rel="noopener">EMODnet</a> Human Activities, Wind Farms (twórca danych: CETMAR, stan 10.07.2026), <a href="https://creativecommons.org/licenses/by/4.0/deed.pl" target="_blank" rel="noopener">CC BY 4.0</a>; wybrano tylko farmy w polskich obszarach morskich; porównane z <a href="https://www.gov.pl/web/morska-energetyka-wiatrowa/obecnie-realizowane-projekty-w-polsce" target="_blank" rel="noopener">listą projektów MKiŚ</a> (stan: styczeń 2024) – puste kropki: prawdopodobny duplikat albo brak na liście.',
   'stopka.baltic':
@@ -605,36 +605,36 @@ export default {
   'stopka.wykaz':
     'Stacje, do których wnioski nie były rozpatrywane według wykazu (pusty sześciokąt – wykaz obejmuje rozdzielnię 220/400 kV; gdy tylko 110 kV – pełny sześciokąt i uwaga w okienku): PSE S.A., <a href="https://www.pse.pl/dane-systemowe/praca-kse/informacje-ogolne/wykaz-obiektow-planowanych-do-przylaczenia" target="_blank" rel="noopener">„Wykaz rozdzielni na stacjach bez możliwości przyłączenia nowych obiektów”</a>, stan na 04.02.2026 (starszy niż moce – stan na 31.10.2026), plik pobrany 21.11.2026, przetworzone (wyciąg list 2 i 3).',
   'stopka.miejsca':
-    'Miejsca stacji: OpenStreetMap (ODbL) – planowane stacje z OSM albo koła 20 km wokół miejscowości z opisu PSE (lokalizacja przybliżona, wybór OSIRIS).',
+    'Miejsca stacji: OpenStreetMap (ODbL) – planowane stacje z OSM albo koła 20 km wokół miejscowości z opisu PSE (lokalizacja przybliżona, wybór SOURCE).',
   'stopka.linie':
     'Linie najwyższych napięć: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>, <a href="https://opendatacommons.org/licenses/odbl/" target="_blank" rel="noopener">ODbL</a> (podpis widoczny też stale na mapie, w prawym dolnym rogu).',
   'stopka.czcionki':
-    'Czcionki: Inter i JetBrains Mono, SIL Open Font License 1.1 (<a href="/licencje/OFL-Inter.txt" target="_blank" rel="noopener">licencja Inter</a>, <a href="/licencje/OFL-JetBrains-Mono.txt" target="_blank" rel="noopener">licencja JetBrains Mono</a>); pliki czcionek są na naszym serwerze.',
+    'Czcionki: Inter, JetBrains Mono i Outfit (logo), SIL Open Font License 1.1 (<a href="/licencje/OFL-Inter.txt" target="_blank" rel="noopener">licencja Inter</a>, <a href="/licencje/OFL-JetBrains-Mono.txt" target="_blank" rel="noopener">licencja JetBrains Mono</a>, <a href="/licencje/OFL-Outfit.txt" target="_blank" rel="noopener">licencja Outfit</a>); pliki czcionek są na naszym serwerze.',
   // ── Strona „O nas” (/o-nas/) – tekst Ani (25.11.2026) z poprawkami 1–7 przyjętymi przez Anię. Treść w HTML (bez skryptu). ──
-  'onas.meta.tytul': 'O nas · OSIRIS – prąd w Polsce',
-  'onas.meta.opis': 'Kto stoi za OSIRIS i jak powstał: dane z publicznych źródeł, zbudowany z pomocą AI pod kontrolą ludzi i reguł.',
-  'onas.logo_aria': 'OSIRIS – strona główna',
+  'onas.meta.tytul': 'O nas · SOURCE – energia w Polsce',
+  'onas.meta.opis': 'Kto stoi za SOURCE i jak to zbudowaliśmy: dane z publicznych źródeł, praca z pomocą AI pod kontrolą ludzi i reguł.',
+  'onas.logo_aria': 'SOURCE – strona główna',
   'onas.tytul': 'O nas',
   'onas.projekt_tytul': 'O projekcie',
   'onas.projekt':
-    'OSIRIS pokazuje w jednym miejscu, skąd Polska bierze prąd, ile on kosztuje i gdzie da się podłączyć nowe inwestycje. ' +
+    'SOURCE pokazuje w jednym miejscu, skąd Polska bierze prąd, ile on kosztuje i gdzie da się podłączyć nowe inwestycje. ' +
     'Wszystkie dane pochodzą z publicznych źródeł – m.in. PSE, URE, OpenStreetMap i EMODnet – przy każdej liczbie jest źródło i data.',
   'onas.kto_tytul': 'Kto za tym stoi',
   'onas.anna':
     '<strong>Anna Kołodziejczyk</strong> – twórczyni i prowadząca rozmowy „Anna Kołodziejczyk | AI Revolution” z ludźmi, którzy kształtują sztuczną inteligencję. ' +
-    'Wyznacza kierunek i wygląd OSIRIS i decyduje, co trafia na stronę.',
+    'Wyznacza kierunek i wygląd SOURCE i decyduje, co trafia na stronę.',
   'onas.rafael':
     '<strong>Rafael Knuth</strong> – doradca i trener. Pomaga zespołom biznesowym i technicznym budować z AI tak, żeby efekt wytrzymał lata: ' +
     'według wspólnych zasad inżynierskich i reguł, które obowiązują tak samo człowieka, jak agenta AI. Mentor projektu.',
   'onas.jak_tytul': 'Jak to zbudowaliśmy',
   'onas.jak':
-    'AI pisze szybko – dlatego o tym, co trafia na stronę, decydują ludzie i reguły. OSIRIS powstał w kilka tygodni z pomocą AI (Claude Code). ' +
+    'AI pisze szybko – dlatego o tym, co trafia na stronę, decydują ludzie i reguły. SOURCE zbudowaliśmy w kilka tygodni z pomocą AI (Claude Code). ' +
     'Każda zmiana jest najpierw oglądana i sprawdzana, a dopiero potem publikowana. ' +
     'Robot co tydzień sprawdza, czy PSE opublikowało nowy dokument o wolnej mocy przyłączeniowej; dane o prądzie odświeżamy co 4 godziny. ' +
     'Kod jest publiczny <a href="https://github.com/duchowablondyna-sketch/osiris-ania-rafael" target="_blank" rel="noopener noreferrer">na GitHubie<span class="tylko-czytnik"> (otwiera się w nowej karcie)</span></a>.',
-  'onas.czym_tytul': 'Czym OSIRIS nie jest',
+  'onas.czym_tytul': 'Czym SOURCE nie jest',
   'onas.czym':
-    'To nie jest oficjalny serwis PSE ani operatorów sieci. Wyliczenia własne (np. ślad CO₂) oznaczamy jako „szacunek OSIRIS”. ' +
+    'To nie jest oficjalny serwis PSE ani operatorów sieci. Wyliczenia własne (np. ślad CO₂) oznaczamy jako „szacunek SOURCE”. ' +
     'Wolna moc to szacunek operatora, a nie gwarancja przyłączenia.',
   'onas.kontakt_tytul': 'Kontakt',
   'onas.linkedin_anna': 'Anna Kołodziejczyk na LinkedIn',

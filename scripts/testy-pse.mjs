@@ -151,8 +151,8 @@ test('F1 okienka: obie części ograniczenia, MW i MWh – PL i EN; nazwy rubryk
   assert.ok(en['slownik.ograniczenie_pse'].includes('“Balancing of Polish Power System”') && en['slownik.ograniczenie_pse'].includes('“System constraints management”'));
   // Część PSE bez interpretacji przyczyny; przeliczenie na MWh – tylko w części OSIRIS.
   assert.ok(!/MWh|sieć nie może|nie może przyjąć/.test(pl['slownik.ograniczenie_pse']));
-  assert.match(pl['slownik.ograniczenie_osiris'], /MWh przeliczył OSIRIS/);
-  assert.match(en['slownik.ograniczenie_osiris'], /OSIRIS converted it to MWh/);
+  assert.match(pl['slownik.ograniczenie_osiris'], /MWh to przeliczenie SOURCE/);
+  assert.match(en['slownik.ograniczenie_osiris'], /SOURCE converted it to MWh/);
   assert.match(pl['slownik.mw_mwh'], /1 MW przez godzinę = 1 MWh/);
   // Słowo z F1 stoi w linijce, przy której jest podpinane.
   assert.ok(pl['mapa.ograniczenie']('21.11.2026', '150', null).includes(pl['slownik.ograniczenie_termin']));

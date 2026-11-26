@@ -48,6 +48,7 @@
 ### Pakiety pilnowane (przypięte wersje, `package.json`)
 - `maplibre-gl` 6.19.0 – mapa (kod w przeglądarce widza).
 - `vite` 8.3.8 – budowanie (tylko lokalnie i na Cloudflare, nie trafia do strony).
+- Czcionka Outfit 300 (logo SOURCE, 26.11.2026) – **bez pakietu**: jeden plik `public/fonts/outfit-latin-300-normal.woff2` z `@fontsource/outfit` 5.3.0 (jsDelivr, wersja w adresie), SHA-256 w ZRODLA.md („Czcionki”). Aktualizacja – tylko ręcznie, z nową sumą.
 - `@fontsource/inter` 5.3.0 i `@fontsource/jetbrains-mono` 5.3.0 – pliki czcionek (OFL-1.1), dodane 20.11.2026 (`npm install --save-exact`). Przed instalacją sprawdzone w rejestrze npm: brak skryptów instalacyjnych (preinstall/postinstall), brak zależności. Do strony trafiają tylko pliki `.woff2` zestawów „latin” i „latin-ext”.
 - `npm audit` po instalacji 20.11.2026: **0 podatności**. `picomatch` 4.0.7 nie jest już zgłaszany, bo GitHub wycofał wpis GHSA-fc5q-39xc-vjpf 18.11.2026 („not a security issue”) – szczegóły w punkcie „Znane i zaakceptowane ryzyka” (oznaczony jako rozwiązany).
 - npm ostrzega, że `fsevents` 2.3.3 (opcjonalna zależność `vite`, była już wcześniej) ma skrypt instalacyjny nieobjęty `allowScripts` – nie uruchamiany przez nas; do przejrzenia przy konfiguracji Dependabota.
@@ -147,5 +148,6 @@
 - [ ] (25.11.2026) Po kilku dniach poprawnej pracy zegara Cloudflare (`cloudflare/zegar/`; sprawdzić listę wdrożeń Pages i logi Workera): usunąć `schedule` z workflow „Odśwież stronę” (zostawić `workflow_dispatch`), usunąć wtedy niepotrzebny sekret `CLOUDFLARE_DEPLOY_HOOK` i jego hook w Pages, poprawić teksty „co 4 godziny” (`met.skad`, `onas.jak`, komentarz w `src/karta-teksty.js`, CLAUDE.md).
 - [ ] Kiedyś: budzenie Robota przez Worker Cloudflare (GitHub API) – droga B.
 - [ ] Gdy Prezes URE uzgodni plan rozwoju sieci PSE 2027–2036 (dziś projekt po konsultacjach, kwiecień 2026): sprawdzić lata i przypisy 25 stacji w `public/data/plan-rozwoju-pse.json`, zmienić opis „projekt … przed uzgodnieniem z URE” (teksty `plan.*`) i wpis w ZRODLA.md (26.11.2026).
+- [ ] Nowe obrazki do udostępniania (`public/og-obraz.png`, `og-obraz-en.png`) po zmianie nazwy na SOURCE i tytułu „ENERGIA W POLSCE” – osobny etap (decyzja Ani 26.11.2026); wtedy też nowy opis `meta.og_obraz_alt` (PL/EN – dziś opisuje stary obrazek z „Prąd w Polsce” / OSIRIS), sumy w ZRODLA.md i LinkedIn Post Inspector.
 - [ ] Na później: twarda spacja przed „MW”, „kV” i „r.” na całej stronie (dziś tylko w nowych tekstach E1 – decyzja Ani 26.11.2026).
 - [ ] Na później: komputer – po przewinięciu treści Karty Polski do samego końca znika „↓ więcej poniżej”, panel robi się niższy o 22 px i nagłówek Karty z zakładkami zjeżdża w dół (zmierzone 26.11.2026 na main, zakładka „Gdzie”, 1440×900: nagłówek 66 → 88 px). Przy wyszukiwarce E1 widać to częściej (krótki wynik).
