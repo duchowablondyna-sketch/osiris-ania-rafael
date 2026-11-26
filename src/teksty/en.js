@@ -112,7 +112,7 @@ export default {
   'mapa.noc': 'Night',
   'mapa.noc_opis':
     'Night lights (2016 image) approximate activity and lighting – mainly street and building lights – not a measurement of electricity use.',
-  'mapa.powrot_aria': 'SOURCE home page',
+  'mapa.powrot_aria': 'SOURCE – home page',
 
   // ── Okienko PSE ──
   'mapa.wiatr_etykieta': 'Wind generation (latest available quarter-hour):',

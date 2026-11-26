@@ -47,7 +47,7 @@ Zanim zaproponujesz cokolwiek, sprawdź: czy bez tego cel zostanie osiągnięty?
 Strona z mapą pokazującą, jak i gdzie Polska może uzyskać więcej prądu. Repo: osiris-ania-rafael (Ania i Rafael).
 
 ## Zasady wyglądu (decyzje Ani, stałe)
-- Nazwa na stronie (decyzje Ani 26.11.2026): **SOURCE**, tytuł „ENERGIA W POLSCE” / „ENERGY IN POLAND”. Logo: krój Outfit 300 (u nas, `public/fonts/`), litera O = „zaćmienie” (ciemny krąg, złoty pierścień `--zloto`, iskra u góry po prawej; `.wm`, `.o`, `.iskra` w src/style.css), bez ruchu, czytnik czyta „SOURCE”. Strona tytułowa – rozmiar jak dawny OSIRIS (0,875rem); „← SOURCE” na mapie – z zaćmieniem (komputer 18 px, telefon 16 px); „O nas” – zwykły tekst. Na stronie „sprawdzono automatycznie” (nie „Robot OSIRIS”). Wewnątrz (repo, Robot OSIRIS, workflow, klucze, komentarze) nazwa OSIRIS zostaje.
+- Nazwa na stronie (decyzje Ani 26.11.2026): **SOURCE**, tytuł „ENERGIA W POLSCE” / „ENERGY IN POLAND”. Logo: krój Outfit 300 (u nas, `public/fonts/`), litera O = „zaćmienie” (ciemny krąg, złoty pierścień `--zloto`, iskra u góry po prawej; `.wm`, `.o`, `.iskra` w src/style.css), bez ruchu, czytnik czyta „SOURCE”. Strona tytułowa – rozmiar jak dawny OSIRIS (0,875rem); przycisk powrotu na mapie – bez napisu: „←” + ikona zaćmienia (komputer 18 px, telefon 16 px, pole dotyku min. 44 × 44 px; aria-label „SOURCE – strona tytułowa”); kropka przy „CZAS WARSZAWA” – mniejsza, w kolorze napisu (decyzje Ani 26.11.2026); „O nas” – zwykły tekst. Na stronie „sprawdzono automatycznie” (nie „Robot OSIRIS”). Wewnątrz (repo, Robot OSIRIS, workflow, klucze, komentarze) nazwa OSIRIS zostaje.
 - Bohater ekranu: prąd.
 - Ciemne, kosmiczne tło (inspiracja: God's Eye View, Bilawal Sidhu).
 - Linie najwyższych napięć w kolorze złotym (energia).

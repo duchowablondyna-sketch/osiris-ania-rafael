@@ -45,8 +45,12 @@ body.tytulowa {
   font-variant-numeric: tabular-nums;
 }
 
+/* Kropka przy „CZAS WARSZAWA”: w kolorze napisu, mniejsza (decyzja Ani 26.11.2026). Pomniejszona przez transform –
+   miejsce w wierszu bez zmian, więc tekst zegara się nie przesuwa. */
 .zegar__kropka {
-  color: var(--zloto);
+  display: inline-block;
+  color: inherit;
+  transform: scale(0.6);
 }
 
 /* ── Przełącznik PL | EN obok zegara (decyzja Ani 23.11.2026; wstawia go scripts/jezyki.mjs). Ta sama czcionka co

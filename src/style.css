@@ -930,21 +930,20 @@ main {
   box-shadow: 0 0 0.08em 0.04em #fff1c2, 0 0 0.3em 0.1em rgba(242, 193, 78, 0.75);
 }
 
-/* „← SOURCE” z „zaćmieniem” zamiast litery O (decyzja Ani 26.11.2026): komputer – napis 18 px, telefon – 16 px
-   (blok @media niżej). Litera O (.powrot__o) zostaje w kodzie tylko na wypadek braku stylów – czytnik i tak czyta aria-label. */
+/* Przycisk powrotu bez napisu: „←” + ikona zaćmienia (decyzja Ani 26.11.2026). Komputer 18 px, telefon 16 px (blok
+   @media niżej – tam też pole dotyku min. 44 × 44 px). Ikona – kółko 1 em (ten sam wzór co litera O w logo). */
 .powrot {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
   font-size: 1.125rem;
+  letter-spacing: 0;
 }
 
-.powrot__nazwa {
-  font-family: 'Outfit', var(--font-sans);
-  font-weight: 300;
-  letter-spacing: 0.26em;
-  color: #f3f1ea;
-}
-
-.powrot__o {
-  display: none;
+.powrot .o {
+  width: 1em;
+  height: 1em;
+  margin: 0;
 }
 
 .powrot:hover {
@@ -2352,8 +2351,9 @@ button.panel-moce__nazwa:hover {
     display: inline-flex;
     align-items: center;
     box-sizing: border-box;
+    min-width: 44px;
     min-height: 44px;
     padding: 0 16px 0 14px;
-    font-size: 1rem; /* „← SOURCE” na telefonie trochę mniejszy niż na komputerze (decyzja Ani 26.11.2026) */
+    font-size: 1rem; /* przycisk powrotu na telefonie trochę mniejszy niż na komputerze (decyzja Ani 26.11.2026) */
   }
 }

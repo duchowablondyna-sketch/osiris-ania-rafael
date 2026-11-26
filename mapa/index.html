@@ -324,9 +324,9 @@
       </div>
 
       <!-- Powrót na stronę tytułową: zwykły link (działa z klawiatury i z przyciskiem „Wstecz” przeglądarki). -->
-      <!-- „← SOURCE” (zmiana nazwy, 26.11.2026). Nazwę dla czytnika daje aria-label; widoczny napis: zwykły tekst albo – przy
-           napisie od ok. 18 px – „zaćmienie” zamiast litery O (decyzja Ani; podgląd obu wersji, src/style.css). -->
-      <a class="powrot" href="{{@adres:tytulowa}}" aria-label="{{mapa.powrot_aria}}">← <span class="powrot__nazwa">S<span class="powrot__o">O</span><span class="o" aria-hidden="true"><span class="iskra"></span></span>URCE</span></a>
+      <!-- Bez napisu – strzałka „←” i ikona zaćmienia jak w logo (decyzja Ani 26.11.2026). Nazwę dla czytnika daje
+           aria-label („SOURCE – strona tytułowa”); strzałka i ikona ukryte przed czytnikiem. Styl: src/style.css (.powrot). -->
+      <a class="powrot" href="{{@adres:tytulowa}}" aria-label="{{mapa.powrot_aria}}"><span class="powrot__strzalka" aria-hidden="true">←</span><span class="o" aria-hidden="true"><span class="iskra"></span></span></a>
     </main>
 
     <!-- Stopka zwinięta do jednej linijki (więcej miejsca na mapę); <details> działa z klawiatury (Tab, Enter, Spacja). -->
