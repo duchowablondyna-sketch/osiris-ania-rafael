@@ -1819,6 +1819,96 @@ button.panel-moce__nazwa:hover {
   color: var(--tekst-pomocniczy);
 }
 
+/* ── F2.1 „PGE na liście w Gdzie” (decyzje Ani 26.11.2026): grupy stacji 110 kV PGE Dystrybucja (src/osd-pge.js) ── */
+.osd-pge {
+  margin-top: 16px;
+  padding-top: 10px;
+  border-top: 1px solid var(--szklo-ramka);
+}
+
+.osd-pge[hidden] {
+  display: none;
+}
+
+.osd-pge__cytat,
+.osd-pge__objasnienie,
+.osd-pge__brak {
+  color: var(--tekst);
+}
+
+.osd-pge__cytat .cytat-oryginal,
+.osd-pge .panel-moce__uwaga .cytat-oryginal {
+  display: block;
+}
+
+.panel-moce .osd-pge__podpis {
+  margin-top: 2px;
+  font-size: 0.6875rem;
+  color: var(--tekst-pomocniczy);
+}
+
+.panel-moce .osd-pge__stan {
+  margin-top: 10px;
+  font-size: 0.6875rem;
+  color: var(--tekst-pomocniczy);
+}
+
+/* Pozycja grupy: nazwa, „2026: X MW · 2031: Y MW”, rozwijana lista stacji – jedna kolumna (bez kolumny MW jak u PSE). */
+.osd-pge__lista li {
+  display: block;
+}
+
+.osd-pge__mw {
+  display: block;
+  color: var(--kolor-moce);
+  font-weight: 600;
+}
+
+.osd-pge__stacje summary {
+  font-size: 0.6875rem;
+  color: var(--tekst-pomocniczy);
+  list-style: none;
+  cursor: pointer;
+}
+
+.osd-pge__stacje summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Strzałka na złoto – widać, że się rozwija (zasada z CLAUDE.md). */
+.osd-pge__stacje summary::after {
+  content: ' ▸';
+  color: var(--zloto);
+}
+
+.osd-pge__stacje[open] summary::after {
+  content: ' ▾';
+}
+
+.osd-pge__stacje summary:focus-visible {
+  outline: 2px solid var(--fokus);
+  outline-offset: 2px;
+}
+
+.panel-moce .osd-pge__stacje-lista {
+  margin: 2px 0 4px;
+  font-size: 0.6875rem;
+  color: var(--tekst);
+}
+
+.osd-pge__stacja--trafiona {
+  color: var(--kolor-moce);
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .osd-pge__stacje summary {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+  }
+}
+
 @media (max-width: 640px) {
   /* Pole: min. 44 px i czcionka 16 px (mniejsza – iPhone przybliża stronę przy wpisywaniu). */
   .szukaj-mw__pole {

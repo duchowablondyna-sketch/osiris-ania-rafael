@@ -35,7 +35,7 @@ Zasady na dalej:
   (sposób w ZRODLA.md).
 - Robot OSIRIS, jego issue i PR-y oraz ZRODLA.md zostają po polsku.
 
-Następne w kolejce: operatorzy OSD (Stoen, potem PGE, Energa).
+Następne w kolejce: operatorzy OSD – PGE (F2.1 „PGE na liście w Gdzie”, w toku), potem Energa, potem Stoen (decyzja Ani 26.11.2026; Stoen czeka na zdanie Rafaela – na stronie zostaje link).
 
 W tle (nie blokują celu): Otwarte punkty Robota OSIRIS: patrz BEZPIECZENSTWO.md → Do zrobienia.
 
@@ -55,7 +55,8 @@ Strona z mapą pokazującą, jak i gdzie Polska może uzyskać więcej prądu. R
 - Morskie farmy (decyzje Ani 25.11.2026, wariant C): puste kółko – „brak w wykazie MKiŚ (stan: styczeń 2024)” widoczne zawsze, „możliwy duplikat” innego wpisu EMODnet dopiero od przybliżenia 9; Baltic Power „w rozruchu – część turbin produkuje” (nie „działa”, dopóki nie ma koncesji i eksploatacji komercyjnej); zwycięzcy aukcji URE z dopiskiem i linkiem do komunikatu.
 - Słońce (produkcja PV w okienku PSE) w kolorze jasnej cytryny #FEF08A – linia ciągła z podpisem „słońce” przy linii; kreskowanie zarezerwowane dla danych wstępnych (decyzja Ani 25.11.2026).
 - Globus od razu przybliżony do Polski.
-- Priorytet: komputer (telefon później). Wyjątek (decyzja Ani 26.11.2026): E1 „Planuję inwestycję” (wyszukiwarka stacji w zakładce „Gdzie”) od razu także na telefonie 390×844.
+- Priorytet: komputer (telefon później). Wyjątek (decyzja Ani 26.11.2026): E1 „Planuję inwestycję” (wyszukiwarka stacji w zakładce „Gdzie”) i F2.1 (grupy PGE w „Gdzie”) od razu także na telefonie 390×844.
+- Dane OSD w zakładce „Gdzie” (F2.1, decyzje Ani 26.11.2026): wygląd – wariant A, osobna sekcja na końcu zakładki, pod wszystkim o PSE (bez przełącznika i bez wspólnej listy z PSE); moc OSD dotyczy grup stacji 110 kV – wspólna dla całej grupy (nie dzielimy na stacje, nie dodajemy grup); przy MW zawsze rok („2026: X MW · 2031: Y MW”, bez „teraz”), nad listą „stan na …”; filtr pola „Ile MW potrzebujesz?” według 2031 (jak PSE); szukanie stacji po nazwie w osobnym polu (ta sama nazwa w kilku grupach → wszystkie); opis grup cytatem operatora + osobno „objaśnienie SOURCE” (F1); zdania operatora pokazujemy tylko, jeśli dokument mówi je o odbiorcach; „47 grup według tabel PGE (tekst dokumentu podaje 46)” tylko w „?”; źródło, data, „przetworzone” i „SOURCE nie jest powiązany z …”. Mapa grup – na razie bez (sama lista); kółka/obrysy osobnym krokiem po pomiarze dopasowania stacji w OSM, bez kółek przy mieście z nazwy grupy. Poziom 3 tylko dla grup sprawdzonych przez Anię w PDF.
 - Ruch: jeden lot wprowadzający przy otwarciu (bez lotu przy prefers-reduced-motion); odtwarzanie doby uruchamiane przyciskiem przez widza; inne animacje – decyzja później.
 - Płynne przejście między stronami (View Transitions) i plakat kuli na stronie tytułowej – decyzja Ani 21.11; bez animacji przy ogranicz ruch.
 - Reguła przenikania (`@view-transition`) musi być także w małym `<style>` w `<head>` obu stron (index.html i mapa/index.html), nie tylko w src/style.css – sama reguła w zewnętrznym CSS przegrywa w Chrome wyścig z ciężkim modułem (22.11.2026).

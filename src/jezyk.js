@@ -4,6 +4,7 @@
 import pl from './teksty/pl.js';
 import en from './teksty/en.js';
 import cytaty from './teksty/cytaty-pse.js';
+import cytatyOsd from './teksty/cytaty-osd.js';
 
 const SLOWNIKI = { pl, en };
 const LOKALE = { pl: 'pl-PL', en: 'en-GB' };
@@ -65,6 +66,14 @@ export function zDanych(tekstPl, przedrostek) {
 export function cytatPse(tekstPl) {
   if (JEZYK === 'pl') return { tekst: tekstPl, oryginal: null, bezTlumaczenia: false };
   const tlumaczenie = cytaty[tekstPl];
+  if (!tlumaczenie) return { tekst: tekstPl, oryginal: null, bezTlumaczenia: true };
+  return { tekst: tlumaczenie, oryginal: tlumaczenie === tekstPl ? null : tekstPl, bezTlumaczenia: false };
+}
+
+// Cytat z dokumentu operatora dystrybucyjnego (F2.1, PGE) – ta sama zasada co cytatPse, słownik src/teksty/cytaty-osd.js.
+export function cytatOsd(tekstPl) {
+  if (JEZYK === 'pl') return { tekst: tekstPl, oryginal: null, bezTlumaczenia: false };
+  const tlumaczenie = cytatyOsd[tekstPl];
   if (!tlumaczenie) return { tekst: tekstPl, oryginal: null, bezTlumaczenia: true };
   return { tekst: tlumaczenie, oryginal: tlumaczenie === tekstPl ? null : tekstPl, bezTlumaczenia: false };
 }

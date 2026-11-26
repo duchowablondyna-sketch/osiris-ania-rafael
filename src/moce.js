@@ -9,6 +9,7 @@ import { t, tn, liczba, cytatPse, formatDoby, formatMiesiaca, tekstPl, JEZYK } f
 import { oznaczTerminy, objasnienie } from './terminy.js';
 import { tekstPodsumowania, tekstUwagi, dopisekListy, napieciaLub, tekstWniosku, tekstMocySkrot, zZdanPse } from './moce-teksty.js';
 import { czytajMw, filtrujStacje, najwiekszaMoc, terminPlanu } from './wyszukiwarka-mocy.js';
+import { dodajOsdPge } from './osd-pge.js';
 
 export const KOLOR_MOCY = '#2DD4BF';
 const KOSMOS = '#05070D';
@@ -170,6 +171,8 @@ export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, okienka }) 
     [{ slowo: t('slownik.osd_w_zdaniu'), tytul: t('slownik.osd_termin'), czesci: objasnienie('slownik.osd') }],
     okienka,
   );
+  // F2.1: grupy stacji 110 kV PGE w tej samej zakładce (src/osd-pge.js) – własne dane, działa też bez danych PSE.
+  const osdPge = dodajOsdPge({ okienka, linijkaZrodla });
   let dane = null;
   let wykaz = null; // wykaz rozdzielni PSE (public/data/rozdzielnie-pse.json); null = nie wczytał się
   let bezRozpatrzenia = new Map();
@@ -395,6 +398,7 @@ export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, okienka }) 
   function zastosujFiltr() {
     if (!dane) return;
     const { stan, mw } = czytajMw(szukaj.pole.value);
+    osdPge.filtruj(stan, mw);
     const pasujace = stan === 'ok' ? new Set(filtrujStacje(dane.odbiorcy, mw).map((s) => s.kod)) : null;
     for (const nr of [1, 2]) {
       let widac = 0;

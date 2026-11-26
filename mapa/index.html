@@ -237,6 +237,31 @@
           <p class="panel-moce__uwaga" id="moce-zrodla-zdanie">{{moce.zrodla_etykieta}} {{wspolne.wczytywanie}}</p>
           <p class="panel-moce__stan" id="moce-stan">{{moce.stan_etykieta}} {{wspolne.wczytywanie}}</p>
           <div id="moce-zrodlo"></div>
+          <!-- F2.1 „PGE na liście w Gdzie” (decyzje Ani 26.11.2026): grupy stacji 110 kV PGE Dystrybucja – lista bez mapy.
+               Kod: src/osd-pge.js, dane: public/data/osd-pge.json (ZRODLA.md). Moc wspólna dla całej grupy (bez dzielenia
+               i sumowania); filtr MW z pola wyżej według 2031; szukanie stacji – osobne pole. Ukryte do wczytania danych. -->
+          <section class="osd-pge" id="osd-pge" aria-labelledby="osd-pge-tytul" hidden>
+            <h2 class="panel-moce__tytul osd-pge__tytul" id="osd-pge-tytul">{{osd.tytul}}</h2>
+            <div class="osd-pge__opis" id="osd-pge-opis"></div>
+            <p class="szukaj-mw__status osd-pge__status" id="osd-pge-status" aria-live="polite"></p>
+            <p class="osd-pge__brak" id="osd-pge-brak" hidden></p>
+            <div class="szukaj-mw osd-pge__szukaj">
+              <label class="szukaj-mw__etykieta" for="osd-pge-szukaj">{{osd.szukaj_etykieta}}</label>
+              <div class="szukaj-mw__wiersz">
+                <input class="szukaj-mw__pole osd-pge__pole" id="osd-pge-szukaj" type="text" enterkeyhint="search" autocomplete="off" spellcheck="false"
+                       placeholder="{{osd.szukaj_podpowiedz}}" aria-describedby="osd-pge-szukaj-opis osd-pge-szukaj-status" />
+                <button type="button" class="szukaj-mw__wszystkie" id="osd-pge-szukaj-wyczysc" hidden>{{osd.szukaj_wyczysc}}</button>
+              </div>
+              <p class="szukaj-mw__opis" id="osd-pge-szukaj-opis">{{osd.szukaj_opis}}</p>
+              <p class="szukaj-mw__status" id="osd-pge-szukaj-status" aria-live="polite"></p>
+            </div>
+            <p class="osd-pge__stan" id="osd-pge-stan"></p>
+            <h3 class="etykieta-mala" id="osd-pge-lista-tytul">{{osd.lista_tytul}}</h3>
+            <ul class="panel-moce__lista osd-pge__lista" id="osd-pge-lista"></ul>
+            <p class="panel-moce__uwaga" id="osd-pge-szacunek"></p>
+            <p class="panel-moce__uwaga" id="osd-pge-gwiazdka"></p>
+            <div id="osd-pge-zrodlo"></div>
+          </section>
         </div>
         </section>
 

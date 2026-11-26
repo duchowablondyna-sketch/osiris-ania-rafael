@@ -88,7 +88,7 @@ async function uruchomSerwer() {
 async function sprawdzWyszukiwarke(strona, widok) {
   const bledy = [];
   const widoczne = () =>
-    strona.evaluate(() => [...document.querySelectorAll('.panel-moce__lista li')].filter((l) => !l.hidden).map((l) => l.dataset.kod));
+    strona.evaluate(() => [...document.querySelectorAll('#moce-lista-1 li, #moce-lista-2 li')].filter((l) => !l.hidden).map((l) => l.dataset.kod));
   await strona.locator('#karta > summary').click();
   await strona.locator('#zakladka-gdzie').click();
   const pole = strona.locator('#szukaj-mw-pole');
@@ -109,6 +109,27 @@ async function sprawdzWyszukiwarke(strona, widok) {
   if (!(await strona.locator('#szukaj-mw-status').textContent()).trim()) bledy.push('wyszukiwarka: „abc” → brak komunikatu');
   await strona.locator('#szukaj-mw-wszystkie').click();
   if ((await pole.inputValue()) !== '' || (await widoczne()).length !== 25) bledy.push('wyszukiwarka: „Pokaż wszystkie” nie czyści filtra');
+  // F2.1: grupy PGE (public/data/osd-pge.json) – ten sam filtr MW (według 2031) i osobne szukanie stacji po nazwie.
+  const grupy = () => strona.evaluate(() => [...document.querySelectorAll('#osd-pge-lista li')].filter((l) => !l.hidden).map((l) => l.dataset.nr).join(','));
+  await strona.locator('#osd-pge').waitFor({ state: 'attached', timeout: 15_000 });
+  await strona.waitForFunction(() => document.querySelectorAll('#osd-pge-lista li').length > 0, null, { timeout: 15_000 });
+  if ((await grupy()).split(',').length !== 47) bledy.push('PGE: na starcie nie 47 grup');
+  await pole.fill('150');
+  if ((await grupy()) !== '31,33,35') bledy.push(`PGE: 150 MW → ${await grupy()} (oczekiwano 31,33,35)`);
+  await pole.fill('300');
+  if ((await grupy()) !== '' || !(await strona.locator('#osd-pge-brak').isVisible())) bledy.push('PGE: 300 MW → są grupy albo nie widać zdania „brak wyniku”');
+  await pole.fill('');
+  const szukajPge = strona.locator('#osd-pge-szukaj');
+  await szukajPge.fill('belchatow');
+  if ((await grupy()) !== '18,19') bledy.push(`PGE: „belchatow” → ${await grupy()} (oczekiwano 18,19)`);
+  if (widok.nazwa === 'telefon') {
+    const h = await szukajPge.evaluate((e) => e.getBoundingClientRect().height);
+    if (h < 44) bledy.push(`PGE (telefon): pole szukania ma ${h} px wysokości (min. 44)`);
+    const s = await strona.locator('#osd-pge-lista li:not([hidden]) summary').first().evaluate((e) => e.getBoundingClientRect().height);
+    if (s < 44) bledy.push(`PGE (telefon): „stacje w grupie” ma ${s} px wysokości (min. 44)`);
+  }
+  await strona.locator('#osd-pge-szukaj-wyczysc').click();
+  if ((await grupy()).split(',').length !== 47) bledy.push('PGE: „Wyczyść” nie pokazuje wszystkich grup');
   if (widok.nazwa === 'telefon') {
     const m = await pole.evaluate((e) => ({ h: e.getBoundingClientRect().height, f: parseFloat(getComputedStyle(e).fontSize) }));
     if (m.h < 44) bledy.push(`wyszukiwarka (telefon): pole ma ${m.h} px wysokości (min. 44)`);
