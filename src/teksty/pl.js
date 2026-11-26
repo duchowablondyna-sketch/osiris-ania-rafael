@@ -185,6 +185,9 @@ export default {
   'liczba.stacja': { one: 'stacja', few: 'stacje', many: 'stacji' },
   'liczba.stacja_ma': { one: 'stacja ma', few: 'stacje mają', many: 'stacji ma' },
   'liczba.stacja_planowana': { one: 'stacja planowana', few: 'stacje planowane', many: 'stacji planowanych' },
+  // F2.1: grupy stacji PGE – „47 grup”, „w 2 grupach”.
+  'liczba.grupa': { one: 'grupa', few: 'grupy', many: 'grup' },
+  'liczba.grupa_w': { one: 'grupie', few: 'grupach', many: 'grupach' },
   'licznik.ladowe': (farmy, moc, wBudowie) => `${farmy} · ${moc} · ${wBudowie} w budowie`,
   'licznik.linie': (odcinki, data) => `${odcinki} · OSM ${data}`,
   // Licznik farm morskich: „26 wpisów · 1 w rozruchu, 25 planowanych” (części bez zer – src/main.js, licznikMorskich).
@@ -273,8 +276,9 @@ export default {
     'Sieć najwyższych napięć (220/400 kV) – dla największych odbiorców, np. fabryk i centrów danych.',
   // OSD – linki do operatorów dystrybucyjnych (25.11.2026): tylko linki do stron operatorów, danych nie pobieramy
   // (ZRODLA.md → „Operatorzy dystrybucyjni”). Obszary – „głównie”, bo obszary operatorów nie pokrywają się z regionami.
+  // F2.1 (decyzja Ani 26.11.2026): PGE pokazujemy w osobnej sekcji niżej; pozostali operatorzy – nadal tylko linki.
   'moce.osd_wstep':
-    'Mniejsze firmy przyłączają się do sieci operatorów dystrybucyjnych (OSD). Każdy publikuje wolną moc dla swojego obszaru – SOURCE jeszcze tych danych nie pokazuje:',
+    'Odbiorcy przyłączają się do sieci PSE albo do sieci operatorów dystrybucyjnych (OSD). SOURCE pokazuje na razie dane PGE; pozostali operatorzy – w\u00a0linkach:',
   'moce.osd_aria': 'Strony operatorów dystrybucyjnych z informacją o dostępnej mocy',
   'moce.osd.stoen': 'Stoen Operator (Warszawa)',
   'moce.osd.pge': 'PGE Dystrybucja (głównie wschód i centrum)',
@@ -407,6 +411,39 @@ export default {
   'szukaj.co_dalej_link': 'strona PSE „Dokumenty”',
   'szukaj.co_dalej_sciezka': 'Wzory wniosków i umów → Wnioski o określenie warunków przyłączenia do sieci przesyłowej',
   'szukaj.moc': (rok, data) => `na\u00a0${rok}\u00a0r. · stan na ${data}`,
+
+  // F2.1 „PGE na liście w Gdzie” (decyzje Ani 26.11.2026): grupy stacji 110 kV PGE Dystrybucja (public/data/osd-pge.json,
+  // src/osd-pge.js). Zawsze rok przy MW (bez „teraz”); cytat PGE i osobno „objaśnienie SOURCE” (zasada F1);
+  // moc wspólna dla grupy – bez dzielenia i bez sumowania. Twarda spacja przed MW i „r.”.
+  'osd.tytul': 'Wolna moc dla odbiorców · PGE Dystrybucja 110\u00a0kV',
+  'osd.stan': (data) => `stan na ${data}`,
+  'osd.liczba_grup_aria': 'Liczba grup – wyjaśnienie',
+  'osd.liczba_grup_wyjasnienie': (n, wTekscie) => `${n} grup według tabel PGE (tekst dokumentu podaje ${wTekscie}).`,
+  'osd.pge': 'PGE:',
+  'osd.cytat': (tekst) => `„${tekst}”`,
+  'osd.cytat_podpis': (strony) => `źródło: PGE Dystrybucja, informacja o łącznej dostępnej mocy przyłączeniowej, s.\u00a0${strony}`,
+  'osd.objasnienie_grupy': 'Jedna liczba MW dotyczy całej grupy stacji – nie dzielimy jej na stacje i nie dodajemy grup.',
+  'osd.lista_tytul': 'Grupy stacji 110\u00a0kV – kolejność jak w tabeli PGE',
+  'osd.wiersz_grupa': (nazwa, stacji) => `Grupa ${nazwa} · ${stacji}`,
+  'osd.wiersz_mw': (rokA, a, rokB, b) => `${rokA}: ${a} · ${rokB}: ${b}`,
+  'osd.pokaz_stacje': 'stacje w grupie',
+  'osd.gwiazdka': (cytat) => `* PGE: ${cytat}`,
+  'osd.szacunek': (cytat) => `Wartości szacunkowe – PGE: ${cytat}`,
+  'osd.przetworzone': (data) => `Odczyt tabeli z PDF i przetworzenie: SOURCE; pobrano ${data}. SOURCE nie jest powiązany z PGE Dystrybucja S.A.`,
+  'osd.zrodlo_nazwa': 'PGE Dystrybucja',
+  'osd.pasuje': (n, razem, rok) => `Pasuje: ${n} z ${razem} grup PGE na\u00a0${rok}\u00a0r. (moc wspólna dla całej grupy)`,
+  // mw, max – już z jednostką; max – największa moc w JEDNEJ grupie (z danych, nie suma).
+  'osd.brak': (data, mw, rok, max) =>
+    `Według danych PGE (stan na ${data}) żadna grupa nie miała ${mw} w\u00a0${rok}\u00a0r. Najwięcej w jednej grupie: ${max} w\u00a0${rok}\u00a0r.`,
+  'osd.szukaj_etykieta': 'Szukaj stacji PGE po nazwie',
+  'osd.szukaj_podpowiedz': 'np. Radom',
+  'osd.szukaj_opis': 'Pokażemy grupy, w których jest stacja o takiej nazwie albo jej fragmencie.',
+  'osd.szukaj_wyczysc': 'Wyczyść',
+  'osd.szukaj_wynik': (stacji, grup) => `Znaleziono: ${stacji} w\u00a0${grup}.`,
+  'osd.szukaj_dokladne': (nazwa, grup) => `Stacja o nazwie „${nazwa}” jest w\u00a0${grup} – mogą to być różne miejsca o tej samej nazwie.`,
+  'osd.szukaj_brak': (tekst) => `Brak stacji PGE o nazwie zawierającej „${tekst}”.`,
+  'osd.brak_danych': 'Dane PGE: brak danych',
+  'cytat.oryginal_pge': (tekst) => `oryginał PGE: „${tekst}”`,
   // Linijka z projektu planu rozwoju sieci PSE 2027–2036 (public/data/plan-rozwoju-pse.json; ZRODLA.md).
   'plan.linia': (miesiac, od, doRoku) =>
     `Projekt planu rozwoju sieci PSE (${miesiac}, przed uzgodnieniem z\u00a0URE) – zadanie budowy stacji: ${od}–\u2060${doRoku} (rozpoczęcie – zakończenie zadania)`,
@@ -606,6 +643,9 @@ export default {
     'Stacje, do których wnioski nie były rozpatrywane według wykazu (pusty sześciokąt – wykaz obejmuje rozdzielnię 220/400 kV; gdy tylko 110 kV – pełny sześciokąt i uwaga w okienku): PSE S.A., <a href="https://www.pse.pl/dane-systemowe/praca-kse/informacje-ogolne/wykaz-obiektow-planowanych-do-przylaczenia" target="_blank" rel="noopener">„Wykaz rozdzielni na stacjach bez możliwości przyłączenia nowych obiektów”</a>, stan na 04.02.2026 (starszy niż moce – stan na 31.10.2026), plik pobrany 21.11.2026, przetworzone (wyciąg list 2 i 3).',
   'stopka.miejsca':
     'Miejsca stacji: OpenStreetMap (ODbL) – planowane stacje z OSM albo koła 20 km wokół miejscowości z opisu PSE (lokalizacja przybliżona, wybór SOURCE).',
+  // F2.1: grupy stacji PGE w zakładce „Gdzie” (public/data/osd-pge.json, ZRODLA.md). Link do strony, nie do pliku z wersją.
+  'stopka.osd_pge':
+    'Grupy stacji 110\u00a0kV z wolną mocą dla odbiorców (zakładka „Gdzie”): PGE Dystrybucja S.A., <a href="https://pgedystrybucja.pl/przylaczenia/procedury-przylaczeniowe/informacja-o-lacznej-dostepnej-mocy-przylaczeniowej" target="_blank" rel="noopener">„Informacja o łącznej dostępnej mocy przyłączeniowej” – III kwartał 2026</a>, stan na 30.09.2026, plik pobrany 26.11.2026, przetworzone (odczyt tabeli mocy odbiorczej; mocy grup nie sumujemy). Wartości szacunkowe według PGE. SOURCE nie jest powiązany z PGE Dystrybucja S.A.',
   'stopka.linie':
     'Linie najwyższych napięć: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>, <a href="https://opendatacommons.org/licenses/odbl/" target="_blank" rel="noopener">ODbL</a> (podpis widoczny też stale na mapie, w prawym dolnym rogu).',
   'stopka.czcionki':

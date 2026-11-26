@@ -1,0 +1,2874 @@
+{
+ "opis": "Wolna moc dla odbiorców w sieci PGE Dystrybucja – wartości łącznej dostępnej mocy przyłączeniowej [MW] odbiorczej dla grup stacji 110 kV (tabela „0.2”, w tekście dokumentu „2.2”) – wyciąg SOURCE (ręczny odczyt PDF, F2.1). Moc jest wspólna dla całej grupy: nie dzielimy jej na stacje i nie dodajemy grup.",
+ "zrodlo": {
+  "nazwa": "PGE Dystrybucja S.A., „Informacja o łącznej dostępnej mocy przyłączeniowej dla obiektów przyłączanych do sieci elektroenergetycznej PGE Dystrybucja S.A. o napięciu znamionowym powyżej 1 kV – III kwartał 2026”",
+  "url_strony": "https://pgedystrybucja.pl/przylaczenia/procedury-przylaczeniowe/informacja-o-lacznej-dostepnej-mocy-przylaczeniowej",
+  "url_pdf": "https://pgedystrybucja.pl/content/download/71691b9fb622cdf89306ec0dc0c1ac3d/file/informacja-o-lacznej-dostepnej-mocy-przylaczeniowej.pdf?inLanguage=pol-PL&version=11&contentId=2208",
+  "stan_na": "2026-09-30",
+  "data_utworzenia_pdf": "2026-10-02",
+  "rozmiar_b": 1188959,
+  "sha256": "a15157fb7af2b5ed4c6dd8eb32add151def524d4b7cc2624ecf88eba4d144e73",
+  "strony": [
+   9,
+   10,
+   11,
+   12
+  ],
+  "pobrano": "2026-11-26",
+  "podstawa_prawna": "art. 7 ust. 8l pkt 2 ustawy – Prawo energetyczne w brzmieniu Dz.U. 2026 poz. 516",
+  "sprawdzono": "2026-11-26"
+ },
+ "cytaty": {
+  "grupy": {
+   "tekst": "grupy węzłów koherentnych tzn. takich, w których przyłączenia znacząco oddziaływają na siebie",
+   "strony": "2–3"
+  },
+  "szacunek": {
+   "tekst": "wyznaczone wartości dostępnych mocy przyłączeniowych należy traktować jako wartości szacunkowe",
+   "strony": "2"
+  },
+  "gwiazdka": {
+   "tekst": "stacje niebędące własnością PGE Dystrybucja SA",
+   "strony": "8, 12"
+  }
+ },
+ "liczba_grup": {
+  "tabele": 47,
+  "tekst_dokumentu": 46,
+  "strony_tekstu": "3",
+  "strony_tabel": "5–12"
+ },
+ "rok_filtra": 2031,
+ "lata": [
+  2026,
+  2027,
+  2028,
+  2029,
+  2030,
+  2031
+ ],
+ "weryfikacja": {
+  "poziom_3": "Ania 26.11.2026 przeczytała w PDF PGE (ten sam plik, sha256 a15157fb…) grupy 7, 8, 35, 39, 44: numer, nazwa, strona, MW 2026 i 2031, liczba stacji, pierwsza i ostatnia stacja – zgodne z odczytem SOURCE.",
+  "poziom_1": "Pozostałe 42 grupy: odczyt SOURCE (PDFKit, położenie słów), 26.11.2026 – bez sprawdzenia przez człowieka."
+ },
+ "grupy": [
+  {
+   "nr": 1,
+   "nazwa": "Hańcza",
+   "strona": 9,
+   "liczba_stacji": 9,
+   "stacje": [
+    {
+     "nazwa": "Sejny",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Hańcza",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Suwałki Strefa",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Reja",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Suwałki",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Augustów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Filipów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Piecki",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Potasznia",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 10,
+    "2027": 10,
+    "2028": 10,
+    "2029": 10,
+    "2030": 10,
+    "2031": 10
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 2,
+   "nazwa": "Giżycko",
+   "strona": 9,
+   "liczba_stacji": 13,
+   "stacje": [
+    {
+     "nazwa": "Mikołajki",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Szeligi",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Ełk",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Lipińskie Małe",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Ełk 2 Polna",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Olecko",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Gołdap",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Wronki",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Banie Mazurskie",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Węgorzewo",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Giżycko",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Siedliska",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Wydminy",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 5,
+    "2027": 5,
+    "2028": 5,
+    "2029": 5,
+    "2030": 5,
+    "2031": 5
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 3,
+   "nazwa": "Pisz",
+   "strona": 9,
+   "liczba_stacji": 12,
+   "stacje": [
+    {
+     "nazwa": "Nida",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Pisz",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Kolno",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Biała Piska",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Łyse",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Myszyniec",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Dylewo",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Łomża 2",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Łomża",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Jantar",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Jeżewo",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Wizna",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 5,
+    "2027": 5,
+    "2028": 5,
+    "2029": 5,
+    "2030": 5,
+    "2031": 5
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 4,
+   "nazwa": "Grajewo",
+   "strona": 9,
+   "liczba_stacji": 6,
+   "stacje": [
+    {
+     "nazwa": "Grajewo 1",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Grajewo 2",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Ciemnoszyje",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Osowiec",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Mońki",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Knyszyn",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 15,
+    "2027": 15,
+    "2028": 15,
+    "2029": 15,
+    "2030": 15,
+    "2031": 15
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 5,
+   "nazwa": "Sokółka",
+   "strona": 9,
+   "liczba_stacji": 4,
+   "stacje": [
+    {
+     "nazwa": "Dąbrowa Białostocka",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Suchowola",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Sokółka Białostocka",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Polanka",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 15,
+    "2027": 15,
+    "2028": 15,
+    "2029": 15,
+    "2030": 15,
+    "2031": 15
+   },
+   "uwagi": [
+    "Lista stacji w tabeli „0.2” (s. 9) kończy się przecinkiem („…Sokółka Białostocka, Polanka,”). W tabeli wytwórczej „0.1” (s. 5) ta sama grupa: „Dąbrowa Białostocka, Suchowola, Sokółka, Polanka” – bez przecinka na końcu i bez dodatkowej stacji; różni się tylko nazwa „Sokółka” / „Sokółka Białostocka”. Niczego nie dopisujemy."
+   ],
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 6,
+   "nazwa": "Białystok",
+   "strona": 9,
+   "liczba_stacji": 14,
+   "stacje": [
+    {
+     "nazwa": "Wasilków",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Białystok EC2",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Białystok",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Racibory",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Łapy",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Baciuty",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Białystok RPZ6",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Fasty",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Białystok RPZ8",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Białystok RPZ5",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Białystok RPZ11",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Białystok RPZ4",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Białystok RPZ9",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Białystok RPZ3",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 25,
+    "2027": 25,
+    "2028": 25,
+    "2029": 25,
+    "2030": 25,
+    "2031": 25
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 7,
+   "nazwa": "Ostrołęka",
+   "strona": 9,
+   "liczba_stacji": 9,
+   "stacje": [
+    {
+     "nazwa": "Chorzele",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Przasnysz",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Krasnosielc",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Wojciechowice",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Goworki Ostrołęckie",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Pomian",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Różan",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Maków",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Żabin",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 5,
+    "2027": 5,
+    "2028": 5,
+    "2029": 5,
+    "2030": 5,
+    "2031": 5
+   },
+   "poziom_weryfikacji": 3
+  },
+  {
+   "nr": 8,
+   "nazwa": "Małkinia",
+   "strona": 9,
+   "liczba_stacji": 11,
+   "stacje": [
+    {
+     "nazwa": "Ostrów Mazowiecka",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Małkinia",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Kietlanka",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Czyżew",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Kity",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Wysokie Mazowieckie",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Zambrów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Ciechanowiec",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Sokołów Podlaski",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Zawady",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Węgrów",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 10,
+    "2027": 10,
+    "2028": 10,
+    "2029": 10,
+    "2030": 10,
+    "2031": 10
+   },
+   "poziom_weryfikacji": 3
+  },
+  {
+   "nr": 9,
+   "nazwa": "Adamowo",
+   "strona": 9,
+   "liczba_stacji": 9,
+   "stacje": [
+    {
+     "nazwa": "Michałowo",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Lewkowo",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Hajnówka",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Orla",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Bielsk Podlaski",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Milejczyce",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Augustynka",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Adamowo",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Siemiatycze",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 75,
+    "2027": 80,
+    "2028": 80,
+    "2029": 80,
+    "2030": 85,
+    "2031": 85
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 10,
+   "nazwa": "Wyszków",
+   "strona": 9,
+   "liczba_stacji": 11,
+   "stacje": [
+    {
+     "nazwa": "Przetycz",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Wyszków 2",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Wyszków",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Baczki",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Tłuszcz",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Wołomin Słoneczna",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Wołomin",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Pustelnik",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Ząbki",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Radzymin",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Małopole",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 0,
+    "2027": 0,
+    "2028": 0,
+    "2029": 0,
+    "2030": 0,
+    "2031": 0
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 11,
+   "nazwa": "Legionowo",
+   "strona": 9,
+   "liczba_stacji": 13,
+   "stacje": [
+    {
+     "nazwa": "Serock",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Dębe",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Orzechowo",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Pomiechówek",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Nowy Dwór Mazowiecki",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Czosnów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Łomianki",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Wieliszew",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Wodociąg",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Legionowo",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Legionowo 2",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Legionowo Cegielnia",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Kobiałka",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 0,
+    "2027": 0,
+    "2028": 0,
+    "2029": 0,
+    "2030": 0,
+    "2031": 0
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 12,
+   "nazwa": "Sochaczew",
+   "strona": 9,
+   "liczba_stacji": 22,
+   "stacje": [
+    {
+     "nazwa": "Teresin",
+     "abonencka": false
+    },
+    {
+     "nazwa": "CPK",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Bielnik",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Żyrardów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Mszczonów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Wymysłów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Huta Zawadzka",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Kaleń",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Grodzisk Mazowiecki",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Brwinów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Pruszków 2",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Michałowice",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Nadarzyn",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Gąsin",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Pruszków",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Piastów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Ożarów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Serwerownia Kaputy",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Babice",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Serwerownia Leszno",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Piorunów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Błonie Pass",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 0,
+    "2027": 0,
+    "2028": 0,
+    "2029": 0,
+    "2030": 0,
+    "2031": 0
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 13,
+   "nazwa": "Głowno",
+   "strona": 9,
+   "liczba_stacji": 6,
+   "stacje": [
+    {
+     "nazwa": "Sosnowiec",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Stryków",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Głowno",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Łowicz 2",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Łowicz 1",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Jackowice",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 0,
+    "2027": 0,
+    "2028": 0,
+    "2029": 0,
+    "2030": 0,
+    "2031": 0
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 14,
+   "nazwa": "Rawa Mazowiecka",
+   "strona": 9,
+   "liczba_stacji": 11,
+   "stacje": [
+    {
+     "nazwa": "Boryszew",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Jasionna",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Widok",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Skierniewice",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Słupia",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Odlewnia",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Koluszki",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Brzeziny",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Żelechlinek",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Rawa Mazowiecka",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Skoczykłody",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 5,
+    "2027": 5,
+    "2028": 5,
+    "2029": 5,
+    "2030": 5,
+    "2031": 5
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 15,
+   "nazwa": "Łódź",
+   "strona": 10,
+   "liczba_stacji": 29,
+   "stacje": [
+    {
+     "nazwa": "Ozorków",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Aleksandrów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Rudunki",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Radogoszcz",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Łódź Brzezińska",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Łódź Źródłowa",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Teofilów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Koziny",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Łódź Retkinia",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Łódź Łąkowa",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Łódź Polesie",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Ruda",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Konstilana",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Srebrna",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Lublinek",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Łódź Drewnowska",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Łódź Śródmieście",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Łódź Milionowa",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Widzew",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Łódź Komorniki",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Łódź Lodowa",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Starorudzka",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Chojny",
+     "abonencka": false
+    },
+    {
+     "nazwa": "PKP Łódź Olechów",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Kalinko",
+     "abonencka": false
+    },
+    {
+     "nazwa": "PZPB Pabianice",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Maślana",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Łódź EC3",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Łódź EC4",
+     "abonencka": true
+    }
+   ],
+   "mw": {
+    "2026": 5,
+    "2027": 5,
+    "2028": 25,
+    "2029": 25,
+    "2030": 25,
+    "2031": 25
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 16,
+   "nazwa": "Poddębice",
+   "strona": 10,
+   "liczba_stacji": 11,
+   "stacje": [
+    {
+     "nazwa": "Poddębice 1",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Poddębice 2",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Szadek",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Zduńska Wola",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Łask 2",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Łask 1",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Złota",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Sieradz",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Jawor",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Wróblew",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Błaszki",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 0,
+    "2027": 0,
+    "2028": 0,
+    "2029": 0,
+    "2030": 0,
+    "2031": 0
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 17,
+   "nazwa": "Wieluń",
+   "strona": 10,
+   "liczba_stacji": 9,
+   "stacje": [
+    {
+     "nazwa": "Złoczew",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Wieluń",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Wieluń 2",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Działoszyn",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Wistka",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Siemkowice",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Rusiec",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Chociw Łaski",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Kozuby",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 0,
+    "2027": 0,
+    "2028": 0,
+    "2029": 0,
+    "2030": 0,
+    "2031": 0
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 18,
+   "nazwa": "Bełchatów",
+   "strona": 10,
+   "liczba_stacji": 11,
+   "stacje": [
+    {
+     "nazwa": "Zelów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Bełchatów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Bełchatów Zamoście",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Piaski",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Kleszczów",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Żłobnica",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Bogumiłów",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Karolów",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Grzymalin",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Elektrownia Bełchatów",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Rogowiec Stary",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 15,
+    "2027": 15,
+    "2028": 15,
+    "2029": 15,
+    "2030": 15,
+    "2031": 15
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 19,
+   "nazwa": "Piotrków",
+   "strona": 10,
+   "liczba_stacji": 10,
+   "stacje": [
+    {
+     "nazwa": "Wolbórz",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Bronisławów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Sulejów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Pioma",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Bełchatów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Piotrków Wschód",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Gorzkowice",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Radomsko Komuna Paryska",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Stobiecko",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Radomsko 2 Południe",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 0,
+    "2027": 0,
+    "2028": 0,
+    "2029": 0,
+    "2030": 0,
+    "2031": 0
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 20,
+   "nazwa": "Tomaszów Mazowiecki",
+   "strona": 10,
+   "liczba_stacji": 10,
+   "stacje": [
+    {
+     "nazwa": "Brójce",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Łaznów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Niewiadów",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Tomaszów 2",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Wistom",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Tomaszów 1",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Rolland",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Opoczno",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Ceramika Opoczno",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Sławno",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 15,
+    "2027": 15,
+    "2028": 55,
+    "2029": 55,
+    "2030": 55,
+    "2031": 55
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 21,
+   "nazwa": "Grójec",
+   "strona": 10,
+   "liczba_stacji": 17,
+   "stacje": [
+    {
+     "nazwa": "Żurawia",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Rylsk",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Roszkowa Wola",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Mogielnica",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Białobrzegi",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Dobieszyn",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Błędów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Ferrero",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Grójec 2",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Tarczyn",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Grójec",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Sękocin",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Konstancin",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Góra Kalwaria",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Podstacja Trakcyjna Czachówek",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Warka",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Michalczew",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 0,
+    "2027": 0,
+    "2028": 0,
+    "2029": 0,
+    "2030": 0,
+    "2031": 0
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 22,
+   "nazwa": "Mińsk Mazowiecki",
+   "strona": 10,
+   "liczba_stacji": 10,
+   "stacje": [
+    {
+     "nazwa": "Zakręt",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Józefów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Otwock",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Świerk",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Mińsk Mazowiecki",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Anielina",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Mrozy",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Wola Karczewska",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Pilawa",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Garwolin",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 0,
+    "2027": 0,
+    "2028": 0,
+    "2029": 0,
+    "2030": 0,
+    "2031": 0
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 23,
+   "nazwa": "Siedlce",
+   "strona": 10,
+   "liczba_stacji": 5,
+   "stacje": [
+    {
+     "nazwa": "Korczew",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Kotuń",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Siedlce",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Siedlce Myśliwska",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Siedlce Przemysł",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 5,
+    "2027": 5,
+    "2028": 5,
+    "2029": 5,
+    "2030": 5,
+    "2031": 5
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 24,
+   "nazwa": "Biała Podlaska",
+   "strona": 10,
+   "liczba_stacji": 11,
+   "stacje": [
+    {
+     "nazwa": "Łosice",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Hołowczyce",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Janów Podlaski",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Huszlew",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Międzyrzec Podlaski",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Biała Podlaska Wola",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Biała Podlaska Sitnicka",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Wólka Dobryńska",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Piszczac",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Wisznice",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Parczew",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 0,
+    "2027": 0,
+    "2028": 35,
+    "2029": 35,
+    "2030": 110,
+    "2031": 110
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 25,
+   "nazwa": "Łuków",
+   "strona": 10,
+   "liczba_stacji": 6,
+   "stacje": [
+    {
+     "nazwa": "Stoczek Łukowski",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Łuków",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Radzyń",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Kock",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Michów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Lubartów",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 0,
+    "2027": 0,
+    "2028": 55,
+    "2029": 55,
+    "2030": 55,
+    "2031": 55
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 26,
+   "nazwa": "Puławy",
+   "strona": 10,
+   "liczba_stacji": 12,
+   "stacje": [
+    {
+     "nazwa": "Świerze",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Kozienice Miasto",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Pionki",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Pionki Pronit",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Sobolew",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Ryki",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Dęblin",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Puławy Rudy",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Puławy Kępa",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Kazimierz",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Klementowice",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Nałęczów",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 15,
+    "2027": 25,
+    "2028": 25,
+    "2029": 25,
+    "2030": 25,
+    "2031": 25
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 27,
+   "nazwa": "Radom",
+   "strona": 10,
+   "liczba_stacji": 11,
+   "stacje": [
+    {
+     "nazwa": "Jedlińsk",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Radom Gołębiów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Radom Północ",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Radom Zamłynie",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Radom Centralna",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Radom Południe",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Radom Podkanów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Chronówek",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Przysucha",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Radzice",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Drzewica",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 15,
+    "2027": 15,
+    "2028": 15,
+    "2029": 15,
+    "2030": 15,
+    "2031": 15
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 28,
+   "nazwa": "Małogoszcz",
+   "strona": 11,
+   "liczba_stacji": 8,
+   "stacje": [
+    {
+     "nazwa": "Stawowice",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Myślibórz",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Pląskowice",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Przedbórz",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Szreniawa",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Oleszno",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Włoszczowa",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Małogoszcz",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 10,
+    "2027": 10,
+    "2028": 55,
+    "2029": 55,
+    "2030": 55,
+    "2031": 55
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 29,
+   "nazwa": "Końskie",
+   "strona": 11,
+   "liczba_stacji": 18,
+   "stacje": [
+    {
+     "nazwa": "Końskie Zachód",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Końskie Polmo",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Końskie",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Stąporków",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Bór",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Suchedniów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Występa",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Zakłady Metalowe Skarżysko",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Skarżysko Południe",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Podemłynek",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Skarżysko Północ",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Szydłowiec",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Iłża 2",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Starachowice",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Iłża",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Starachowice Północ",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Szerzawy",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Nowa Słupia",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 15,
+    "2027": 15,
+    "2028": 75,
+    "2029": 75,
+    "2030": 75,
+    "2031": 75
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 30,
+   "nazwa": "Ostrowiec",
+   "strona": 11,
+   "liczba_stacji": 7,
+   "stacje": [
+    {
+     "nazwa": "Zwoleń",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Lipsko",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Opatów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Kunów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Ostrowiec GPZ1",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Ostrowiec Huta",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Ożarów Miasto",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 45,
+    "2027": 45,
+    "2028": 95,
+    "2029": 95,
+    "2030": 95,
+    "2031": 95
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 31,
+   "nazwa": "Poniatowa",
+   "strona": 11,
+   "liczba_stacji": 8,
+   "stacje": [
+    {
+     "nazwa": "Bełżyce",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Poniatowa",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Poniatowa EDA",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Opole Lubelskie",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Chruślina",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Budzyń",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Wilkołaz",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Annopol",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 25,
+    "2027": 25,
+    "2028": 25,
+    "2029": 25,
+    "2030": 180,
+    "2031": 180
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 32,
+   "nazwa": "Lublin",
+   "strona": 11,
+   "liczba_stacji": 16,
+   "stacje": [
+    {
+     "nazwa": "Garbów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Bursaki",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Lublin Północ",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Lublin Czechów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Lublin UMCS",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Lublin Czuby",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Wrotków",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Lublin Śródmieście",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Lublin Elektrownia",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Lublin Dziesiąta",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Lublin Hajdów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Lublin Wschód",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Lublin Odlewnia",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Lublin Felin",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Lublin EC2",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Świdnik",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 0,
+    "2027": 5,
+    "2028": 65,
+    "2029": 65,
+    "2030": 65,
+    "2031": 65
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 33,
+   "nazwa": "Łęczna",
+   "strona": 11,
+   "liczba_stacji": 7,
+   "stacje": [
+    {
+     "nazwa": "Ostrów Lubelski",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Łęczna",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Cyców",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Biskupice WOE",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Rejowiec",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Krasnystaw",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Krasnystaw Rońsko",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 0,
+    "2027": 5,
+    "2028": 155,
+    "2029": 155,
+    "2030": 160,
+    "2031": 160
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 34,
+   "nazwa": "Chełm",
+   "strona": 11,
+   "liczba_stacji": 8,
+   "stacje": [
+    {
+     "nazwa": "Lubień",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Włodawa",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Macoszyn",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Chełm Kolejowa",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Chełm Północ",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Chełm Południowa",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Dorohusk",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Wojsławice",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 0,
+    "2027": 0,
+    "2028": 75,
+    "2029": 75,
+    "2030": 85,
+    "2031": 85
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 35,
+   "nazwa": "Zamość",
+   "strona": 11,
+   "liczba_stacji": 7,
+   "stacje": [
+    {
+     "nazwa": "Żółkiewka",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Szczebrzeszyn",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Zamość Janowice",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Zamość Majdan",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Werbkowice",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Hrubieszów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Hrubieszów Południowy",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 5,
+    "2027": 5,
+    "2028": 235,
+    "2029": 235,
+    "2030": 235,
+    "2031": 235
+   },
+   "poziom_weryfikacji": 3
+  },
+  {
+   "nr": 36,
+   "nazwa": "Stalowa Wola",
+   "strona": 11,
+   "liczba_stacji": 9,
+   "stacje": [
+    {
+     "nazwa": "Dzwola",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Janów Lubelski",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Polichna",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Zaklików",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Sandomierz",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Stalowa Wola Miasto",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Stalowa Wola Posanie",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Gorzyce",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Gerlachów",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 75,
+    "2027": 75,
+    "2028": 75,
+    "2029": 90,
+    "2030": 90,
+    "2031": 90
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 37,
+   "nazwa": "Tarnobrzeg",
+   "strona": 11,
+   "liczba_stacji": 11,
+   "stacje": [
+    {
+     "nazwa": "Trześń",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Huta Szkła Sandomierz",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Tarnobrzeg",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Jeziorko",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Olendry",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Machów GPZ1",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Machów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Piaseczno WOE",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Siarka Osiek",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Klimontów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Nowa Dęba",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 35,
+    "2027": 35,
+    "2028": 35,
+    "2029": 35,
+    "2030": 35,
+    "2031": 35
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 38,
+   "nazwa": "Kielce",
+   "strona": 11,
+   "liczba_stacji": 10,
+   "stacje": [
+    {
+     "nazwa": "Promnik",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Kielce Niwachlów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Kielce Karczówka",
+     "abonencka": false
+    },
+    {
+     "nazwa": "EC Kielce",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Kielce Armatury",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Kielce ZWM",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Kielce Północ",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Kielce Wschód",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Kielce Południe",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Browar Belgia",
+     "abonencka": true
+    }
+   ],
+   "mw": {
+    "2026": 40,
+    "2027": 40,
+    "2028": 65,
+    "2029": 65,
+    "2030": 65,
+    "2031": 65
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 39,
+   "nazwa": "Jędrzejów",
+   "strona": 11,
+   "liczba_stacji": 5,
+   "stacje": [
+    {
+     "nazwa": "Wolica",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Jędrzejów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Jędrzejów 2",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Sędziszów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Miechów",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 5,
+    "2027": 5,
+    "2028": 5,
+    "2029": 5,
+    "2030": 5,
+    "2031": 5
+   },
+   "poziom_weryfikacji": 3
+  },
+  {
+   "nr": 40,
+   "nazwa": "Pińczów",
+   "strona": 11,
+   "liczba_stacji": 11,
+   "stacje": [
+    {
+     "nazwa": "Morawica",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Chmielnik",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Stawiany",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Busko",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Busko Zdrój",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Kije",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Pińczów 2",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Pińczów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Działoszyce",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Bejsce",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Kazimierza Wielka",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 0,
+    "2027": 0,
+    "2028": 0,
+    "2029": 0,
+    "2030": 0,
+    "2031": 0
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 41,
+   "nazwa": "Mielec",
+   "strona": 12,
+   "liczba_stacji": 7,
+   "stacje": [
+    {
+     "nazwa": "Cegielnia Oleśnica",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Stopnica",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Grzybów 2",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Grzybów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Staszów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Mielec",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Mielec Smoczka",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 0,
+    "2027": 0,
+    "2028": 0,
+    "2029": 0,
+    "2030": 0,
+    "2031": 0
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 42,
+   "nazwa": "Rzeszów",
+   "strona": 12,
+   "liczba_stacji": 21,
+   "stacje": [
+    {
+     "nazwa": "Kolbuszowa",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Ropczyce",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Sędziszów Małopolski",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Babica",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Husów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Łańcut",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Wysoka Głogowska",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Jasionka",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Głogów Małopolski",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Budy Głogowskie",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Rzeszów Dworzysko",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Rzeszów Zaczernie",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Rzeszów Staromieście",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Rzeszów EC",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Rzeszów Centralna",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Rzeszów Nowe Miasto",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Rzeszów Krasne",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Rzeszów DMS",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Staroniwa",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Rzeszów Baranówka",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Świlcza",
+     "abonencka": true
+    }
+   ],
+   "mw": {
+    "2026": 5,
+    "2027": 5,
+    "2028": 5,
+    "2029": 5,
+    "2030": 5,
+    "2031": 5
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 43,
+   "nazwa": "Biłgoraj",
+   "strona": 12,
+   "liczba_stacji": 9,
+   "stacje": [
+    {
+     "nazwa": "Nisko",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Harasiuki",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Biłgoraj",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Biłgoraj Południowy",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Tarnogród",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Sieniawa",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Leżajsk",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Rudnik",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Sokołów",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 65,
+    "2027": 65,
+    "2028": 65,
+    "2029": 65,
+    "2030": 65,
+    "2031": 65
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 44,
+   "nazwa": "Tomaszów Lubelski",
+   "strona": 12,
+   "liczba_stacji": 9,
+   "stacje": [
+    {
+     "nazwa": "Poturzyn",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Tyszowce",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Ulhówek",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Tomaszów Południe",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Tomaszów Północ",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Krasnobród",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Józefów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Lubaczów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Korczowa",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 40,
+    "2027": 40,
+    "2028": 40,
+    "2029": 40,
+    "2030": 40,
+    "2031": 40
+   },
+   "poziom_weryfikacji": 3
+  },
+  {
+   "nr": 45,
+   "nazwa": "Przemyśl",
+   "strona": 12,
+   "liczba_stacji": 11,
+   "stacje": [
+    {
+     "nazwa": "Munina",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Jarosław",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Jarosław Północ",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Przeworsk",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Przemyśl",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Radymno",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Przemyśl Przekopana",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Przemyśl Bakończyce",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Przemyśl Głęboka",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Bircza",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Pruchnik",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 35,
+    "2027": 35,
+    "2028": 35,
+    "2029": 35,
+    "2030": 35,
+    "2031": 35
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 46,
+   "nazwa": "Krosno",
+   "strona": 12,
+   "liczba_stacji": 10,
+   "stacje": [
+    {
+     "nazwa": "Strzyżów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Krosno",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Krosno Podkarpacka",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Krosno Wisze",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Iwonicz",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Dukla",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Nowy Żmigród",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Niegłowice",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Hankówka",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Biecz",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 0,
+    "2027": 0,
+    "2028": 0,
+    "2029": 0,
+    "2030": 0,
+    "2031": 0
+   },
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 47,
+   "nazwa": "Sanok",
+   "strona": 12,
+   "liczba_stacji": 10,
+   "stacje": [
+    {
+     "nazwa": "Dynów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Sanok Trepcza",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Stomil Sanok",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Sanok",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Brzozów",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Besko",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Rzepedź",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Lesko",
+     "abonencka": false
+    },
+    {
+     "nazwa": "Solina",
+     "abonencka": true
+    },
+    {
+     "nazwa": "Ustrzyki",
+     "abonencka": false
+    }
+   ],
+   "mw": {
+    "2026": 5,
+    "2027": 5,
+    "2028": 5,
+    "2029": 5,
+    "2030": 5,
+    "2031": 5
+   },
+   "poziom_weryfikacji": 1
+  }
+ ]
+}

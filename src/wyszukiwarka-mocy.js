@@ -52,3 +52,44 @@ export function najwiekszaMoc(odbiorcy) {
 export function terminPlanu(plan, kod) {
   return plan?.stacje?.find((s) => s.kod === kod) ?? null;
 }
+
+// ── F2.1 „PGE na liście w Gdzie” (decyzje Ani 26.11.2026): grupy stacji 110 kV PGE Dystrybucja (public/data/osd-pge.json).
+// Moc jest wspólna dla CAŁEJ grupy – grupa pasuje, gdy PGE podaje przy niej co najmniej X MW w roku filtra (2031, jak PSE
+// w E1); grup nie dodajemy i mocy nie dzielimy na stacje. Kolejność – jak w tabeli PGE (numer grupy).
+export const wKolejnosciGrup = (grupy) => [...grupy].sort((a, b) => a.nr - b.nr);
+
+export function filtrujGrupy(grupy, mw, rok) {
+  return wKolejnosciGrup(grupy).filter((g) => typeof g.mw?.[rok] === 'number' && g.mw[rok] >= mw);
+}
+
+// Największa moc w JEDNEJ grupie w danym roku (do zdania „brak wyniku”; nie suma).
+export function najwiekszaMocGrupy(grupy, rok) {
+  const moce = grupy.map((g) => g.mw?.[rok]).filter((x) => typeof x === 'number');
+  return moce.length ? Math.max(...moce) : null;
+}
+
+// Nazwa do porównań: małe litery, bez polskich znaków i nadmiarowych spacji („Bełchatów” = „belchatow” = „BEŁCHATÓW ”).
+export const doPorownania = (s) =>
+  String(s ?? '')
+    .toLocaleLowerCase('pl')
+    .replace(/ł/g, 'l')
+    .normalize('NFD')
+    .replace(/\p{M}/gu, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+// Szukanie stacji po nazwie (osobne pole): fragment nazwy, w każdej grupie osobno. Ta sama nazwa w kilku grupach
+// (np. „Bełchatów” – gr. 18 i 19) → wszystkie te grupy. Zwraca [{ grupa, stacje: [nazwy pasujące] }] w kolejności PGE
+// i `dokladne` – [{ nazwa, grup }]: stacje o nazwie DOKŁADNIE takiej jak wpis (bez wielkości liter i znaków), które są
+// w więcej niż jednej grupie.
+export function szukajStacji(grupy, tekst) {
+  const q = doPorownania(tekst);
+  if (!q) return { pusty: true, wyniki: [], dokladne: [] };
+  const wyniki = wKolejnosciGrup(grupy)
+    .map((g) => ({ grupa: g, stacje: g.stacje.filter((s) => doPorownania(s.nazwa).includes(q)).map((s) => s.nazwa) }))
+    .filter((w) => w.stacje.length);
+  const wGrupach = new Map();
+  for (const w of wyniki) for (const n of w.stacje) if (doPorownania(n) === q) wGrupach.set(n, (wGrupach.get(n) ?? 0) + 1);
+  const dokladne = [...wGrupach].filter(([, ile]) => ile > 1).map(([nazwa, grup]) => ({ nazwa, grup }));
+  return { pusty: false, wyniki, dokladne };
+}

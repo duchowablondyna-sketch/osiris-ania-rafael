@@ -212,6 +212,8 @@ export default {
   'liczba.stacja': { one: 'substation', other: 'substations' },
   'liczba.stacja_ma': { one: 'substation has', other: 'substations have' },
   'liczba.stacja_planowana': { one: 'planned substation', other: 'planned substations' },
+  'liczba.grupa': { one: 'group', other: 'groups' },
+  'liczba.grupa_w': { one: 'group', other: 'groups' },
   'licznik.ladowe': (farmy, moc, wBudowie) => `${farmy} · ${moc} · ${wBudowie} under construction`,
   'licznik.linie': (odcinki, data) => `${odcinki} · OSM ${data}`,
   'licznik.morskie': (ile, czesci) => `${ile} · ${czesci}`,
@@ -293,7 +295,7 @@ export default {
   'moce.wazne':
     'Extra-high-voltage grid (220/400 kV) – for the largest consumers, such as factories and data centres.',
   'moce.osd_wstep':
-    'Smaller businesses connect to the networks of distribution system operators (DSOs). Each publishes available capacity for its own area – SOURCE does not show this data yet:',
+    'Consumers connect either to the PSE grid or to the networks of distribution system operators (DSOs). SOURCE shows PGE data for now; the other operators – via the links:',
   'moce.osd_aria': 'Distribution system operators’ pages with available capacity information',
   'moce.osd.stoen': 'Stoen Operator (Warsaw)',
   'moce.osd.pge': 'PGE Dystrybucja (mainly east and centre)',
@@ -413,6 +415,36 @@ export default {
   'szukaj.co_dalej_link': 'PSE “Documents” page (in Polish)',
   'szukaj.co_dalej_sciezka': 'Application and contract templates → Applications for connection conditions to the transmission grid',
   'szukaj.moc': (rok, data) => `for ${rok} · as of ${data}`,
+
+  // F2.1 – PGE Dystrybucja 110 kV groups (see pl.js).
+  'osd.tytul': 'Available connection capacity for consumers · PGE Dystrybucja 110\u00a0kV',
+  'osd.stan': (data) => `as of ${data}`,
+  'osd.liczba_grup_aria': 'Number of groups – explanation',
+  'osd.liczba_grup_wyjasnienie': (n, wTekscie) => `${n} groups according to PGE's tables (the document's text says ${wTekscie}).`,
+  'osd.pge': 'PGE:',
+  'osd.cytat': (tekst) => `“${tekst}”`,
+  'osd.cytat_podpis': (strony) => `source: PGE Dystrybucja, information on total available connection capacity, p.\u00a0${strony}`,
+  'osd.objasnienie_grupy': 'One MW figure applies to the whole group of substations – we do not split it between substations or add groups together.',
+  'osd.lista_tytul': 'Groups of 110\u00a0kV substations – in the order of the PGE table',
+  'osd.wiersz_grupa': (nazwa, stacji) => `${nazwa} group · ${stacji}`,
+  'osd.wiersz_mw': (rokA, a, rokB, b) => `${rokA}: ${a} · ${rokB}: ${b}`,
+  'osd.pokaz_stacje': 'substations in the group',
+  'osd.gwiazdka': (cytat) => `* PGE: ${cytat}`,
+  'osd.szacunek': (cytat) => `Estimates – PGE: ${cytat}`,
+  'osd.przetworzone': (data) => `Table read from the PDF and processed by SOURCE; downloaded ${data}. SOURCE is not affiliated with PGE Dystrybucja S.A.`,
+  'osd.zrodlo_nazwa': 'PGE Dystrybucja',
+  'osd.pasuje': (n, razem, rok) => `Matching: ${n} of ${razem} PGE groups for ${rok} (capacity shared by the whole group)`,
+  'osd.brak': (data, mw, rok, max) =>
+    `According to PGE data (as of ${data}), no group had ${mw} in ${rok}. The most in a single group: ${max} in ${rok}.`,
+  'osd.szukaj_etykieta': 'Search PGE substations by name',
+  'osd.szukaj_podpowiedz': 'e.g. Radom',
+  'osd.szukaj_opis': 'We show the groups that contain a substation with this name or part of it.',
+  'osd.szukaj_wyczysc': 'Clear',
+  'osd.szukaj_wynik': (stacji, grup) => `Found: ${stacji} in ${grup}.`,
+  'osd.szukaj_dokladne': (nazwa, grup) => `A substation named “${nazwa}” is in ${grup} – these may be different places with the same name.`,
+  'osd.szukaj_brak': (tekst) => `No PGE substation with a name containing “${tekst}”.`,
+  'osd.brak_danych': 'PGE data: no data',
+  'cytat.oryginal_pge': (tekst) => `PGE original, in Polish: „${tekst}”`,
   'plan.linia': (miesiac, od, doRoku) =>
     `Draft PSE grid development plan (${miesiac}, not yet agreed with\u00a0URE) – substation construction task: ${od}–\u2060${doRoku} (start – completion of the task)`,
   'plan.krotko': (od, doRoku) => `Draft PSE plan – substation construction task: ${od}–\u2060${doRoku}`,
@@ -591,6 +623,8 @@ export default {
     'Substations where applications were not being processed according to the list (empty hexagon – the list covers the 220/400 kV switchyard; if only 110 kV – filled hexagon and a note in the pop-up): PSE S.A., <a href="https://www.pse.pl/dane-systemowe/praca-kse/informacje-ogolne/wykaz-obiektow-planowanych-do-przylaczenia" target="_blank" rel="noopener">“Wykaz rozdzielni na stacjach bez możliwości przyłączenia nowych obiektów”</a> (list of switchyards at substations where new facilities cannot be connected), as of 4 Feb 2026 (older than the capacities – as of 31 Oct 2026), file retrieved 21 Nov 2026, processed (extract of lists 2 and 3).',
   'stopka.miejsca':
     'Substation locations: OpenStreetMap (OSM), ODbL – planned substations from OSM, or 20 km circles around the town named by PSE (approximate location, chosen by SOURCE).',
+  'stopka.osd_pge':
+    'Groups of 110\u00a0kV substations with available capacity for consumers (“Where to connect” tab): PGE Dystrybucja S.A., <a href="https://pgedystrybucja.pl/przylaczenia/procedury-przylaczeniowe/informacja-o-lacznej-dostepnej-mocy-przylaczeniowej" target="_blank" rel="noopener">information on total available connection capacity – Q3 2026 (in Polish)</a>, as of 30 Sept 2026, file retrieved 26 Nov 2026, processed (reading of the consumer capacity table; we do not add up group capacities). Estimates according to PGE. SOURCE is not affiliated with PGE Dystrybucja S.A.',
   'stopka.linie':
     'Extra-high-voltage lines: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>, <a href="https://opendatacommons.org/licenses/odbl/" target="_blank" rel="noopener">ODbL</a> (this credit is also always visible on the map, bottom right).',
   'stopka.czcionki':
