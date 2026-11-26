@@ -75,7 +75,7 @@ export default {
   'mapa.noc': 'Noc',
   'mapa.noc_opis':
     'Światła nocne (zdjęcie z 2016 r.) to przybliżenie aktywności i oświetlenia – głównie oświetlenia ulic i zabudowy – a nie pomiar zużycia prądu.',
-  'mapa.powrot_aria': 'Strona główna SOURCE',
+  'mapa.powrot_aria': 'SOURCE – strona tytułowa',
 
   // ── Okienko PSE (lewa góra): wiatr, słońce, ograniczenia, cena, odtwarzanie doby ──
   'mapa.wiatr_etykieta': 'Produkcja z wiatru (ostatni dostępny kwadrans):',
