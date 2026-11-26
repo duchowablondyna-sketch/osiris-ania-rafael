@@ -155,3 +155,4 @@
 - [ ] Nowe obrazki do udostępniania (`public/og-obraz.png`, `og-obraz-en.png`) po zmianie nazwy na SOURCE i tytułu „ENERGIA W POLSCE” – osobny etap (decyzja Ani 26.11.2026); wtedy też nowy opis `meta.og_obraz_alt` (PL/EN – dziś opisuje stary obrazek z „Prąd w Polsce” / OSIRIS), sumy w ZRODLA.md i LinkedIn Post Inspector.
 - [ ] Na później: twarda spacja przed „MW”, „kV” i „r.” na całej stronie (dziś tylko w nowych tekstach E1 – decyzja Ani 26.11.2026).
 - [ ] Na później: komputer – po przewinięciu treści Karty Polski do samego końca znika „↓ więcej poniżej”, panel robi się niższy o 22 px i nagłówek Karty z zakładkami zjeżdża w dół (zmierzone 26.11.2026 na main, zakładka „Gdzie”, 1440×900: nagłówek 66 → 88 px). Przy wyszukiwarce E1 widać to częściej (krótki wynik).
+- [ ] (26.11.2026) CSP: po kilku dniach bez zgłoszeń w konsoli zmienić Report-Only na Content-Security-Policy; później style-src bez 'unsafe-inline' (hash).
