@@ -392,6 +392,48 @@ export default {
   'moce.licznik_wykaz_brak': 'switchyard list: no data',
   'moce.brak': 'PSE available capacity: no data',
 
+  // E1 – search above the substation list (WHERE TO CONNECT).
+  'szukaj.etykieta': 'How many MW do you need?',
+  'szukaj.podpowiedz': 'e.g. 300',
+  'szukaj.opis': 'We show substations where PSE gives at least this much available capacity – each one separately, without adding them up.',
+  'szukaj.pasuje': (n, razem) => `Matching: ${n} of ${razem} substations`,
+  'szukaj.wszystkie': 'Show all substations',
+  'szukaj.blad_zero': 'Enter a number greater than 0 (in\u00a0MW).',
+  'szukaj.blad_liczba': 'Enter just the number of megawatts, e.g. 300.',
+  'szukaj.blad_kropka': 'Enter the number without a full stop, e.g. 1500.',
+  'szukaj.blad_przecinek': 'Enter the number without a comma, e.g. 1500.',
+  'szukaj.blad_jednostka': 'Enter the capacity in\u00a0MW (1\u00a0GW = 1000\u00a0MW).',
+  'szukaj.brak': (mw, data, rok, max) =>
+    `According to PSE (as of ${data}), no planned substation has at least ${mw} of available capacity for large consumers for ${rok}. ` +
+    `The most at a single substation: ${max}. We don't add up several substations – using capacity at one may reduce capacity at neighbouring ones.`,
+  'szukaj.brak_osd': 'Connections to 110\u00a0kV and lower-voltage networks are handled by distribution system operators (DSOs) –',
+  'szukaj.brak_osd_link': 'see the list of operators',
+  'szukaj.co_dalej': 'Next step: application templates for connection conditions to the PSE grid –',
+  'szukaj.co_dalej_link': 'PSE “Documents” page (in Polish)',
+  'szukaj.co_dalej_sciezka': 'Application and contract templates → Applications for connection conditions to the transmission grid',
+  'szukaj.moc': (rok, data) => `for ${rok} · as of ${data}`,
+  'plan.linia': (miesiac, od, doRoku) =>
+    `Draft PSE grid development plan (${miesiac}, not yet agreed with\u00a0URE) – substation construction task: ${od}–\u2060${doRoku} (start – completion of the task)`,
+  'plan.krotko': (od, doRoku) => `Draft PSE plan – substation construction task: ${od}–\u2060${doRoku}`,
+  'plan.krotko_aria': (stacja) => `${stacja} – PSE caveats and draft grid development plan`,
+  'plan.skrot.1': '· delivery depends on consumers (PSE)',
+  'plan.skrot.2': '· timing depends on a power plant, consumer facility or energy storage being built (PSE)',
+  'plan.skrot.4': '· delivery depends on Port Polska being built (PSE)',
+  'plan.skrot.6': '· schedule depends on the number, capacity and construction of generating units (PSE)',
+  'plan.okienko_tytul': 'Draft PSE grid development plan',
+  'plan.niepewne.POM':
+    'Uncertain match: in the plan – extension of the existing 110\u00a0kV Pomorzany substation with a 220\u00a0kV switchyard; in the PSE capacity list – a planned substation.',
+  'plan.przypis.1': 'PSE: whether and when the task goes ahead depends on whether electricity consumers appear and grow in this area.',
+  'plan.przypis.2': 'PSE: the timing depends on whether and when a power plant, a consumer’s facility or an energy storage facility is built.',
+  'plan.przypis.4': 'PSE: whether and when the task goes ahead depends on the construction of Port Polska infrastructure.',
+  'plan.przypis.6': 'PSE: the schedule depends on the number of generating units, their capacity and their construction schedule.',
+  'plan.cytat': (tekst) => `PSE original, in Polish: „${tekst}”`,
+  'plan.zrodlo': (strony) => `source: PSE, draft grid development plan 2027–2036, p.\u00a0${strony}`,
+  'slownik.zakonczenie_pse': 'The date the task is completed “in technical as well as financial and formal terms”.',
+  'slownik.zakonczenie_osiris': 'This is not the day the substation starts operating.',
+  'slownik.zakonczenie_linie': 'The lines that will bring electricity to the substation are separate tasks in the plan – sometimes with a later date.',
+  'slownik.ure': 'Energy Regulatory Office (URE) – its President agrees PSE’s grid development plan.',
+
   // ── HOW MUCH & HOW CLEAN ──
   'karta.miks_aria': 'Generation mix in Poland',
   'karta.moce_tytul': 'How much of what we have is running',

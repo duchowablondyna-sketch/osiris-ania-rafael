@@ -5,9 +5,10 @@
 // – moc dla źródeł: bez znaczków, tylko zdanie w legendzie i w panelu;
 // – mocy stacji nigdy nie sumujemy (PSE: moc jednej stacji wpływa na moc stacji sąsiednich).
 import { stacjeBezRozpatrzenia, podzialStacji } from './wykaz-rozdzielni.js';
-import { t, tn, liczba, cytatPse, formatDoby } from './jezyk.js';
+import { t, tn, liczba, cytatPse, formatDoby, formatMiesiaca, tekstPl, JEZYK } from './jezyk.js';
 import { oznaczTerminy, objasnienie } from './terminy.js';
-import { tekstPodsumowania, tekstUwagi, dopisekListy, napieciaLub, tekstWniosku, tekstMocySkrot } from './moce-teksty.js';
+import { tekstPodsumowania, tekstUwagi, dopisekListy, napieciaLub, tekstWniosku, tekstMocySkrot, zZdanPse } from './moce-teksty.js';
+import { czytajMw, filtrujStacje, najwiekszaMoc, terminPlanu } from './wyszukiwarka-mocy.js';
 
 export const KOLOR_MOCY = '#2DD4BF';
 const KOSMOS = '#05070D';
@@ -16,6 +17,11 @@ const WARSTWY = ['moce-kola', 'moce-kola-obwodka', 'moce-podpis', 'moce'];
 // Daty i liczby wg języka strony (src/jezyk.js): 31.10.2026 / 31 Oct 2026, 1 200 MW / 1,200 MW.
 const formatDaty = formatDoby;
 const formatMw = (mw) => `${liczba(mw)} MW`;
+// E1: w nowych tekstach twarda spacja przed „MW” (decyzja Ani 26.11.2026 – ujednolicenie reszty strony na później).
+const formatMwTwarda = (mw) => `${liczba(mw)}\u00a0MW`;
+
+// Strony PDF planu z objaśnieniem „roku zakończenia” (przypis *3) i z zastrzeżeniami (1)–(6) – plan-rozwoju-pse.json.
+const STRONA_ZAKONCZENIA = '62';
 
 // Cytat z PSE jako elementy strony: po angielsku nasze tłumaczenie, a pod nim mniejszym drukiem oryginał po polsku
 // (decyzja Ani 23.11.2026); bez tłumaczenia – oryginał z dopiskiem. Po polsku – sam tekst.
@@ -304,8 +310,139 @@ export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, okienka }) 
   map.on('mouseleave', 'moce', () => (map.getCanvas().style.cursor = ''));
 
 
+  // ── E1 „Planuję inwestycję” (wariant A – decyzja Ani 26.11.2026): przy stacji jedna krótka linijka z projektu planu
+  // rozwoju sieci PSE + krótki skrót przypisu PSE; całość (pełne zdanie wykazu rozdzielni, linijka planu, przypisy
+  // z oryginałem, „zakończenie zadania”, po angielsku oryginał opisu stacji) – w okienku „?” (wzór C).
+  const element = (tag, klasa, tekst) => {
+    const e = document.createElement(tag);
+    if (klasa) e.className = klasa;
+    if (tekst !== undefined) e.textContent = tekst;
+    return e;
+  };
+  // Części okienka „?” stacji – teksty tylko ze słowników i z danych (jedno źródło tekstu).
+  function czesciOkienkaStacji(s, wpis, plan, wpisPlanu) {
+    const czesci = [];
+    if (JEZYK !== 'pl') czesci.push({ tekst: t('cytat.oryginal', s.opis_pse), podpis: `PSE · ${t('zrodlo.stan', formatDaty(dane.stan_na))}` });
+    // Pełne zdanie wykazu (np. „…o rozdzielniach 220/400 kV wykaz nic nie mówi”) – żeby krótkie „110 kV – bez rozpatrzenia”
+    // nie było czytane jako „stacja odpada” (decyzja Ani 26.11.2026).
+    if (wpis) {
+      czesci.push({
+        tekst: tekstUwagi(wpis, wykaz.stan_na),
+        podpis: `${t('wspolne.zrodlo')}: ${t('moce.zrodlo_wykaz')} · ${t('zrodlo.stan', formatDaty(wykaz.stan_na))}`,
+      });
+    }
+    czesci.push({
+      tekst: t('plan.linia', formatMiesiaca(plan.zrodlo.data_dokumentu), wpisPlanu.rok_rozpoczecia, wpisPlanu.rok_zakonczenia),
+      podpis: t('plan.zrodlo', wpisPlanu.strona),
+    });
+    for (const nr of wpisPlanu.przypisy) {
+      czesci.push({ tekst: `${t(`plan.przypis.${nr}`)} ${t('plan.cytat', plan.przypisy_pse[nr])}`, podpis: t('plan.zrodlo', plan.przypisy_strony.join(', ')) });
+    }
+    czesci.push({
+      tekst: JEZYK === 'pl' ? t('slownik.zakonczenie_pse') : `${t('slownik.zakonczenie_pse')} ${t('plan.cytat', plan.rok_zakonczenia_pse)}`,
+      podpis: t('plan.zrodlo', STRONA_ZAKONCZENIA),
+    });
+    // Trzy zdania OSIRIS pod jednym podpisem.
+    czesci.push({ tekst: ['slownik.zakonczenie_osiris', 'slownik.zakonczenie_linie', 'slownik.ure'].map((k) => t(k)).join(' '), podpis: t('slownik.objasnienie') });
+    return czesci;
+  }
+  // Okienko „?” stacji: podpis każdej części tuż pod nią (mały, szary – nie przyklejany na dół jak .zrodlo w okienku C,
+  // bo przy kilku częściach podpisy zbiłyby się pod spodem); na dole jedna linijka źródła jak w okienku stacji na mapie.
+  function trescOkienkaStacji(nazwa, czesci) {
+    const d = element('div', 'okienko-pytajnik');
+    d.append(element('strong', '', nazwa));
+    for (const { tekst, podpis } of czesci) d.append(element('p', '', tekst), element('p', 'okienko-pytajnik__podpis', podpis));
+    d.append(linijkaZrodla('PSE', 'stan', formatDaty(dane.stan_na)));
+    return d;
+  }
+  // Linijka planu przy stacji: „Projekt planu PSE – zadanie budowy stacji: 2023–2031 · realizacja zależy od odbiorców (PSE) ?”.
+  // „?” trzyma się ostatniego słowa (nie spada sam do nowej linii – telefon).
+  function linijkaPlanu(s, wpis, plan, wpisPlanu) {
+    const tekst = [t('plan.krotko', wpisPlanu.rok_rozpoczecia, wpisPlanu.rok_zakonczenia), ...wpisPlanu.przypisy.map((nr) => t(`plan.skrot.${nr}`))].join(' ');
+    const ostatnia = tekst.lastIndexOf(' ');
+    const linia = element('span', 'panel-moce__plan', tekst.slice(0, ostatnia + 1));
+    const razem = element('span', 'bez-lamania', `${tekst.slice(ostatnia + 1)}\u00a0`);
+    const pyt = element('button', 'karta__moc-pytajnik', '?');
+    pyt.type = 'button';
+    const nazwa = `${s.kod} – ${cytatPse(s.opis_pse).tekst}`;
+    pyt.setAttribute('aria-label', t('plan.krotko_aria', nazwa));
+    pyt.setAttribute('aria-haspopup', 'dialog');
+    okienka.podlacz(pyt, () => trescOkienkaStacji(nazwa, czesciOkienkaStacji(s, wpis, plan, wpisPlanu)));
+    razem.append(pyt);
+    linia.append(razem);
+    return linia;
+  }
+  // Linijki E1 dopisywane do pozycji listy (po nazwie, mocy i linijce „na 2031 r. · stan · lokalizacja”).
+  function linijkiE1(s, wpis, plan) {
+    const wpisPlanu = terminPlanu(plan, s.kod);
+    if (!wpisPlanu) return [];
+    const wynik = [linijkaPlanu(s, wpis, plan, wpisPlanu)];
+    // POM (decyzja Ani 26.11.2026): lata z dopiskiem, dlaczego dopasowanie jest niepewne – zawsze widoczny.
+    if (wpisPlanu.dopasowanie === 'niepewne') wynik.push(element('span', 'panel-moce__niepewne', t(`plan.niepewne.${s.kod}`)));
+    return wynik;
+  }
+
+  // Filtr E1: pole „Ile MW potrzebujesz?” ukrywa stacje z mniejszą mocą (każda osobno), licznik „Pasuje: N z 25 stacji”.
+  const szukaj = {
+    blok: document.getElementById('szukaj-mw'),
+    pole: document.getElementById('szukaj-mw-pole'),
+    wszystkie: document.getElementById('szukaj-mw-wszystkie'),
+    status: document.getElementById('szukaj-mw-status'),
+    brak: document.getElementById('szukaj-mw-brak'),
+    brakZdanie: document.getElementById('szukaj-mw-brak-zdanie'),
+  };
+  const BLEDY = { zero: 'szukaj.blad_zero', 'nie-liczba': 'szukaj.blad_liczba', jednostka: 'szukaj.blad_jednostka', kropka: 'szukaj.blad_kropka', przecinek: 'szukaj.blad_przecinek' };
+  function zastosujFiltr() {
+    if (!dane) return;
+    const { stan, mw } = czytajMw(szukaj.pole.value);
+    const pasujace = stan === 'ok' ? new Set(filtrujStacje(dane.odbiorcy, mw).map((s) => s.kod)) : null;
+    for (const nr of [1, 2]) {
+      let widac = 0;
+      for (const li of document.getElementById(`moce-lista-${nr}`).children) {
+        li.hidden = Boolean(pasujace) && !pasujace.has(li.dataset.kod);
+        if (!li.hidden) widac++;
+      }
+      document.getElementById(`moce-lista-${nr}-tytul`).hidden = widac === 0;
+    }
+    szukaj.wszystkie.hidden = stan === 'pusty';
+    szukaj.status.classList.toggle('szukaj-mw__status--blad', Boolean(BLEDY[stan]));
+    szukaj.status.textContent = BLEDY[stan] ? t(BLEDY[stan]) : pasujace ? t('szukaj.pasuje', pasujace.size, dane.odbiorcy.length) : '';
+    const brak = Boolean(pasujace) && pasujace.size === 0;
+    szukaj.brak.hidden = !brak;
+    if (brak) {
+      szukaj.brakZdanie.textContent = t(
+        'szukaj.brak',
+        formatMwTwarda(mw),
+        formatDaty(dane.stan_na),
+        zZdanPse(dane).rok ?? '–',
+        formatMwTwarda(najwiekszaMoc(dane.odbiorcy)),
+      );
+    }
+  }
+  szukaj.pole.addEventListener('input', zastosujFiltr);
+  szukaj.wszystkie.addEventListener('click', () => {
+    szukaj.pole.value = '';
+    zastosujFiltr();
+    szukaj.pole.focus();
+  });
+  // „zobacz listę operatorów” – przewinięcie do listy OSD w tej samej zakładce i fokus na pierwszym linku.
+  document.getElementById('szukaj-mw-do-osd').addEventListener('click', (e) => {
+    e.preventDefault();
+    const lista = document.getElementById('moce-osd');
+    const ruch = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+    lista.scrollIntoView({ block: 'start', behavior: ruch });
+    lista.querySelector('a')?.focus({ preventScroll: true });
+  });
+  // Po angielsku pod ścieżką menu PSE – oryginał po polsku (jak cytaty PSE).
+  if (JEZYK !== 'pl') {
+    const o = element('span', 'cytat-oryginal', t('cytat.oryginal', tekstPl('szukaj.co_dalej_sciezka')));
+    o.lang = 'pl';
+    document.getElementById('szukaj-mw-co-dalej').append(o);
+  }
+
   // Lista w panelu: przycisk otwiera okienko stacji (bez ruchu kamery).
-  function wypelnijPanel(sprawdzono) {
+  function wypelnijPanel(sprawdzono, plan) {
+    const rok = zZdanPse(dane).rok;
     for (const nr of [1, 2]) {
       const ul = document.getElementById(`moce-lista-${nr}`);
       ul.replaceChildren(
@@ -313,6 +450,7 @@ export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, okienka }) 
           .filter((s) => s.tabela === nr)
           .map((s) => {
             const li = document.createElement('li');
+            li.dataset.kod = s.kod;
             const nazwa = document.createElement(s.lokalizacja.rodzaj === 'brak' ? 'span' : 'button');
             nazwa.className = 'panel-moce__nazwa';
             nazwa.textContent = `${s.kod} – ${cytatPse(s.opis_pse).tekst}`;
@@ -329,18 +467,23 @@ export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, okienka }) 
             moc.textContent = formatMw(s.moc_mw);
             const lok = document.createElement('span');
             lok.className = 'panel-moce__lok';
-            lok.textContent = t(`moce.lok_krotko.${s.lokalizacja.rodzaj}`);
+            // E1: „na 2031 r. · stan na … · lokalizacja …” (rok i data z danych; bez roku w danych – jak dotąd).
+            const lokalizacja = t(`moce.lok_krotko.${s.lokalizacja.rodzaj}`);
+            lok.textContent = rok ? `${t('szukaj.moc', rok, formatDaty(dane.stan_na))} · ${lokalizacja}` : lokalizacja;
             const wpis = bezRozpatrzenia.get(s.kod);
             if (wpis) {
+              // „· 220 i 400 kV – bez rozpatrzenia” w całości w jednym wierszu (łamanie tylko przed „·” – E1, decyzja Ani).
               const w = document.createElement('span');
-              w.className = 'panel-moce__wstrzymane';
-              w.textContent = dopisekListy(wpis);
-              lok.append(w);
+              w.className = 'panel-moce__wstrzymane bez-lamania';
+              w.textContent = dopisekListy(wpis).trimStart();
+              lok.append(' ', w);
               if (wpis.pusty) li.classList.add('panel-moce__pozycja--wstrzymana');
             }
             li.append(nazwa, moc, lok);
-            const oryginal = podCytatem(s.opis_pse);
+            // EN: oryginał opisu PSE – w okienku „?” (E1); bez planu – jak dotąd pod nazwą.
+            const oryginal = terminPlanu(plan, s.kod) ? null : podCytatem(s.opis_pse);
             if (oryginal) li.append(oryginal);
+            li.append(...linijkiE1(s, wpis, plan));
             return li;
           }),
       );
@@ -384,6 +527,11 @@ export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, okienka }) 
 
   const sprawdzonoGotowe = fetch(`${import.meta.env.BASE_URL}data/moce-pse-sprawdzono.json`, { cache: 'no-store' })
     .then((o) => (o.ok ? o.json() : null))
+    .catch(() => null);
+  // E1: terminy zadań z projektu planu rozwoju sieci PSE (public/data/plan-rozwoju-pse.json); brak pliku – lista bez tej linijki.
+  const planGotowy = fetch(`${import.meta.env.BASE_URL}data/plan-rozwoju-pse.json`, { cache: 'no-store' })
+    .then((o) => (o.ok ? o.json() : null))
+    .then((p) => (Array.isArray(p?.stacje) && p.przypisy_pse && p.zrodlo ? p : null))
     .catch(() => null);
   const wykazGotowy = fetch(`${import.meta.env.BASE_URL}data/rozdzielnie-pse.json`, { cache: 'no-store' })
     .then((o) => (o.ok ? o.json() : null))
@@ -443,7 +591,9 @@ export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, okienka }) 
       skrotMoce.hidden = !sm;
       document.getElementById('kafel-moce').textContent = sm?.kafelLiczba ?? '–';
       document.getElementById('kafel-moce-opis').textContent = sm?.kafelOpis ?? '';
-      wypelnijPanel(await sprawdzonoGotowe);
+      wypelnijPanel(await sprawdzonoGotowe, await planGotowy);
+      szukaj.blok.hidden = false;
+      zastosujFiltr();
     })
     .catch(() => {
       ustawLicznik('moce', t('wspolne.brak_danych'), true);

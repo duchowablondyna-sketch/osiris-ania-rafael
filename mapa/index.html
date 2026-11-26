@@ -208,10 +208,30 @@
             <li><a class="link-zewn" href="https://www.tauron-dystrybucja.pl/przylaczenie-do-sieci/dostepne-moce" target="_blank" rel="noopener noreferrer">{{moce.osd.tauron}}<svg class="link-zewn__ikona" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true" focusable="false"><path d="M7 1h4v4M11 1 5.5 6.5M9.5 7.5V11h-9V2H4" fill="none" stroke="currentColor" stroke-width="1.3"/></svg><span class="tylko-czytnik"> {{onas.nowa_karta}}</span></a></li>
           </ul>
           <p class="panel-moce__podsumowanie" id="moce-podsumowanie">{{wspolne.wczytywanie}}</p>
-          <h2 class="etykieta-mala">{{moce.lista1}}</h2>
+          <!-- E1 „Planuję inwestycję” (decyzje Ani 26.11.2026): pole filtruje listę stacji poniżej (bez drugiej listy) –
+               stacje z co najmniej X MW, każda osobno, kolejność PSE. Kod: src/moce.js, src/wyszukiwarka-mocy.js.
+               Ukryte, dopóki nie wczytają się dane PSE. -->
+          <div class="szukaj-mw" id="szukaj-mw" hidden>
+            <label class="szukaj-mw__etykieta" for="szukaj-mw-pole">{{szukaj.etykieta}}</label>
+            <div class="szukaj-mw__wiersz">
+              <input class="szukaj-mw__pole" id="szukaj-mw-pole" type="text" inputmode="decimal" autocomplete="off" spellcheck="false"
+                     placeholder="{{szukaj.podpowiedz}}" aria-describedby="szukaj-mw-opis szukaj-mw-status" />
+              <button type="button" class="szukaj-mw__wszystkie" id="szukaj-mw-wszystkie" hidden>{{szukaj.wszystkie}}</button>
+            </div>
+            <p class="szukaj-mw__opis" id="szukaj-mw-opis">{{szukaj.opis}}</p>
+            <p class="szukaj-mw__status" id="szukaj-mw-status" aria-live="polite"></p>
+            <div class="szukaj-mw__brak" id="szukaj-mw-brak" hidden>
+              <p id="szukaj-mw-brak-zdanie"></p>
+              <p>{{szukaj.brak_osd}} <a class="szukaj-mw__do-osd" id="szukaj-mw-do-osd" href="#moce-osd">{{szukaj.brak_osd_link}}</a></p>
+            </div>
+          </div>
+          <h2 class="etykieta-mala" id="moce-lista-1-tytul">{{moce.lista1}}</h2>
           <ul class="panel-moce__lista" id="moce-lista-1"></ul>
-          <h2 class="etykieta-mala">{{moce.lista2}}</h2>
+          <h2 class="etykieta-mala" id="moce-lista-2-tytul">{{moce.lista2}}</h2>
           <ul class="panel-moce__lista" id="moce-lista-2"></ul>
+          <!-- E1 „Co dalej” – POD listą stacji (decyzja Ani 26.11.2026: pole → licznik → stacje → co dalej; przy braku wyników:
+               zdanie o braku → OSD → co dalej). Tylko link do strony PSE i ścieżka w jej menu (bez rad). -->
+          <p class="szukaj-mw__co-dalej" id="szukaj-mw-co-dalej">{{szukaj.co_dalej}} <a class="link-zewn" href="https://www.pse.pl/dokumenty" target="_blank" rel="noopener noreferrer">{{szukaj.co_dalej_link}}<svg class="link-zewn__ikona" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true" focusable="false"><path d="M7 1h4v4M11 1 5.5 6.5M9.5 7.5V11h-9V2H4" fill="none" stroke="currentColor" stroke-width="1.3"/></svg><span class="tylko-czytnik"> {{onas.nowa_karta}}</span></a>: <span id="szukaj-mw-sciezka">{{szukaj.co_dalej_sciezka}}</span></p>
           <p class="panel-moce__uwaga" id="moce-zrodla-zdanie">{{moce.zrodla_etykieta}} {{wspolne.wczytywanie}}</p>
           <p class="panel-moce__stan" id="moce-stan">{{moce.stan_etykieta}} {{wspolne.wczytywanie}}</p>
           <div id="moce-zrodlo"></div>

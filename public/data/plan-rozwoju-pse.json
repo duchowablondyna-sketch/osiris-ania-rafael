@@ -1,0 +1,403 @@
+{
+  "opis": "Terminy zadań z projektu planu rozwoju sieci przesyłowej PSE 2027–2036 dla 25 stacji z mocą dla odbiorców – wyciąg OSIRIS (ręczny odczyt tabel 5.2 i 5.3). Projekt, przed uzgodnieniem z Prezesem URE. Rok zakończenia = zakończenie zadania (technicznie, finansowo i formalnie), nie dzień uruchomienia stacji.",
+  "zrodlo": {
+    "nazwa": "PSE S.A., „Plan rozwoju w zakresie zaspokojenia obecnego i przyszłego zapotrzebowania na energię elektryczną na lata 2027-2036. Dokument główny”, projekt po konsultacjach",
+    "url_strony": "https://www.pse.pl/-/projekt-nowego-planu-rozwoju-sieci-przesylowej-na-lata-2027-2036",
+    "url_pdf": "https://www.pse.pl/documents/20182/7102190804/PRSP_2027-2036-dokument_glowny_projekt_po_konsultacji.pdf/de2f004f-8a80-4264-907a-a38d52c5d50f",
+    "data_dokumentu": "2026-04",
+    "last_modified": "Thu, 23 Apr 2026 11:49:46 GMT",
+    "rozmiar_b": 4510145,
+    "sha256": "5273f6837f5051a2de077f8904cb497fb9dcbab3e9302d8a4f8d34211ca3cc19",
+    "status": "projekt po konsultacjach – przed uzgodnieniem z Prezesem URE",
+    "sprawdzono": "2026-11-26",
+    "strony_przeczytane": [
+      57,
+      58,
+      59,
+      60,
+      62,
+      63,
+      65,
+      67,
+      69,
+      71,
+      72,
+      73,
+      75,
+      76
+    ]
+  },
+  "tabele": {
+    "5.2": "Planowane zadania inwestycyjne w zakresie rozbudowy i modernizacji sieci przesyłowej",
+    "5.3": "Realizowane zadania inwestycyjne w zakresie rozbudowy i modernizacji sieci przesyłowej"
+  },
+  "rok_zakonczenia_pse": "Data zakończenia zadania zarówno pod względem technicznym jak i finansowym i formalnym",
+  "przypisy_pse": {
+    "1": "Zasadność realizacji zadania i jego termin uzależnione są od powstania i rozwoju odbiorców energii na danym terenie inwestycyjnym.",
+    "2": "Termin realizacji zadania uzależniony jest od faktu oraz harmonogramu fizycznej budowy: źródła wytwórczego, odbiorcy energii elektrycznej albo magazynu energii elektrycznej.",
+    "4": "Zasadność realizacji zadania i jego harmonogram uzależnione są od budowy infrastruktury Portu Polska.",
+    "6": "Harmonogram realizacji zadania uzależniony jest od liczby bloków, ich mocy oraz harmonogramu budowy."
+  },
+  "przypisy_strony": [
+    62,
+    76
+  ],
+  "stacje": [
+    {
+      "kod": "NOR",
+      "rok_rozpoczecia": 2023,
+      "rok_zakonczenia": 2031,
+      "pozycja": "II.98",
+      "strona": 71,
+      "tabela": "5.3",
+      "nazwa_zadania": "Budowa stacji 220/110 kV Norki",
+      "przypisy": [],
+      "dopasowanie": "nazwa",
+      "poziom_weryfikacji": 1
+    },
+    {
+      "kod": "WIG",
+      "rok_rozpoczecia": 2023,
+      "rok_zakonczenia": 2031,
+      "pozycja": "II.97",
+      "strona": 71,
+      "tabela": "5.3",
+      "nazwa_zadania": "Budowa stacji 220/110 kV Wigry",
+      "przypisy": [],
+      "dopasowanie": "nazwa",
+      "poziom_weryfikacji": 1
+    },
+    {
+      "kod": "WYP",
+      "rok_rozpoczecia": 2022,
+      "rok_zakonczenia": 2031,
+      "pozycja": "II.6",
+      "strona": 63,
+      "tabela": "5.3",
+      "nazwa_zadania": "Budowa nowej stacji 220/110 kV w rejonie Warszawy (Wypędy) wraz z wprowadzeniem linii 220 kV Mory-Kozienice/Piaseczno",
+      "przypisy": [],
+      "dopasowanie": "nazwa",
+      "poziom_weryfikacji": 1
+    },
+    {
+      "kod": "MKA",
+      "rok_rozpoczecia": 2023,
+      "rok_zakonczenia": 2031,
+      "pozycja": "III.19",
+      "strona": 73,
+      "tabela": "5.3",
+      "nazwa_zadania": "Budowa nowej stacji 400/110 kV w rejonie Legnicy wraz z wprowadzeniem linii 400 kV Mikułowa-Pasikurowice oraz Czarna-Pasikurowice",
+      "przypisy": [
+        1
+      ],
+      "dopasowanie": "wykaz+nazwa",
+      "pozycja_prsp_2025_2034": "III.21",
+      "poziom_weryfikacji": 3
+    },
+    {
+      "kod": "REM",
+      "rok_rozpoczecia": 2029,
+      "rok_zakonczenia": 2035,
+      "pozycja": "III.73",
+      "strona": 58,
+      "tabela": "5.2",
+      "nazwa_zadania": "Budowa stacji 400/220/110 kV w rejonie Warszawy z wprowadzeniem linii 400 kV Mościska-Miłosna",
+      "przypisy": [
+        1
+      ],
+      "dopasowanie": "wykaz+nazwa",
+      "pozycja_prsp_2025_2034": "III.3",
+      "poziom_weryfikacji": 3
+    },
+    {
+      "kod": "SWR",
+      "rok_rozpoczecia": 2031,
+      "rok_zakonczenia": 2037,
+      "pozycja": "III.77",
+      "strona": 58,
+      "tabela": "5.2",
+      "nazwa_zadania": "Budowa stacji 400/220/110 kV w rejonie Warszawy z wprowadzeniem linii 400 kV Kozienice-Miłosna",
+      "przypisy": [
+        1
+      ],
+      "dopasowanie": "wykaz+nazwa",
+      "pozycja_prsp_2025_2034": "III.9",
+      "poziom_weryfikacji": 3
+    },
+    {
+      "kod": "EPK",
+      "rok_rozpoczecia": 2026,
+      "rok_zakonczenia": 2032,
+      "pozycja": "III.68",
+      "strona": 57,
+      "tabela": "5.2",
+      "nazwa_zadania": "Budowa nowej stacji 400/110 kV w rejonie Stalowej Woli",
+      "przypisy": [
+        1
+      ],
+      "dopasowanie": "wykaz+nazwa",
+      "pozycja_prsp_2025_2034": "III.41",
+      "poziom_weryfikacji": 3
+    },
+    {
+      "kod": "LWN",
+      "rok_rozpoczecia": 2026,
+      "rok_zakonczenia": 2032,
+      "pozycja": "III.70",
+      "strona": 57,
+      "tabela": "5.2",
+      "nazwa_zadania": "Budowa nowej stacji 400/110 kV w rejonie Opola wraz z wprowadzeniem linii 400 kV Dobrzeń-Pasikurowice",
+      "przypisy": [
+        1
+      ],
+      "dopasowanie": "wykaz+nazwa",
+      "pozycja_prsp_2025_2034": "III.45",
+      "poziom_weryfikacji": 3
+    },
+    {
+      "kod": "WRS",
+      "rok_rozpoczecia": 2026,
+      "rok_zakonczenia": 2032,
+      "pozycja": "III.69",
+      "strona": 57,
+      "tabela": "5.2",
+      "nazwa_zadania": "Budowa stacji 400/110 kV Wrzoski wraz z wprowadzeniem linii 400 kV Dobrzeń-Wielopole/Detmarovice",
+      "przypisy": [
+        1
+      ],
+      "dopasowanie": "wykaz+nazwa",
+      "pozycja_prsp_2025_2034": "III.203",
+      "poziom_weryfikacji": 3
+    },
+    {
+      "kod": "KUZ",
+      "rok_rozpoczecia": 2027,
+      "rok_zakonczenia": 2032,
+      "pozycja": "III.109",
+      "strona": 59,
+      "tabela": "5.2",
+      "nazwa_zadania": "Budowa stacji 400 kV w rejonie Złoczewa wraz z wprowadzeniem linii 400 kV Rogowiec/Trębaczew-Ostrów (zasilanie PT Kuźnica-Czajków)",
+      "przypisy": [
+        4
+      ],
+      "dopasowanie": "wykaz+nazwa",
+      "pozycja_prsp_2025_2034": "III.89",
+      "poziom_weryfikacji": 1
+    },
+    {
+      "kod": "ZER",
+      "rok_rozpoczecia": 2026,
+      "rok_zakonczenia": 2032,
+      "pozycja": "III.71",
+      "strona": 58,
+      "tabela": "5.2",
+      "nazwa_zadania": "Budowa nowej stacji 400/110 kV w rejonie Poznania wraz z wprowadzeniem linii 400 kV Kromolice-Pątnów",
+      "przypisy": [
+        1
+      ],
+      "dopasowanie": "wykaz+nazwa",
+      "pozycja_prsp_2025_2034": "III.46",
+      "poziom_weryfikacji": 3
+    },
+    {
+      "kod": "GNA",
+      "rok_rozpoczecia": 2024,
+      "rok_zakonczenia": 2034,
+      "pozycja": "III.7",
+      "strona": 72,
+      "tabela": "5.3",
+      "nazwa_zadania": "Budowa nowej stacji 400 kV w rejonie Konina wraz z wprowadzeniem linii 400 kV Kromolice-Pątnów",
+      "przypisy": [
+        6
+      ],
+      "dopasowanie": "wykaz+nazwa",
+      "pozycja_prsp_2025_2034": "III.100",
+      "poziom_weryfikacji": 1
+    },
+    {
+      "kod": "DSC",
+      "rok_rozpoczecia": 2022,
+      "rok_zakonczenia": 2035,
+      "pozycja": "III.55",
+      "strona": 75,
+      "tabela": "5.3",
+      "nazwa_zadania": "Budowa nowej stacji 400/110 kV w rejonie Trójmiasta wraz z wprowadzeniem linii 400 kV Żydowo Kierzkowo-Gdańsk Przyjaźń",
+      "przypisy": [
+        6
+      ],
+      "dopasowanie": "nazwa",
+      "poziom_weryfikacji": 1
+    },
+    {
+      "kod": "DZO",
+      "rok_rozpoczecia": 2026,
+      "rok_zakonczenia": 2032,
+      "pozycja": "III.63",
+      "strona": 57,
+      "tabela": "5.2",
+      "nazwa_zadania": "Budowa nowej stacji 400(220)/110 kV w rejonie Torunia z rozdzielnią 400 kV czasowo pracującą na napięciu 220 kV",
+      "przypisy": [
+        1
+      ],
+      "dopasowanie": "wykaz+nazwa",
+      "pozycja_prsp_2025_2034": "III.37",
+      "poziom_weryfikacji": 3
+    },
+    {
+      "kod": "CPK",
+      "rok_rozpoczecia": 2022,
+      "rok_zakonczenia": 2030,
+      "pozycja": "III.8",
+      "strona": 72,
+      "tabela": "5.3",
+      "nazwa_zadania": "Budowa stacji 400/110 kV w rejonie CPK wraz z wprowadzeniem linii 400 kV Rogowiec (Dmosin)-Ołtarzew",
+      "przypisy": [
+        4
+      ],
+      "dopasowanie": "nazwa",
+      "poziom_weryfikacji": 1
+    },
+    {
+      "kod": "DMO",
+      "rok_rozpoczecia": 2021,
+      "rok_zakonczenia": 2031,
+      "pozycja": "II.9",
+      "strona": 63,
+      "tabela": "5.3",
+      "nazwa_zadania": "Budowa stacji 400/220/110 kV Stryków (Dmosin) wraz z wprowadzeniem linii 400 kV Rogowiec-Płock/Ołtarzew i linii 220 kV Janów-Ołtarzew",
+      "przypisy": [],
+      "dopasowanie": "wykaz+nazwa",
+      "pozycja_prsp_2025_2034": "II.12",
+      "poziom_weryfikacji": 1
+    },
+    {
+      "kod": "WTN",
+      "rok_rozpoczecia": 2022,
+      "rok_zakonczenia": 2031,
+      "pozycja": "II.8",
+      "strona": 63,
+      "tabela": "5.3",
+      "nazwa_zadania": "Budowa stacji 400/110 kV Kutno (Witonia) wraz z wprowadzeniem linii 400 kV ze stacji Stryków (Dmosin) i nowej stacji w rejonie Konina",
+      "przypisy": [],
+      "dopasowanie": "nazwa",
+      "poziom_weryfikacji": 1
+    },
+    {
+      "kod": "MAK",
+      "rok_rozpoczecia": 2022,
+      "rok_zakonczenia": 2030,
+      "pozycja": "II.50",
+      "strona": 67,
+      "tabela": "5.3",
+      "nazwa_zadania": "Budowa stacji 400/110 kV Jarosław Systemowa wraz z wprowadzeniem linii Rzeszów-Chmielnicka przełączonej na napięcie 400 kV",
+      "przypisy": [],
+      "dopasowanie": "nazwa",
+      "poziom_weryfikacji": 1
+    },
+    {
+      "kod": "ZGN",
+      "rok_rozpoczecia": 2019,
+      "rok_zakonczenia": 2029,
+      "pozycja": "III.20",
+      "strona": 73,
+      "tabela": "5.3",
+      "nazwa_zadania": "Budowa stacji 220/110 kV Żagań (Marszów) wraz z wprowadzeniem linii 220 kV",
+      "przypisy": [
+        1,
+        2
+      ],
+      "dopasowanie": "nazwa",
+      "poziom_weryfikacji": 1
+    },
+    {
+      "kod": "POM",
+      "rok_rozpoczecia": 2014,
+      "rok_zakonczenia": 2030,
+      "pozycja": "II.25",
+      "strona": 65,
+      "tabela": "5.3",
+      "nazwa_zadania": "Budowa linii 220 kV Pomorzany – nacięcie linii Krajnik-Glinki wraz z rozbudową stacji 110 kV Pomorzany o rozdzielnię 220 kV oraz przebudową linii 220 kV Krajnik-Glinki",
+      "przypisy": [],
+      "dopasowanie": "niepewne",
+      "uwaga": "W planie: rozbudowa istniejącej stacji 110 kV Pomorzany o rozdzielnię 220 kV; w wykazie mocy PSE: stacja planowana. Dopasowanie po nazwie, niepewne.",
+      "poziom_weryfikacji": 1
+    },
+    {
+      "kod": "PBO",
+      "rok_rozpoczecia": 2020,
+      "rok_zakonczenia": 2035,
+      "pozycja": "II.70",
+      "strona": 69,
+      "tabela": "5.3",
+      "nazwa_zadania": "Budowa linii 220 kV Podborze – nacięcie Kopanina-Liskovec, Podborze – nacięcie Bujaków-Liskovec, Podborze – nacięcie Bieruń-Komorowice, Podborze – nacięcie Czeczott-Moszczenica i linii 400 kV Podborze – nacięcie Nosovice-Wielopole, Podborze – nacięcie Dobrzeń-Detmarovice wraz z budową stacji 400/220/110 kV Podborze",
+      "przypisy": [],
+      "dopasowanie": "wykaz+nazwa",
+      "pozycja_prsp_2025_2034": "II.78",
+      "poziom_weryfikacji": 3
+    },
+    {
+      "kod": "PSC",
+      "rok_rozpoczecia": 2027,
+      "rok_zakonczenia": 2033,
+      "pozycja": "III.94",
+      "strona": 59,
+      "tabela": "5.2",
+      "nazwa_zadania": "Budowa stacji 400/110 kV w rejonie Poznania wraz z wprowadzeniem linii 400 kV Baczyna-Plewiska",
+      "przypisy": [
+        1
+      ],
+      "dopasowanie": "wykaz+nazwa",
+      "pozycja_prsp_2025_2034": "III.71",
+      "poziom_weryfikacji": 1
+    },
+    {
+      "kod": "SBO",
+      "rok_rozpoczecia": 2025,
+      "rok_zakonczenia": 2035,
+      "pozycja": "III.54",
+      "strona": 75,
+      "tabela": "5.3",
+      "nazwa_zadania": "Budowa nowej stacji 400/110 kV na obszarze Pomorza Zachodniego",
+      "przypisy": [
+        2
+      ],
+      "dopasowanie": "wykaz+nazwa",
+      "pozycja_prsp_2025_2034": "III.251",
+      "poziom_weryfikacji": 1
+    },
+    {
+      "kod": "EJ1",
+      "rok_rozpoczecia": 2022,
+      "rok_zakonczenia": 2034,
+      "pozycja": "III.56",
+      "strona": 75,
+      "tabela": "5.3",
+      "nazwa_zadania": "Budowa stacji 400/110 kV Biebrowo przy Elektrowni Jądrowej",
+      "przypisy": [
+        6
+      ],
+      "dopasowanie": "wykaz+nazwa",
+      "pozycja_prsp_2025_2034": "III.33",
+      "poziom_weryfikacji": 1
+    },
+    {
+      "kod": "MAO",
+      "rok_rozpoczecia": 2026,
+      "rok_zakonczenia": 2034,
+      "pozycja": "III.67",
+      "strona": 57,
+      "tabela": "5.2",
+      "nazwa_zadania": "Budowa stacji 400/110 kV w rejonie Włocławka wraz z wprowadzeniem linii Grudziądz Węgrowo-Płock",
+      "przypisy": [
+        2
+      ],
+      "dopasowanie": "wykaz+nazwa",
+      "pozycja_prsp_2025_2034": "III.12",
+      "poziom_weryfikacji": 3
+    }
+  ],
+  "weryfikacja": {
+    "poziom_3": "Ania 26.11.2026 porównała w PDF pobranym ze strony pse.pl (ten sam plik: SHA-256 zgodny) lata i przypisy 10 stacji – zgodne z odczytem OSIRIS.",
+    "poziom_1": "Odczyt OSIRIS z obrazów stron (PDFKit), 26.11.2026 – bez sprawdzenia przez człowieka."
+  }
+}
