@@ -888,6 +888,65 @@ main {
   backdrop-filter: var(--szklo-rozmycie);
 }
 
+/* ── Logo SOURCE: litera O = „zaćmienie – diamentowy pierścień” (decyzje Ani 26.11.2026, wzór z planszy projektowej):
+   ciemny krąg (tło strony), złoty pierścień (--zloto #f2c14e, obecny akcent), jedna jasna iskra u góry po prawej.
+   Wymiary w em – rośnie razem z napisem. Bez ruchu (nic do wyłączania przy „ogranicz ruch”). Krój Outfit 300
+   (public/fonts/, src/czcionki.css). Kółko ma aria-hidden – nazwę dla czytnika daje aria-label. ── */
+.wm {
+  display: inline-flex;
+  align-items: center;
+  font-family: 'Outfit', var(--font-sans);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: 0.26em;
+  color: #f3f1ea;
+  white-space: nowrap;
+}
+
+.wm .o,
+.powrot .o {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: 0.74em;
+  height: 0.74em;
+  margin: 0 0.26em 0 0.02em;
+  border-radius: 50%;
+  background: var(--tlo);
+  /* Pierścień co najmniej 1 px – przy małym napisie (logo 14 px) 0,025 em to ok. 0,35 px, niewidoczne. */
+  box-shadow: 0 0 0 max(0.025em, 1px) var(--zloto), 0 0 0.12em 0.02em rgba(242, 193, 78, 0.45);
+}
+
+.wm .iskra,
+.powrot .iskra {
+  position: absolute;
+  top: 0.02em;
+  right: 0.04em;
+  /* Iskra co najmniej 2 px (przy małym napisie). */
+  width: max(0.13em, 2px);
+  height: max(0.13em, 2px);
+  border-radius: 50%;
+  background: #fff7dc;
+  box-shadow: 0 0 0.08em 0.04em #fff1c2, 0 0 0.3em 0.1em rgba(242, 193, 78, 0.75);
+}
+
+/* „← SOURCE” z „zaćmieniem” zamiast litery O (decyzja Ani 26.11.2026): komputer – napis 18 px, telefon – 16 px
+   (blok @media niżej). Litera O (.powrot__o) zostaje w kodzie tylko na wypadek braku stylów – czytnik i tak czyta aria-label. */
+.powrot {
+  font-size: 1.125rem;
+}
+
+.powrot__nazwa {
+  font-family: 'Outfit', var(--font-sans);
+  font-weight: 300;
+  letter-spacing: 0.26em;
+  color: #f3f1ea;
+}
+
+.powrot__o {
+  display: none;
+}
+
 .powrot:hover {
   border-color: var(--zloto);
 }
@@ -2295,5 +2354,6 @@ button.panel-moce__nazwa:hover {
     box-sizing: border-box;
     min-height: 44px;
     padding: 0 16px 0 14px;
+    font-size: 1rem; /* „← SOURCE” na telefonie trochę mniejszy niż na komputerze (decyzja Ani 26.11.2026) */
   }
 }

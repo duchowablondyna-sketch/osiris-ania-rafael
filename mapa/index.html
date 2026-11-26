@@ -35,6 +35,8 @@
     <link rel="alternate" hreflang="en" href="https://osiris-ania-rafael.pages.dev/en/map/" />
     <link rel="alternate" hreflang="x-default" href="https://osiris-ania-rafael.pages.dev/mapa/" />
     <meta name="twitter:card" content="summary_large_image" />
+    <!-- Ikona karty (favicon): pierścień „zaćmienia” z iskrą, złoto #f2c14e na ciemnym tle (decyzja Ani 26.11.2026). -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   </head>
   <body>
     <main>
@@ -322,7 +324,9 @@
       </div>
 
       <!-- Powrót na stronę tytułową: zwykły link (działa z klawiatury i z przyciskiem „Wstecz” przeglądarki). -->
-      <a class="powrot" href="{{@adres:tytulowa}}" aria-label="{{mapa.powrot_aria}}">← OSIRIS</a>
+      <!-- „← SOURCE” (zmiana nazwy, 26.11.2026). Nazwę dla czytnika daje aria-label; widoczny napis: zwykły tekst albo – przy
+           napisie od ok. 18 px – „zaćmienie” zamiast litery O (decyzja Ani; podgląd obu wersji, src/style.css). -->
+      <a class="powrot" href="{{@adres:tytulowa}}" aria-label="{{mapa.powrot_aria}}">← <span class="powrot__nazwa">S<span class="powrot__o">O</span><span class="o" aria-hidden="true"><span class="iskra"></span></span>URCE</span></a>
     </main>
 
     <!-- Stopka zwinięta do jednej linijki (więcej miejsca na mapę); <details> działa z klawiatury (Tab, Enter, Spacja). -->

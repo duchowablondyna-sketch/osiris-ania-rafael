@@ -664,6 +664,24 @@ body.tytulowa {
   pointer-events: none;
 }
 
+/* ── Logo SOURCE (zmiana nazwy, decyzje Ani 26.11.2026) – krój, kolor i „zaćmienie” w .wm (src/style.css).
+   Środek wysokości – jak dotąd na środku linii zegara (28 px od góry), na środku okna. Rozstrzelenie 0,26 em
+   (padding-left równoważy odstęp po ostatniej literze).
+   Rozmiar jak dawny napis OSIRIS – 0,875rem na komputerze i telefonie (decyzja Ani 26.11.2026); pierścień i iskra mają
+   najmniejszą grubość w px (src/style.css), więc przy 14 px są widoczne. Na telefonie rząd logo ma tę samą wysokość
+   co dawniej – nic się nie przesuwa (pomiar 26.11.2026). ── */
+.gora__logo.wm {
+  --logo-rozmiar: 0.875rem;
+  top: 28px;
+  transform: translate(-50%, -50%);
+  padding-left: 0.26em;
+  font-family: 'Outfit', var(--font-sans);
+  font-size: var(--logo-rozmiar);
+  font-weight: 300;
+  letter-spacing: 0.26em;
+  color: #f3f1ea;
+}
+
 /* Hasło usunięte ze strony – przycisk zostaje tam, gdzie był: jego odstęp = dawny odstęp hasła (9,5 vh + 20 px)
    + wysokość linii hasła (19 px, pomiar 23.11.2026) + dawny odstęp przycisku (30 px). */
 .bohater .przycisk--glowny {
@@ -700,6 +718,12 @@ body.tytulowa {
     transform: none;
     margin-bottom: 4px;
     text-align: center;
+  }
+
+  .gora__logo.wm {
+    display: flex;
+    justify-content: center;
+    transform: none;
   }
 
   .zegar {

@@ -38,6 +38,8 @@
     <link rel="alternate" hreflang="en" href="https://osiris-ania-rafael.pages.dev/en/" />
     <link rel="alternate" hreflang="x-default" href="https://osiris-ania-rafael.pages.dev/" />
     <meta name="twitter:card" content="summary_large_image" />
+    <!-- Ikona karty (favicon): pierścień „zaćmienia” z iskrą, złoto #f2c14e na ciemnym tle (decyzja Ani 26.11.2026). -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   </head>
   <body class="tytulowa">
     <section class="bohater">
@@ -55,8 +57,10 @@
             <p>{{tytulowa.opis}}</p>
           </div>
         </div>
-        <!-- Małe logo na środku paska (wersja 3, decyzja Ani 23.11.2026) – nazwa, w obu językach taka sama. -->
-        <span class="gora__logo">OSIRIS</span>
+        <!-- Logo SOURCE na środku paska (zmiana nazwy, decyzje Ani 26.11.2026): czysty napis w kroju Outfit, litera O =
+             „zaćmienie – diamentowy pierścień” (ciemny krąg, złoty pierścień, iskra u góry po prawej). role="img" + aria-label –
+             czytnik ekranu czyta jedno słowo „SOURCE”; kółko ukryte przed czytnikiem. Bez ruchu. W obu językach takie samo. -->
+        <span class="gora__logo wm" role="img" aria-label="SOURCE">S<span class="o" aria-hidden="true"><span class="iskra"></span></span>URCE</span>
         <!-- Prawy górny róg: zegar i obok przełącznik PL | EN (decyzja Ani 23.11.2026). -->
         <div class="gora__prawa">
           <span class="zegar" role="timer" aria-live="off"><span class="zegar__kropka" aria-hidden="true">●</span> {{tytulowa.czas_warszawa}} <span id="zegar">--:--:--</span></span>
