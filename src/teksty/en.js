@@ -419,6 +419,29 @@ export default {
   'szukaj.moc': (rok, data) => `for ${rok} · as of ${data}`,
 
   // F2.1 – PGE Dystrybucja 110 kV groups (see pl.js).
+  // ── “Where to connect” tools (src/gdzie-narzedzia.js) ──
+  'gdzie.nazwa_etykieta': 'Search substations by name',
+  'gdzie.nazwa_podpowiedz': 'e.g. Kutno',
+  'gdzie.nazwa_opis': 'We search PSE substations and the distribution operators’ groups of substations – part of a name is enough.',
+  'gdzie.nazwa_wyczysc': 'Clear',
+  'gdzie.naglowek_mw': (rok, mw) => `Matching (${rok}, at least ${mw}):`,
+  'gdzie.naglowek_nazwa': (tekst) => `Substations with “${tekst}” in the name:`,
+  'gdzie.naglowek_oba': (rok, mw, tekst) => `Matching (${rok}, at least ${mw}, “${tekst}” in the name):`,
+  'gdzie.lista_aria': 'Result by operator',
+  'gdzie.operator.pse': 'PSE',
+  'gdzie.operator.pge': 'PGE Dystrybucja',
+  'gdzie.operator.energa': 'Energa-Operator',
+  'gdzie.stacja_slowo': 'substation',
+  'gdzie.jednostka.stacja': 'substations',
+  'gdzie.jednostka.grupa': 'groups',
+  'gdzie.liczba': (operator, n, razem, jednostka) => `${operator} – ${n} of ${razem} ${jednostka}`,
+  'gdzie.lista.grupa': (operator, n, nazwy) => (n === 1 ? `${operator} – group ${nazwy}` : `${operator} – groups: ${nazwy}`),
+  'gdzie.lista.stacja': (operator, n, nazwy) => (n === 1 ? `${operator} – substation ${nazwy}` : `${operator} – substations: ${nazwy}`),
+  'gdzie.brak': (operator) => `${operator} – none`,
+  'gdzie.brak_danych': (operator) => `${operator} – no data`,
+  'gdzie.do_listy': 'go to the list',
+  'gdzie.dokladne': (nazwa, grup) => `A substation named “${nazwa}” is in ${grup} – these may be different places with the same name.`,
+  'gdzie.nie_sumujemy': 'Capacity is not added up across operators or groups.',
   'osd.tytul': 'Available connection capacity for consumers · PGE Dystrybucja 110\u00a0kV',
   'osd.stan': (data) => `as of ${data}`,
   'osd.liczba_grup_aria': 'Number of groups – explanation',
@@ -438,13 +461,6 @@ export default {
   'osd.pasuje': (n, razem, rok) => `Matching: ${n} of ${razem} PGE groups for ${rok} (capacity shared by the whole group)`,
   'osd.brak': (data, mw, rok, max) =>
     `According to PGE data (as of ${data}), no group had ${mw} in ${rok}. The most in a single group: ${max} in ${rok}.`,
-  'osd.szukaj_etykieta': 'Search PGE and Energa substations by name',
-  'osd.szukaj_podpowiedz': 'e.g. Radom',
-  'osd.szukaj_opis': 'We show the groups that contain a substation with this name or part of it.',
-  'osd.szukaj_wyczysc': 'Clear',
-  'osd.szukaj_wynik': (stacji, grup) => `Found: ${stacji} in ${grup}.`,
-  'osd.szukaj_dokladne': (nazwa, grup) => `A substation named “${nazwa}” is in ${grup} – these may be different places with the same name.`,
-  'osd.szukaj_brak': (tekst) => `No PGE substation with a name containing “${tekst}”.`,
   'osd.brak_danych': 'PGE data: no data',
   'cytat.oryginal_pge': (tekst) => `PGE original, in Polish: „${tekst}”`,
   // ── F2.2 Energa in “Where to connect” (src/osd-energa.js) ──
@@ -472,8 +488,6 @@ export default {
   'osd.energa.pasuje': (n, razem, rok) => `Matching: ${n} of ${razem} Energa groups for ${rok} (capacity shared by the whole group)`,
   'osd.energa.brak': (data, mw, rok, max) =>
     `According to Energa data (as of ${data}), no group had ${mw} in ${rok}. The most in a single group: ${max} in ${rok}.`,
-  'osd.energa.szukaj_wynik': (stacji, grup) => `Energa: ${stacji} in ${grup} – see the list below.`,
-  'osd.szukaj_brak_obu': (tekst) => `No PGE or Energa substation with a name containing “${tekst}”.`,
   'osd.energa.brak_danych': 'Energa data: no data',
   'cytat.oryginal_energa': (tekst) => `Energa original, in Polish: „${tekst}”`,
   'plan.linia': (miesiac, od, doRoku) =>

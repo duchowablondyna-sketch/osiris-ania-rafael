@@ -1,0 +1,165 @@
+{
+ "opis": "Uzupełnienie SOURCE (nie dane PSE): nazwy miejscowości w mianowniku do wyszukiwarki w zakładce „Gdzie” – PSE podaje opisy w dopełniaczu (np. „w rejonie Kutna”). Tylko nazwy, które stoją w opisie PSE (bez dopisywania innych miejsc). Na stronie opis PSE zostaje dosłownie. Decyzja Ani 27.11.2026.",
+ "sporzadzono": "2026-11-27",
+ "stacje": {
+  "NOR": {
+   "opis_pse": "Norki",
+   "szukaj": [
+    "Norki"
+   ]
+  },
+  "WIG": {
+   "opis_pse": "stacja Wigry",
+   "szukaj": [
+    "Wigry"
+   ]
+  },
+  "WYP": {
+   "opis_pse": "stacja w rejonie Warszawy (Wypędy)",
+   "szukaj": [
+    "Warszawa",
+    "Wypędy"
+   ]
+  },
+  "MKA": {
+   "opis_pse": "stacja w rejonie Legnicy",
+   "szukaj": [
+    "Legnica"
+   ]
+  },
+  "REM": {
+   "opis_pse": "stacja w rejonie Warszawy",
+   "szukaj": [
+    "Warszawa"
+   ]
+  },
+  "SWR": {
+   "opis_pse": "stacja w rejonie Warszawy",
+   "szukaj": [
+    "Warszawa"
+   ]
+  },
+  "EPK": {
+   "opis_pse": "stacja w rejonie Stalowej Woli",
+   "szukaj": [
+    "Stalowa Wola"
+   ]
+  },
+  "LWN": {
+   "opis_pse": "stacja w rejonie Opola",
+   "szukaj": [
+    "Opole"
+   ]
+  },
+  "WRS": {
+   "opis_pse": "stacja w rejonie Opola (Wrzoski)",
+   "szukaj": [
+    "Opole",
+    "Wrzoski"
+   ]
+  },
+  "KUZ": {
+   "opis_pse": "stacja w rejonie Złoczewa",
+   "szukaj": [
+    "Złoczew"
+   ]
+  },
+  "ZER": {
+   "opis_pse": "stacja w rejonie Poznania",
+   "szukaj": [
+    "Poznań"
+   ]
+  },
+  "GNA": {
+   "opis_pse": "stacja w rejonie Konina",
+   "szukaj": [
+    "Konin"
+   ]
+  },
+  "DSC": {
+   "opis_pse": "stacja w rejonie Trójmiasta",
+   "szukaj": [
+    "Trójmiasto",
+    "Gdańsk",
+    "Gdynia",
+    "Sopot"
+   ],
+   "uwaga": "Gdańsk, Gdynia, Sopot – rozwinięcie nazwy „Trójmiasto” (decyzja Ani 27.11.2026), nie informacja PSE o położeniu stacji."
+  },
+  "DZO": {
+   "opis_pse": "stacja w rejonie Torunia",
+   "szukaj": [
+    "Toruń"
+   ]
+  },
+  "CPK": {
+   "opis_pse": "stacja w rejonie Portu Polska",
+   "szukaj": [
+    "Port Polska"
+   ]
+  },
+  "DMO": {
+   "opis_pse": "stacja Stryków (Dmosin)",
+   "szukaj": [
+    "Stryków",
+    "Dmosin"
+   ]
+  },
+  "WTN": {
+   "opis_pse": "stacja w rejonie Kutna",
+   "szukaj": [
+    "Kutno"
+   ]
+  },
+  "MAK": {
+   "opis_pse": "stacja Jarosław",
+   "szukaj": [
+    "Jarosław"
+   ]
+  },
+  "ZGN": {
+   "opis_pse": "stacja Żagań (Marszów)",
+   "szukaj": [
+    "Żagań",
+    "Marszów"
+   ]
+  },
+  "POM": {
+   "opis_pse": "stacja Pomorzany",
+   "szukaj": [
+    "Pomorzany"
+   ]
+  },
+  "PBO": {
+   "opis_pse": "stacja Podborze",
+   "szukaj": [
+    "Podborze"
+   ]
+  },
+  "PSC": {
+   "opis_pse": "stacja w rejonie Poznania",
+   "szukaj": [
+    "Poznań"
+   ]
+  },
+  "SBO": {
+   "opis_pse": "stacja na terenie Pomorza Zachodniego",
+   "szukaj": [
+    "Pomorze Zachodnie"
+   ]
+  },
+  "EJ1": {
+   "opis_pse": "stacja Biebrowo (elektrownia jądrowa)",
+   "szukaj": [
+    "Biebrowo"
+   ]
+  },
+  "MAO": {
+   "opis_pse": "stacja w rejonie Włocławka",
+   "szukaj": [
+    "Włocławek"
+   ]
+  }
+ },
+ "sprawdzono": "2026-11-27 – Ania porównała 25 par z opisami PSE (poziom 3)"
+}

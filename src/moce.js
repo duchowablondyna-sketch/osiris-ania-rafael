@@ -8,9 +8,10 @@ import { stacjeBezRozpatrzenia, podzialStacji } from './wykaz-rozdzielni.js';
 import { t, tn, liczba, cytatPse, formatDoby, formatMiesiaca, tekstPl, JEZYK } from './jezyk.js';
 import { oznaczTerminy, objasnienie } from './terminy.js';
 import { tekstPodsumowania, tekstUwagi, dopisekListy, napieciaLub, tekstWniosku, tekstMocySkrot, zZdanPse } from './moce-teksty.js';
-import { czytajMw, filtrujStacje, najwiekszaMoc, terminPlanu } from './wyszukiwarka-mocy.js';
+import { czytajMw, filtrujStacje, najwiekszaMoc, terminPlanu, szukajStacjiPse, wKolejnosciPse } from './wyszukiwarka-mocy.js';
 import { dodajOsdPge } from './osd-pge.js';
 import { dodajOsdEnerga } from './osd-energa.js';
+import { narzedziaGdzie } from './gdzie-narzedzia.js';
 
 export const KOLOR_MOCY = '#2DD4BF';
 const KOSMOS = '#05070D';
@@ -173,9 +174,13 @@ export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, okienka }) 
     okienka,
   );
   // F2.1: grupy stacji 110 kV PGE w tej samej zakładce (src/osd-pge.js) – własne dane, działa też bez danych PSE.
-  const osdPge = dodajOsdPge({ okienka, linijkaZrodla });
-  // F2.2: grupy stacji 110 kV Energi – sekcja pod PGE (src/osd-energa.js); szukanie stacji w polu PGE.
-  const osdEnerga = dodajOsdEnerga({ okienka, linijkaZrodla, pge: osdPge });
+  // Narzędzia „Gdzie” (27.11.2026): pole MW i pole nazwy dla wszystkich operatorów + podsumowanie (src/gdzie-narzedzia.js).
+  // Operatorzy dołączają przez narzedzia.dodaj(…) – PSE niżej (przy filtrze E1), PGE i Energa tutaj.
+  const narzedzia = narzedziaGdzie({ formatMw: (x) => formatMwTwarda(x) });
+  const odswiezNarzedzia = () => narzedzia.odswiez();
+  const osdPge = dodajOsdPge({ okienka, linijkaZrodla, poZaladowaniu: odswiezNarzedzia });
+  // F2.2: grupy stacji 110 kV Energi – sekcja pod PGE (src/osd-energa.js).
+  const osdEnerga = dodajOsdEnerga({ okienka, linijkaZrodla, poZaladowaniu: odswiezNarzedzia });
   let dane = null;
   let wykaz = null; // wykaz rozdzielni PSE (public/data/rozdzielnie-pse.json); null = nie wczytał się
   let bezRozpatrzenia = new Map();
@@ -398,24 +403,30 @@ export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, okienka }) 
     brakZdanie: document.getElementById('szukaj-mw-brak-zdanie'),
   };
   const BLEDY = { zero: 'szukaj.blad_zero', 'nie-liczba': 'szukaj.blad_liczba', jednostka: 'szukaj.blad_jednostka', kropka: 'szukaj.blad_kropka', przecinek: 'szukaj.blad_przecinek' };
-  function zastosujFiltr() {
-    if (!dane) return;
-    const { stan, mw } = czytajMw(szukaj.pole.value);
-    osdPge.filtruj(stan, mw);
-    osdEnerga.filtruj(stan, mw);
-    const pasujace = stan === 'ok' ? new Set(filtrujStacje(dane.odbiorcy, mw).map((s) => s.kod)) : null;
+  // Operator PSE w narzędziach „Gdzie”: MW (każda stacja osobno) i nazwa – opis PSE albo nazwa do szukania z uzupełnienia
+  // SOURCE (public/data/pse-szukanie.json, mianownik: „w rejonie Kutna” → „Kutno”). Licznik „N z 25” – w podsumowaniu;
+  // tu w linijce pod polem MW zostają komunikaty o niejasnym wpisie, a przy braku wyniku MW – zdanie „brak wyniku”.
+  let szukaniePse = null;
+  function zastosujPse(filtr) {
+    if (!dane) return { gotowe: false };
+    const { stan, mw } = filtr.mw;
+    const poMw = stan === 'ok' ? filtrujStacje(dane.odbiorcy, mw) : wKolejnosciPse(dane.odbiorcy);
+    const szukane = szukajStacjiPse(poMw, szukaniePse, filtr.nazwa);
+    const pasujace = szukane.pusty ? poMw : szukane.wyniki;
+    const filtrDziala = stan === 'ok' || !szukane.pusty;
+    const kody = new Set(pasujace.map((s) => s.kod));
     for (const nr of [1, 2]) {
       let widac = 0;
       for (const li of document.getElementById(`moce-lista-${nr}`).children) {
-        li.hidden = Boolean(pasujace) && !pasujace.has(li.dataset.kod);
+        li.hidden = filtrDziala && !kody.has(li.dataset.kod);
         if (!li.hidden) widac++;
       }
       document.getElementById(`moce-lista-${nr}-tytul`).hidden = widac === 0;
     }
     szukaj.wszystkie.hidden = stan === 'pusty';
     szukaj.status.classList.toggle('szukaj-mw__status--blad', Boolean(BLEDY[stan]));
-    szukaj.status.textContent = BLEDY[stan] ? t(BLEDY[stan]) : pasujace ? t('szukaj.pasuje', pasujace.size, dane.odbiorcy.length) : '';
-    const brak = Boolean(pasujace) && pasujace.size === 0;
+    szukaj.status.textContent = BLEDY[stan] ? t(BLEDY[stan]) : '';
+    const brak = stan === 'ok' && poMw.length === 0;
     szukaj.brak.hidden = !brak;
     if (brak) {
       szukaj.brakZdanie.textContent = t(
@@ -426,11 +437,34 @@ export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, okienka }) 
         formatMwTwarda(najwiekszaMoc(dane.odbiorcy)),
       );
     }
+    return {
+      gotowe: true,
+      rok: zZdanPse(dane).rok,
+      razem: dane.odbiorcy.length,
+      pasujace: pasujace.map((s) => s.kod),
+      etykiety: etykietyPse(pasujace),
+      dokladne: [],
+    };
   }
-  szukaj.pole.addEventListener('input', zastosujFiltr);
+  // Podsumowanie PSE bez kodów (decyzja Ani 27.11.2026): opis PSE bez początkowego „stacja” (słowo stoi już w zdaniu:
+  // „PSE – stacja w rejonie Kutna”); ten sam opis kilka razy – raz, z liczbą stacji: „w rejonie Warszawy (2 stacje)”.
+  function etykietyPse(stacje) {
+    const slowo = new RegExp(`^${t('gdzie.stacja_slowo')}\\s+`, 'i');
+    const ile = new Map();
+    for (const s of stacje) {
+      const opis = cytatPse(s.opis_pse).tekst.replace(slowo, '');
+      ile.set(opis, (ile.get(opis) ?? 0) + 1);
+    }
+    return [...ile].map(([opis, n]) => (n > 1 ? `${opis} (${tn('liczba.stacja', n)})` : opis));
+  }
+  // Przewinięcie „↓” do pierwszej widocznej listy stacji PSE.
+  const celPse = () => (document.getElementById('moce-lista-1-tytul').hidden ? 'moce-lista-2-tytul' : 'moce-lista-1-tytul');
+  narzedzia.dodaj({ klucz: 'pse', nazwa: 'gdzie.operator.pse', jednostka: 'stacja', cel: celPse, zastosuj: zastosujPse });
+  narzedzia.dodaj({ klucz: 'pge', nazwa: 'gdzie.operator.pge', jednostka: 'grupa', cel: 'osd-pge', zastosuj: osdPge.zastosuj });
+  narzedzia.dodaj({ klucz: 'energa', nazwa: 'gdzie.operator.energa', jednostka: 'grupa', cel: 'osd-energa', zastosuj: osdEnerga.zastosuj });
   szukaj.wszystkie.addEventListener('click', () => {
     szukaj.pole.value = '';
-    zastosujFiltr();
+    narzedzia.odswiez();
     szukaj.pole.focus();
   });
   // „zobacz listę operatorów” – przewinięcie do listy OSD w tej samej zakładce i fokus na pierwszym linku.
@@ -545,6 +579,11 @@ export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, okienka }) 
     .then((o) => (o.ok ? o.json() : null))
     .then((w) => (Array.isArray(w?.listy) && w.listy.length === 3 ? w : null))
     .catch(() => null);
+  // Narzędzia „Gdzie”: nazwy do szukania stacji PSE (uzupełnienie SOURCE); brak pliku – szukanie tylko w opisie PSE.
+  const szukanieGotowe = fetch(`${import.meta.env.BASE_URL}data/pse-szukanie.json`, { cache: 'no-store' })
+    .then((o) => (o.ok ? o.json() : null))
+    .then((p) => (p?.stacje ? p : null))
+    .catch(() => null);
   fetch(`${import.meta.env.BASE_URL}data/moce-pse.json`, { cache: 'no-store' })
     .then((o) => (o.ok ? o.json() : null))
     .then(async (d) => {
@@ -600,8 +639,9 @@ export function dodajWarstweMocy(map, { linijkaZrodla, ustawLicznik, okienka }) 
       document.getElementById('kafel-moce').textContent = sm?.kafelLiczba ?? '–';
       document.getElementById('kafel-moce-opis').textContent = sm?.kafelOpis ?? '';
       wypelnijPanel(await sprawdzonoGotowe, await planGotowy);
+      szukaniePse = await szukanieGotowe;
       szukaj.blok.hidden = false;
-      zastosujFiltr();
+      narzedzia.odswiez();
     })
     .catch(() => {
       ustawLicznik('moce', t('wspolne.brak_danych'), true);

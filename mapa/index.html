@@ -223,7 +223,21 @@
               <button type="button" class="szukaj-mw__wszystkie" id="szukaj-mw-wszystkie" hidden>{{szukaj.wszystkie}}</button>
             </div>
             <p class="szukaj-mw__opis" id="szukaj-mw-opis">{{szukaj.opis}}</p>
+            <!-- Narzędzia „Gdzie” (decyzje Ani 27.11.2026): pole nazwy obok pola MW – szuka w PSE, PGE i Energi
+                 (src/gdzie-narzedzia.js); pod polami podsumowanie na operatorów (wariant 2 – lista) i zdanie o niesumowaniu. -->
+            <label class="szukaj-mw__etykieta gdzie__etykieta-nazwa" for="gdzie-nazwa">{{gdzie.nazwa_etykieta}}</label>
+            <div class="szukaj-mw__wiersz">
+              <input class="szukaj-mw__pole gdzie__pole-nazwa" id="gdzie-nazwa" type="text" enterkeyhint="search" autocomplete="off" spellcheck="false"
+                     placeholder="{{gdzie.nazwa_podpowiedz}}" aria-describedby="gdzie-nazwa-opis gdzie-wynik" />
+              <button type="button" class="szukaj-mw__wszystkie" id="gdzie-nazwa-wyczysc" hidden>{{gdzie.nazwa_wyczysc}}</button>
+            </div>
+            <p class="szukaj-mw__opis" id="gdzie-nazwa-opis">{{gdzie.nazwa_opis}}</p>
             <p class="szukaj-mw__status" id="szukaj-mw-status" aria-live="polite"></p>
+            <div class="gdzie__wynik" id="gdzie-wynik" aria-live="polite" hidden>
+              <p class="gdzie__naglowek" id="gdzie-naglowek"></p>
+              <ul class="gdzie__podsumowanie" id="gdzie-podsumowanie" aria-label="{{gdzie.lista_aria}}"></ul>
+              <p class="gdzie__nie-sumujemy">{{gdzie.nie_sumujemy}}</p>
+            </div>
             <div class="szukaj-mw__brak" id="szukaj-mw-brak" hidden>
               <p id="szukaj-mw-brak-zdanie"></p>
               <p>{{szukaj.brak_osd}} <a class="szukaj-mw__do-osd" id="szukaj-mw-do-osd" href="#moce-osd">{{szukaj.brak_osd_link}}</a></p>
@@ -241,24 +255,12 @@
           <div id="moce-zrodlo"></div>
           <!-- F2.1 „PGE na liście w Gdzie” (decyzje Ani 26.11.2026): grupy stacji 110 kV PGE Dystrybucja – lista bez mapy.
                Kod: src/osd-pge.js, dane: public/data/osd-pge.json (ZRODLA.md). Moc wspólna dla całej grupy (bez dzielenia
-               i sumowania); filtr MW z pola wyżej według 2031; szukanie stacji – osobne pole. Ukryte do wczytania danych. -->
+               i sumowania); filtr MW i szukanie stacji – narzędzia „Gdzie” wyżej (według 2031). Ukryte do wczytania danych. -->
           <section class="osd-pge" id="osd-pge" aria-labelledby="osd-pge-tytul" hidden>
             <h2 class="panel-moce__tytul osd-pge__tytul" id="osd-pge-tytul">{{osd.tytul}}</h2>
             <div class="osd-pge__opis" id="osd-pge-opis"></div>
             <p class="szukaj-mw__status osd-pge__status" id="osd-pge-status" aria-live="polite"></p>
             <p class="osd-pge__brak" id="osd-pge-brak" hidden></p>
-            <div class="szukaj-mw osd-pge__szukaj">
-              <label class="szukaj-mw__etykieta" for="osd-pge-szukaj">{{osd.szukaj_etykieta}}</label>
-              <div class="szukaj-mw__wiersz">
-                <input class="szukaj-mw__pole osd-pge__pole" id="osd-pge-szukaj" type="text" enterkeyhint="search" autocomplete="off" spellcheck="false"
-                       placeholder="{{osd.szukaj_podpowiedz}}" aria-describedby="osd-pge-szukaj-opis osd-pge-szukaj-status osd-energa-szukaj-status" />
-                <button type="button" class="szukaj-mw__wszystkie" id="osd-pge-szukaj-wyczysc" hidden>{{osd.szukaj_wyczysc}}</button>
-              </div>
-              <p class="szukaj-mw__opis" id="osd-pge-szukaj-opis">{{osd.szukaj_opis}}</p>
-              <p class="szukaj-mw__status" id="osd-pge-szukaj-status" aria-live="polite"></p>
-              <!-- F2.2: to samo pole szuka też w grupach Energi – wynik Energi tutaj (pusty, dopóki nic nie wpisano). -->
-              <p class="szukaj-mw__status" id="osd-energa-szukaj-status" aria-live="polite"></p>
-            </div>
             <p class="osd-pge__stan" id="osd-pge-stan"></p>
             <h3 class="etykieta-mala" id="osd-pge-lista-tytul">{{osd.lista_tytul}}</h3>
             <ul class="panel-moce__lista osd-pge__lista" id="osd-pge-lista"></ul>
@@ -268,7 +270,7 @@
           </section>
           <!-- F2.2 „Energa w Gdzie” (decyzje Ani 26–27.11.2026): grupy stacji 110 kV Energa-Operator – osobna sekcja pod PGE
                (wariant A), lista bez mapy. Kod: src/osd-energa.js, dane: public/data/osd-energa.json (ZRODLA.md). Moc wspólna
-               dla całej grupy; filtr MW według 2031; rok 2035 tylko w „?”; szukanie stacji – pole PGE wyżej. Ukryte do wczytania danych. -->
+               dla całej grupy; filtr MW według 2031; rok 2035 tylko w „?”; szukanie stacji – narzędzia „Gdzie” wyżej. Ukryte do wczytania danych. -->
           <section class="osd-pge osd-energa" id="osd-energa" aria-labelledby="osd-energa-tytul" hidden>
             <h2 class="panel-moce__tytul osd-pge__tytul" id="osd-energa-tytul">{{osd.energa.tytul}}</h2>
             <div class="osd-pge__opis" id="osd-energa-opis"></div>

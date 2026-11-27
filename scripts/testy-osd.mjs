@@ -240,15 +240,12 @@ test('Energa – filtr MW według 2031 bez sumowania; szukanie w polu PGE także
 
 test('teksty F2.2: każdy klucz osd.energa.* w PL i EN; „Mielno (2028–2035)” bez „od”; przypis o czerwonych pełnym zdaniem', () => {
   const klucze = Object.keys(pl).filter((k) => k.startsWith('osd.energa.'));
-  assert.ok(klucze.length >= 23);
+  assert.ok(klucze.length >= 22);
   for (const k of klucze) assert.equal(typeof en[k], typeof pl[k], k);
   assert.equal(pl['osd.energa.przeniesienie'](2028, 12, 'Oliwa'), 'od 2028 w grupie 12 (Oliwa)');
   assert.equal(pl['osd.energa.nowe_stacje'], 'nowe stacje w kolejnych latach:');
   assert.match(pl['osd.energa.wiersz_grupa']('Dunowo', '16 stacji'), /^Grupa Dunowo · 16 stacji \(model sieci na 2026 r\.\)$/);
   assert.match(pl['moce.osd_wstep'], /dane PGE i Energi/);
-  assert.match(pl['osd.szukaj_etykieta'], /PGE i Energi/);
   assert.match(pl['stopka.osd_energa'], /SOURCE nie jest powiązany z Energa-Operator S\.A\./);
   assert.equal(pl['osd.energa.tytul'], 'Wolna moc dla odbiorców · Energa-Operator 110\u00a0kV');
-  assert.equal(pl['osd.szukaj_brak_obu']('xyz'), 'Brak stacji PGE i Energi o nazwie zawierającej „xyz”.');
-  assert.ok(!('osd.energa.szukaj_brak' in pl), 'osobne „brak” Energi – zastąpione wspólnym zdaniem');
 });

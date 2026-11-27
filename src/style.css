@@ -1796,6 +1796,80 @@ button.panel-moce__nazwa:hover {
   color: var(--zloto);
 }
 
+/* ── Narzędzia „Gdzie” (decyzje Ani 27.11.2026): pole nazwy pod polem MW, podsumowanie na operatorów (lista, operator
+   pod operatorem). Pozycja z wynikiem – odnośnik do sekcji operatora, strzałka na złoto (widać, że prowadzi dalej). ── */
+.gdzie__etykieta-nazwa {
+  margin-top: 10px;
+}
+
+.gdzie__wynik {
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px solid var(--szklo-ramka);
+}
+
+.gdzie__wynik[hidden] {
+  display: none;
+}
+
+.panel-moce .gdzie__naglowek {
+  margin: 0;
+  font-weight: 600;
+  color: var(--kolor-moce);
+}
+
+.gdzie__podsumowanie {
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gdzie__podsumowanie li {
+  margin: 2px 0;
+  color: var(--tekst);
+}
+
+.gdzie__do-sekcji {
+  color: var(--kolor-moce);
+  text-decoration: none;
+}
+
+.gdzie__do-sekcji:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.gdzie__do-sekcji:focus-visible {
+  outline: 2px solid var(--fokus);
+  outline-offset: 2px;
+}
+
+.gdzie__strzalka {
+  color: var(--zloto);
+}
+
+.gdzie__dopisek {
+  display: block;
+  font-size: 0.6875rem;
+  color: var(--tekst-pomocniczy);
+}
+
+.panel-moce .gdzie__nie-sumujemy {
+  margin: 4px 0 0;
+  font-size: 0.6875rem;
+  color: var(--tekst-pomocniczy);
+}
+
+@media (max-width: 640px) {
+  /* Telefon: każda pozycja z wynikiem – pole dotyku min. 44 px wysokości. */
+  .gdzie__do-sekcji {
+    display: block;
+    box-sizing: border-box;
+    min-height: 44px;
+    padding: 10px 0;
+  }
+}
+
 /* Filtr ukrywa pozycje i nagłówki tabel bez wyników (li ma display: grid – bez tej reguły hidden by nie działał). */
 .panel-moce__lista li[hidden],
 .panel-moce h2[hidden] {
