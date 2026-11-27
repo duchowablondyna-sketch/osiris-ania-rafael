@@ -98,6 +98,7 @@ Strona z mapą pokazującą, jak i gdzie Polska może uzyskać więcej prądu. R
 - Każde źródło danych ma wpis w pliku ZRODLA.md: link, licencja, data sprawdzenia, poziom weryfikacji (0-4).
 - Czytaj źródła w całości, nie z zajawek wyszukiwarki. Nie podawaj liczb bez źródła.
 - Liczby do sprawdzianów i opisów bierzemy z API (JSON), nigdy z tabel stron przepisanych jako tekst – puste komórki przesuwają kolumny.
+- Tekst z liczbami do posta lub notatki: liczby z tego samego zrzutu lub pobrania, które idzie do publikacji; kwadrans i datę podajemy dokładnie jak na zrzucie (tekst i obrazek mówią to samo).
 - Na stronie jest stała stopka ze źródłami. Dla PSE: źródło, data pobrania, informacja o przetworzeniu danych, bez logo PSE.
 
 ## Technologia
