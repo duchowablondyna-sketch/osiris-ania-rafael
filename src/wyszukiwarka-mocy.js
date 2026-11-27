@@ -93,3 +93,27 @@ export function szukajStacji(grupy, tekst) {
   const dokladne = [...wGrupach].filter(([, ile]) => ile > 1).map(([nazwa, grup]) => ({ nazwa, grup }));
   return { pusty: false, wyniki, dokladne };
 }
+
+// ── Narzędzia „Gdzie” (decyzje Ani 27.11.2026): jedno pole MW i jedno pole nazwy dla wszystkich operatorów,
+// pod nimi podsumowanie – operator pod operatorem. Mocy nie dodajemy ani między operatorami, ani między grupami.
+
+// Stacje PSE po nazwie: opis PSE (dosłownie) albo nazwa do szukania z uzupełnienia SOURCE
+// (public/data/pse-szukanie.json – miejscowość w mianowniku, np. „w rejonie Kutna” → „Kutno”). Kolejność PSE.
+export function szukajStacjiPse(odbiorcy, szukanie, tekst) {
+  const q = doPorownania(tekst);
+  if (!q) return { pusty: true, wyniki: [] };
+  const teksty = (s) => [s.opis_pse, ...(szukanie?.stacje?.[s.kod]?.szukaj ?? [])];
+  return { pusty: false, wyniki: wKolejnosciPse(odbiorcy).filter((s) => teksty(s).some((x) => doPorownania(x).includes(q))) };
+}
+
+// Jedna linijka podsumowania dla operatora.
+// wynik: { gotowe, razem, pasujace: [pozycje], etykiety?: [teksty do wymienienia – domyślnie pasujace], dokladne: [{ nazwa, grup }] }
+// filtr: { mw: true/false – czy pole MW działa, nazwa: true/false – czy wpisano nazwę }.
+// rodzaj: 'brak-danych' | 'brak' | 'liczba' (tylko MW: „N z M”) | 'lista' (nazwa: wymienione pozycje).
+export function wierszOperatora(wynik, filtr) {
+  if (!wynik?.gotowe) return { rodzaj: 'brak-danych' };
+  const n = wynik.pasujace.length;
+  if (!n) return { rodzaj: 'brak' };
+  if (filtr.nazwa) return { rodzaj: 'lista', n, etykiety: wynik.etykiety ?? wynik.pasujace, dokladne: wynik.dokladne ?? [] };
+  return { rodzaj: 'liczba', n, razem: wynik.razem };
+}

@@ -4,30 +4,24 @@
 // – moc jest wspólna dla CAŁEJ grupy: nie dzielimy jej na stacje i nie dodajemy grup (jak „nie sumujemy” przy PSE);
 // – przy MW zawsze rok: „2026: X MW · 2031: Y MW”; nad listą „stan na …”;
 // – filtr pola „Ile MW potrzebujesz?” (wspólnego z PSE) działa według roku 2031 (jak PSE w E1);
-// – szukanie stacji po nazwie – osobne pole; ta sama nazwa w kilku grupach → wszystkie te grupy;
+// – szukanie stacji po nazwie – wspólne pole narzędzi „Gdzie” (src/gdzie-narzedzia.js, 27.11.2026); ta sama nazwa w kilku grupach → wszystkie te grupy;
 // – cytaty PGE dosłownie (po angielsku tłumaczenie + oryginał), osobno „objaśnienie SOURCE” (zasada F1).
 // Teksty tylko ze słowników (src/teksty: osd.*) i z danych.
-// F2.2: to samo pole szukania przeszukuje też grupy Energi (src/osd-energa.js słucha tego pola) – tu bez zmian działania.
 import { t, tn, formatDoby, JEZYK } from './jezyk.js';
-import { filtrujGrupy, najwiekszaMocGrupy, szukajStacji, wKolejnosciGrup } from './wyszukiwarka-mocy.js';
-import { element, mw, cytat as cytatOperatora } from './osd-wspolne.js';
+import { wKolejnosciGrup } from './wyszukiwarka-mocy.js';
+import { element, mw, cytat as cytatOperatora, zastosujFiltrGrup } from './osd-wspolne.js';
 
 // Cytat PGE: po polsku sam tekst w cudzysłowie; po angielsku tłumaczenie, a pod nim mniejszym drukiem oryginał.
 const cytat = (tekstPl) => cytatOperatora(tekstPl, 'cytat.oryginal_pge');
 
 // Wygląd: wariant A (decyzja Ani 26.11.2026) – osobna sekcja na końcu zakładki „Gdzie”, pod wszystkim o PSE.
-export function dodajOsdPge({ okienka, linijkaZrodla }) {
+// poZaladowaniu – narzędzia „Gdzie” odświeżają podsumowanie, gdy dane PGE już są.
+export function dodajOsdPge({ okienka, linijkaZrodla, poZaladowaniu }) {
   const sekcja = document.getElementById('osd-pge');
   const lista = document.getElementById('osd-pge-lista');
   const status = document.getElementById('osd-pge-status');
   const brak = document.getElementById('osd-pge-brak');
-  const pole = document.getElementById('osd-pge-szukaj');
-  const wyczysc = document.getElementById('osd-pge-szukaj-wyczysc');
-  const statusSzukaj = document.getElementById('osd-pge-szukaj-status');
   let dane = null;
-  let filtrMw = { stan: 'pusty', mw: null };
-  // F2.2: ile grup PGE pasuje do wpisanej nazwy (null – pole puste albo brak danych PGE); czyta src/osd-energa.js.
-  let znalezioneGrupy = null;
 
   // Okienko „?” przy liczbie grup: 47 według tabel, 46 w tekście dokumentu (decyzja Ani 26.11.2026 – tylko tutaj).
   function trescLiczbyGrup() {
@@ -96,45 +90,6 @@ export function dodajOsdPge({ okienka, linijkaZrodla }) {
     if (JEZYK !== 'pl') sekcja.lang = 'en';
   }
 
-  // Oba filtry naraz: MW (rok 2031, wspólne pole z PSE) i nazwa stacji (osobne pole PGE).
-  function zastosuj() {
-    if (!dane) return;
-    const rok = dane.rok_filtra;
-    const pasujaceMw = filtrMw.stan === 'ok' ? new Set(filtrujGrupy(dane.grupy, filtrMw.mw, rok).map((g) => g.nr)) : null;
-    const szukane = szukajStacji(dane.grupy, pole.value);
-    znalezioneGrupy = szukane.pusty ? null : szukane.wyniki.length;
-    const pasujaceNazwa = szukane.pusty ? null : new Map(szukane.wyniki.map((w) => [w.grupa.nr, new Set(w.stacje)]));
-    for (const li of lista.children) {
-      const nr = Number(li.dataset.nr);
-      li.hidden = (pasujaceMw && !pasujaceMw.has(nr)) || (pasujaceNazwa && !pasujaceNazwa.has(nr));
-      const trafione = pasujaceNazwa?.get(nr);
-      for (const s of li.querySelectorAll('.osd-pge__stacja')) s.classList.toggle('osd-pge__stacja--trafiona', Boolean(trafione?.has(s.dataset.nazwa)));
-      // Przy szukaniu po nazwie – lista stacji w pasujących grupach od razu rozwinięta (widać, która stacja pasuje).
-      if (pasujaceNazwa) li.querySelector('details').open = Boolean(trafione);
-    }
-    status.textContent = pasujaceMw ? t('osd.pasuje', pasujaceMw.size, dane.grupy.length, rok) : '';
-    const bezWyniku = Boolean(pasujaceMw) && pasujaceMw.size === 0;
-    brak.hidden = !bezWyniku;
-    if (bezWyniku) brak.textContent = t('osd.brak', formatDoby(dane.zrodlo.stan_na), mw(filtrMw.mw), rok, mw(najwiekszaMocGrupy(dane.grupy, rok)));
-    wyczysc.hidden = szukane.pusty;
-    if (szukane.pusty) statusSzukaj.textContent = '';
-    else if (!szukane.wyniki.length) statusSzukaj.textContent = t('osd.szukaj_brak', pole.value.trim());
-    else {
-      const stacji = szukane.wyniki.reduce((a, w) => a + w.stacje.length, 0);
-      statusSzukaj.textContent = [
-        t('osd.szukaj_wynik', tn('liczba.stacja', stacji), tn('liczba.grupa_w', szukane.wyniki.length)),
-        ...szukane.dokladne.map((d) => t('osd.szukaj_dokladne', d.nazwa, tn('liczba.grupa_w', d.grup))),
-      ].join(' ');
-    }
-  }
-
-  pole.addEventListener('input', zastosuj);
-  wyczysc.addEventListener('click', () => {
-    pole.value = '';
-    zastosuj();
-    pole.focus();
-  });
-
   fetch(`${import.meta.env.BASE_URL}data/osd-pge.json`, { cache: 'no-store' })
     .then((o) => (o.ok ? o.json() : null))
     .then((d) => {
@@ -142,20 +97,19 @@ export function dodajOsdPge({ okienka, linijkaZrodla }) {
       dane = d;
       wypelnij();
       sekcja.hidden = false;
-      zastosuj();
+      poZaladowaniu?.();
     })
     .catch(() => {
       document.getElementById('osd-pge-opis').replaceChildren(element('p', 'brak-danych', t('osd.brak_danych')));
       sekcja.hidden = false;
+      poZaladowaniu?.();
     });
 
-  // Wywoływane przez filtr E1 (src/moce.js) przy każdej zmianie pola „Ile MW potrzebujesz?”.
+  // Operator w narzędziach „Gdzie”: filtr MW (według 2031) i nazwy stacji – lista sekcji i wynik do podsumowania.
   return {
-    // F2.2: wspólne pole szukania – Energa łączy komunikaty („brak” tylko wtedy, gdy nic nie znaleziono u nikogo).
-    znalezione: () => znalezioneGrupy,
-    filtruj(stan, wartosc) {
-      filtrMw = { stan, mw: wartosc };
-      zastosuj();
+    zastosuj(filtr) {
+      if (!dane) return { gotowe: false };
+      return zastosujFiltrGrup({ dane, lista, status, brak, filtr, klucze: { pasuje: 'osd.pasuje', brak: 'osd.brak' } });
     },
   };
 }

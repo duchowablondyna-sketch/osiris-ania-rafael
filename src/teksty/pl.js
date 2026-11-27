@@ -419,6 +419,32 @@ export default {
   // F2.1 „PGE na liście w Gdzie” (decyzje Ani 26.11.2026): grupy stacji 110 kV PGE Dystrybucja (public/data/osd-pge.json,
   // src/osd-pge.js). Zawsze rok przy MW (bez „teraz”); cytat PGE i osobno „objaśnienie SOURCE” (zasada F1);
   // moc wspólna dla grupy – bez dzielenia i bez sumowania. Twarda spacja przed MW i „r.”.
+  // ── Narzędzia „Gdzie” (decyzje Ani 27.11.2026, src/gdzie-narzedzia.js): pole nazwy obok pola MW, podsumowanie
+  // na operatorów (lista, operator pod operatorem), mocy nie sumujemy. mw – już z jednostką (twarda spacja).
+  'gdzie.nazwa_etykieta': 'Szukaj stacji po nazwie',
+  'gdzie.nazwa_podpowiedz': 'np. Kutno',
+  'gdzie.nazwa_opis': 'Szukamy w stacjach PSE i w grupach stacji operatorów dystrybucyjnych – wystarczy fragment nazwy.',
+  'gdzie.nazwa_wyczysc': 'Wyczyść',
+  'gdzie.naglowek_mw': (rok, mw) => `Pasuje (${rok} r., co najmniej ${mw}):`,
+  'gdzie.naglowek_nazwa': (tekst) => `Stacje z „${tekst}” w nazwie:`,
+  'gdzie.naglowek_oba': (rok, mw, tekst) => `Pasuje (${rok} r., co najmniej ${mw}, „${tekst}” w nazwie):`,
+  'gdzie.lista_aria': 'Wynik według operatorów',
+  'gdzie.operator.pse': 'PSE',
+  'gdzie.operator.pge': 'PGE Dystrybucja',
+  'gdzie.operator.energa': 'Energa-Operator',
+  // „3 z 25 stacji”, „5 z 47 grup” – po „z N” zawsze dopełniacz liczby mnogiej.
+  // Słowo zdejmowane z początku opisu PSE w podsumowaniu (stoi już w zdaniu „PSE – stacja …”).
+  'gdzie.stacja_slowo': 'stacja',
+  'gdzie.jednostka.stacja': 'stacji',
+  'gdzie.jednostka.grupa': 'grup',
+  'gdzie.liczba': (operator, n, razem, jednostka) => `${operator} – ${n} z ${razem} ${jednostka}`,
+  'gdzie.lista.grupa': (operator, n, nazwy) => (n === 1 ? `${operator} – grupa ${nazwy}` : `${operator} – grupy: ${nazwy}`),
+  'gdzie.lista.stacja': (operator, n, nazwy) => (n === 1 ? `${operator} – stacja ${nazwy}` : `${operator} – stacje: ${nazwy}`),
+  'gdzie.brak': (operator) => `${operator} – brak`,
+  'gdzie.brak_danych': (operator) => `${operator} – brak danych`,
+  'gdzie.do_listy': 'przejdź do listy',
+  'gdzie.dokladne': (nazwa, grup) => `Stacja o nazwie „${nazwa}” jest w ${grup} – mogą to być różne miejsca o tej samej nazwie.`,
+  'gdzie.nie_sumujemy': 'Moc nie jest sumowana między operatorami ani grupami.',
   'osd.tytul': 'Wolna moc dla odbiorców · PGE Dystrybucja 110\u00a0kV',
   'osd.stan': (data) => `stan na ${data}`,
   'osd.liczba_grup_aria': 'Liczba grup – wyjaśnienie',
@@ -439,14 +465,6 @@ export default {
   // mw, max – już z jednostką; max – największa moc w JEDNEJ grupie (z danych, nie suma).
   'osd.brak': (data, mw, rok, max) =>
     `Według danych PGE (stan na ${data}) żadna grupa nie miała ${mw} w\u00a0${rok}\u00a0r. Najwięcej w jednej grupie: ${max} w\u00a0${rok}\u00a0r.`,
-  // F2.2: to samo pole przeszukuje też grupy Energi (decyzja Ani 26.11.2026 – szukanie w tym samym polu co PGE).
-  'osd.szukaj_etykieta': 'Szukaj stacji PGE i Energi po nazwie',
-  'osd.szukaj_podpowiedz': 'np. Radom',
-  'osd.szukaj_opis': 'Pokażemy grupy, w których jest stacja o takiej nazwie albo jej fragmencie.',
-  'osd.szukaj_wyczysc': 'Wyczyść',
-  'osd.szukaj_wynik': (stacji, grup) => `Znaleziono: ${stacji} w\u00a0${grup}.`,
-  'osd.szukaj_dokladne': (nazwa, grup) => `Stacja o nazwie „${nazwa}” jest w\u00a0${grup} – mogą to być różne miejsca o tej samej nazwie.`,
-  'osd.szukaj_brak': (tekst) => `Brak stacji PGE o nazwie zawierającej „${tekst}”.`,
   'osd.brak_danych': 'Dane PGE: brak danych',
   'cytat.oryginal_pge': (tekst) => `oryginał PGE: „${tekst}”`,
   // ── F2.2 „Energa w Gdzie” (decyzje Ani 26–27.11.2026): grupy stacji 110 kV Energa-Operator (src/osd-energa.js) ──
@@ -480,9 +498,6 @@ export default {
   // mw, max – już z jednostką; max – największa moc w JEDNEJ grupie (z danych, nie suma).
   'osd.energa.brak': (data, mw, rok, max) =>
     `Według danych Energi (stan na ${data}) żadna grupa nie miała ${mw} w ${rok} r. Najwięcej w jednej grupie: ${max} w ${rok} r.`,
-  'osd.energa.szukaj_wynik': (stacji, grup) => `Energa: ${stacji} w\u00a0${grup} – lista niżej.`,
-  // Nic nie znaleziono ani u PGE, ani u Energi – jedno wspólne zdanie (decyzja Ani 27.11.2026).
-  'osd.szukaj_brak_obu': (tekst) => `Brak stacji PGE i Energi o nazwie zawierającej „${tekst}”.`,
   'osd.energa.brak_danych': 'Dane Energi: brak danych',
   'cytat.oryginal_energa': (tekst) => `oryginał Energi: „${tekst}”`,
   // Linijka z projektu planu rozwoju sieci PSE 2027–2036 (public/data/plan-rozwoju-pse.json; ZRODLA.md).

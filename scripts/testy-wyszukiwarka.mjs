@@ -7,7 +7,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import pl from '../src/teksty/pl.js';
 import en from '../src/teksty/en.js';
-import { czytajMw, filtrujStacje, najwiekszaMoc, terminPlanu, wKolejnosciPse } from '../src/wyszukiwarka-mocy.js';
+import { czytajMw, filtrujStacje, najwiekszaMoc, terminPlanu, wKolejnosciPse, szukajStacjiPse, wierszOperatora, filtrujGrupy } from '../src/wyszukiwarka-mocy.js';
 
 const KATALOG = resolve(import.meta.dirname, '..');
 const json = (p) => JSON.parse(readFileSync(resolve(KATALOG, p), 'utf-8'));
@@ -128,8 +128,8 @@ test('plan: lata, przypisy, dopasowanie, weryfikacja', () => {
   assert.match(plan.zrodlo.status, /przed uzgodnieniem/);
 });
 
-// Nowe teksty E1 (klucze szukaj.*, plan.* i nowe slownik.*).
-const NOWE = (s) => Object.keys(s).filter((k) => /^(szukaj|plan)\.|^slownik\.(zakonczenie|ure)/.test(k));
+// Nowe teksty E1 (klucze szukaj.*, plan.* i nowe slownik.*) i narzędzia „Gdzie” (gdzie.*, 27.11.2026).
+const NOWE = (s) => Object.keys(s).filter((k) => /^(szukaj|plan|gdzie)\.|^slownik\.(zakonczenie|ure)/.test(k));
 const tekst = (wartosc) => (typeof wartosc === 'function' ? wartosc(11, 22, 33, 44) : String(wartosc));
 
 test('nowe teksty: bez ocen i rad, bez „uruchomienia” ani „stacja gotowa”', () => {
@@ -164,4 +164,59 @@ test('nowe teksty: „zadanie budowy stacji” w linijce planu; „brak wyniku�
   }
   const brak = pl['szukaj.brak']('1 500 MW', '31.10.2026', '2031', '1 000 MW');
   for (const fragment of ['1 500 MW', '31.10.2026', '2031', 'Najwięcej przy jednej stacji: 1 000 MW', 'nie dodajemy']) assert.ok(brak.includes(fragment), fragment);
+});
+
+// ── Narzędzia „Gdzie” (decyzje Ani 27.11.2026): jedno pole nazwy dla PSE, PGE i Energi + podsumowanie na operatorów ──
+const szukanie = json('public/data/pse-szukanie.json');
+const pge = json('public/data/osd-pge.json');
+const energa = json('public/data/osd-energa.json');
+
+test('uzupełnienie SOURCE (pse-szukanie.json): każda stacja PSE ma wpis, opis PSE dosłownie, nazwy niepuste', () => {
+  // Nowa stacja od Robota OSIRIS → czerwono: dopisać nazwę do szukania (i pokazać Ani do sprawdzenia).
+  assert.deepEqual(Object.keys(szukanie.stacje).sort(), kody(moce.odbiorcy).sort());
+  for (const s of moce.odbiorcy) {
+    const w = szukanie.stacje[s.kod];
+    assert.equal(w.opis_pse, s.opis_pse, `${s.kod}: opis PSE inny niż w moce-pse.json`);
+    assert.ok(w.szukaj.length >= 1 && w.szukaj.every((n) => n.trim() === n && n.length > 2), s.kod);
+  }
+  assert.match(szukanie.opis, /Uzupełnienie SOURCE \(nie dane PSE\)/);
+});
+
+test('szukanie PSE po nazwie: mianownik z uzupełnienia SOURCE i fragment opisu PSE; bez wielkości liter i znaków', () => {
+  const k = (tekst) => kody(szukajStacjiPse(moce.odbiorcy, szukanie, tekst).wyniki);
+  assert.deepEqual(k('kutno'), ['WTN']);
+  assert.deepEqual(k('KUTNA'), ['WTN']); // opis PSE „w rejonie Kutna”
+  assert.deepEqual(k('warszawa'), ['WYP', 'REM', 'SWR']);
+  assert.deepEqual(k('opole'), ['LWN', 'WRS']);
+  assert.deepEqual(k('poznan'), ['ZER', 'PSC']);
+  assert.deepEqual(k('gdansk'), ['DSC']); // rozwinięcie „Trójmiasto” (decyzja Ani 27.11.2026)
+  assert.deepEqual(k('sopot'), ['DSC']);
+  assert.deepEqual(k('lodz'), []);
+  assert.deepEqual(k('plock'), []);
+  assert.equal(szukajStacjiPse(moce.odbiorcy, szukanie, '  ').pusty, true);
+  // Bez pliku uzupełnienia – tylko opis PSE (dopełniacz).
+  assert.deepEqual(kody(szukajStacjiPse(moce.odbiorcy, null, 'kutno').wyniki), []);
+});
+
+test('linijka podsumowania: brak danych, brak, „N z M” (tylko MW), lista (nazwa)', () => {
+  assert.deepEqual(wierszOperatora({ gotowe: false }, { mw: true, nazwa: false }), { rodzaj: 'brak-danych' });
+  assert.deepEqual(wierszOperatora({ gotowe: true, razem: 47, pasujace: [] }, { mw: true, nazwa: false }), { rodzaj: 'brak' });
+  assert.deepEqual(wierszOperatora({ gotowe: true, razem: 47, pasujace: ['A', 'B'] }, { mw: true, nazwa: false }), { rodzaj: 'liczba', n: 2, razem: 47 });
+  assert.deepEqual(wierszOperatora({ gotowe: true, razem: 48, pasujace: ['Płock'], dokladne: [] }, { mw: true, nazwa: true }), {
+    rodzaj: 'lista', n: 1, etykiety: ['Płock'], dokladne: [],
+  });
+  // PSE: pozycje to stacje (n = 3), a wymieniamy opisy (ten sam opis raz, z liczbą).
+  assert.deepEqual(wierszOperatora({ gotowe: true, razem: 25, pasujace: ['WYP', 'REM', 'SWR'], etykiety: ['w rejonie Warszawy (Wypędy)', 'w rejonie Warszawy (2 stacje)'] }, { mw: false, nazwa: true }).etykiety, ['w rejonie Warszawy (Wypędy)', 'w rejonie Warszawy (2 stacje)']);
+  assert.equal(pl['gdzie.liczba']('PSE', 3, 25, pl['gdzie.jednostka.stacja']), 'PSE – 3 z 25 stacji');
+  assert.equal(pl['gdzie.lista.grupa']('Energa-Operator', 1, 'Płock'), 'Energa-Operator – grupa Płock');
+  assert.equal(pl['gdzie.brak']('PGE Dystrybucja'), 'PGE Dystrybucja – brak');
+  assert.equal(pl['gdzie.nie_sumujemy'], 'Moc nie jest sumowana między operatorami ani grupami.');
+  assert.equal(en['gdzie.nie_sumujemy'], 'Capacity is not added up across operators or groups.');
+});
+
+test('podsumowanie MW (2031, każda stacja i grupa osobno): 50 / 150 / 300 MW u PSE, PGE i Energi', () => {
+  const ile = (mw) => [filtrujStacje(moce.odbiorcy, mw).length, filtrujGrupy(pge.grupy, mw, 2031).length, filtrujGrupy(energa.grupy, mw, 2031).length];
+  assert.deepEqual(ile(50), [25, 15, 34]);
+  assert.deepEqual(ile(150), [21, 3, 12]);
+  assert.deepEqual(ile(300), [16, 0, 0]);
 });
