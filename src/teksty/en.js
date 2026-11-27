@@ -124,7 +124,9 @@ export default {
   'mapa.slonce_etykieta': 'Solar generation (same quarter-hour):',
   'mapa.slonce_noc': 'Solar panels don’t work between sunset and sunrise – 0 MW is the time of day, not a breakdown.',
   'mapa.slonce_brak': 'no data',
-  'mapa.slonce_dachy': 'PSE does not say whether it counts rooftop panels – this may not be all solar power in Poland.',
+  'mapa.slonce_dachy': 'PSE says the data cover sources both in and outside the balancing market. It does not say whether or how it counts rooftop panels.',
+  'mapa.slonce_prosumenci':
+    'Installed capacity of prosumer photovoltaic panels: 13,735 MW – end of September 2026 (<a href="https://www.are.waw.pl/badania-statystyczne/energetyka-w-liczbach" target="_blank" rel="noopener">ARE</a>, preliminary data). Official annual report: 13,089 MW – end of 2025 (<a href="https://www.ure.gov.pl/download/3/20600/RaportPrezesaUREart6auOZE.pdf" target="_blank" rel="noopener">URE, report of 25 Mar 2026</a>).',
   'mapa.pse_skrot_brak': 'Wind: no PSE data',
   'mapa.ograniczenie_etykieta': 'Latest wind curtailment in the PSE report:',
   'mapa.ograniczenie': (doba, mwh, kwadranse) =>
@@ -475,7 +477,7 @@ export default {
   'karta.uwaga_pogoda': 'Wind and solar run when the wind blows and the sun shines – a short bar means weather or time of day, not a breakdown.',
   'karta.pytajnik_znak': '“?” –',
   'karta.niepewnosc':
-    "In its report PSE gives a single capacity for wind (onshore and offshore), solar and other renewables – with no breakdown. We also don't know whether it counts rooftop panels. Hydro is not included here.",
+    "In its report PSE gives a single capacity for wind (onshore and offshore), solar and other renewables – with no breakdown. The report also does not say whether or how this capacity includes rooftop panels. Hydro is not included here.",
   'karta.uwaga_bez_paska': 'No bar: hydro, oil, waste and “other” – the PSE report gives no capacity for them that can be compared with generation.',
   'karta.uwaga_mapa': 'The map shows only larger power plants, so the capacity total on the map (“Where from” tab) is smaller.',
   'karta.raport_kse': 'PSE, KSE Report 2025 (Polish power system), Table 1.1',
@@ -592,6 +594,8 @@ export default {
     'Electricity price (RCE): PSE S.A., <a href="https://raporty.pse.pl/report/rce-pln" target="_blank" rel="noopener">report “Rynkowa cena energii elektrycznej”</a> (market price of electricity), data retrieved <span id="rce-pobrano">loading…</span>, processed.',
   'stopka.odtworzenie':
     'Day replay: PSE S.A., reports his-wlk-cal and rce-pln, day <span id="odtw-zrodlo-doba">loading…</span>, processed.',
+  'stopka.prosumenci':
+    'Installed capacity of prosumer photovoltaic panels: Agencja Rynku Energii S.A. (ARE, Energy Market Agency), <a href="https://www.are.waw.pl/badania-statystyczne/energetyka-w-liczbach" target="_blank" rel="noopener">“Energetyka w liczbach”</a> (energy in numbers), chart “Prosumenci energii odnawialnej” (renewable energy prosumers), installed capacity, end of September 2026, preliminary data, read 27 Nov 2026; President of URE (Energy Regulatory Office), <a href="https://www.ure.gov.pl/download/3/20600/RaportPrezesaUREart6auOZE.pdf" target="_blank" rel="noopener">report on micro-installations for 2025</a> (Art. 6a of the Renewable Energy Sources Act, 25 Mar 2026), Table 3. Rounded to 1 MW.',
   'stopka.karta':
     'Poland at a glance (fuel mix, scheduled cross-border exchange): PSE S.A., reports his-gen-pal-sire and his-wlk-cal, data retrieved <span id="karta-pobrano">loading…</span>, processed (shares, cross-check; life-cycle carbon intensity in g CO₂eq/kWh – SOURCE estimate based on IPCC AR5 and factors from KOBiZE (Polish National Centre for Emissions Management), method in the “Methodology” panel).',
   'stopka.morskie':

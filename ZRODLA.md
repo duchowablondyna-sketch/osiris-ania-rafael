@@ -45,13 +45,47 @@ Poziomy weryfikacji:
   - Czas: pola `period` i `business_date` – czas polski; `dtime_utc` – koniec kwadransu w UTC (jednoznaczny także w dniu zmiany czasu).
 - **Czego nie wiemy:**
   - czy wartość jest zmierzona, czy szacowana przez PSE – PSE tego nie opisuje;
-  - czy obejmuje panele na dachach (mikroinstalacje) – PSE tego nie opisuje; strona pomocy raporty.pse.pl/faq: 404 (sprawdzone 23.11.2026). Na stronie pod liczbą stoi zdanie: „PSE nie podaje, czy liczy panele na dachach – to może nie być cała fotowoltaika w Polsce.”
+  - czy obejmuje panele na dachach (mikroinstalacje) – PSE tego nie opisuje; strona pomocy raporty.pse.pl/faq: 404 (sprawdzone 23.11.2026). Ponowne szukanie 27.11.2026 (Claude): opis API https://api.raporty.pse.pl/api/openapi (wersja 2.1.7, 92 raporty) – pole `pv` bez opisu, brak słów „micro”, „prosum”, „estimat”; strona raportu `his-gen-pal-sire` na raporty.pse.pl: 404; strona pse.pl „Generacja źródeł wiatrowych i fotowoltaicznych” – tylko zdanie „Generacja raportu uległa modyfikacji po wdrożeniu zmian zakresu publikacji danych z początkiem 14.06.2024 r.”. Na stronie pod liczbą (od 27.11.2026, decyzja Ani): „PSE podaje, że dane obejmują źródła w rynku bilansującym i poza nim. Nie podaje, czy i jak liczy panele na dachach.” (klucz `mapa.slonce_dachy`), a pod nim osobno moc paneli prosumentów – wpis niżej.
 - **Jednostka:** MW – z podpisu „[MW]” na stronie raportu.
 - **Przetworzenie:** wartość z tego samego rekordu co wiatr (ten sam kwadrans), zaokrąglona do pełnych MW na stronie; w serii do 0,1 MW. Przy 0 MW, gdy cały kwadrans wypada przed wschodem albo po zachodzie słońca dla środka Polski, okienko dopisuje: „Po zmroku i przed świtem panele nie pracują – 0 MW to pora dnia, a nie awaria.” Godziny wschodu i zachodu: uproszczony wzór NOAA (https://gml.noaa.gov/grad/solcalc/solareqns.PDF), `src/slonce.js`; sprawdzone dla Warszawy 25.11 i 21.06.2026 – zgodność do kilku minut. 0 MW w dzień – bez dopisku.
 - **Lekcja (25.11.2026):** liczba 107,9 MW odczytana z tabeli strony raportu przepisanej jako tekst okazała się polem `jgm1` (magazyny energii), nie `pv` – puste komórki przesunęły kolumny. Liczby bierzemy z API (JSON).
 - **Licencja:** jak wiatr (warunki PSE).
 - **Data sprawdzenia:** 25.11.2026
 - **Poziom weryfikacji:** 1 (opis PSE przeczytany; wartości z API porównane przez Claude z rekordami surowymi; porównanie ze stroną raporty.pse.pl przez Anię – do zrobienia)
+
+### Moc paneli fotowoltaicznych prosumentów (ARE i URE) – od 27.11.2026
+
+- **Co pokazujemy:** w okienku „Wiatr, słońce i cena prądu”, pod zdaniem o PSE, **osobna informacja** (decyzja Ani 27.11.2026 – bez „w tym”, bez dodawania do liczby PSE ani porównywania z nią): „Moc paneli fotowoltaicznych prosumentów: 13 735 MW – stan na koniec września 2026 (ARE, dane wstępne). Oficjalny raport roczny: 13 089 MW – stan na koniec 2025 (URE, raport z 25.03.2026).” Klucz `mapa.slonce_prosumenci` (PL i EN), wpis w stopce `stopka.prosumenci`. Liczby wpisane ręcznie w słownikach – **nie aktualizują się same** (przypomnienie: BEZPIECZENSTWO.md → Do zrobienia).
+- **Zaokrąglenia:** do 1 MW, w słownikach. ARE 13 735,3 → **13 735**; URE 13 088,621 → **13 089**.
+- **Czego te liczby nie mówią:** to **prosumenci** (z prosumentami zbiorowymi i wirtualnymi w URE), nie wszystkie mikroinstalacje ani wszystkie panele na dachach. URE, koniec 2025: wszystkie mikroinstalacje PV 13 856,508 MW (Tabela 1), prosumenci PV 13 088,621 MW (Tabela 3).
+
+#### ARE „Energetyka w liczbach” (najświeższa liczba)
+
+- **Link:** https://www.are.waw.pl/badania-statystyczne/energetyka-w-liczbach – wykres „Prosumenci energii odnawialnej”, podtytuł „Moc zainstalowana (stan na koniec miesiąca)”, oś „Moc zainstalowana [MW]”, seria „El. fotowoltaiczne”.
+- **Wartość:** wrzesień 2026 – El. fotowoltaiczne **13 735,3 MW** (dymek wykresu; razem wszystkie rodzaje 13 752,4 MW). W danych osadzonych w stronie (Next.js, seria `s2` piątego wykresu): 13 735,339. Seria potwierdzona dymkiem na żywej stronie 27.11.2026 (wcześniej dopasowanie po kolejności legendy). Zrzut z dymkiem (poza repo): `~/Projekty/osiris-podglad/pv-dachy/are-prosumenci-pv-2026-09.png`.
+- **Dane wstępne, poprawiane co miesiąc:** „Polityka rewizji i korekty danych statystycznych” ARE (https://www.are.waw.pl/badania-statystyczne/polityka-rewizji-i-korekty-danych-statystycznych, przeczytana 27.11.2026): dane miesięczne – „Preliminary publication — preliminary data”, rewizja „together with the publication of data for the following month or data corrected by the end of the quarter”. ARE prowadzi badania „on behalf of the Ministry of Energy and the Energy Regulatory Office and Statistics Poland”.
+- **Czego strona nie podaje:** skąd są dane prosumentów (brak słowa „źródło”, brak nazw OSD), czy obejmują wszystkich operatorów.
+- **Zgodność z URE (koniec 2025, odczyt danych strony 27.11.2026):** ARE grudzień 2025 – PV prosumentów 13 038,798 MW, razem 13 047,456 MW; URE – 13 088,621 i 13 101,541 MW. Różnica ok. 50 MW (0,4%) – zgodny rząd wielkości, nie co do megawata.
+- **Jak często:** co miesiąc (opis strony: „Updated monthly”); ostatni miesiąc przy odczycie 27.11.2026: wrzesień 2026.
+- **Licencja:** **nie podana.** Na stronie tylko „© 2026 Agencja Rynku Energii S.A.” i polityka prywatności; regulaminu ani licencji danych nie znaleziono (strona i wyszukiwanie w are.waw.pl, 27.11.2026). Używamy jednej liczby z podaniem źródła i linkiem.
+- **Data sprawdzenia:** 27.11.2026
+- **Poziom weryfikacji:** 3 (Ania odczytała dymek – wrzesień 2026: El. fotowoltaiczne 13 735,3 MW, 27.11.2026)
+
+#### URE: raport o mikroinstalacjach za 2025 (oficjalny, roczny)
+
+- **Dokument:** Prezes URE, „Raport – energia elektryczna wytworzona z odnawialnych źródeł energii w mikroinstalacjach oraz w instalacjach prosumenckich i wprowadzona do sieci dystrybucyjnej w 2025 r.” (art. 6a ust. 2 ustawy OZE), PDF 7 stron, opublikowany 25.03.2026: https://www.ure.gov.pl/download/3/20600/RaportPrezesaUREart6auOZE.pdf (strona z raportami: https://www.ure.gov.pl/pl/urzad/informacje-ogolne/edukacja-i-komunikacja/publikacje/raport-wytwarzanie-ener-1/8833,Raport-dotyczacy-energii-elektrycznej-wytworzonej-z-OZE-w-mikroinstalacji-i-wpro.html; komunikat 19.03.2026: https://www.ure.gov.pl/pl/urzad/informacje-ogolne/aktualnosci/13173,Raport-URE-w-Polsce-mamy-juz-ponad-16-mln-mikroinstalacji-OZE.html). Kopia poza repo: folder tymczasowy sesji Claude (nie trwała) – w razie potrzeby pobrać ponownie.
+- **Wartość:** **Tabela 3** (str. 5), wiersz „wykorzystujące energię promieniowania słonecznego”: **1 611 291 szt., 13 088,621 MW** – stan na koniec 2025.
+- **Podstawa danych (str. 2):** „sprawozdania roczne operatorów systemów dystrybucyjnych elektroenergetycznych (OSD)”. Mikroinstalacja: do 50 kW, przyłączona do sieci poniżej 110 kV.
+- **Inne liczby z raportu (do kontekstu, na stronie ich nie ma):** wszystkie mikroinstalacje 1 636 673 szt., 13 876,700 MW (Tabela 1); prosumenci razem 1 612 450, 13 101,541 MW (Tabela 2).
+- **Jak często:** raz w roku – „w terminie 75 dni od dnia zakończenia roku kalendarzowego” (str. 3). Następny: za 2026 r., około marca 2027.
+- **Licencja:** **nie podana** (w PDF ani na stronach URE). Pod tabelami: „Źródło: opracowanie własne URE na podstawie danych OSD.”
+- **Data sprawdzenia:** 27.11.2026
+- **Poziom weryfikacji:** 3 (Ania sprawdziła w PDF, Tabela 3 str. 5: 1 611 291 szt., 13 088,621 MW, 27.11.2026)
+
+#### Znalezione, nieużyte
+
+- **PSE, wpis na X (@pse_pl, 16.10.2026):** https://x.com/pse_pl/status/2111071775186448850 – „PV – 28 231 MW (+15,4% od 1 września 2025 r.)”, farmy wiatrowe 11 794 MW (stan 1.10.2026). Treść znana z osadzenia u Bankiera (PAP Biznes, 16.10.2026); samego wpisu ani grafiki nie otwieraliśmy. **Nieużyte, bo:** to wpis w mediach społecznościowych, nie publikacja z opisem; nie mówi, czy obejmuje prosumentów; publikacje nieregularne; nie ma tego w API ani na pse.pl (strona „Rodzaje źródeł wytwórczych i definicje” ma stan 01.03.2025: PV 21 618 MW). Zdanie gramwzielone.pl „Wcześniejsze dane PSE obejmowały zarówno instalacje prosumenckie, jak i fotowoltaikę zawodową” – bez źródła, nie cytat PSE.
+- **PTPiREE „Mikroinstalacje w Polsce”:** https://ptpiree.pl/mikroinstalacje-w-polsce/ – stan na 31.05.2026, „ponad milion 655 tysięcy” mikroinstalacji, „ponad 14,07 GW” (wykresy-obrazki: ok. 1 655 022 szt., 14 073,8 MW). **Nieużyte, bo:** starsze niż ARE (maj vs wrzesień 2026); „Dane dotyczą pięciu OSD zrzeszonych w PTPiREE” (bez nazw); wszystkie mikroinstalacje, nie tylko PV prosumentów; liczby tylko na obrazkach; dane korygowane w maju 2026 („publikacja danych od marca do maja 2026 r. była wstrzymana”); licencja nie podana (tylko „© PTPiREE 2015 - 2026”). Sprawdzone 27.11.2026, poziom 1.
 
 ### PSE: ograniczenia wiatru (raport poze-redoze)
 
@@ -136,7 +170,7 @@ Pliki źródłowe (PDF) pobrane 21.11.2026 leżą poza repo: `~/Projekty/_dane/k
   Bez paska: woda (WP, WZ), olej (OO), odpady (OD), inne (IN), gaz z węgla (GK).
 - **Czego raport nie rozdziela (nie zgadujemy):**
   - wiatru na lądzie i na morzu, słońca, biomasy – jeden wiersz „wiatrowe i inne odnawialne”. Wiersz „El. wiatrowe” w Tabeli 5.1 tego samego raportu to **moc osiągalna, średnia z porannych szczytów dni roboczych** (10 898,8 MW w 2025) – inna miara, nieużyta;
-  - nie wiadomo, czy „inne odnawialne” obejmują mikroinstalacje na dachach ani małe elektrownie wodne spoza zawodowych;
+  - nie wiadomo, czy „inne odnawialne” obejmują mikroinstalacje na dachach ani małe elektrownie wodne spoza zawodowych (na stronie od 27.11.2026: „Raport nie podaje też, czy i jak ta moc obejmuje panele na dachach.” – klucz `karta.niepewnosc`);
   - **woda:** „zawodowe wodne” obejmują **prawdopodobnie** elektrownie szczytowo-pompowe – wniosek, nie opis PSE (w Tabeli 5.1 wodne JWCD: 1 738 MW; GEM: szczytowo-pompowe 1 875 MW), a w produkcji szczytowo-pompowych (WS) nie liczymy → bez paska wody;
   - węgiel i gaz w tabeli to **tylko elektrownie zawodowe** – elektrowni przemysłowych tabela nie wymienia, a czy PSE wlicza je do produkcji WK/GZ w `his-gen-pal-sire` – nie wiadomo;
   - czy „gazowe” obejmują elektrownie na gazie z węgla albo oleju – nie wiadomo (dlatego pasek gazu = tylko GZ).
