@@ -50,7 +50,7 @@ export default {
   'meta.og_opis':
     'Where Poland gets its electricity and what it costs – power plants, wind farms, the extra-high-voltage grid, wind and the energy price. From official, public sources, with a date next to every number.',
   'meta.og_obraz_alt':
-    'OSIRIS: the title “Electricity in Poland” above a night-time globe with Poland marked, with figures on power plants and wind farms',
+    'SOURCE: the title “Energy in Poland” and a line about the data sources next to a night-time globe with Poland marked',
   'meta.og_locale': 'en_GB',
   // Obrazek do udostępniania (zrzut strony tytułowej w tym języku – sposób w ZRODLA.md).
   'meta.og_obraz': 'https://osiris-ania-rafael.pages.dev/og-obraz-en.png',
@@ -400,7 +400,8 @@ export default {
   // E1 – search above the substation list (WHERE TO CONNECT).
   'szukaj.etykieta': 'How many MW do you need?',
   'szukaj.podpowiedz': 'e.g. 300',
-  'szukaj.opis': 'We show substations where PSE gives at least this much available capacity – each one separately, without adding them up.',
+  'szukaj.opis':
+    'We’ll show PSE substations and operators’ groups of substations with at least this much available connection capacity for 2031 – each one separately, without adding them up.',
   'szukaj.pasuje': (n, razem) => `Matching: ${n} of ${razem} substations`,
   'szukaj.wszystkie': 'Show all substations',
   'szukaj.blad_zero': 'Enter a number greater than 0 (in\u00a0MW).',
