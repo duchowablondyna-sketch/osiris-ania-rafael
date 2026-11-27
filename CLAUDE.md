@@ -20,7 +20,7 @@ Robot OSIRIS etap B (co tydzień, środa 05:17 UTC i czwartek 05:47 UTC, sprawdz
 
 Cel: „Karta Polski”.
 - 5 kafelków: główne źródło (węgiel razem), cena RCE, ślad CO2 (szacunek OSIRIS), OZE %, wymiana z zagranicą.
-- Paski: produkcja na tle mocy zainstalowanej; wiatr i PV kreskowane, z „?” – osobny, późniejszy PR (d). Panel B (PR b) ma jeden pasek miksu (kamienny / brunatny / gaz i inne / OZE).
+- Paski: produkcja na tle mocy zainstalowanej (PR #32) – jeden kreskowany pasek „wiatr, słońce i inne OZE” z „?”, bo Raport KSE nie rozdziela tych mocy; osobne paski, gdy znajdzie się oficjalne źródło (BEZPIECZENSTWO.md). Panel B (PR b) ma jeden pasek miksu (kamienny / brunatny / gaz i inne / OZE).
 - Panel B – wariant B (decyzja Ani 21.11.2026): lewy dolny róg, zwijany, zwinięty na starcie (tryb spokojny, decyzja Ani 23.11.2026; po rozwinięciu otwarta zakładka ILE I JAK CZYSTO); 4 zakładki: SKĄD (te same pola warstw elektrowni i farm co legenda, bez lotu), GDZIE (panel wolnej mocy), ILE I JAK CZYSTO (otwarta na starcie: liczba-bohater – węgiel albo OZE, czego więcej – pasek z legendą do 0,1%, w rzędzie cena RCE / ślad CO2 / wymiana, źródło, Metodologia rozwijana w panelu, kłódka „Karta lokalizacji – wkrótce”), CO SIĘ ZMIENI („Wkrótce.”). Plakietka starych danych po 6 h. OZE zielony #4ade80; turkus tylko dla wolnej mocy; KOBiZE tylko w Metodologii.
 - Podpis „stan na HH:MM · PSE opublikowało HH:MM” zamiast „teraz”.
 - Źródło miksu: PSE API `his-gen-pal-sire`; przy każdym pobraniu sprawdzian zgodności z `his-wlk-cal` (wiatr i PV).
@@ -35,7 +35,8 @@ Zasady na dalej:
   (sposób w ZRODLA.md).
 - Robot OSIRIS, jego issue i PR-y oraz ZRODLA.md zostają po polsku.
 
-Następne w kolejce: operatorzy OSD – PGE (F2.1 „PGE na liście w Gdzie”, w toku), potem Energa, potem Stoen (decyzja Ani 26.11.2026; Stoen czeka na zdanie Rafaela – na stronie zostaje link).
+Operatorzy OSD, F2.1 „PGE na liście w Gdzie” – zakończone 26.11.2026 (PR #61).
+Następne w kolejce: operatorzy OSD – F2.2 Energa (w toku), potem Stoen (decyzja Ani 26.11.2026; Stoen czeka na zdanie Rafaela – na stronie zostaje link).
 
 W tle (nie blokują celu): Otwarte punkty Robota OSIRIS: patrz BEZPIECZENSTWO.md → Do zrobienia.
 
@@ -55,8 +56,9 @@ Strona z mapą pokazującą, jak i gdzie Polska może uzyskać więcej prądu. R
 - Morskie farmy (decyzje Ani 25.11.2026, wariant C): puste kółko – „brak w wykazie MKiŚ (stan: styczeń 2024)” widoczne zawsze, „możliwy duplikat” innego wpisu EMODnet dopiero od przybliżenia 9; Baltic Power „w rozruchu – część turbin produkuje” (nie „działa”, dopóki nie ma koncesji i eksploatacji komercyjnej); zwycięzcy aukcji URE z dopiskiem i linkiem do komunikatu.
 - Słońce (produkcja PV w okienku PSE) w kolorze jasnej cytryny #FEF08A – linia ciągła z podpisem „słońce” przy linii; kreskowanie zarezerwowane dla danych wstępnych (decyzja Ani 25.11.2026).
 - Globus od razu przybliżony do Polski.
-- Priorytet: komputer (telefon później). Wyjątek (decyzja Ani 26.11.2026): E1 „Planuję inwestycję” (wyszukiwarka stacji w zakładce „Gdzie”) i F2.1 (grupy PGE w „Gdzie”) od razu także na telefonie 390×844.
+- Priorytet: komputer (telefon później). Wyjątek (decyzja Ani 26.11.2026): E1 „Planuję inwestycję” (wyszukiwarka stacji w zakładce „Gdzie”) i F2.1 (grupy PGE w „Gdzie”) oraz F2.2 (grupy Energi) od razu także na telefonie 390×844.
 - Dane OSD w zakładce „Gdzie” (F2.1, decyzje Ani 26.11.2026): wygląd – wariant A, osobna sekcja na końcu zakładki, pod wszystkim o PSE (bez przełącznika i bez wspólnej listy z PSE); moc OSD dotyczy grup stacji 110 kV – wspólna dla całej grupy (nie dzielimy na stacje, nie dodajemy grup); przy MW zawsze rok („2026: X MW · 2031: Y MW”, bez „teraz”), nad listą „stan na …”; filtr pola „Ile MW potrzebujesz?” według 2031 (jak PSE); szukanie stacji po nazwie w osobnym polu (ta sama nazwa w kilku grupach → wszystkie); opis grup cytatem operatora + osobno „objaśnienie SOURCE” (F1); zdania operatora pokazujemy tylko, jeśli dokument mówi je o odbiorcach; „47 grup według tabel PGE (tekst dokumentu podaje 46)” tylko w „?”; źródło, data, „przetworzone” i „SOURCE nie jest powiązany z …”. Mapa grup – na razie bez (sama lista); kółka/obrysy osobnym krokiem po pomiarze dopasowania stacji w OSM, bez kółek przy mieście z nazwy grupy. Poziom 3 tylko dla grup sprawdzonych przez Anię w PDF.
+- Energa w „Gdzie” (F2.2, decyzje Ani 26–27.11.2026): układ jak F2.1 – osobna sekcja „Wolna moc dla odbiorców · Energa-Operator 110 kV” pod PGE (tytuł jak PGE, decyzja Ani 27.11.2026); w wierszu „N stacji (model sieci na 2026 r.)” i „2026: X MW · 2031: Y MW”, rok 2035 tylko w „?” przy grupie; stacje zaznaczone przez Energę na czerwono – „*” i pełne zdanie przypisu Energi; zmiana grupy przy stacji w starej grupie („od 2028 w grupie 12 (Oliwa)”), w nowej grupie jej nie pokazujemy; nowe stacje osobną linijką, lata jak w PDF, bez „od” („nowe stacje w kolejnych latach: Mielno (2028–2035)”); uwag „*Oddział X” nie pokazujemy; Kisielice i Łęgowo bez gwiazdki + uwaga w „?”, „Kutno II Kotliska” jak w PDF + uwaga w „?”; szukanie stacji w tym samym polu co PGE – „brak” tylko wtedy, gdy nic nie znaleziono u żadnego operatora (jedno wspólne zdanie).
 - Ruch: jeden lot wprowadzający przy otwarciu (bez lotu przy prefers-reduced-motion); odtwarzanie doby uruchamiane przyciskiem przez widza; inne animacje – decyzja później.
 - Płynne przejście między stronami (View Transitions) i plakat kuli na stronie tytułowej – decyzja Ani 21.11; bez animacji przy ogranicz ruch.
 - Reguła przenikania (`@view-transition`) musi być także w małym `<style>` w `<head>` obu stron (index.html i mapa/index.html), nie tylko w src/style.css – sama reguła w zewnętrznym CSS przegrywa w Chrome wyścig z ciężkim modułem (22.11.2026).

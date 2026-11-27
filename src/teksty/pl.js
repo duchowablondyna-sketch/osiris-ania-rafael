@@ -282,7 +282,7 @@ export default {
   // (ZRODLA.md → „Operatorzy dystrybucyjni”). Obszary – „głównie”, bo obszary operatorów nie pokrywają się z regionami.
   // F2.1 (decyzja Ani 26.11.2026): PGE pokazujemy w osobnej sekcji niżej; pozostali operatorzy – nadal tylko linki.
   'moce.osd_wstep':
-    'Odbiorcy przyłączają się do sieci PSE albo do sieci operatorów dystrybucyjnych (OSD). SOURCE pokazuje na razie dane PGE; pozostali operatorzy – w\u00a0linkach:',
+    'Odbiorcy przyłączają się do sieci PSE albo do sieci operatorów dystrybucyjnych (OSD). SOURCE pokazuje na razie dane PGE i Energi; pozostali operatorzy – w\u00a0linkach:',
   'moce.osd_aria': 'Strony operatorów dystrybucyjnych z informacją o dostępnej mocy',
   'moce.osd.stoen': 'Stoen Operator (Warszawa)',
   'moce.osd.pge': 'PGE Dystrybucja (głównie wschód i centrum)',
@@ -439,7 +439,8 @@ export default {
   // mw, max – już z jednostką; max – największa moc w JEDNEJ grupie (z danych, nie suma).
   'osd.brak': (data, mw, rok, max) =>
     `Według danych PGE (stan na ${data}) żadna grupa nie miała ${mw} w\u00a0${rok}\u00a0r. Najwięcej w jednej grupie: ${max} w\u00a0${rok}\u00a0r.`,
-  'osd.szukaj_etykieta': 'Szukaj stacji PGE po nazwie',
+  // F2.2: to samo pole przeszukuje też grupy Energi (decyzja Ani 26.11.2026 – szukanie w tym samym polu co PGE).
+  'osd.szukaj_etykieta': 'Szukaj stacji PGE i Energi po nazwie',
   'osd.szukaj_podpowiedz': 'np. Radom',
   'osd.szukaj_opis': 'Pokażemy grupy, w których jest stacja o takiej nazwie albo jej fragmencie.',
   'osd.szukaj_wyczysc': 'Wyczyść',
@@ -448,6 +449,42 @@ export default {
   'osd.szukaj_brak': (tekst) => `Brak stacji PGE o nazwie zawierającej „${tekst}”.`,
   'osd.brak_danych': 'Dane PGE: brak danych',
   'cytat.oryginal_pge': (tekst) => `oryginał PGE: „${tekst}”`,
+  // ── F2.2 „Energa w Gdzie” (decyzje Ani 26–27.11.2026): grupy stacji 110 kV Energa-Operator (src/osd-energa.js) ──
+  // Cytaty Energi dosłownie z public/data/osd-energa.json (tłumaczenia: src/teksty/cytaty-osd.js); rok 2035 tylko w „?”.
+  'osd.energa.tytul': 'Wolna moc dla odbiorców · Energa-Operator 110\u00a0kV',
+  'osd.energa.grupy_wstep': 'Energa – grupy węzłów koherentnych, czyli',
+  'osd.energa.cytat_podpis': (strony) =>
+    `źródło: Energa-Operator, informacja o wartości łącznej dostępnej odbiorczej mocy przyłączeniowej, s. ${strony}`,
+  'osd.energa.lista_tytul': 'Grupy stacji 110 kV – kolejność jak w tabeli Energi',
+  'osd.energa.wiersz_grupa': (nazwa, stacji) => `Grupa ${nazwa} · ${stacji} (model sieci na 2026 r.)`,
+  'osd.energa.pytajnik_aria': (nazwa) => `Grupa ${nazwa} – rok 2035 i uwagi`,
+  'osd.energa.grupa_tytul': (nazwa) => `Grupa ${nazwa}`,
+  // mw – już z jednostką.
+  'osd.energa.rok_docelowy': (rok, mw) => `${rok} (rok docelowy według Energi): ${mw}`,
+  'osd.energa.rok_docelowy_brak': (rok) => `${rok} (rok docelowy według Energi): bez osobnej wartości – Energa:`,
+  'osd.energa.rok_docelowy_opis': (cytat) => `Rok docelowy – Energa: ${cytat}`,
+  // Uwagi SOURCE do odczytu PDF (potwierdzone przez Anię 26.11.2026); stacje – nazwy z danych.
+  'osd.energa.uwaga.gwiazdka_bez_objasnienia': (stacje) => `Przy stacjach ${[].concat(stacje).join(' i ')} Energa postawiła gwiazdkę bez objaśnienia.`,
+  'osd.energa.uwaga.kutno_bez_przecinka': (stacje) => `„${[].concat(stacje)[0]}” – w dokumencie bez przecinka; mogą to być dwie stacje.`,
+  // Zmiana grupy – przy stacji w starej grupie (decyzja Ani 27.11.2026); w nowej grupie stacji nie pokazujemy.
+  'osd.energa.przeniesienie': (rok, nr, nazwa) => `od ${rok} w grupie ${nr} (${nazwa})`,
+  // Nowe stacje – lata jak w PDF, bez „od” (decyzja Ani 27.11.2026): „Mielno (2028–2035)”.
+  'osd.energa.nowe_stacje': 'nowe stacje w kolejnych latach:',
+  'osd.energa.szacunek': (cytat) => `Wartości szacunkowe – Energa: ${cytat}`,
+  'osd.energa.inwestycje': (rokA, rokB) => `Wzrost mocy w latach ${rokA}–${rokB} – Energa: `,
+  'osd.energa.czerwone': (cytat) => `* Energa: ${cytat}`,
+  'osd.energa.zrodlo_nazwa': 'Energa-Operator',
+  'osd.energa.przetworzone': (data) =>
+    `Odczyt tabel z PDF i przetworzenie: SOURCE; pobrano ${data}. SOURCE nie jest powiązany z Energa-Operator S.A.`,
+  'osd.energa.pasuje': (n, razem, rok) => `Pasuje: ${n} z ${razem} grup Energi na ${rok} r. (moc wspólna dla całej grupy)`,
+  // mw, max – już z jednostką; max – największa moc w JEDNEJ grupie (z danych, nie suma).
+  'osd.energa.brak': (data, mw, rok, max) =>
+    `Według danych Energi (stan na ${data}) żadna grupa nie miała ${mw} w ${rok} r. Najwięcej w jednej grupie: ${max} w ${rok} r.`,
+  'osd.energa.szukaj_wynik': (stacji, grup) => `Energa: ${stacji} w\u00a0${grup} – lista niżej.`,
+  // Nic nie znaleziono ani u PGE, ani u Energi – jedno wspólne zdanie (decyzja Ani 27.11.2026).
+  'osd.szukaj_brak_obu': (tekst) => `Brak stacji PGE i Energi o nazwie zawierającej „${tekst}”.`,
+  'osd.energa.brak_danych': 'Dane Energi: brak danych',
+  'cytat.oryginal_energa': (tekst) => `oryginał Energi: „${tekst}”`,
   // Linijka z projektu planu rozwoju sieci PSE 2027–2036 (public/data/plan-rozwoju-pse.json; ZRODLA.md).
   'plan.linia': (miesiac, od, doRoku) =>
     `Projekt planu rozwoju sieci PSE (${miesiac}, przed uzgodnieniem z\u00a0URE) – zadanie budowy stacji: ${od}–\u2060${doRoku} (rozpoczęcie – zakończenie zadania)`,
@@ -652,6 +689,8 @@ export default {
   // F2.1: grupy stacji PGE w zakładce „Gdzie” (public/data/osd-pge.json, ZRODLA.md). Link do strony, nie do pliku z wersją.
   'stopka.osd_pge':
     'Grupy stacji 110\u00a0kV z wolną mocą dla odbiorców (zakładka „Gdzie”): PGE Dystrybucja S.A., <a href="https://pgedystrybucja.pl/przylaczenia/procedury-przylaczeniowe/informacja-o-lacznej-dostepnej-mocy-przylaczeniowej" target="_blank" rel="noopener">„Informacja o łącznej dostępnej mocy przyłączeniowej” – III kwartał 2026</a>, stan na 30.09.2026, plik pobrany 26.11.2026, przetworzone (odczyt tabeli mocy odbiorczej; mocy grup nie sumujemy). Wartości szacunkowe według PGE. SOURCE nie jest powiązany z PGE Dystrybucja S.A.',
+  'stopka.osd_energa':
+    'Grupy stacji 110\u00a0kV Energa-Operator z wolną mocą dla odbiorców (zakładka „Gdzie”): Energa-Operator S.A., <a href="https://energa-operator.pl/przylaczenie-do-sieci/informacje-o-stanie-przylaczen" target="_blank" rel="noopener">„Informacja o wartości łącznej dostępnej odbiorczej mocy przyłączeniowej” (napięcie wyższe niż 1\u00a0kV)</a>, stan na 31.08.2026, plik pobrany 26.11.2026, przetworzone (odczyt tabel 2.1 i 2.3; mocy grup nie sumujemy). Wartości szacunkowe według Energi. SOURCE nie jest powiązany z Energa-Operator S.A.',
   'stopka.linie':
     'Linie najwyższych napięć: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>, <a href="https://opendatacommons.org/licenses/odbl/" target="_blank" rel="noopener">ODbL</a> (podpis widoczny też stale na mapie, w prawym dolnym rogu).',
   'stopka.czcionki':

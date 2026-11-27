@@ -7,30 +7,13 @@
 // – szukanie stacji po nazwie – osobne pole; ta sama nazwa w kilku grupach → wszystkie te grupy;
 // – cytaty PGE dosłownie (po angielsku tłumaczenie + oryginał), osobno „objaśnienie SOURCE” (zasada F1).
 // Teksty tylko ze słowników (src/teksty: osd.*) i z danych.
-import { t, tn, liczba, cytatOsd, formatDoby, JEZYK } from './jezyk.js';
+// F2.2: to samo pole szukania przeszukuje też grupy Energi (src/osd-energa.js słucha tego pola) – tu bez zmian działania.
+import { t, tn, formatDoby, JEZYK } from './jezyk.js';
 import { filtrujGrupy, najwiekszaMocGrupy, szukajStacji, wKolejnosciGrup } from './wyszukiwarka-mocy.js';
-
-const mw = (x) => `${liczba(x)} MW`;
-
-function element(tag, klasa, tekst) {
-  const e = document.createElement(tag);
-  if (klasa) e.className = klasa;
-  if (tekst !== undefined) e.textContent = tekst;
-  return e;
-}
+import { element, mw, cytat as cytatOperatora } from './osd-wspolne.js';
 
 // Cytat PGE: po polsku sam tekst w cudzysłowie; po angielsku tłumaczenie, a pod nim mniejszym drukiem oryginał.
-function cytat(tekstPl) {
-  const c = cytatOsd(tekstPl);
-  const s = element('span', '', t('osd.cytat', c.tekst));
-  if (c.oryginal) {
-    const o = element('span', 'cytat-oryginal', t('cytat.oryginal_pge', c.oryginal));
-    o.lang = 'pl';
-    return [s, o];
-  }
-  if (c.bezTlumaczenia) return [s, element('span', 'cytat-oryginal', t('cytat.bez_tlumaczenia'))];
-  return [s];
-}
+const cytat = (tekstPl) => cytatOperatora(tekstPl, 'cytat.oryginal_pge');
 
 // Wygląd: wariant A (decyzja Ani 26.11.2026) – osobna sekcja na końcu zakładki „Gdzie”, pod wszystkim o PSE.
 export function dodajOsdPge({ okienka, linijkaZrodla }) {
@@ -43,6 +26,8 @@ export function dodajOsdPge({ okienka, linijkaZrodla }) {
   const statusSzukaj = document.getElementById('osd-pge-szukaj-status');
   let dane = null;
   let filtrMw = { stan: 'pusty', mw: null };
+  // F2.2: ile grup PGE pasuje do wpisanej nazwy (null – pole puste albo brak danych PGE); czyta src/osd-energa.js.
+  let znalezioneGrupy = null;
 
   // Okienko „?” przy liczbie grup: 47 według tabel, 46 w tekście dokumentu (decyzja Ani 26.11.2026 – tylko tutaj).
   function trescLiczbyGrup() {
@@ -117,6 +102,7 @@ export function dodajOsdPge({ okienka, linijkaZrodla }) {
     const rok = dane.rok_filtra;
     const pasujaceMw = filtrMw.stan === 'ok' ? new Set(filtrujGrupy(dane.grupy, filtrMw.mw, rok).map((g) => g.nr)) : null;
     const szukane = szukajStacji(dane.grupy, pole.value);
+    znalezioneGrupy = szukane.pusty ? null : szukane.wyniki.length;
     const pasujaceNazwa = szukane.pusty ? null : new Map(szukane.wyniki.map((w) => [w.grupa.nr, new Set(w.stacje)]));
     for (const li of lista.children) {
       const nr = Number(li.dataset.nr);
@@ -165,6 +151,8 @@ export function dodajOsdPge({ okienka, linijkaZrodla }) {
 
   // Wywoływane przez filtr E1 (src/moce.js) przy każdej zmianie pola „Ile MW potrzebujesz?”.
   return {
+    // F2.2: wspólne pole szukania – Energa łączy komunikaty („brak” tylko wtedy, gdy nic nie znaleziono u nikogo).
+    znalezione: () => znalezioneGrupy,
     filtruj(stan, wartosc) {
       filtrMw = { stan, mw: wartosc };
       zastosuj();
