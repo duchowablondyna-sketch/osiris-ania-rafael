@@ -91,7 +91,11 @@ export default {
   'mapa.slonce_etykieta': 'Produkcja ze słońca (ten sam kwadrans):',
   'mapa.slonce_noc': 'Po zmroku i przed świtem panele nie pracują – 0 MW to pora dnia, a nie awaria.',
   'mapa.slonce_brak': 'brak danych',
-  'mapa.slonce_dachy': 'PSE nie podaje, czy liczy panele na dachach – to może nie być cała fotowoltaika w Polsce.',
+  'mapa.slonce_dachy': 'PSE podaje, że dane obejmują źródła w rynku bilansującym i poza nim. Nie podaje, czy i jak liczy panele na dachach.',
+  // Osobna informacja obok zdania o PSE (decyzja Ani 27.11.2026) – bez „w tym”, bez dodawania do liczby PSE.
+  // Liczby zaokrąglone do 1 MW: ARE 13 735,3 (dymek wykresu, wrzesień 2026), URE 13 088,621 (raport, Tabela 3). ZRODLA.md.
+  'mapa.slonce_prosumenci':
+    'Moc paneli fotowoltaicznych prosumentów: 13 735 MW – stan na koniec września 2026 (<a href="https://www.are.waw.pl/badania-statystyczne/energetyka-w-liczbach" target="_blank" rel="noopener">ARE</a>, dane wstępne). Oficjalny raport roczny: 13 089 MW – stan na koniec 2025 (<a href="https://www.ure.gov.pl/download/3/20600/RaportPrezesaUREart6auOZE.pdf" target="_blank" rel="noopener">URE, raport z 25.03.2026</a>).',
   'mapa.pse_skrot_brak': 'Wiatr: brak danych PSE',
   // Etap C3 (D4, decyzja Ani 25.11.2026): neutralnie, bez „polecenie” – PSE nie podaje, czy to polecenie, czy wykonanie.
   // Dane tylko dla wiatru (pola wi_red_*; słońce PSE podaje osobno). MWh – przeliczenie OSIRIS z MW (ZRODLA.md).
@@ -479,7 +483,7 @@ export default {
   'karta.uwaga_pogoda': 'Wiatr i słońce pracują, gdy wieje i świeci – krótki pasek to pogoda albo pora dnia, a nie awaria.',
   'karta.pytajnik_znak': '„?” –',
   'karta.niepewnosc':
-    'PSE w raporcie podaje jedną moc dla wiatru (na lądzie i na morzu), słońca i innych OZE – bez podziału. Nie wiemy też, czy liczy panele na dachach. Wody tu nie wliczamy.',
+    'PSE w raporcie podaje jedną moc dla wiatru (na lądzie i na morzu), słońca i innych OZE – bez podziału. Raport nie podaje też, czy i jak ta moc obejmuje panele na dachach. Wody tu nie wliczamy.',
   'karta.uwaga_bez_paska': 'Bez paska: woda, olej, odpady i „inne” – raport PSE nie podaje dla nich mocy, którą da się porównać z produkcją.',
   'karta.uwaga_mapa': 'Mapa pokazuje tylko większe elektrownie, dlatego suma mocy na mapie (zakładka „Skąd”) jest mniejsza.',
   'karta.raport_kse': 'PSE, Raport 2025 KSE, Tabela 1.1',
@@ -612,6 +616,8 @@ export default {
     'Cena prądu (RCE): PSE S.A., <a href="https://raporty.pse.pl/report/rce-pln" target="_blank" rel="noopener">raport „Rynkowa cena energii elektrycznej”</a>, dane pobrane <span id="rce-pobrano">wczytywanie…</span>, przetworzone.',
   'stopka.odtworzenie':
     'Odtworzenie doby: PSE S.A., raporty his-wlk-cal i rce-pln, doba <span id="odtw-zrodlo-doba">wczytywanie…</span>, przetworzone.',
+  'stopka.prosumenci':
+    'Moc paneli fotowoltaicznych prosumentów: Agencja Rynku Energii S.A., <a href="https://www.are.waw.pl/badania-statystyczne/energetyka-w-liczbach" target="_blank" rel="noopener">„Energetyka w liczbach”</a>, wykres „Prosumenci energii odnawialnej – moc zainstalowana”, stan na koniec września 2026, dane wstępne, odczyt 27.11.2026; Prezes URE, <a href="https://www.ure.gov.pl/download/3/20600/RaportPrezesaUREart6auOZE.pdf" target="_blank" rel="noopener">raport o mikroinstalacjach za 2025 r.</a> (art. 6a ustawy OZE, 25.03.2026), Tabela 3. Zaokrąglone do 1 MW.',
   'stopka.karta':
     'Karta Polski (miks paliw, wymiana z zagranicą): PSE S.A., raporty his-gen-pal-sire i his-wlk-cal, dane pobrane <span id="karta-pobrano">wczytywanie…</span>, przetworzone (udziały, sprawdzian; ślad CO2 (CO₂eq) – szacunek SOURCE wg IPCC AR5 i wskaźników KOBiZE, metoda w panelu „Metodologia”).',
   'stopka.morskie':

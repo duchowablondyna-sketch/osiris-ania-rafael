@@ -312,8 +312,10 @@ main {
   border-top: 0;
 }
 
-/* Nazwa źródła jako link (np. komunikat URE) – w kolorze linijki, podkreślona; klikalna po przypięciu okienka. */
-.zrodlo a {
+/* Nazwa źródła jako link (np. komunikat URE) – w kolorze linijki, podkreślona; klikalna po przypięciu okienka.
+   Ten sam wygląd: linki ARE i URE w dopisku o panelach prosumentów (okienko PSE). */
+.zrodlo a,
+.wskaznik__dopisek a {
   color: inherit;
   text-decoration: underline;
   text-underline-offset: 2px;
