@@ -31,8 +31,8 @@ Zasady na dalej:
   src/teksty/cytaty-pse.js, wtyczka scripts/jezyki.mjs. Każdy nowy tekst na stronie – od razu w obu słownikach.
 - Test: node --test scripts/testy-jezyki.mjs (lista przejściowa pusta – nowy tekst bez tłumaczenia go wywraca).
 - Licencje i wymagane podpisy w stopce – w oryginale; tłumaczymy tylko nasze objaśnienia.
-- Obrazki do udostępniania (public/og-obraz.png, og-obraz-en.png) – po zmianie wyglądu strony tytułowej zrobić od nowa
-  (sposób w ZRODLA.md).
+- Obrazki do udostępniania (public/og-obraz.png, og-obraz-en.png) – wariant C z marką SOURCE, bez zmieniających się liczb
+  (decyzja Ani 27.11.2026); zrobić od nowa po zmianie logo, tytułu, podtytułu albo plakatu kuli (sposób w ZRODLA.md).
 - Robot OSIRIS, jego issue i PR-y oraz ZRODLA.md zostają po polsku.
 
 Operatorzy OSD, F2.1 „PGE na liście w Gdzie” – zakończone 26.11.2026 (PR #61).

@@ -13,7 +13,7 @@ export default {
   'meta.og_opis':
     'Skąd Polska bierze prąd i ile on kosztuje – elektrownie, farmy wiatrowe, sieć najwyższych napięć, wiatr i cena energii. Z oficjalnych, publicznych źródeł, z datą przy każdej liczbie.',
   'meta.og_obraz_alt':
-    'OSIRIS: napis „Prąd w Polsce” nad nocnym globusem z zaznaczoną Polską oraz liczby elektrowni i farm wiatrowych',
+    'SOURCE: napis „Energia w Polsce” i zdanie o źródłach danych obok nocnego globusa z zaznaczoną Polską',
   'meta.og_locale': 'pl_PL',
   // Obrazek do udostępniania (zrzut strony tytułowej w tym języku – sposób w ZRODLA.md).
   'meta.og_obraz': 'https://osiris-ania-rafael.pages.dev/og-obraz.png',
@@ -397,7 +397,9 @@ export default {
   // Każda stacja osobno, bez sumowania; bez ocen i rad. Twarda spacja (\u00a0) przed jednostkami i „r.” (tylko w nowych tekstach).
   'szukaj.etykieta': 'Ile MW potrzebujesz?',
   'szukaj.podpowiedz': 'np. 300',
-  'szukaj.opis': 'Pokażemy stacje, przy których PSE podaje co najmniej tyle wolnej mocy – każdą osobno, bez sumowania.',
+  // Od narzędzi „Gdzie” (27.11.2026) pole MW filtruje też grupy operatorów – zdanie dla wszystkich (decyzja Ani 27.11.2026).
+  'szukaj.opis':
+    'Pokażemy stacje PSE i grupy stacji operatorów, przy których podano co najmniej tyle wolnej mocy na 2031\u00a0r. – każdą osobno, bez sumowania.',
   'szukaj.pasuje': (n, razem) => `Pasuje: ${n} z ${razem} stacji`,
   'szukaj.wszystkie': 'Pokaż wszystkie stacje',
   'szukaj.blad_zero': 'Wpisz liczbę większą od 0 (w\u00a0MW).',
