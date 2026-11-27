@@ -53,7 +53,7 @@ export default {
     'SOURCE: the title “Energy in Poland” and a line about the data sources next to a night-time globe with Poland marked',
   'meta.og_locale': 'en_GB',
   // Obrazek do udostępniania (zrzut strony tytułowej w tym języku – sposób w ZRODLA.md).
-  'meta.og_obraz': 'https://osiris-ania-rafael.pages.dev/og-obraz-en.png',
+  'meta.og_obraz': 'https://osiris-ania-rafael.pages.dev/og-obraz-source-en.png',
 
   // ── Wspólne ──
   'wspolne.jezyki_etykieta': 'Language',

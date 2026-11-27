@@ -16,7 +16,8 @@ export default {
     'SOURCE: napis „Energia w Polsce” i zdanie o źródłach danych obok nocnego globusa z zaznaczoną Polską',
   'meta.og_locale': 'pl_PL',
   // Obrazek do udostępniania (zrzut strony tytułowej w tym języku – sposób w ZRODLA.md).
-  'meta.og_obraz': 'https://osiris-ania-rafael.pages.dev/og-obraz.png',
+  // Nowa nazwa pliku (27.11.2026): LinkedIn trzyma obrazek w pamięci po adresie – stary og-obraz.png pokazywał OSIRIS.
+  'meta.og_obraz': 'https://osiris-ania-rafael.pages.dev/og-obraz-source.png',
 
   // ── Wspólne dla obu stron ──
   'wspolne.jezyki_etykieta': 'Wersja językowa',
