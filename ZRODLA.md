@@ -329,7 +329,7 @@ Metoda dla paliw kopalnych: 820 g/kWh (IPCC, węgiel) × (wskaźnik KOBiZE paliw
 
 ### Obrazki do udostępniania (og:image) – PL i EN (wariant C z marką SOURCE, od 27.11.2026)
 
-- **Co:** `public/og-obraz.png` (strony PL: `/`, `/mapa/`, `/o-nas/`) i `public/og-obraz-en.png` (strony EN: `/en/`,
+- **Co:** `public/og-obraz-source.png` (strony PL: `/`, `/mapa/`, `/o-nas/`) i `public/og-obraz-source-en.png` (strony EN: `/en/`,
   `/en/map/`, `/en/about/`) – obrazek pokazywany przy udostępnianiu linku. PNG 1200 × 630 px: PL **273 650 B**, SHA-256
   `4543c389bac4a937e3b962503586058f9512e8462b43d694dc76c5dc1989a579`; EN **272 254 B**, SHA-256
   `6756eb6bccae9352f19483080150c812225b0d4d885bb058685a0c5d298c1446`. Adres: klucz `meta.og_obraz`, tekst alternatywny:
@@ -345,6 +345,7 @@ Metoda dla paliw kopalnych: 820 g/kWh (IPCC, węgiel) × (wskaźnik KOBiZE paliw
   podana przez prosty serwer plików Pythona (127.0.0.1), zrzut `playwright-core` (Chrome z systemu, bez nowych pakietów),
   okno 1200 × 630, gęstość pikseli 1, adres `obraz.html?w=C&j=pl` / `&j=en`. Warianty A i B (odrzucone) – podgląd w
   `~/Projekty/osiris-podglad/og-obraz/`.
+- **Nazwa pliku (27.11.2026):** zmieniona z `og-obraz.png` / `og-obraz-en.png` na `og-obraz-source.png` / `og-obraz-source-en.png` (te same pliki, te same sumy SHA-256) – LinkedIn Post Inspector pokazywał nowy tytuł, ale stary obrazek z OSIRIS, bo trzyma obrazek w pamięci po adresie pliku. Stare pliki usunięte. **Przy następnej zmianie obrazka – znowu nowa nazwa pliku** (np. z datą), z tego samego powodu.
 - **Kiedy zrobić od nowa:** po zmianie logo, tytułu, podtytułu (opisu strony) albo plakatu kuli – liczby się nie starzeją.
 - **Warunki i podpis:** kula to obraz pochodny od kafelków NASA Black Marble 2016 – warunki jak przy kafelkach wyżej;
   podpis „Tło: NASA Black Marble 2016 (GIBS)” / „Background: NASA Black Marble 2016 (GIBS)” jest na obrazku.
