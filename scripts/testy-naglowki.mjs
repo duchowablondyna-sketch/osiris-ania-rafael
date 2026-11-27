@@ -30,7 +30,7 @@ test('public/_headers istnieje', () => {
   assert.ok(existsSync(PLIK));
 });
 
-test('/*: HSTS bez preload, X-Frame-Options DENY, Permissions-Policy, CSP tylko Report-Only', () => {
+test('/*: HSTS bez preload, X-Frame-Options DENY, Permissions-Policy, CSP włączone (od 27.11.2026)', () => {
   const r = reguly(readFileSync(PLIK, 'utf-8')).get('/*');
   assert.ok(r, 'brak reguły /*');
   assert.match(r.get('strict-transport-security'), /^max-age=31536000; includeSubDomains$/);
@@ -38,9 +38,10 @@ test('/*: HSTS bez preload, X-Frame-Options DENY, Permissions-Policy, CSP tylko 
   assert.equal(r.get('x-frame-options'), 'DENY');
   const pp = r.get('permissions-policy');
   for (const f of ['camera', 'microphone', 'geolocation', 'fullscreen']) assert.match(pp, new RegExp(`(^|, )${f}=\\(\\)`), `Permissions-Policy: ${f}`);
-  const csp = r.get('content-security-policy-report-only');
-  assert.ok(csp, 'brak Content-Security-Policy-Report-Only');
-  assert.ok(!r.has('content-security-policy'), 'CSP na ostro – dopiero osobnym krokiem');
+  // 27.11.2026: Report-Only → Content-Security-Policy (żywa strona: 0 naruszeń na 6 stronach, komputer i telefon).
+  const csp = r.get('content-security-policy');
+  assert.ok(csp, 'brak Content-Security-Policy');
+  assert.ok(!r.has('content-security-policy-report-only'), 'została też wersja Report-Only');
   for (const d of ["default-src 'self'", "script-src 'self'", "frame-ancestors 'none'", "object-src 'none'"]) assert.ok(csp.includes(d), `CSP: ${d}`);
   assert.match(csp, /connect-src [^;]*https:\/\/gibs\.earthdata\.nasa\.gov/);
 });
