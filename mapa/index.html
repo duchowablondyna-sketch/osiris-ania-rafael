@@ -251,11 +251,13 @@
               <label class="szukaj-mw__etykieta" for="osd-pge-szukaj">{{osd.szukaj_etykieta}}</label>
               <div class="szukaj-mw__wiersz">
                 <input class="szukaj-mw__pole osd-pge__pole" id="osd-pge-szukaj" type="text" enterkeyhint="search" autocomplete="off" spellcheck="false"
-                       placeholder="{{osd.szukaj_podpowiedz}}" aria-describedby="osd-pge-szukaj-opis osd-pge-szukaj-status" />
+                       placeholder="{{osd.szukaj_podpowiedz}}" aria-describedby="osd-pge-szukaj-opis osd-pge-szukaj-status osd-energa-szukaj-status" />
                 <button type="button" class="szukaj-mw__wszystkie" id="osd-pge-szukaj-wyczysc" hidden>{{osd.szukaj_wyczysc}}</button>
               </div>
               <p class="szukaj-mw__opis" id="osd-pge-szukaj-opis">{{osd.szukaj_opis}}</p>
               <p class="szukaj-mw__status" id="osd-pge-szukaj-status" aria-live="polite"></p>
+              <!-- F2.2: to samo pole szuka też w grupach Energi – wynik Energi tutaj (pusty, dopóki nic nie wpisano). -->
+              <p class="szukaj-mw__status" id="osd-energa-szukaj-status" aria-live="polite"></p>
             </div>
             <p class="osd-pge__stan" id="osd-pge-stan"></p>
             <h3 class="etykieta-mala" id="osd-pge-lista-tytul">{{osd.lista_tytul}}</h3>
@@ -263,6 +265,22 @@
             <p class="panel-moce__uwaga" id="osd-pge-szacunek"></p>
             <p class="panel-moce__uwaga" id="osd-pge-gwiazdka"></p>
             <div id="osd-pge-zrodlo"></div>
+          </section>
+          <!-- F2.2 „Energa w Gdzie” (decyzje Ani 26–27.11.2026): grupy stacji 110 kV Energa-Operator – osobna sekcja pod PGE
+               (wariant A), lista bez mapy. Kod: src/osd-energa.js, dane: public/data/osd-energa.json (ZRODLA.md). Moc wspólna
+               dla całej grupy; filtr MW według 2031; rok 2035 tylko w „?”; szukanie stacji – pole PGE wyżej. Ukryte do wczytania danych. -->
+          <section class="osd-pge osd-energa" id="osd-energa" aria-labelledby="osd-energa-tytul" hidden>
+            <h2 class="panel-moce__tytul osd-pge__tytul" id="osd-energa-tytul">{{osd.energa.tytul}}</h2>
+            <div class="osd-pge__opis" id="osd-energa-opis"></div>
+            <p class="szukaj-mw__status osd-pge__status" id="osd-energa-status" aria-live="polite"></p>
+            <p class="osd-pge__brak" id="osd-energa-brak" hidden></p>
+            <p class="osd-pge__stan" id="osd-energa-stan"></p>
+            <h3 class="etykieta-mala" id="osd-energa-lista-tytul">{{osd.energa.lista_tytul}}</h3>
+            <ul class="panel-moce__lista osd-pge__lista" id="osd-energa-lista"></ul>
+            <p class="panel-moce__uwaga" id="osd-energa-szacunek"></p>
+            <p class="panel-moce__uwaga" id="osd-energa-inwestycje"></p>
+            <p class="panel-moce__uwaga" id="osd-energa-czerwone"></p>
+            <div id="osd-energa-zrodlo"></div>
           </section>
         </div>
         </section>

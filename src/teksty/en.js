@@ -297,7 +297,7 @@ export default {
   'moce.wazne':
     'Extra-high-voltage grid (220/400 kV) – for the largest consumers, such as factories and data centres.',
   'moce.osd_wstep':
-    'Consumers connect either to the PSE grid or to the networks of distribution system operators (DSOs). SOURCE shows PGE data for now; the other operators – via the links:',
+    'Consumers connect either to the PSE grid or to the networks of distribution system operators (DSOs). SOURCE shows PGE and Energa data for now; the other operators – via the links:',
   'moce.osd_aria': 'Distribution system operators’ pages with available capacity information',
   'moce.osd.stoen': 'Stoen Operator (Warsaw)',
   'moce.osd.pge': 'PGE Dystrybucja (mainly east and centre)',
@@ -438,7 +438,7 @@ export default {
   'osd.pasuje': (n, razem, rok) => `Matching: ${n} of ${razem} PGE groups for ${rok} (capacity shared by the whole group)`,
   'osd.brak': (data, mw, rok, max) =>
     `According to PGE data (as of ${data}), no group had ${mw} in ${rok}. The most in a single group: ${max} in ${rok}.`,
-  'osd.szukaj_etykieta': 'Search PGE substations by name',
+  'osd.szukaj_etykieta': 'Search PGE and Energa substations by name',
   'osd.szukaj_podpowiedz': 'e.g. Radom',
   'osd.szukaj_opis': 'We show the groups that contain a substation with this name or part of it.',
   'osd.szukaj_wyczysc': 'Clear',
@@ -447,6 +447,35 @@ export default {
   'osd.szukaj_brak': (tekst) => `No PGE substation with a name containing “${tekst}”.`,
   'osd.brak_danych': 'PGE data: no data',
   'cytat.oryginal_pge': (tekst) => `PGE original, in Polish: „${tekst}”`,
+  // ── F2.2 Energa in “Where to connect” (src/osd-energa.js) ──
+  'osd.energa.tytul': 'Available connection capacity for consumers · Energa-Operator 110\u00a0kV',
+  'osd.energa.grupy_wstep': 'Energa – groups of coherent nodes, i.e.',
+  'osd.energa.cytat_podpis': (strony) =>
+    `source: Energa-Operator, information on total available connection capacity for consumers, p. ${strony}`,
+  'osd.energa.lista_tytul': 'Groups of 110 kV substations – in the order of the Energa table',
+  'osd.energa.wiersz_grupa': (nazwa, stacji) => `${nazwa} group · ${stacji} (network model for 2026)`,
+  'osd.energa.pytajnik_aria': (nazwa) => `${nazwa} group – year 2035 and notes`,
+  'osd.energa.grupa_tytul': (nazwa) => `${nazwa} group`,
+  'osd.energa.rok_docelowy': (rok, mw) => `${rok} (target year according to Energa): ${mw}`,
+  'osd.energa.rok_docelowy_brak': (rok) => `${rok} (target year according to Energa): no separate value – Energa:`,
+  'osd.energa.rok_docelowy_opis': (cytat) => `Target year – Energa: ${cytat}`,
+  'osd.energa.uwaga.gwiazdka_bez_objasnienia': (stacje) => `Energa marked ${[].concat(stacje).join(' and ')} with an asterisk without explanation.`,
+  'osd.energa.uwaga.kutno_bez_przecinka': (stacje) => `“${[].concat(stacje)[0]}” – no comma in the document; these may be two substations.`,
+  'osd.energa.przeniesienie': (rok, nr, nazwa) => `from ${rok} in group ${nr} (${nazwa})`,
+  'osd.energa.nowe_stacje': 'new substations in later years:',
+  'osd.energa.szacunek': (cytat) => `Estimates – Energa: ${cytat}`,
+  'osd.energa.inwestycje': (rokA, rokB) => `Capacity growth in ${rokA}–${rokB} – Energa: `,
+  'osd.energa.czerwone': (cytat) => `* Energa: ${cytat}`,
+  'osd.energa.zrodlo_nazwa': 'Energa-Operator',
+  'osd.energa.przetworzone': (data) =>
+    `Tables read from the PDF and processed by SOURCE; downloaded ${data}. SOURCE is not affiliated with Energa-Operator S.A.`,
+  'osd.energa.pasuje': (n, razem, rok) => `Matching: ${n} of ${razem} Energa groups for ${rok} (capacity shared by the whole group)`,
+  'osd.energa.brak': (data, mw, rok, max) =>
+    `According to Energa data (as of ${data}), no group had ${mw} in ${rok}. The most in a single group: ${max} in ${rok}.`,
+  'osd.energa.szukaj_wynik': (stacji, grup) => `Energa: ${stacji} in ${grup} – see the list below.`,
+  'osd.szukaj_brak_obu': (tekst) => `No PGE or Energa substation with a name containing “${tekst}”.`,
+  'osd.energa.brak_danych': 'Energa data: no data',
+  'cytat.oryginal_energa': (tekst) => `Energa original, in Polish: „${tekst}”`,
   'plan.linia': (miesiac, od, doRoku) =>
     `Draft PSE grid development plan (${miesiac}, not yet agreed with\u00a0URE) – substation construction task: ${od}–\u2060${doRoku} (start – completion of the task)`,
   'plan.krotko': (od, doRoku) => `Draft PSE plan – substation construction task: ${od}–\u2060${doRoku}`,
@@ -629,6 +658,8 @@ export default {
     'Substation locations: OpenStreetMap (OSM), ODbL – planned substations from OSM, or 20 km circles around the town named by PSE (approximate location, chosen by SOURCE).',
   'stopka.osd_pge':
     'Groups of 110\u00a0kV substations with available capacity for consumers (“Where to connect” tab): PGE Dystrybucja S.A., <a href="https://pgedystrybucja.pl/przylaczenia/procedury-przylaczeniowe/informacja-o-lacznej-dostepnej-mocy-przylaczeniowej" target="_blank" rel="noopener">information on total available connection capacity – Q3 2026 (in Polish)</a>, as of 30 Sept 2026, file retrieved 26 Nov 2026, processed (reading of the consumer capacity table; we do not add up group capacities). Estimates according to PGE. SOURCE is not affiliated with PGE Dystrybucja S.A.',
+  'stopka.osd_energa':
+    'Groups of 110\u00a0kV Energa-Operator substations with available capacity for consumers (“Where to connect” tab): Energa-Operator S.A., <a href="https://energa-operator.pl/przylaczenie-do-sieci/informacje-o-stanie-przylaczen" target="_blank" rel="noopener">information on total available connection capacity for consumers (voltage above 1\u00a0kV, in Polish)</a>, as of 31 Aug 2026, file retrieved 26 Nov 2026, processed (reading of tables 2.1 and 2.3; we do not add up group capacities). Estimates according to Energa. SOURCE is not affiliated with Energa-Operator S.A.',
   'stopka.linie':
     'Extra-high-voltage lines: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>, <a href="https://opendatacommons.org/licenses/odbl/" target="_blank" rel="noopener">ODbL</a> (this credit is also always visible on the map, bottom right).',
   'stopka.czcionki':

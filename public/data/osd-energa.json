@@ -1,0 +1,2903 @@
+{
+ "opis": "Wolna moc dla odbiorców w sieci Energa-Operator – wartości łącznej dostępnej odbiorczej mocy przyłączeniowej [MW] dla grup stacji 110 kV (Tabela 2.3, s. 16) i skład grup w modelu sieci na 2026 r. ze zmianami w kolejnych latach (Tabela 2.1, s. 5–7) – wyciąg SOURCE (ręczny odczyt PDF, F2.2). Moc jest wspólna dla całej grupy: nie dzielimy jej na stacje i nie dodajemy grup. Uwagi „*Oddział X” pominięte (decyzja Ani 27.11.2026).",
+ "zrodlo": {
+  "nazwa": "Energa-Operator S.A., „Informacja o wartości łącznej dostępnej odbiorczej mocy przyłączeniowej [MW] w sieci ENERGA-OPERATOR SA o napięciu znamionowym wyższym niż 1 kV (stan na dzień 31.08.2026 roku)”",
+  "url_strony": "https://energa-operator.pl/przylaczenie-do-sieci/informacje-o-stanie-przylaczen",
+  "url_pdf": "https://cdn-netpr.pl/file/mediakit/3063619/5c/informacja_o_wartosci_lacznej_dostepnej_odbiorczej_mocy_przylaczeniowej_31_08_2026.pdf",
+  "stan_na": "2026-08-31",
+  "last_modified": "Mon, 31 Aug 2026 09:18:55 GMT",
+  "rozmiar_b": 2414777,
+  "sha256": "43abdeed101270cb7c66bb919f17fe7e6ab8a22632e3186fd611bd24cf903324",
+  "strony": [
+   3,
+   4,
+   5,
+   6,
+   7,
+   15,
+   16
+  ],
+  "pobrano": "2026-11-26",
+  "sprawdzono": "2026-11-27",
+  "podstawa_prawna": "art. 7 ust. 8l ustawy – Prawo energetyczne w brzmieniu Dz.U. 2026 poz. 516 (dokument powołuje się na pkt 1), 3) i 4))"
+ },
+ "cytaty": {
+  "grupy": {
+   "tekst": "węzły spójne pod względem wpływu przyłączanej do nich mocy na obciążenia elementów sieci dystrybucyjnej ENERGA-OPERATOR SA",
+   "strony": "4"
+  },
+  "szacunek": {
+   "tekst": "wyznaczone wartości dostępnych mocy przyłączeniowych należy traktować jako szacunkowe",
+   "strony": "3"
+  },
+  "inwestycje": {
+   "tekst": "będzie możliwy jedynie w przypadku realizacji w całości założeń inwestycyjnych",
+   "strony": "3"
+  },
+  "rok_2035": {
+   "tekst": "uwzględnione są wszystkie, nieobjęte dodatkowymi zastrzeżeniami inwestycje z Planu Rozwoju PSE S.A.",
+   "strony": "3"
+  },
+  "czerwone": {
+   "tekst": "kolorem czerwonym zaznaczono znajdujące się na terenie działania ENERGA stacje abonenckie (niebędące majątkiem ENERGA) lub częściowo należące do ENERGA (w zakresie rozdzielni 110 kV)",
+   "strony": "7"
+  },
+  "polaczenie_2035": {
+   "tekst": "w 2035 grupa 37 połączona z grupą 36 (Kutno 1)",
+   "strony": "7"
+  }
+ },
+ "liczba_grup": {
+  "tabele": 48,
+  "tekst_dokumentu": 48,
+  "numery_pominiete": [
+   24,
+   43,
+   49
+  ],
+  "strony_tekstu": "4",
+  "strony_tabel": "5–7, 16"
+ },
+ "lata": [
+  2026,
+  2027,
+  2028,
+  2029,
+  2030,
+  2031
+ ],
+ "rok_docelowy": 2035,
+ "rok_filtra": 2031,
+ "weryfikacja": {
+  "poziom_3": "Ania przeczytała w PDF Energi (sha256 43abdeed…): 26.11.2026 grupy 7, 12, 31, 41, 44 – skład (s. 5–7) i MW (s. 16); 27.11.2026 grupy 11, 36, 37 – s. 5, 7, 16. Zgodne z odczytem SOURCE.",
+  "poziom_1": "Pozostałe 40 grup (w tym 21): odczyt SOURCE (PDFKit, położenie słów, kolor z obrazu strony), 26.11.2026; 27.11.2026 MW wszystkich 48 grup porównane automatycznie z tekstem Tabeli 2.3 (0 różnic), nazwy stacji – z tekstem s. 5–7 (wszystkie znalezione). Bez sprawdzenia przez człowieka."
+ },
+ "grupy": [
+  {
+   "nr": 1,
+   "nazwa": "Dunowo",
+   "strona_sklad": 5,
+   "strona_mw": 16,
+   "liczba_stacji": 16,
+   "stacje": [
+    {
+     "nazwa": "Białogard",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Dunowo",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Dygowo",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Gościno",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Karlino",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Karścino",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Karcino",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Kukinia",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Kołobrzeg 6 Dywizji",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Kołobrzeg Koszalińska",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Mołtowo",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Myślino",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Parnowo",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Tymień",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Ustronie Morskie",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Wartkowo",
+     "czerwona": true
+    }
+   ],
+   "nowe_stacje": [
+    {
+     "nazwa": "Mielno",
+     "od_roku": 2028,
+     "do_roku": 2035
+    }
+   ],
+   "mw": {
+    "2026": 40,
+    "2027": 220,
+    "2028": 220,
+    "2029": 220,
+    "2030": 220,
+    "2031": 230
+   },
+   "mw_2035": 250,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 2,
+   "nazwa": "Świdwin",
+   "strona_sklad": 5,
+   "strona_mw": 16,
+   "liczba_stacji": 4,
+   "stacje": [
+    {
+     "nazwa": "Barwice",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Grzmiąca",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Połczyn Zdrój",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Świdwin",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [],
+   "mw": {
+    "2026": 40,
+    "2027": 120,
+    "2028": 155,
+    "2029": 155,
+    "2030": 155,
+    "2031": 155
+   },
+   "mw_2035": 155,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 3,
+   "nazwa": "Szczecinek",
+   "strona_sklad": 5,
+   "strona_mw": 16,
+   "liczba_stacji": 11,
+   "stacje": [
+    {
+     "nazwa": "Czaplinek",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Czarne",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Drawsko Pomorskie",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Kalisz Pomorski",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Kronospan",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Szczecinek Leśna",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Szczecinek Marcelin",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Silnowo",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Żydowo Kierzkowo",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Złocieniec",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Żydowo",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [
+    {
+     "nazwa": "Bobolice",
+     "od_roku": 2031,
+     "do_roku": 2035
+    }
+   ],
+   "mw": {
+    "2026": 175,
+    "2027": 175,
+    "2028": 175,
+    "2029": 210,
+    "2030": 210,
+    "2031": 210
+   },
+   "mw_2035": 210,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 4,
+   "nazwa": "Koszalin",
+   "strona_sklad": 5,
+   "strona_mw": 16,
+   "liczba_stacji": 9,
+   "stacje": [
+    {
+     "nazwa": "Karwice",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Koszalin Morska",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Koszalin Południe",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Koszalin Przemysłowa",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Koszalin Północ",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Koszalin Strefa",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Sianów",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Sławno",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Tychowo",
+     "czerwona": true
+    }
+   ],
+   "nowe_stacje": [],
+   "mw": {
+    "2026": 40,
+    "2027": 120,
+    "2028": 120,
+    "2029": 120,
+    "2030": 120,
+    "2031": 125
+   },
+   "mw_2035": 140,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 5,
+   "nazwa": "Słupsk Wierzbięcino",
+   "strona_sklad": 5,
+   "strona_mw": 16,
+   "liczba_stacji": 6,
+   "stacje": [
+    {
+     "nazwa": "Darłowo",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Kanin",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Pieńkowo",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Rowy",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Słupsk Wierzbięcino",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Ustka",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [],
+   "mw": {
+    "2026": 35,
+    "2027": 55,
+    "2028": 55,
+    "2029": 110,
+    "2030": 110,
+    "2031": 110
+   },
+   "mw_2035": 115,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 6,
+   "nazwa": "Słupsk Poznańska",
+   "strona_sklad": 5,
+   "strona_mw": 16,
+   "liczba_stacji": 13,
+   "stacje": [
+    {
+     "nazwa": "Bytów",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Dębnica Kaszubska",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Gałąźnia Mała",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Kobylnica",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Miastko",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Obłęże",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Ostrowite",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Słupsk Grunwaldzka",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Słupsk Hubalczyków",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Słupsk Poznańska",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Słupsk Szczecińska",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Wieszyno",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Zajączkowo",
+     "czerwona": true
+    }
+   ],
+   "nowe_stacje": [],
+   "mw": {
+    "2026": 35,
+    "2027": 175,
+    "2028": 220,
+    "2029": 220,
+    "2030": 220,
+    "2031": 220
+   },
+   "mw_2035": 220,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 7,
+   "nazwa": "Człuchów",
+   "strona_sklad": 5,
+   "strona_mw": 16,
+   "liczba_stacji": 3,
+   "stacje": [
+    {
+     "nazwa": "Człuchów",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Gwieździn",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Rychnowy",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [],
+   "mw": {
+    "2026": 40,
+    "2027": 40,
+    "2028": 75,
+    "2029": 75,
+    "2030": 135,
+    "2031": 135
+   },
+   "mw_2035": 135,
+   "poziom_weryfikacji": 3
+  },
+  {
+   "nr": 8,
+   "nazwa": "Lębork",
+   "strona_sklad": 5,
+   "strona_mw": 16,
+   "liczba_stacji": 5,
+   "stacje": [
+    {
+     "nazwa": "Bożepole",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Darżyno",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Kaczkowo",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Lębork Krzywoustego",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Lębork Nowy Świat",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [],
+   "mw": {
+    "2026": 15,
+    "2027": 40,
+    "2028": 40,
+    "2029": 40,
+    "2030": 205,
+    "2031": 205
+   },
+   "mw_2035": 205,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 9,
+   "nazwa": "Wicko",
+   "strona_sklad": 5,
+   "strona_mw": 16,
+   "liczba_stacji": 4,
+   "stacje": [
+    {
+     "nazwa": "Jackowo",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Szelf Wicko",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Wicko",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Wojciechowo",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [],
+   "mw": {
+    "2026": 5,
+    "2027": 25,
+    "2028": 25,
+    "2029": 25,
+    "2030": 70,
+    "2031": 70
+   },
+   "mw_2035": 70,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 10,
+   "nazwa": "Żarnowiec",
+   "strona_sklad": 5,
+   "strona_mw": 16,
+   "liczba_stacji": 10,
+   "stacje": [
+    {
+     "nazwa": "Chwarzno",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Chylonia",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Gnieżdżewo Łebcz",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Gnieżdżewo Zdrada",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Opalino",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Reda",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Rumia",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Władysławowo",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Wejherowo",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Żarnowiec",
+     "czerwona": true
+    }
+   ],
+   "nowe_stacje": [
+    {
+     "nazwa": "Dębogórze",
+     "od_roku": 2031,
+     "do_roku": 2035
+    },
+    {
+     "nazwa": "Miszewo",
+     "od_roku": 2031,
+     "do_roku": 2035
+    },
+    {
+     "nazwa": "Puck",
+     "od_roku": 2031,
+     "do_roku": 2035
+    },
+    {
+     "nazwa": "Wejherowo Śmiechowo",
+     "od_roku": 2031,
+     "do_roku": 2035
+    }
+   ],
+   "mw": {
+    "2026": 5,
+    "2027": 5,
+    "2028": 15,
+    "2029": 15,
+    "2030": 230,
+    "2031": 230
+   },
+   "mw_2035": 230,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 11,
+   "nazwa": "Gdynia",
+   "strona_sklad": 5,
+   "strona_mw": 16,
+   "liczba_stacji": 12,
+   "stacje": [
+    {
+     "nazwa": "Gdynia Stocznia",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Grabówek",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Gdynia Południe",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Gdynia Port",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Kontenery",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Kokoszki",
+     "czerwona": false,
+     "przeniesienie": {
+      "od_roku": 2028,
+      "do_grupy": 12
+     }
+    },
+    {
+     "nazwa": "Lotnisko",
+     "czerwona": false,
+     "przeniesienie": {
+      "od_roku": 2028,
+      "do_grupy": 12
+     }
+    },
+    {
+     "nazwa": "Oksywie",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Redłowo",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Sopot Kamienny Potok",
+     "czerwona": false,
+     "przeniesienie": {
+      "od_roku": 2028,
+      "do_grupy": 12
+     }
+    },
+    {
+     "nazwa": "Tlenownia",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Wielki Kack",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [
+    {
+     "nazwa": "Gdynia Centrum",
+     "od_roku": 2031,
+     "do_roku": 2035
+    }
+   ],
+   "mw": {
+    "2026": 0,
+    "2027": 0,
+    "2028": 0,
+    "2029": 0,
+    "2030": 0,
+    "2031": 0
+   },
+   "mw_2035": 15,
+   "przeniesienie_tekst_pdf": "*od roku 2028 w grupie 12 (Oliwa)",
+   "poziom_weryfikacji": 3
+  },
+  {
+   "nr": 12,
+   "nazwa": "Oliwa",
+   "strona_sklad": 5,
+   "strona_mw": 16,
+   "liczba_stacji": 4,
+   "stacje": [
+    {
+     "nazwa": "Oliwa",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Pomorska",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Sopot",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Wysoka",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [],
+   "mw": {
+    "2026": 0,
+    "2027": 0,
+    "2028": 0,
+    "2029": 0,
+    "2030": 0,
+    "2031": 0
+   },
+   "mw_2035": 40,
+   "poziom_weryfikacji": 3
+  },
+  {
+   "nr": 13,
+   "nazwa": "Gdańsk Błonia",
+   "strona_sklad": 5,
+   "strona_mw": 16,
+   "liczba_stacji": 24,
+   "stacje": [
+    {
+     "nazwa": "Basen Górniczy",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Brętowo",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Cedry",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Czerwony Most",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Gdańsk Błonia",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Gdańsk 2",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Gdańsk 1 sekcja 1",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Gdańsk Chełm",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Górki Zachodnie",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Gdańsk Centrum",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Kowale",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Leśniewo",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Maćkowy",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Młode Miasto",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Motława",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Nowy Port",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Ostrów",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Piecki",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Pleniewo",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Port Północny",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Przymorze",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Rafineria",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Uniwersytet",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Zaspa",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [
+    {
+     "nazwa": "Politechnika",
+     "od_roku": 2027,
+     "do_roku": 2035
+    },
+    {
+     "nazwa": "Stogi",
+     "od_roku": 2030,
+     "do_roku": 2035
+    },
+    {
+     "nazwa": "Szadółki",
+     "od_roku": 2030,
+     "do_roku": 2035
+    }
+   ],
+   "mw": {
+    "2026": 0,
+    "2027": 0,
+    "2028": 0,
+    "2029": 0,
+    "2030": 0,
+    "2031": 0
+   },
+   "mw_2035": 90,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 14,
+   "nazwa": "Kościerzyna",
+   "strona_sklad": 5,
+   "strona_mw": 16,
+   "liczba_stacji": 9,
+   "stacje": [
+    {
+     "nazwa": "Gdańsk 1 sekcja 2",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Kościerzyna",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Kiełpino",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Pruszcz Południe",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Pruszcz",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Rutki",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Sierakowice",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Stężyca",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Straszyn",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [
+    {
+     "nazwa": "Łebno",
+     "od_roku": 2028,
+     "do_roku": 2035
+    },
+    {
+     "nazwa": "Gdańsk Przyjaźń",
+     "od_roku": 2028,
+     "do_roku": 2035
+    }
+   ],
+   "mw": {
+    "2026": 0,
+    "2027": 0,
+    "2028": 5,
+    "2029": 10,
+    "2030": 10,
+    "2031": 10
+   },
+   "mw_2035": 110,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 15,
+   "nazwa": "Pelplin",
+   "strona_sklad": 5,
+   "strona_mw": 16,
+   "liczba_stacji": 17,
+   "stacje": [
+    {
+     "nazwa": "Bystra",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Czarna Woda",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Czatkowy",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Ciepłe",
+     "czerwona": true
+    },
+    {
+     "nazwa": "FW Pelplin",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Karsin",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Lignowy",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Majewo",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Malbork Południe",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Malbork Rakowiec",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Mątowy",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Miłobądz",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Pelplin",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Polmo",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Subkowy",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Sztum",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Tczew",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [
+    {
+     "nazwa": "Skórcz",
+     "od_roku": 2035,
+     "do_roku": 2035
+    },
+    {
+     "nazwa": "Zblewo",
+     "od_roku": 2028,
+     "do_roku": 2035
+    }
+   ],
+   "mw": {
+    "2026": 0,
+    "2027": 0,
+    "2028": 5,
+    "2029": 15,
+    "2030": 15,
+    "2031": 15
+   },
+   "mw_2035": 95,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 16,
+   "nazwa": "Starogard",
+   "strona_sklad": 6,
+   "strona_mw": 16,
+   "liczba_stacji": 3,
+   "stacje": [
+    {
+     "nazwa": "Skarszewy",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Starogard",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Swarożyn",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [
+    {
+     "nazwa": "Kocborowo",
+     "od_roku": 2027,
+     "do_roku": 2035
+    }
+   ],
+   "mw": {
+    "2026": 5,
+    "2027": 5,
+    "2028": 20,
+    "2029": 20,
+    "2030": 30,
+    "2031": 30
+   },
+   "mw_2035": 130,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 17,
+   "nazwa": "Elbląg",
+   "strona_sklad": 6,
+   "strona_mw": 16,
+   "liczba_stacji": 11,
+   "stacje": [
+    {
+     "nazwa": "EC Elbląg",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Elbląg Gronowo",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Elbląg Północ",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Modrzewina",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Radomska",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Elbląg Wschód",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Elbląg Zachód",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Kąty Rybackie",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Nowy Dwór",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Pogrodzie",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Elbląg Zamech",
+     "czerwona": true
+    }
+   ],
+   "nowe_stacje": [
+    {
+     "nazwa": "Nowy Staw",
+     "od_roku": 2030,
+     "do_roku": 2035
+    }
+   ],
+   "mw": {
+    "2026": 5,
+    "2027": 5,
+    "2028": 5,
+    "2029": 5,
+    "2030": 15,
+    "2031": 15
+   },
+   "mw_2035": 95,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 18,
+   "nazwa": "Orneta",
+   "strona_sklad": 6,
+   "strona_mw": 16,
+   "liczba_stacji": 4,
+   "stacje": [
+    {
+     "nazwa": "Braniewo",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Dobre Miasto",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Orneta",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Piotrowiec",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [],
+   "mw": {
+    "2026": 10,
+    "2027": 10,
+    "2028": 85,
+    "2029": 85,
+    "2030": 135,
+    "2031": 135
+   },
+   "mw_2035": 135,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 19,
+   "nazwa": "Morąg",
+   "strona_sklad": 6,
+   "strona_mw": 16,
+   "liczba_stacji": 4,
+   "stacje": [
+    {
+     "nazwa": "Miłakowo",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Morąg",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Pasłęk",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Zalewo",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [
+    {
+     "nazwa": "Małdyty",
+     "od_roku": 2029,
+     "do_roku": 2035
+    }
+   ],
+   "mw": {
+    "2026": 0,
+    "2027": 0,
+    "2028": 85,
+    "2029": 135,
+    "2030": 150,
+    "2031": 150
+   },
+   "mw_2035": 150,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 20,
+   "nazwa": "Olsztyn",
+   "strona_sklad": 6,
+   "strona_mw": 16,
+   "liczba_stacji": 26,
+   "stacje": [
+    {
+     "nazwa": "Bartoszyce",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Biskupiec",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Barczewo",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Górowo Iławeckie",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Gutkowo",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Jaroty",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Korpele",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Korsze",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Kętrzyn",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Lidzbark Warmiński",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Michelin",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Mrągowo",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Olsztyn Centrum",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Olsztyn Ciepłownia",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Olsztyn Mątki",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Olsztyn 1",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Olsztyn Południe",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Olsztyn Północ",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Olsztyn Wschód",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Olsztyn Zachód",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Pleśno",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Reszel",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Różyna",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Szczytno",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Wielbark",
+     "czerwona": false
+    },
+    {
+     "nazwa": "OZOS",
+     "czerwona": true
+    }
+   ],
+   "nowe_stacje": [
+    {
+     "nazwa": "Barciany",
+     "od_roku": 2030,
+     "do_roku": 2035
+    },
+    {
+     "nazwa": "Dźwierzuty",
+     "od_roku": 2029,
+     "do_roku": 2035
+    },
+    {
+     "nazwa": "Jeziorany",
+     "od_roku": 2030,
+     "do_roku": 2035
+    },
+    {
+     "nazwa": "Mrągowo Zachód",
+     "od_roku": 2028,
+     "do_roku": 2035
+    }
+   ],
+   "mw": {
+    "2026": 5,
+    "2027": 5,
+    "2028": 5,
+    "2029": 5,
+    "2030": 90,
+    "2031": 90
+   },
+   "mw_2035": 90,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 21,
+   "nazwa": "Ostróda",
+   "strona_sklad": 6,
+   "strona_mw": 16,
+   "liczba_stacji": 3,
+   "stacje": [
+    {
+     "nazwa": "Gietrzwałd",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Ostróda",
+     "czerwona": false,
+     "przeniesienie": {
+      "od_roku": 2027,
+      "do_grupy": 25
+     }
+    },
+    {
+     "nazwa": "Ostróda Wschód",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [],
+   "mw": {
+    "2026": 0,
+    "2027": 0,
+    "2028": 15,
+    "2029": 15,
+    "2030": 70,
+    "2031": 70
+   },
+   "mw_2035": 70,
+   "przeniesienie_tekst_pdf": "*od roku 2027 w grupie 25 (Nidzica)",
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 22,
+   "nazwa": "Iława",
+   "strona_sklad": 6,
+   "strona_mw": 16,
+   "liczba_stacji": 7,
+   "stacje": [
+    {
+     "nazwa": "Fitowo",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Iława",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Iława Wschód",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Lubawa",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Nowe Miasto",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Podlasek",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Ząbrowo",
+     "czerwona": true
+    }
+   ],
+   "nowe_stacje": [],
+   "mw": {
+    "2026": 0,
+    "2027": 0,
+    "2028": 55,
+    "2029": 95,
+    "2030": 95,
+    "2031": 95
+   },
+   "mw_2035": 95,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 23,
+   "nazwa": "Susz",
+   "strona_sklad": 6,
+   "strona_mw": 16,
+   "liczba_stacji": 6,
+   "stacje": [
+    {
+     "nazwa": "Kisielice",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Kwidzyn Celuloza",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Kwidzyn Północ",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Łęgowo",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Mikołajki Pomorskie",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Susz",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [],
+   "mw": {
+    "2026": 40,
+    "2027": 40,
+    "2028": 50,
+    "2029": 90,
+    "2030": 90,
+    "2031": 90
+   },
+   "mw_2035": 90,
+   "uwagi": [
+    {
+     "kod": "gwiazdka_bez_objasnienia",
+     "stacje": [
+      "Kisielice",
+      "Łęgowo"
+     ]
+    }
+   ],
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 25,
+   "nazwa": "Nidzica",
+   "strona_sklad": 6,
+   "strona_mw": 16,
+   "liczba_stacji": 3,
+   "stacje": [
+    {
+     "nazwa": "Nidzica",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Olsztynek",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Tomaszkowo",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [
+    {
+     "nazwa": "Powierz",
+     "od_roku": 2028,
+     "do_roku": 2035
+    },
+    {
+     "nazwa": "Olsztynek Południe",
+     "od_roku": 2029,
+     "do_roku": 2035
+    },
+    {
+     "nazwa": "Samin",
+     "od_roku": 2035,
+     "do_roku": 2035
+    }
+   ],
+   "mw": {
+    "2026": 5,
+    "2027": 5,
+    "2028": 20,
+    "2029": 20,
+    "2030": 105,
+    "2031": 105
+   },
+   "mw_2035": 105,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 26,
+   "nazwa": "Grudziądz",
+   "strona_sklad": 6,
+   "strona_mw": 16,
+   "liczba_stacji": 13,
+   "stacje": [
+    {
+     "nazwa": "Chełmno",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Grudziądz Łąkowa",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Grudziądz Śródmieście",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Grudziądz Węgrowo",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Łasin",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Lisewo",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Mniszek",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Mazanki",
+     "czerwona": true
+    },
+    {
+     "nazwa": "PERN",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Radzyń",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Rządz",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Grudziądz Strzemięcin",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Świerkocin",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [
+    {
+     "nazwa": "Kwidzyn Bądki",
+     "od_roku": 2030,
+     "do_roku": 2035
+    },
+    {
+     "nazwa": "Ogrodzieniec",
+     "od_roku": 2029,
+     "do_roku": 2035
+    }
+   ],
+   "mw": {
+    "2026": 0,
+    "2027": 0,
+    "2028": 0,
+    "2029": 35,
+    "2030": 35,
+    "2031": 35
+   },
+   "mw_2035": 35,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 27,
+   "nazwa": "Brodnica",
+   "strona_sklad": 6,
+   "strona_mw": 16,
+   "liczba_stacji": 6,
+   "stacje": [
+    {
+     "nazwa": "Brodnica Podgórz",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Brodnica Grunwald",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Jabłonowo",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Lidzbark Welski",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Puszcza Miejska",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Rypin",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [],
+   "mw": {
+    "2026": 45,
+    "2027": 45,
+    "2028": 45,
+    "2029": 120,
+    "2030": 120,
+    "2031": 110
+   },
+   "mw_2035": 120,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 28,
+   "nazwa": "Wąbrzeźno",
+   "strona_sklad": 6,
+   "strona_mw": 16,
+   "liczba_stacji": 4,
+   "stacje": [
+    {
+     "nazwa": "Golub Dobrzyń",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Kowalewo",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Lipno",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Wąbrzeźno",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [
+    {
+     "nazwa": "Tłuchowo",
+     "od_roku": 2031,
+     "do_roku": 2035
+    }
+   ],
+   "mw": {
+    "2026": 65,
+    "2027": 65,
+    "2028": 65,
+    "2029": 105,
+    "2030": 105,
+    "2031": 95
+   },
+   "mw_2035": 105,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 29,
+   "nazwa": "Toruń",
+   "strona_sklad": 6,
+   "strona_mw": 16,
+   "liczba_stacji": 19,
+   "stacje": [
+    {
+     "nazwa": "Aleksandrów Kujawski",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Chełmża",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Ciechocinek",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Drwęca",
+     "czerwona": true
+    },
+    {
+     "nazwa": "EC Grębocin",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Kawęczyn",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Lubicz",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Łysomice",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Przysiek",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Rubinkowo",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Toruń Elana",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Bielawy",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Toruń Północ",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Toruń Wschód",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Toruń Zachód",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Toruń Południe",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Toruń Podgórz",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Toruń Śródmieście",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Unisław",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [
+    {
+     "nazwa": "Łysomice 2",
+     "od_roku": 2031,
+     "do_roku": 2035
+    }
+   ],
+   "mw": {
+    "2026": 60,
+    "2027": 60,
+    "2028": 65,
+    "2029": 125,
+    "2030": 125,
+    "2031": 190
+   },
+   "mw_2035": 200,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 30,
+   "nazwa": "Włocławek",
+   "strona_sklad": 6,
+   "strona_mw": 16,
+   "liczba_stacji": 10,
+   "stacje": [
+    {
+     "nazwa": "Drumet",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Kalinowo",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Lubień",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Lubraniec",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Machnacz",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Włocławek Azoty",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Włocławek Południe",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Włocławek Wschód",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Włocławek Zachód",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Włocławek Zawiśle",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [
+    {
+     "nazwa": "Kowal",
+     "od_roku": 2031,
+     "do_roku": 2035
+    },
+    {
+     "nazwa": "Kruszyn",
+     "od_roku": 2029,
+     "do_roku": 2035
+    }
+   ],
+   "mw": {
+    "2026": 45,
+    "2027": 45,
+    "2028": 45,
+    "2029": 125,
+    "2030": 125,
+    "2031": 125
+   },
+   "mw_2035": 125,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 31,
+   "nazwa": "Działdowo",
+   "strona_sklad": 6,
+   "strona_mw": 16,
+   "liczba_stacji": 5,
+   "stacje": [
+    {
+     "nazwa": "Działdowo",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Skurpie",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Tuczki",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Zakrzewo",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Żuromin",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [],
+   "mw": {
+    "2026": 15,
+    "2027": 15,
+    "2028": 50,
+    "2029": 50,
+    "2030": 90,
+    "2031": 70
+   },
+   "mw_2035": 90,
+   "poziom_weryfikacji": 3
+  },
+  {
+   "nr": 32,
+   "nazwa": "Mława",
+   "strona_sklad": 6,
+   "strona_mw": 16,
+   "liczba_stacji": 9,
+   "stacje": [
+    {
+     "nazwa": "Grudusk",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Miączyn",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Mława",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Olechinek",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Szydłowo",
+     "czerwona": false
+    },
+    {
+     "nazwa": "PT Iłowo",
+     "czerwona": true
+    },
+    {
+     "nazwa": "PT Wyszyny",
+     "czerwona": true
+    },
+    {
+     "nazwa": "FW Szydłowo",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Windyki",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [],
+   "mw": {
+    "2026": 10,
+    "2027": 10,
+    "2028": 30,
+    "2029": 30,
+    "2030": 60,
+    "2031": 40
+   },
+   "mw_2035": 60,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 33,
+   "nazwa": "Ciechanów",
+   "strona_sklad": 7,
+   "strona_mw": 16,
+   "liczba_stacji": 11,
+   "stacje": [
+    {
+     "nazwa": "Chrzanówek",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Ciechanów",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Ciechanów Przemysłowa",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Drobin",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Glinojeck",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Nasielsk",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Niechodzin",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Pułtusk",
+     "czerwona": false
+    },
+    {
+     "nazwa": "PT Gołotczyzna",
+     "czerwona": true
+    },
+    {
+     "nazwa": "PT Nasielsk",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Raciąż",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [
+    {
+     "nazwa": "Gołymin",
+     "od_roku": 2031,
+     "do_roku": 2035
+    },
+    {
+     "nazwa": "Świercze",
+     "od_roku": 2028,
+     "do_roku": 2035
+    }
+   ],
+   "mw": {
+    "2026": 15,
+    "2027": 15,
+    "2028": 35,
+    "2029": 35,
+    "2030": 35,
+    "2031": 30
+   },
+   "mw_2035": 60,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 34,
+   "nazwa": "Sierpc",
+   "strona_sklad": 7,
+   "strona_mw": 16,
+   "liczba_stacji": 2,
+   "stacje": [
+    {
+     "nazwa": "Bojanowo",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Sierpc",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [],
+   "mw": {
+    "2026": 20,
+    "2027": 20,
+    "2028": 55,
+    "2029": 55,
+    "2030": 55,
+    "2031": 35
+   },
+   "mw_2035": 70,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 35,
+   "nazwa": "Płock",
+   "strona_sklad": 7,
+   "strona_mw": 16,
+   "liczba_stacji": 19,
+   "stacje": [
+    {
+     "nazwa": "Gąbin",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Gulczewo",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Maszewo",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Michałówek",
+     "czerwona": false
+    },
+    {
+     "nazwa": "MZRiP 1",
+     "czerwona": true
+    },
+    {
+     "nazwa": "MZRiP 2",
+     "czerwona": true
+    },
+    {
+     "nazwa": "MZRiP 3",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Plebanka",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Podolszyce",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Płock Przemysłowa",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Płock Góry",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Płock",
+     "czerwona": false
+    },
+    {
+     "nazwa": "FMŻ",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Płońsk Bydgoska",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Płońsk",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Radziwie",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Staroźreby",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Szkarada",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Wyszogród",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [
+    {
+     "nazwa": "Stanowo",
+     "od_roku": 2031,
+     "do_roku": 2035
+    },
+    {
+     "nazwa": "Zawidz",
+     "od_roku": 2030,
+     "do_roku": 2035
+    }
+   ],
+   "mw": {
+    "2026": 145,
+    "2027": 145,
+    "2028": 190,
+    "2029": 205,
+    "2030": 205,
+    "2031": 95
+   },
+   "mw_2035": 205,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 36,
+   "nazwa": "Kutno 1",
+   "strona_sklad": 7,
+   "strona_mw": 16,
+   "liczba_stacji": 8,
+   "stacje": [
+    {
+     "nazwa": "Gostynin",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Kutno sekcja 1",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Majdany",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Piątek",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Sklęczki sekcja 2",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Stara Wieś sekcja 2",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Żychlin",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Kutno II Kotliska",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [],
+   "mw": {
+    "2026": 25,
+    "2027": 25,
+    "2028": 25,
+    "2029": 25,
+    "2030": 25,
+    "2031": 20
+   },
+   "mw_2035": 115,
+   "uwagi": [
+    {
+     "kod": "kutno_bez_przecinka",
+     "stacje": [
+      "Kutno II Kotliska"
+     ]
+    }
+   ],
+   "poziom_weryfikacji": 3
+  },
+  {
+   "nr": 37,
+   "nazwa": "Kutno 2",
+   "strona_sklad": 7,
+   "strona_mw": 16,
+   "liczba_stacji": 4,
+   "stacje": [
+    {
+     "nazwa": "Krośniewice",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Kutno sekcja 2",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Sklęczki sekcja 1",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Stara Wieś sekcja 1",
+     "czerwona": true
+    }
+   ],
+   "nowe_stacje": [],
+   "mw": {
+    "2026": 15,
+    "2027": 15,
+    "2028": 20,
+    "2029": 85,
+    "2030": 85,
+    "2031": 35
+   },
+   "mw_2035": null,
+   "polaczenie_2035": {
+    "z_grupa": 36
+   },
+   "poziom_weryfikacji": 3
+  },
+  {
+   "nr": 38,
+   "nazwa": "Łęczyca",
+   "strona_sklad": 7,
+   "strona_mw": 16,
+   "liczba_stacji": 5,
+   "stacje": [
+    {
+     "nazwa": "Daszyna",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Janiszew",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Kraski",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Łęczyca",
+     "czerwona": false
+    },
+    {
+     "nazwa": "PT Kraski",
+     "czerwona": true
+    }
+   ],
+   "nowe_stacje": [
+    {
+     "nazwa": "Witonia",
+     "od_roku": 2031,
+     "do_roku": 2035
+    }
+   ],
+   "mw": {
+    "2026": 20,
+    "2027": 20,
+    "2028": 25,
+    "2029": 60,
+    "2030": 60,
+    "2031": 60
+   },
+   "mw_2035": 145,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 39,
+   "nazwa": "Kłodawa",
+   "strona_sklad": 7,
+   "strona_mw": 16,
+   "liczba_stacji": 6,
+   "stacje": [
+    {
+     "nazwa": "Barłogi",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Kłodawa",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Koło Ruchenna",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Korund",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Kopalnia Soli Kłodawa",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Koło Wschód",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [],
+   "mw": {
+    "2026": 10,
+    "2027": 10,
+    "2028": 15,
+    "2029": 75,
+    "2030": 75,
+    "2031": 75
+   },
+   "mw_2035": 110,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 40,
+   "nazwa": "Pątnów",
+   "strona_sklad": 7,
+   "strona_mw": 16,
+   "liczba_stacji": 12,
+   "stacje": [
+    {
+     "nazwa": "Anielewo",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Jóźwin",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Kleczew",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Powidz",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Pątnów",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Piotrków Kujawski",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Radziejów",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Walcownia",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Witkowo",
+     "czerwona": false
+    },
+    {
+     "nazwa": "FW Jóźwin",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Jóźwin II",
+     "czerwona": true
+    },
+    {
+     "nazwa": "FW Radziejów",
+     "czerwona": true
+    }
+   ],
+   "nowe_stacje": [
+    {
+     "nazwa": "Maliniec",
+     "od_roku": 2031,
+     "do_roku": 2035
+    }
+   ],
+   "mw": {
+    "2026": 15,
+    "2027": 15,
+    "2028": 20,
+    "2029": 200,
+    "2030": 200,
+    "2031": 200
+   },
+   "mw_2035": 200,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 41,
+   "nazwa": "Ślesin",
+   "strona_sklad": 7,
+   "strona_mw": 16,
+   "liczba_stacji": 3,
+   "stacje": [
+    {
+     "nazwa": "Babiak",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Lubstów",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Ślesin",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [
+    {
+     "nazwa": "Izbica Kujawska",
+     "od_roku": 2031,
+     "do_roku": 2035
+    }
+   ],
+   "mw": {
+    "2026": 90,
+    "2027": 90,
+    "2028": 95,
+    "2029": 120,
+    "2030": 120,
+    "2031": 120
+   },
+   "mw_2035": 80,
+   "poziom_weryfikacji": 3
+  },
+  {
+   "nr": 42,
+   "nazwa": "Konin",
+   "strona_sklad": 7,
+   "strona_mw": 16,
+   "liczba_stacji": 12,
+   "stacje": [
+    {
+     "nazwa": "Cienin",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Huta Aluminium",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Ignacewo",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Konin",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Konin Nowy Dwór",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Krągola",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Konin Niesłusz",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Konin Południe",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Rychwał",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Słupca",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Sompolno",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Zagorów",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [],
+   "mw": {
+    "2026": 10,
+    "2027": 10,
+    "2028": 15,
+    "2029": 135,
+    "2030": 135,
+    "2031": 135
+   },
+   "mw_2035": 60,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 44,
+   "nazwa": "Adamów",
+   "strona_sklad": 7,
+   "strona_mw": 16,
+   "liczba_stacji": 6,
+   "stacje": [
+    {
+     "nazwa": "Adamów",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Adamów Kopalnia",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Ceków",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Turek Zdrojki",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Żuki",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Wytwórnia Gazów",
+     "czerwona": true
+    }
+   ],
+   "nowe_stacje": [],
+   "mw": {
+    "2026": 0,
+    "2027": 0,
+    "2028": 0,
+    "2029": 140,
+    "2030": 140,
+    "2031": 140
+   },
+   "mw_2035": 125,
+   "poziom_weryfikacji": 3
+  },
+  {
+   "nr": 45,
+   "nazwa": "Kalisz Północ",
+   "strona_sklad": 7,
+   "strona_mw": 16,
+   "liczba_stacji": 8,
+   "stacje": [
+    {
+     "nazwa": "Kalisz Centrum",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Kalisz Dobrzec",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Kalisz Piwonice",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Kalisz Północ",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Kalisz Zachód",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Skalmierzyce",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Stawiszyn",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Zbiersk",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [
+    {
+     "nazwa": "Opatówek",
+     "od_roku": 2029,
+     "do_roku": 2035
+    }
+   ],
+   "mw": {
+    "2026": 25,
+    "2027": 35,
+    "2028": 45,
+    "2029": 195,
+    "2030": 195,
+    "2031": 195
+   },
+   "mw_2035": 145,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 46,
+   "nazwa": "Krotoszyn",
+   "strona_sklad": 7,
+   "strona_mw": 16,
+   "liczba_stacji": 4,
+   "stacje": [
+    {
+     "nazwa": "Koźmin",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Krotoszyn Południe",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Krotoszyn Mahle",
+     "czerwona": true
+    },
+    {
+     "nazwa": "Krotoszyn Północ",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [],
+   "mw": {
+    "2026": 0,
+    "2027": 0,
+    "2028": 5,
+    "2029": 30,
+    "2030": 30,
+    "2031": 30
+   },
+   "mw_2035": 80,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 47,
+   "nazwa": "Dobrzyca",
+   "strona_sklad": 7,
+   "strona_mw": 16,
+   "liczba_stacji": 2,
+   "stacje": [
+    {
+     "nazwa": "Dobrzyca",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Kotlin",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [],
+   "mw": {
+    "2026": 25,
+    "2027": 25,
+    "2028": 25,
+    "2029": 120,
+    "2030": 120,
+    "2031": 120
+   },
+   "mw_2035": 160,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 48,
+   "nazwa": "Jarocin",
+   "strona_sklad": 7,
+   "strona_mw": 16,
+   "liczba_stacji": 4,
+   "stacje": [
+    {
+     "nazwa": "Gizałki",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Jarocin Południe",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Jarocin Wschód",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Ludwinów",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [],
+   "mw": {
+    "2026": 15,
+    "2027": 15,
+    "2028": 15,
+    "2029": 125,
+    "2030": 125,
+    "2031": 125
+   },
+   "mw_2035": 105,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 50,
+   "nazwa": "Ostrów",
+   "strona_sklad": 7,
+   "strona_mw": 16,
+   "liczba_stacji": 10,
+   "stacje": [
+    {
+     "nazwa": "Grabów",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Ociąż",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Odolanów",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Ostrów Południe",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Ostrów Północ",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Ostrów",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Ostrów Wschód",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Ostrów Zachód",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Pleszew",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Sośnie",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [
+    {
+     "nazwa": "Gołuchów",
+     "od_roku": 2029,
+     "do_roku": 2035
+    }
+   ],
+   "mw": {
+    "2026": 40,
+    "2027": 40,
+    "2028": 45,
+    "2029": 180,
+    "2030": 180,
+    "2031": 180
+   },
+   "mw_2035": 180,
+   "poziom_weryfikacji": 1
+  },
+  {
+   "nr": 51,
+   "nazwa": "Wieruszów",
+   "strona_sklad": 7,
+   "strona_mw": 16,
+   "liczba_stacji": 5,
+   "stacje": [
+    {
+     "nazwa": "Kępno Wschód",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Wieruszów",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Kępno",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Ostrzeszów",
+     "czerwona": false
+    },
+    {
+     "nazwa": "Syców",
+     "czerwona": false
+    }
+   ],
+   "nowe_stacje": [
+    {
+     "nazwa": "Syców Wschód",
+     "od_roku": 2028,
+     "do_roku": 2035
+    }
+   ],
+   "mw": {
+    "2026": 50,
+    "2027": 50,
+    "2028": 65,
+    "2029": 155,
+    "2030": 155,
+    "2031": 155
+   },
+   "mw_2035": 155,
+   "poziom_weryfikacji": 1
+  }
+ ]
+}

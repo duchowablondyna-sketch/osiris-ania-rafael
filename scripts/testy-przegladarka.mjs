@@ -130,6 +130,40 @@ async function sprawdzWyszukiwarke(strona, widok) {
   }
   await strona.locator('#osd-pge-szukaj-wyczysc').click();
   if ((await grupy()).split(',').length !== 47) bledy.push('PGE: „Wyczyść” nie pokazuje wszystkich grup');
+  // F2.2: grupy Energi (public/data/osd-energa.json) – ten sam filtr MW (według 2031); szukanie stacji w polu PGE.
+  const grupyEnergi = () => strona.evaluate(() => [...document.querySelectorAll('#osd-energa-lista li')].filter((l) => !l.hidden).map((l) => l.dataset.nr).join(','));
+  await strona.waitForFunction(() => document.querySelectorAll('#osd-energa-lista li').length > 0, null, { timeout: 15_000 });
+  if ((await grupyEnergi()).split(',').length !== 48) bledy.push('Energa: na starcie nie 48 grup');
+  await pole.fill('230');
+  if ((await grupyEnergi()) !== '1,10') bledy.push(`Energa: 230 MW → ${await grupyEnergi()} (oczekiwano 1,10)`);
+  await pole.fill('300');
+  if ((await grupyEnergi()) !== '' || !(await strona.locator('#osd-energa-brak').isVisible())) bledy.push('Energa: 300 MW → są grupy albo nie widać zdania „brak wyniku”');
+  await pole.fill('');
+  await szukajPge.fill('ostrow');
+  if ((await grupyEnergi()) !== '6,13,50') bledy.push(`Energa: „ostrow” w polu PGE → ${await grupyEnergi()} (oczekiwano 6,13,50)`);
+  if (!(await strona.locator('#osd-energa-szukaj-status').textContent()).trim()) bledy.push('Energa: „ostrow” → brak komunikatu pod polem');
+  // Komunikaty (decyzja Ani 27.11.2026): PGE coś znalazło, Energa nie → bez linijki Energi; nikt nic → jedno wspólne zdanie.
+  const linijki = async () => [await strona.locator('#osd-pge-szukaj-status').textContent(), await strona.locator('#osd-energa-szukaj-status').textContent()].map((x) => x.trim());
+  await szukajPge.fill('belchatow');
+  if ((await linijki())[1] !== '') bledy.push('szukanie: „belchatow” (tylko PGE) → widać linijkę Energi');
+  await szukajPge.fill('mielno');
+  if ((await linijki())[0] !== '' || !(await linijki())[1]) bledy.push('szukanie: „mielno” (tylko Energa) → widać „brak” PGE albo brak wyniku Energi');
+  await szukajPge.fill('xyzxyz');
+  const [lPge, lEnergi] = await linijki();
+  if (!lPge.includes('xyzxyz') || !/PGE/.test(lPge) || !/Energ/.test(lPge) || lEnergi !== '') bledy.push(`szukanie: „xyzxyz” → nie jedno wspólne zdanie (${lPge} | ${lEnergi})`);
+  await szukajPge.fill('ostrow'); // dalej (telefon) mierzymy widoczny wiersz Energi
+  if (widok.nazwa === 'telefon') {
+    const s = await strona.locator('#osd-energa-lista li:not([hidden]) summary').first().evaluate((e) => e.getBoundingClientRect().height);
+    if (s < 44) bledy.push(`Energa (telefon): „stacje w grupie” ma ${s} px wysokości (min. 44)`);
+    // „?” przy grupie: niewidoczne pole dotyku min. 44 × 44 px (zasada z CLAUDE.md).
+    const p = await strona.locator('#osd-energa-lista li:not([hidden]) .karta__moc-pytajnik').first().evaluate((e) => {
+      const r = getComputedStyle(e, '::before');
+      return { w: parseFloat(r.width) || 0, h: parseFloat(r.height) || 0 };
+    });
+    if (p.w < 44 || p.h < 44) bledy.push(`Energa (telefon): pole dotyku „?” ${p.w} × ${p.h} px (min. 44 × 44)`);
+  }
+  await strona.locator('#osd-pge-szukaj-wyczysc').click();
+  if ((await grupyEnergi()).split(',').length !== 48) bledy.push('Energa: „Wyczyść” nie pokazuje wszystkich grup');
   if (widok.nazwa === 'telefon') {
     const m = await pole.evaluate((e) => ({ h: e.getBoundingClientRect().height, f: parseFloat(getComputedStyle(e).fontSize) }));
     if (m.h < 44) bledy.push(`wyszukiwarka (telefon): pole ma ${m.h} px wysokości (min. 44)`);
