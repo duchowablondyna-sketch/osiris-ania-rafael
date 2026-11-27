@@ -10,7 +10,7 @@ import { resolve, relative } from 'node:path';
 import pl from '../src/teksty/pl.js';
 import en from '../src/teksty/en.js';
 import cytaty from '../src/teksty/cytaty-pse.js';
-import { STRONY, wypelnij } from './jezyki.mjs';
+import { STRONY, wypelnij, ADRES_SERWISU } from './jezyki.mjs';
 
 const KATALOG = resolve(import.meta.dirname, '..');
 const czytaj = (p) => readFileSync(resolve(KATALOG, p), 'utf-8');
@@ -242,8 +242,38 @@ test('stopka: te same linki, miejsca na daty i podpisy licencji w PL i EN; podpi
 test('obrazek do udostępniania: osobny plik dla każdego języka i plik istnieje w public/', () => {
   assert.notEqual(pl['meta.og_obraz'], en['meta.og_obraz']);
   for (const s of [pl, en]) {
-    const plik = s['meta.og_obraz'].replace('https://osiris-ania-rafael.pages.dev/', 'public/');
+    assert.ok(s['meta.og_obraz'].startsWith(ADRES_SERWISU + '/'), `obrazek spoza ${ADRES_SERWISU}: ${s['meta.og_obraz']}`);
+    const plik = s['meta.og_obraz'].replace(ADRES_SERWISU + '/', 'public/');
     assert.ok(existsSync(resolve(KATALOG, plik)), `brak ${plik}`);
+  }
+});
+
+// Domena energysourcemap.com (27.11.2026): hreflang z ADRES_SERWISU (znaczniki {{@adres-pelny:pl|en}}), nie na sztywno.
+test('hreflang: każda strona, oba języki – 3 linijki = ADRES_SERWISU + ścieżka', () => {
+  for (const [strona, s] of Object.entries(STRONY)) {
+    const oczekiwane = [
+      ['pl', ADRES_SERWISU + s.pl],
+      ['en', ADRES_SERWISU + (s.en ?? s.pl)],
+      ['x-default', ADRES_SERWISU + s.pl],
+    ];
+    for (const jezyk of ['pl', 'en']) {
+      const html = wypelnij(czytaj(s.plik), jezyk, strona);
+      const linki = [...html.matchAll(/<link rel="alternate" hreflang="([^"]+)" href="([^"]+)"/g)].map((m) => [m[1], m[2]]);
+      assert.deepEqual(linki, oczekiwane, `${s.plik} (${jezyk})`);
+    }
+  }
+});
+
+test('znacznik {{@adres-pelny:…}} z nieznanym językiem zatrzymuje budowanie', () => {
+  assert.throws(() => wypelnij('<a href="{{@adres-pelny:de}}">', 'pl', 'mapa'), /Nieznany język „de”/);
+});
+
+test('po zbudowaniu (jeśli jest dist/): w plikach HTML i JS nie ma starego adresu osiris-ania-rafael.pages.dev', (t) => {
+  if (!existsSync(resolve(KATALOG, 'dist'))) return t.skip('brak dist/ – najpierw npm run build');
+  const pliki = readdirSync(resolve(KATALOG, 'dist'), { recursive: true }).filter((p) => /\.(html|js)$/.test(p));
+  assert.ok(pliki.length > 0, 'w dist/ nie ma plików HTML ani JS');
+  for (const p of pliki) {
+    assert.ok(!czytaj(`dist/${p}`).includes('osiris-ania-rafael.pages.dev'), `stary adres w dist/${p}`);
   }
 });
 

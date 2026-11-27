@@ -133,7 +133,9 @@
 - [ ] Harmonogram GitHub Actions bywa opóźniany lub pomijany (20.11.2026: zamiast 5 uruchomień były 2, z opóźnieniem 2–3 h) – jeśli się powtarza, rozważyć Cloudflare Cron Triggers. **W toku (25.11.2026):** potwierdzone – 19–25.11 GitHub pominął 22 z 37 terminów „Odśwież stronę”; zegar Cloudflare w `cloudflare/zegar/` (Worker zakłada Ania ręcznie), Robot ma drugi termin w czwartek. 25.11.2026: pierwszy środowy przebieg Robota OSIRIS z harmonogramu (06:17) do 10:30 się nie odbył (w historii tylko ręczne przebiegi z 21.11) – sprawdzić ok. 13:00.
 - [ ] Pulsowanie farm wiatrowych w rytm produkcji krajowej – dopiero po dodaniu farm lądowych; skala względem mocy zainstalowanej, nie maksimum doby.
 - [ ] Okienko farmy zasłania kropki, a kropki blisko siebie nachodzą na siebie (np. Baltic Power pod pustą kropką Orlen Neptun VIII, 2,5 km – ten przypadek rozwiązany 25.11.2026: możliwe duplikaty widoczne dopiero od przybliżenia 9) – okienko powinno pokazywać wszystkie farmy w klikniętym miejscu, nie tylko tę z wierzchu.
-- [ ] Przy zmianie domeny poprawić pełne adresy w meta Open Graph (`og:url`, `og:image` w `index.html` i `mapa/index.html` – dziś `https://osiris-ania-rafael.pages.dev/`) i odświeżyć podgląd linku w LinkedIn Post Inspector.
+- [x] Domena energysourcemap.com (27.11.2026): pełne adresy (`og:url`, hreflang – z `ADRES_SERWISU` w `scripts/jezyki.mjs`; `og:image` – `meta.og_obraz` w `src/teksty/pl.js` i `en.js`; zapasowa Karta – `POPRZEDNI` w `scripts/karta/pobierz.mjs`) wskazują nową domenę.
+- [ ] Po wdrożeniu energysourcemap.com: odświeżyć podgląd linku w LinkedIn Post Inspector (PL i EN).
+- [ ] Po scaleniu PR z domeną energysourcemap.com: przekierować osiris-ania-rafael.pages.dev → https://energysourcemap.com (301, ze ścieżką) – dopiero gdy zapasowa Karta pobiera już z nowego adresu.
 - [ ] Osobna podstrona „Źródła” przy rozbudowie strony (zamiast zwijanej stopki „Źródła i licencje”).
 - [ ] Polskie nazwy elektrowni zamiast nazw z GEM (np. „Belchatow power station” → „Elektrownia Bełchatów”).
 - [ ] Moc farm wiatrowych poniżej 10 MW z innego źródła (np. URE) – GEM ich nie obejmuje.

@@ -2,7 +2,8 @@
 // W index.html i mapa/index.html zamiast tekstu stoi znacznik {{klucz}}; tekst bierze się ze słownika
 // src/teksty/pl.js albo src/teksty/en.js. Znaczniki specjalne (wylicza je ten plik):
 //   {{@adres:tytulowa}}, {{@adres:mapa}} – adres strony w języku tej wersji,
-//   {{@adres-pelny}} – pełny adres tej strony (og:url).
+//   {{@adres-pelny}} – pełny adres tej strony (og:url),
+//   {{@adres-pelny:pl}}, {{@adres-pelny:en}} – pełny adres tej strony w podanym języku (hreflang).
 // <!-- JEZYKI --> – przełącznik PL | EN (prowadzi do tej samej strony w drugim języku).
 // Wtyczka Vite: przy budowaniu każda strona dostaje wersję PL (pod starym adresem) i EN (pod /en/…);
 // w `npm run dev` adres /en/… pokazuje wersję angielską. Test: node --test scripts/testy-jezyki.mjs.
@@ -10,7 +11,8 @@ import pl from '../src/teksty/pl.js';
 import en from '../src/teksty/en.js';
 
 export const SLOWNIKI = { pl, en };
-export const ADRES_SERWISU = 'https://osiris-ania-rafael.pages.dev';
+// Adres strony – jedno miejsce (domena od 27.11.2026). Z niego og:url i hreflang na wszystkich stronach.
+export const ADRES_SERWISU = 'https://energysourcemap.com';
 
 // Strony i ich adresy (en: null – angielskiej wersji jeszcze nie ma).
 // przelacznik: wygląd PL | EN – „tekst” (strona tytułowa, obok zegara) albo „pigulka” (mapa, para z DZIEŃ | NOC).
@@ -48,6 +50,11 @@ export function wypelnij(html, jezyk, strona) {
   const wartosc = (klucz) => {
     if (klucz.startsWith('@adres:')) return adres(klucz.slice('@adres:'.length), jezyk);
     if (klucz === '@adres-pelny') return ADRES_SERWISU + adres(strona, jezyk);
+    if (klucz.startsWith('@adres-pelny:')) {
+      const j = klucz.slice('@adres-pelny:'.length);
+      if (!SLOWNIKI[j]) throw new Error(`Nieznany język „${j}” w znaczniku ${klucz} – strona ${strona}`);
+      return ADRES_SERWISU + adres(strona, j);
+    }
     const w = slownik[klucz];
     if (typeof w !== 'string') throw new Error(`Brak tekstu „${klucz}” (${jezyk}) albo to nie napis – strona ${strona}`);
     return w;
