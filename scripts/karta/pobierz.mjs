@@ -3,14 +3,14 @@
 // Uruchamiany automatycznie przed `npm run build`. Budowanie idzie dalej także przy błędzie.
 //
 // Gdy sprawdzian nie przejdzie albo PSE nie odpowie: bierzemy poprzedni karta.json z opublikowanej strony
-// (tylko z osiris-ania-rafael.pages.dev, bez przekierowań) i dopisujemy plakietkę z powodem.
+// (tylko z energysourcemap.com, bez przekierowań) i dopisujemy plakietkę z powodem.
 // Gdy i to się nie uda: zapisujemy brak danych.
 import { readFile, writeFile } from 'node:fs/promises';
 import { zbudujKarte, wygladaJakKarta, BladSprawdzianu, WERSJA } from './licz.mjs';
 
 const PLIK = 'public/data/karta.json';
 const MOC = 'scripts/karta/moc-zainstalowana-pse-2025.json';
-const POPRZEDNI = 'https://osiris-ania-rafael.pages.dev/data/karta.json';
+const POPRZEDNI = 'https://energysourcemap.com/data/karta.json';
 const API = 'https://api.raporty.pse.pl/api';
 const MAKS_STRON = 10;
 const czasPobrania = new Date().toISOString();

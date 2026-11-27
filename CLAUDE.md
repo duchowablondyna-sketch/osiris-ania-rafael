@@ -103,4 +103,5 @@ Strona z mapą pokazującą, jak i gdzie Polska może uzyskać więcej prądu. R
 
 ## Technologia
 - Vite + MapLibre GL JS, strona statyczna na Cloudflare Pages.
+- Domena: energysourcemap.com (od 27.11.2026); adres strony w jednym miejscu – `ADRES_SERWISU` w `scripts/jezyki.mjs`.
 - Dane z PSE pobieramy przy budowaniu strony na Cloudflare Pages i zapisujemy jako plik JSON w gotowej stronie. Przeglądarka nie łączy się z API bezpośrednio.

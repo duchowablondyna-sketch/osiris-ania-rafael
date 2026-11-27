@@ -17,7 +17,7 @@ export default {
   'meta.og_locale': 'pl_PL',
   // Obrazek do udostępniania (zrzut strony tytułowej w tym języku – sposób w ZRODLA.md).
   // Nowa nazwa pliku (27.11.2026): LinkedIn trzyma obrazek w pamięci po adresie – stary og-obraz.png pokazywał OSIRIS.
-  'meta.og_obraz': 'https://osiris-ania-rafael.pages.dev/og-obraz-source.png',
+  'meta.og_obraz': 'https://energysourcemap.com/og-obraz-source.png',
 
   // ── Wspólne dla obu stron ──
   'wspolne.jezyki_etykieta': 'Wersja językowa',
